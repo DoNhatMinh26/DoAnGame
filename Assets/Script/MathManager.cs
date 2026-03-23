@@ -16,24 +16,32 @@ public class MathManager : MonoBehaviour
 
     [Header("Cài đặt phép tính")]
     [SerializeField] private bool phepCong = true;
-    [SerializeField] private bool phepTru = true;
-    [SerializeField] private bool phepNhan = false;
-    [SerializeField] private bool phepChia = false;
-    private string phepToanHienTai;
-    private int dapAnDung;
-    [Header("Tỷ lệ độ khó")]
-    [Header("Cộng")]
     [SerializeField] private int CTu;
     [SerializeField] private int CDen;
-    [Header("Trừ")]
+    [SerializeField] private bool phepTru = true;
     [SerializeField] private int TTu;
     [SerializeField] private int TDen;
-    [Header("Nhân")]
+    [SerializeField] private bool phepNhan = false;
     [SerializeField] private int NTu;
     [SerializeField] private int NDen;
-    [Header("Chia VD:(C : (A->B) = (A->B))")]
+    [SerializeField] private bool phepChia = false;
     [SerializeField] private int CCTu;
     [SerializeField] private int CCDen;
+    [Header("Chia VD:(C : (A->B) = (A->B))")]
+
+    [Header("Cài đặt số phép tính")]
+    [SerializeField] private bool haiPhepTinh = false;
+    [Header("Chọn phép tính của 2 phép tính")]
+    [SerializeField] private bool congHaiPhep = true;
+    [SerializeField] private bool truHaiPhep = true;
+    //[SerializeField] private bool nhanHaiPhep = false;
+    //[SerializeField] private bool chiaHaiPhep = false;
+    [SerializeField] private int Tu;
+    [SerializeField] private int Den;
+
+    private string phepToanHienTai;
+    private int dapAnDung;
+
     [Header("Sai số của Đáp án sai")]
     [SerializeField] private int SaiTu;
     [SerializeField] private int SaiDen;
@@ -57,12 +65,14 @@ public class MathManager : MonoBehaviour
         }
         int number1 ;
         int number2 ;
+        int number3;
         // Chọn ngẫu nhiên phép tính dựa trên các lựa chọn đã bật
         List<string> optionsPhepToan = new List<string>();
         if (phepCong) optionsPhepToan.Add("+");
         if (phepTru) optionsPhepToan.Add("-");
         if (phepNhan) optionsPhepToan.Add("x");
         if (phepChia) optionsPhepToan.Add(":");
+        if (haiPhepTinh) optionsPhepToan.Add("2");
         phepToanHienTai = optionsPhepToan[Random.Range(0, optionsPhepToan.Count)];
 
         // 2. Tính toán đáp án đúng dựa trên phép tính
@@ -98,6 +108,45 @@ public class MathManager : MonoBehaviour
                 number2 = soChia;
                 dapAnDung = ketQua;
                 cauHoiText.text = number1 + " " + phepToanHienTai + " " + number2 + " = ?";
+                break;
+            case "2":
+                 number1 = Random.Range(Tu,Den);
+                 number2 = Random.Range(Tu, Den);
+                 number3 = Random.Range(Tu, Den);
+
+                // 1. Lấy danh sách phép tính khả dụng
+                List<string> optionsHaiPhep = new List<string>();
+                if (congHaiPhep) optionsHaiPhep.Add("+");
+                if (truHaiPhep) optionsHaiPhep.Add("-");
+                //if (nhanHaiPhep) optionsHaiPhep.Add("x");
+                //if (chiaHaiPhep) optionsHaiPhep.Add(":");
+                // Lưu ý: Tạm thời chỉ nên kết hợp + và - để tránh lỗi thứ tự thực hiện phép tính
+
+                string dau1 = optionsHaiPhep[Random.Range(0, optionsHaiPhep.Count)];
+                string dau2 = optionsHaiPhep[Random.Range(0, optionsHaiPhep.Count)];
+
+                // 2. Tính toán kết quả trung gian và kết quả cuối
+                int ketQuaTrungGian = 0;
+
+                // Tính bước 1: number1 [dau1] number2
+                if (dau1 == "+") ketQuaTrungGian = number1 + number2;
+                else 
+                {
+                    // Đảm bảo kết quả trung gian không âm (nếu làm game cho trẻ em)
+                    if (number1 < number2) { int tem = number1; number1 = number2; number2 = tem; }
+                    ketQuaTrungGian = number1 - number2;
+                }
+                // Tính bước 2: ketQuaTrungGian [dau2] number3
+                if (dau2 == "+") dapAnDung = ketQuaTrungGian + number3;
+                else
+                {
+                    // Đảm bảo không ra đáp án âm
+                    if (ketQuaTrungGian < number3) number3 = Random.Range(0, ketQuaTrungGian);
+                    dapAnDung = ketQuaTrungGian - number3;
+                }
+
+                // 3. Hiển thị câu hỏi lên UI
+                cauHoiText.text = $"{number1} {dau1} {number2} {dau2} {number3} = ?";
                 break;
         }
 
