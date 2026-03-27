@@ -14,7 +14,7 @@
     <file>Assets/GeneratedLocalRepo/Firebase/m2repository/com/google/firebase/firebase-auth-unity/13.9.0/firebase-auth-unity-13.9.0.pom</file>
   </files>
   <settings>
-    <setting name="androidAbis" value="armeabi-v7a" />
+    <setting name="androidAbis" value="arm64-v8a,armeabi-v7a,x86" />
     <setting name="bundleId" value="com.DefaultCompany.DoAnGame" />
     <setting name="explodeAars" value="True" />
     <setting name="gradleBuildEnabled" value="True" />
