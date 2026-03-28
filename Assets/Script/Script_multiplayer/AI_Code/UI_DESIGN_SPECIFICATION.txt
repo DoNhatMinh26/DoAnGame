@@ -1,0 +1,394 @@
+📐 UI DESIGN SPECIFICATION - Game Toán Học Multiplayer
+═══════════════════════════════════════════════════════════════════
+
+Tác giả: AI Assistant
+Cập nhật: 29/03/2026
+Trạng thái: Ready for UI Design
+
+═══════════════════════════════════════════════════════════════════
+
+🎮 THỨ TỰ TẠO UI (Logic Game Flow A-Z)
+═══════════════════════════════════════════════════════════════════
+
+PHASE 1: AUTHENTICATION & WELCOME
+├─────────────────────────────────────────────────────────────┐
+│
+│ 1️⃣ SPLASH SCREEN (Khởi động)
+│ ├─ Mục đích: Hiển thị logo, animation intro
+│ ├─ Thành phần:
+│ │  ├─ Background image (full screen)
+│ │  ├─ Logo animation (fade in)
+│ │  └─ Loading bar hoặc "Initializing..." text
+│ ├─ Thời gian: 2-3 giây
+│ ├─ Transition: → Welcome Screen
+│ └─ File UI: UI_01_SplashScreen.prefab
+│
+│ 2️⃣ WELCOME SCREEN (Chào mừng)
+│ ├─ Mục đích: Lựa chọn Đăng nhập hay Đăng ký
+│ ├─ Thành phần:
+│ │  ├─ Logo game (center)
+│ │  ├─ Welcome text: "Chào mừng bạn đến với Game Toán Học"
+│ │  ├─ Character animation (nhân vật vẫy tay)
+│ │  ├─ 2 Buttons:
+│ │  │  ├─ "ĐĂNG NHẬP" → Login Screen
+│ │  │  └─ "ĐĂNG KÝ" → Register Screen
+│ │  └─ Settings icon (góc trên phải)
+│ ├─ Layout: Portrait (dọc)
+│ ├─ Transition: → Login/Register
+│ └─ File UI: UI_02_WelcomeScreen.prefab
+│
+│ 3️⃣ LOGIN SCREEN (Đăng nhập)
+│ ├─ Mục đích: Nhập email & password
+│ ├─ Thành phần:
+│ │  ├─ Title: "ĐĂNG NHẬP"
+│ │  ├─ Input fields:
+│ │  │  ├─ Email input (placeholder: "user@gmail.com")
+│ │  │  └─ Password input (type: password)
+│ │  ├─ "Quên mật khẩu?" link
+│ │  ├─ Buttons:
+│ │  │  ├─ "ĐĂNG NHẬP" (primary)
+│ │  │  └─ "QUAY LẠI" (secondary)
+│ │  └─ Error message display
+│ ├─ Validation: Email format, password > 6 ký tự
+│ ├─ Transition: → Main Menu (if success)
+│ └─ File UI: UI_03_LoginScreen.prefab
+│
+│ 4️⃣ REGISTER SCREEN (Đăng ký)
+│ ├─ Mục đích: Tạo tài khoản mới
+│ ├─ Thành phần:
+│ │  ├─ Title: "ĐĂNG KÝ"
+│ │  ├─ Input fields:
+│ │  │  ├─ Email input
+│ │  │  ├─ Username input
+│ │  │  ├─ Password input
+│ │  │  ├─ Confirm Password input
+│ │  │  └─ Age input (dropdown: 5-18)
+│ │  ├─ Avatar selection (6 characters)
+│ │  ├─ Terms checkbox: "I agree to terms"
+│ │  ├─ Buttons:
+│ │  │  ├─ "ĐĂNG KÝ" (primary)
+│ │  │  └─ "QUAY LẠI" (secondary)
+│ │  └─ Error message display
+│ ├─ Validation: Tất cả fields required
+│ ├─ Transition: → Main Menu (if success)
+│ └─ File UI: UI_04_RegisterScreen.prefab
+│
+└─ Attachment Points:
+   AuthManager.cs sẽ handle login/register logic
+   Database: users, player_data, level_progress
+
+═══════════════════════════════════════════════════════════════
+
+PHASE 2: MAIN MENU & GAME SELECTION
+├─────────────────────────────────────────────────────────────┐
+│
+│ 5️⃣ MAIN MENU / LOBBY SCREEN (Sảnh chính)
+│ ├─ Mục đích: Hiển thị menu chính sau login
+│ ├─ Thành phần:
+│ │  ├─ Header:
+│ │  │  ├─ Player name
+│ │  │  ├─ Current level
+│ │  │  ├─ Total XP/Score
+│ │  │  └─ Rank badge
+│ │  ├─ Main Buttons (large):
+│ │  │  ├─ "CHƠI ĐƠN" → Level Selection
+│ │  │  ├─ "CHƠI CÙNG BẠN BÈ" → Multiplayer Menu
+│ │  │  ├─ "BẢNG XẾP HẠNG" → Leaderboard
+│ │  │  └─ "CÀI ĐẶT" → Settings
+│ │  ├─ Bottom section:
+│ │  │  ├─ Character sprite (center)
+│ │  │  └─ Daily Challenge banner (optional)
+│ │  └─ Top right: Settings/Menu icon
+│ ├─ Background: Game background character animation
+│ ├─ Transition: → Level/Multiplayer Selection
+│ └─ File UI: UI_05_MainMenuScreen.prefab
+│
+│ 6️⃣ GAME MODE SELECTION SCREEN
+│ ├─ Mục đích: Chọn chơi đơn hay multiplayer
+│ ├─ Thành phần:
+│ │  ├─ Title: "CHỌN CHẾ ĐỘ CHƠI"
+│ │  ├─ 2 Large option cards:
+│ │  │  ├─ Card 1: "CHƠI ĐƠN"
+│ │  │  │  ├─ Icon (1 character)
+│ │  │  │  ├─ Description
+│ │  │  │  └─ "CHỌN" button
+│ │  │  └─ Card 2: "CHƠI CÙNG BẠN BÈ"
+│ │  │     ├─ Icon (2 characters)
+│ │  │     ├─ Description
+│ │  │     └─ "CHỌN" button
+│ │  └─ Back button
+│ ├─ Transition: → Level Selection
+│ └─ File UI: UI_06_ModeSelectionScreen.prefab
+│
+│ 7️⃣ LEVEL SELECTION SCREEN
+│ ├─ Mục đích: Chọn cấp độ (Mẫu giáo - Lớp 5)
+│ ├─ Thành phần:
+│ │  ├─ Title: "CHỌN MÀN"
+│ │  ├─ Level buttons (6 options):
+│ │  │  ├─ Level 1: "MẦU GIÁO" (Easy)
+│ │  │  ├─ Level 2: "LỚP 1"
+│ │  │  ├─ Level 3: "LỚP 2"
+│ │  │  ├─ Level 4: "LỚP 3"
+│ │  │  ├─ Level 5: "LỚP 4"
+│ │  │  └─ Level 6: "LỚP 5" (Hard)
+│ │  ├─ Mỗi level button hiển thị:
+│ │  │  ├─ Level icon
+│ │  │  ├─ Best score (if played before)
+│ │  │  ├─ Lock/Unlock status
+│ │  │  └─ Play button (onClick)
+│ │  └─ Back button
+│ ├─ Lock mechanism: Level 1 mở, level khác mở dần
+│ ├─ Transition: → Difficulty Selection
+│ └─ File UI: UI_07_LevelSelectionScreen.prefab
+│
+│ 8️⃣ DIFFICULTY SELECTION SCREEN
+│ ├─ Mục đích: Chọn độ khó
+│ ├─ Thành phần:
+│ │  ├─ Title: "CHỌN ĐỘ KHÓ"
+│ │  ├─ 3 Difficulty cards:
+│ │  │  ├─ Card 1: "DỄ DÀNG" (Green)
+│ │  │  │  ├─ Star 1/3
+│ │  │  │  ├─ Description: "Phù hợp bắt đầu"
+│ │  │  │  └─ "CHỌN" button
+│ │  │  ├─ Card 2: "BÌNH THƯỜNG" (Yellow)
+│ │  │  │  ├─ Star 2/3
+│ │  │  │  ├─ Description: "Thách thức vừa phải"
+│ │  │  │  └─ "CHỌN" button
+│ │  │  └─ Card 3: "KHÓ" (Red)
+│ │  │     ├─ Star 3/3
+│ │  │     ├─ Description: "Thách thức cao"
+│ │  │     └─ "CHỌN" button
+│ │  ├─ Level info: "Level X - Mẫu giáo"
+│ │  └─ Back button
+│ ├─ Transition: → In-Game Screen → Start countdown
+│ └─ File UI: UI_08_DifficultySelectionScreen.prefab
+│
+└─ Attachment Points:
+   PlayerDataManager.cs attach: Main Menu screen
+   Database: player_data, level_progress
+
+═══════════════════════════════════════════════════════════════
+
+PHASE 3: GAMEPLAY
+├─────────────────────────────────────────────────────────────┐
+│
+│ 9️⃣ IN-GAME SCREEN (Chơi game)
+│ ├─ Mục đích: Hiển thị câu hỏi & các đáp án
+│ ├─ Thành phần - TOP section:
+│ │  ├─ Progress bar (1/10, 2/10...)
+│ │  ├─ Timer (60 giây countdown)
+│ │  ├─ Current score display
+│ │  └─ Health/Lives (nếu có)
+│ ├─ Thành phần - CENTER section (main):
+│ │  ├─ Question text: "5 + 3 = ?"
+│ │  ├─ 4 Answer buttons:
+│ │  │  ├─ Button 1: "5"
+│ │  │  ├─ Button 2: "8" ✓ (Correct)
+│ │  │  ├─ Button 3: "12"
+│ │  │  └─ Button 4: "6"
+│ │  └─ Animation feedback:
+│ │     ├─ Green check mark (correct)
+│ │     └─ Red X mark (wrong + shake)
+│ ├─ Thành phần - BOTTOM section:
+│ │  ├─ Pause button (top left)
+│ │  └─ "ĐƯỠNG TIẾP" button (shows after answer)
+│ ├─ Background: Game background
+│ ├─ Sound: Correct/wrong SFX + background music
+│ └─ File UI: UI_09_InGameScreen.prefab
+│
+│ 🔟 PAUSE MENU (Tạm dừng)
+│ ├─ Mục đích: Menu tạm dừng game
+│ ├─ Thành phần:
+│ │  ├─ Semi-transparent overlay
+│ │  ├─ Title: "TẠM DỪNG"
+│ │  ├─ Buttons:
+│ │  │  ├─ "TIẾP TỤC" → Resume game
+│ │  │  ├─ "PHƯƠNG ÂM" → Audio settings
+│ │  │  └─ "QUAY VỀ MENU" → Back to main menu
+│ │  └─ Current score/progress display
+│ ├─ Appears as overlay: Pause button → show menu
+│ ├─ Game pauses when active
+│ └─ File UI: UI_10_PauseMenu.prefab
+│
+└─ Attachment Points:
+   MathManager.cs attach: In-Game Screen
+   GameResultManager.cs attach: When game ends
+   Database: game_history (insert after game)
+
+═══════════════════════════════════════════════════════════════
+
+PHASE 4: RESULTS & LEADERBOARD
+├─────────────────────────────────────────────────────────────┐
+│
+│ 1️⃣1️⃣ GAME RESULT SCREEN (Kết quả game)
+│ ├─ Mục đích: Hiển thị kết quả sau game kết thúc
+│ ├─ Thành phần - TOP section:
+│ │  ├─ Result banner:
+│ │  │  ├─ "🎉 THẮNG!" (if victory) - Green background
+│ │  │  └─ "💫 BẠN LỰC!" (if loss) - Red background
+│ │  └─ Character reaction animation
+│ ├─ Thành phần - MIDDLE section:
+│ │  ├─ Stats display:
+│ │  │  ├─ Final Score: "850 điểm"
+│ │  │  ├─ Questions Correct: "8/10"
+│ │  │  ├─ Time: "45 secs"
+│ │  │  ├─ XP Earned: "+250 XP"
+│ │  │  └─ Level Up? "🔼 Lên Level 2!" (if applicable)
+│ │  ├─ Star rating:
+│ │  │  ├─ 3 stars: 900+ points
+│ │  │  ├─ 2 stars: 600-899 points
+│ │  │  └─ 1 star: <600 points
+│ │  └─ Progress bar: "Exp to next level"
+│ ├─ Thành phần - BOTTOM section:
+│ │  ├─ Buttons:
+│ │  │  ├─ "CHƠI LẠI" → Replay (same difficulty)
+│ │  │  ├─ "TIẾP THEO" → Next level
+│ │  │  └─ "QUAY VỀ MENU" → Main Menu
+│ │  └─ Share score button (optional)
+│ ├─ Confetti animation (if won)
+│ ├─ Sound: Victory/Defeat music
+│ └─ File UI: UI_11_GameResultScreen.prefab
+│
+│ 1️⃣2️⃣ LEADERBOARD SCREEN (Bảng xếp hạng)
+│ ├─ Mục đích: Hiển thị TOP player
+│ ├─ Thành phần - TOP section:
+│ │  ├─ Title: "BẢNG XẾP HẠNG"
+│ │  ├─ Tabs:
+│ │  │  ├─ "ĐIỂM" (Score - default)
+│ │  │  ├─ "LEVEL" (Level progression)
+│ │  │  └─ "BẠN BÈ" (Friends) - optional
+│ │  └─ Filter buttons: "Global" / "Friends"
+│ ├─ Thành phần - MIDDLE section (Leaderboard list):
+│ │  ├─ Header row:
+│ │  │  ├─ "Rank"
+│ │  │  ├─ "Player"
+│ │  │  ├─ "Score/Level"
+│ │  │  └─ "Avatar"
+│ │  ├─ Leaderboard entries (TOP 100):
+│ │  │  ├─ Rank 1: 👑 "Player1" | 50000 pts
+│ │  │  ├─ Rank 2: "Player2" | 48500 pts
+│ │  │  ├─ Rank 3: "Player3" | 47200 pts
+│ │  │  ├─ ...
+│ │  │  └─ Rank 100: "Player100" | 1200 pts
+│ │  ├─ Your rank highlight:
+│ │  │  └─ "YOUR RANK: #42 | 15000 pts" (highlighted)
+│ │  └─ Scroll: Show 10 entries, scrollable
+│ ├─ Thành phần - BOTTOM section:
+│ │  ├─ Refresh button
+│ │  └─ Back button
+│ ├─ Update interval: Auto-refresh every 30s
+│ └─ File UI: UI_12_LeaderboardScreen.prefab
+│
+│ 1️⃣3️⃣ PLAYER PROFILE SCREEN (Hồ sơ cá nhân)
+│ ├─ Mục đích: Xem thông tin người chơi
+│ ├─ Thành phần:
+│ │  ├─ Profile header:
+│ │  │  ├─ Avatar (large)
+│ │  │  ├─ Username
+│ │  │  ├─ Age
+│ │  │  └─ Join date
+│ │  ├─ Stats section:
+│ │  │  ├─ Current Level: 5
+│ │  │  ├─ Total Score: 50000
+│ │  │  ├─ Total XP: 152500
+│ │  │  ├─ Rank: #42
+│ │  │  ├─ Games Played: 234
+│ │  │  └─ Win Rate: 68.4%
+│ │  ├─ Achievement section (if have any):
+│ │  │  ├─ Achievement 1
+│ │  │  ├─ Achievement 2
+│ │  │  └─ ...
+│ │  ├─ Level progress:
+│ │  │  └─ "Level 1 - Best: 2000 pts"
+│ │  ├─ Buttons:
+│ │  │  ├─ "CHỈNH SỬA" (Edit profile)
+│ │  │  └─ "QUAY LẠI" (Back)
+│ │  └─ View other player: Search button
+│ ├─ Data source: PlayerDataManager
+│ └─ File UI: UI_13_PlayerProfileScreen.prefab
+│
+│ 1️⃣4️⃣ SETTINGS SCREEN (Cài đặt)
+│ ├─ Mục đích: Cài đặt game
+│ ├─ Thành phần:
+│ │  ├─ Title: "CÀI ĐẶT"
+│ │  ├─ Settings sections:
+│ │  │  ├─ Section 1: "ÂM THANH"
+│ │  │  │  ├─ Master Volume: Slider (0-100%)
+│ │  │  │  ├─ Music Volume: Slider
+│ │  │  │  └─ SFX Volume: Slider
+│ │  │  ├─ Section 2: "HIỂN THỊ"
+│ │  │  │  ├─ Language: Dropdown (Vi / En)
+│ │  │  │  ├─ Graphics: Dropdown (High/Medium/Low)
+│ │  │  │  └─ Notifications: Toggle
+│ │  │  ├─ Section 3: "TÀI KHOẢN"
+│ │  │  │  ├─ Logout button
+│ │  │  │  └─ Delete account button
+│ │  │  └─ Section 4: "THÔNG TIN"
+│ │  │     ├─ Version: "1.0.0"
+│ │  │     └─ Support button
+│ │  ├─ Save button (auto-save on change)
+│ │  └─ Back button
+│ ├─ Data persistence: PlayerPrefs
+│ └─ File UI: UI_14_SettingsScreen.prefab
+│
+└─ Attachment Points:
+   GameResultManager.cs attach: Result screen (save data)
+   LeaderboardManager.cs attach: Leaderboard screen
+   PlayerDataManager.cs attach: Profile screen
+
+═══════════════════════════════════════════════════════════════
+
+📊 MULTIPLAYER FLOW (Phụ cấp)
+═══════════════════════════════════════════════════════════════
+
+(Optional - Tùy thời gian cho phép)
+
+- Multiplayer Lobby: Chọn tạo phòng/ vào phòng
+- Room code display: Cho bạn nhập code
+- Waiting for opponent: Loading screen
+- In-game multiplayer: Same as single, but 2 players sync
+- Multiplayer result: Compare scores
+
+═══════════════════════════════════════════════════════════════
+
+✅ ui DESIGN CHECKLIST
+═══════════════════════════════════════════════════════════════
+
+Bước 1: Tạo UI assets (Canvas, Panels)
+  [ ] Create all 14 Canvas+Panels for each screen
+  [ ] Set up screen resolution (1080x1920 mobile)
+  [ ] Design color scheme & fonts
+
+Bước 2: Layout từng screen
+  [ ] UI_01 - Splash Screen
+  [ ] UI_02 - Welcome Screen
+  [ ] UI_03 - Login Screen
+  [ ] UI_04 - Register Screen
+  [ ] UI_05 - Main Menu
+  [ ] UI_06 - Mode Selection
+  [ ] UI_07 - Level Selection
+  [ ] UI_08 - Difficulty Selection
+  [ ] UI_09 - In-Game Screen
+  [ ] UI_10 - Pause Menu
+  [ ] UI_11 - Game Result Screen
+  [ ] UI_12 - Leaderboard Screen
+  [ ] UI_13 - Player Profile
+  [ ] UI_14 - Settings Screen
+
+Bước 3: Code từng screen
+  [ ] AuthManager (Login/Register logic)
+  [ ] PlayerDataManager (Load profile, update stats)
+  [ ] GameResultManager (Save results)
+  [ ] LeaderboardManager (Fetch rankings)
+
+Bước 4: Test từng component
+  [ ] Authentication flow
+  [ ] Navigation between screens
+  [ ] Data persistence
+  [ ] Leaderboard updates
+
+═══════════════════════════════════════════════════════════════
+
+Tác giả: AI Assistant
+Cập nhật: 29/03/2026
+Trạng thái: Ready for UI Design Implementation

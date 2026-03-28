@@ -1,0 +1,452 @@
+🎨 HƯỚNG DẪN TẠO UI - PHÂN TẦNG CHI TIẾT TỪNG COMPONENT
+═══════════════════════════════════════════════════════════════════════════════
+
+CÁCH ĐỌC: 
+1. Tên Component (Component Type)
+   ├─ Mục đích: Làm gì
+   ├─ Initial State: Active (T) / Inactive (F)
+   ├─ Properties: Cài đặt gì
+   ├─ Anchor: Điểm neo
+   ├─ Size: Kích thước
+   └─ Child của: Parent là cái nào
+
+═══════════════════════════════════════════════════════════════════════════════
+VÍ DỤ: SCREEN 1 - SPLASH SCREEN
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 HIERARCHY STRUCTURE (Cấu trúc tầng)
+═══════════════════════════════════════════════════════════════════════════════
+
+├─ Canvas (Canvas)
+│  ├─ Initial State: ✓ Active
+│  ├─ Canvas Scaler: Scale With Screen Size (1080x1920)
+│  └─ Child:
+│
+│     └──┬─ SplashBackground (Image)
+│        │  ├─ Initial State: ✓ Active
+│        │  ├─ Component: Image
+│        │  ├─ Source Image: "game_logo_bg" (full screen background)
+│        │  ├─ Anchor: Stretch Stretch (full screen)
+│        │  ├─ Size: 1080 x 1920
+│        │  └─ Color: White
+│        │
+│        └──┬─ LogoContainer (Image) ⭐ CÓ THỂ ANIMATE
+│           ├─ Initial State: ✓ Active (sẽ fade in)
+│           ├─ Component: Image
+│           ├─ Source Image: "game_logo.png"
+│           ├─ Anchor: Middle Center
+│           ├─ Size: 400 x 400
+│           ├─ Position: (0, 100, 0)
+│           ├─ Color: White
+│           ├─ Alpha (A): 0 → 1 (animated from 0 to 1 over 1 second)
+│           ├─ Scale (XY): Start 0.5, animate to 1
+│           └─ Add Component:
+│              └─ CanvasGroup (để control alpha)
+│
+│        └──┬─ LoadingText (Text - TextMeshPro)
+│           ├─ Initial State: ✓ Active
+│           ├─ Component: TextMeshProUGUI
+│           ├─ Text: "Đang khởi động..."
+│           ├─ Font Size: 36
+│           ├─ Alignment: Center
+│           ├─ Anchor: Middle Center
+│           ├─ Size: 400 x 100
+│           ├─ Position: (0, -400, 0)
+│           ├─ Color: White
+│           └─ Animation: Fade in (alpha 0→1)
+│
+│        └──┬─ LoadingBar (Image) - Optional
+│           ├─ Initial State: ✓ Active
+│           ├─ Component: Image (type: Filled)
+│           ├─ Source Image: "loading_bar_bg.png"
+│           ├─ Anchor: Bottom Center
+│           ├─ Size: 300 x 30
+│           ├─ Position: (0, 50, 0)
+│           └─ Fill Amount: Animate 0 → 1
+│
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📝 DETAILED COMPONENT LIST
+═══════════════════════════════════════════════════════════════════════════════
+
+Component 1: Canvas
+┌──────────────────────────────────────────────────┐
+│ Name: "Canvas"                                   │
+│ Component: Canvas                                │
+│ ├─ Render Mode: Screen Space - Overlay         │
+│ ├─ Canvas Scaler:                              │
+│ │  ├─ UI Scale Mode: Scale With Screen Size    │
+│ │  ├─ Reference Resolution: 1080 x 1920        │
+│ │  └─ Match: Width or Height (Height = 1)      │
+│ └─ Graphic Raycaster: ✓ Enabled                │
+│                                                  │
+│ Initial State: ✓ ACTIVE (SetActive(true))      │
+│ Position: (0, 0, 0)                            │
+│ Size: 1080 x 1920                              │
+└──────────────────────────────────────────────────┘
+
+Component 2: SplashBackground (Image - Full Screen)
+┌──────────────────────────────────────────────────┐
+│ Name: "SplashBackground"                        │
+│ Parent: Canvas                                   │
+│ Component: Image                                │
+│ ├─ Source Image: "splash_bg" (drag from assets)│
+│ ├─ Image Type: Simple                          │
+│ ├─ Preserve Aspect: OFF                        │
+│ └─ Color: FFFFFF (White)                       │
+│                                                  │
+│ RectTransform:                                  │
+│ ├─ Anchor Preset: Stretch, Stretch             │
+│ ├─ Pos X: 0                                    │
+│ ├─ Pos Y: 0                                    │
+│ ├─ Pos Z: 0                                    │
+│ ├─ Left: 0                                     │
+│ ├─ Right: 0                                    │
+│ ├─ Top: 0                                      │
+│ ├─ Bottom: 0                                   │
+│ └─ Size: 1080 x 1920                           │
+│                                                  │
+│ Initial State: ✓ ACTIVE                        │
+│ Z-index (Sorting Order): 0 (behind others)     │
+└──────────────────────────────────────────────────┘
+
+Component 3: LogoContainer (Image - Logo with Animation)
+┌──────────────────────────────────────────────────┐
+│ Name: "LogoContainer"                           │
+│ Parent: Canvas                                   │
+│ Component: Image                                │
+│ ├─ Source Image: "game_logo.png"               │
+│ ├─ Image Type: Simple                          │
+│ ├─ Preserve Aspect: ON                         │
+│ └─ Color: FFFFFF (White)                       │
+│                                                  │
+│ Add Component: CanvasGroup (để animate alpha)   │
+│ ├─ Alpha: 0 (sẽ animate từ 0→1)               │
+│ ├─ Interactable: OFF                           │
+│ └─ Blocks Raycasts: OFF                        │
+│                                                  │
+│ RectTransform:                                  │
+│ ├─ Anchor Preset: Middle Center                │
+│ ├─ Pos X: 0                                    │
+│ ├─ Pos Y: 100                                  │
+│ ├─ Pos Z: 0                                    │
+│ ├─ Width: 400                                  │
+│ ├─ Height: 400                                 │
+│ └─ Scale: (0.8, 0.8, 1) - Start nhỏ           │
+│                                                  │
+│ Initial State: ✓ ACTIVE                        │
+│                                                  │
+│ Animation (Add Animator):                       │
+│ ├─ Fade In: 0 sec → 1 sec (alpha 0→1)         │
+│ ├─ Scale Up: 0 sec → 1 sec (scale 0.5→1)     │
+│ └─ Total duration: 1 second                    │
+│                                                  │
+│ Z-index (Sorting Order): 1 (above background)  │
+└──────────────────────────────────────────────────┘
+
+Component 4: LoadingText (Text - TextMeshPro)
+┌──────────────────────────────────────────────────┐
+│ Name: "LoadingText"                             │
+│ Parent: Canvas                                   │
+│ Component: TextMeshProUGUI                      │
+│ ├─ Text: "Đang khởi động..."                   │
+│ ├─ Font Size: 36                               │
+│ ├─ Font: Use default TMP font                  │
+│ ├─ Alignment: Center                           │
+│ ├─ Color: FFFFFF (White)                       │
+│ ├─ Outline: Width 0.2 (optional - tạo shadow) │
+│ └─ Outline Color: 000000 (Black)               │
+│                                                  │
+│ RectTransform:                                  │
+│ ├─ Anchor Preset: Middle Center                │
+│ ├─ Pos X: 0                                    │
+│ ├─ Pos Y: -350                                 │
+│ ├─ Pos Z: 0                                    │
+│ ├─ Width: 500                                  │
+│ ├─ Height: 100                                 │
+│ └─ Scale: (1, 1, 1)                            │
+│                                                  │
+│ Add Component: CanvasGroup (để animate alpha)   │
+│ └─ Alpha: 0 (sẽ animate từ 0→1)               │
+│                                                  │
+│ Initial State: ✓ ACTIVE                        │
+│                                                  │
+│ Animation:                                      │
+│ ├─ Fade In: 0.2 sec → 0.7 sec (delay + fade) │
+│ └─ Duration: 0.5 second                        │
+│                                                  │
+│ Z-index (Sorting Order): 2                     │
+└──────────────────────────────────────────────────┘
+
+Component 5: LoadingBar (Image - Optional)
+┌──────────────────────────────────────────────────┐
+│ Name: "LoadingBar"                              │
+│ Parent: Canvas                                   │
+│ Component: Image                                │
+│ ├─ Source Image: "loading_bar_bg.png"          │
+│ ├─ Image Type: Filled                          │
+│ ├─ Fill Method: Horizontal                     │
+│ ├─ Origin: Left                                │
+│ ├─ Fill Amount: 0 (sẽ animate từ 0→1)        │
+│ └─ Color: 00FF00 (Green) hoặc theme color     │
+│                                                  │
+│ RectTransform:                                  │
+│ ├─ Anchor Preset: Bottom Center                │
+│ ├─ Pos X: 0                                    │
+│ ├─ Pos Y: 50                                   │
+│ ├─ Pos Z: 0                                    │
+│ ├─ Width: 300                                  │
+│ ├─ Height: 30                                  │
+│                                                  │
+│ Initial State: ✓ ACTIVE                        │
+│                                                  │
+│ Animation:                                      │
+│ ├─ Progress Fill: 0 → 1 (over 2 seconds)      │
+│ └─ Total screen time: 3 seconds                │
+│                                                  │
+│ Z-index (Sorting Order): 2                     │
+└──────────────────────────────────────────────────┘
+
+═══════════════════════════════════════════════════════════════════════════════
+
+⏱️ ANIMATION TIMELINE
+═══════════════════════════════════════════════════════════════════════════════
+
+Time    Action
+────────────────────────────────────────────────
+0.0s    ├─ Screen shows: Background (visible)
+        ├─ LogoContainer: Alpha 0%, Scale 0.5x
+        └─ LoadingText: Alpha 0%
+
+0.0s-1.0s ├─ LogoContainer animates:
+          │  ├─ Alpha: 0% → 100%
+          │  └─ Scale: 0.5x → 1.0x
+          └─ (smooth fade in + scale up)
+
+0.2s-0.7s ├─ LoadingText animates:
+          │  └─ Alpha: 0% → 100%
+          └─ (delayed fade in)
+
+0.0s-3.0s └─ LoadingBar animates:
+           └─ Fill Amount: 0% → 100%
+             (progress bar fills)
+
+3.0s    └─ Auto-transition to Welcome Screen
+        └─ Call: SceneManager.LoadScene("WelcomeScreen")
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 INITIAL STATE SUMMARY (Splash Screen)
+═══════════════════════════════════════════════════════════════════════════════
+
+Component Name          | Component Type      | Initial | Z-Order
+─────────────────────────┼────────────────────┼─────────┼────────
+Canvas                  | Canvas             | ✓ Active| -
+SplashBackground        | Image              | ✓ Active| 0
+LogoContainer           | Image + CanvasGroup| ✓ Active| 1
+LoadingText             | TextMeshPro + CG   | ✓ Active| 2
+LoadingBar              | Image (Filled)     | ✓ Active| 2
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎬 CODE ATTACHMENT (SplashScreenManager.cs)
+═══════════════════════════════════════════════════════════════════════════════
+
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.Collections;
+
+public class SplashScreenManager : MonoBehaviour
+{
+    [SerializeField] private CanvasGroup logoCanvasGroup;
+    [SerializeField] private CanvasGroup textCanvasGroup;
+    [SerializeField] private Image loadingBar;
+    [SerializeField] private float totalDuration = 3f;
+
+    private void Start()
+    {
+        StartCoroutine(PlaySplashAnimation());
+    }
+
+    private IEnumerator PlaySplashAnimation()
+    {
+        // 1. Fade in logo + scale
+        yield return StartCoroutine(FadeInLogo(1f));
+
+        // 2. Fade in text
+        yield return StartCoroutine(FadeInText(0.5f, 0.2f));
+
+        // 3. Fill progress bar
+        yield return StartCoroutine(FillProgressBar(2f, 0f));
+
+        // 4. Transition to Welcome Screen
+        SceneManager.LoadScene("WelcomeScreen");
+    }
+
+    private IEnumerator FadeInLogo(float duration)
+    {
+        float elapsed = 0f;
+        RectTransform logoRect = logoCanvasGroup.GetComponent<RectTransform>();
+        Vector3 startScale = new Vector3(0.5f, 0.5f, 1f);
+        Vector3 endScale = Vector3.one;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = elapsed / duration;
+
+            logoCanvasGroup.alpha = progress;
+            logoRect.localScale = Vector3.Lerp(startScale, endScale, progress);
+
+            yield return null;
+        }
+
+        logoCanvasGroup.alpha = 1f;
+        logoRect.localScale = endScale;
+    }
+
+    private IEnumerator FadeInText(float duration, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = elapsed / duration;
+            textCanvasGroup.alpha = progress;
+            yield return null;
+        }
+
+        textCanvasGroup.alpha = 1f;
+    }
+
+    private IEnumerator FillProgressBar(float duration, float startTime)
+    {
+        yield return new WaitForSeconds(startTime);
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = elapsed / duration;
+            loadingBar.fillAmount = progress;
+            yield return null;
+        }
+
+        loadingBar.fillAmount = 1f;
+    }
+}
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ SETUP CHECKLIST - Splash Screen
+═══════════════════════════════════════════════════════════════════════════════
+
+[ ] 1. Create new Scene: "SplashScreen"
+    [ ] Save at: Assets/Scenes/SplashScreen.unity
+
+[ ] 2. Create Canvas
+    [ ] GameObject → UI → Canvas
+    [ ] Name: "Canvas"
+    [ ] Set Canvas Scaler: 1080 x 1920
+
+[ ] 3. Create SplashBackground (Image)
+    [ ] Right-click Canvas → UI → Image
+    [ ] Name: "SplashBackground"
+    [ ] Set Anchor: Stretch, Stretch
+    [ ] Assign Source Image: "splash_bg" (drag from Assets)
+    [ ] Z-Order: 0
+
+[ ] 4. Create LogoContainer (Image)
+    [ ] Right-click Canvas → UI → Image
+    [ ] Name: "LogoContainer"
+    [ ] Set Anchor: Middle Center
+    [ ] Assign Source Image: "game_logo"
+    [ ] Add Component: CanvasGroup
+    [ ] Set Alpha: 0 (for animation)
+    [ ] Z-Order: 1
+
+[ ] 5. Create LoadingText (TextMeshPro)
+    [ ] Right-click Canvas → UI → TextMeshPro
+    [ ] Name: "LoadingText"
+    [ ] Set Anchor: Middle Center
+    [ ] Type: "Đang khởi động..."
+    [ ] Font Size: 36
+    [ ] Add Component: CanvasGroup
+    [ ] Set Alpha: 0 (for animation)
+    [ ] Z-Order: 2
+
+[ ] 6. Create LoadingBar (Image)
+    [ ] Right-click Canvas → UI → Image
+    [ ] Name: "LoadingBar"
+    [ ] Set Anchor: Bottom Center
+    [ ] Change Image Type: Filled
+    [ ] Set Fill Amount: 0
+    [ ] Z-Order: 2
+
+[ ] 7. Attach SplashScreenManager.cs
+    [ ] Create new C# script: "SplashScreenManager.cs"
+    [ ] Attach to: Canvas object
+    [ ] Assign fields in Inspector:
+        [ ] Logo CanvasGroup: Drag LogoContainer
+        [ ] Text CanvasGroup: Drag LoadingText
+        [ ] Loading Bar: Drag LoadingBar Image component
+
+[ ] 8. Build Settings
+    [ ] File → Build Settings
+    [ ] Add "SplashScreen" scene (Index 0)
+    [ ] Add "WelcomeScreen" scene (Index 1)
+
+[ ] 9. Test
+    [ ] Play Scene (Ctrl+Shift+P)
+    [ ] Verify animation sequence
+    [ ] Check timing (should be 3 seconds total)
+    [ ] Verify transition to next scene
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔄 NEXT SCREEN TEMPLATE (Để follow)
+═══════════════════════════════════════════════════════════════════════════════
+
+SCREEN 2 - WELCOME SCREEN sẽ follow cùng format:
+
+Canvas
+├─ WelcomeBackground (Image)
+│  ├─ Initial: ✓ Active
+│  ├─ Z-Order: 0
+│  └─ ...
+│
+├─ LogoImage (Image)
+│  ├─ Initial: ✓ Active
+│  ├─ Z-Order: 1
+│  └─ Animation: Bounce, rotate
+│
+├─ WelcomeText (TextMeshPro)
+│  ├─ Initial: ✓ Active
+│  ├─ Z-Order: 2
+│  └─ "Chào mừng bạn đến với Game Toán Học"
+│
+├─ LoginButton (Button - TextMeshPro)
+│  ├─ Initial: ✓ Active
+│  ├─ Z-Order: 3
+│  └─ ...
+│
+└─ RegisterButton (Button - TextMeshPro)
+   ├─ Initial: ✓ Active
+   ├─ Z-Order: 3
+   └─ ...
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Cách hiểu:
+✓ Active = GameObject đó bật từ đầu (SetActive(true))
+✗ Inactive = GameObject đó tắt từ đầu (SetActive(false)), code sẽ bật sau
+
+Z-Order = Thứ tự hiển thị (0 = phía sau, 3 = phía trước)
+
+Tác giả: AI Assistant
+Cập nhật: 29/03/2026
+Trạng thái: Ready for UI Creation in Unity!

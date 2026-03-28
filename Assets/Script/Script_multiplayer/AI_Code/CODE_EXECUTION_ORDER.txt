@@ -1,0 +1,240 @@
+📋 DANH SÁCH BẢNG DỮ LIỆU CUỐI CÙNG & THỨ TỰ VIẾT CODE
+========================================================================================
+
+PHÂN LOẠI:
+- 🗄️️ LƯU TRÊN MYSQL: Dữ liệu người dùng & game results
+- 📱 LƯU TRONG APP: Câu hỏi toán (MathManager.cs → Firebase)
+
+========================================================================================
+
+6️⃣  BẢNG MYSQL (CẦN IMPLEMENT)
+========================================================================================
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 1️⃣ users (Nền tảng)                                              │
+├─────────────────────────────────────────────────────────────────┤
+│ Mục đích: Quản lý tài khoản & xác thực                          │
+│ Trường:   id, email, username, age, avatar,                     │
+│           createdAt, lastLogin, isActive                        │
+│ Quan hệ:  ← player_data.userId                                  │
+│ Vị trí:   d:\app\DoAnGame\Assets\Script\Script_multiplayer      │
+│           \AuthManager.cs (CẦN VIẾT)                            │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 2️⃣ player_data (Dữ liệu chính)                                   │
+├─────────────────────────────────────────────────────────────────┤
+│ Mục đích: Lưu stats người chơi (điểm, XP, level)                │
+│ Trường:   id, userId (FK), username, totalScore,                │
+│           totalXp, currentLevel, rank, gamesPlayed,              │
+│           gamesWon, winRate                                     │
+│ Quan hệ:  → users.id                                            │
+│           ← level_progress.playerDataId                         │
+│           ← game_history.playerDataId                           │
+│           ← leaderboard_score.playerDataId                      │
+│ Vị trí:   d:\app\DoAnGame\Assets\Script\Script_multiplayer      │
+│           \PlayerDataManager.cs (CẦN VIẾT)                      │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 3️⃣ level_progress (Tiến độ chi tiết)                            │
+├─────────────────────────────────────────────────────────────────┤
+│ Mục đích: Theo dõi từng level người chơi                        │
+│ Trường:   id, playerDataId (FK), levelNumber (1-6),             │
+│           maxScore, bestTime, attempts, completed, xpEarned     │
+│ Quan hệ:  → player_data.id                                      │
+│ Ghi chú:  1=Mẫu giáo, 2=Lớp1, 3=Lớp2, 4=Lớp3,                 │
+│           5=Lớp4, 6=Lớp5                                        │
+│ Vị trí:   PlayerDataManager.cs                                  │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 4️⃣ game_history (Lịch sử game)                                   │
+├─────────────────────────────────────────────────────────────────┤
+│ Mục đích: Lưu từng ván chơi (single & multiplayer)              │
+│ Trường:   id, userId (FK), playerDataId (FK), username,         │
+│           level, score, xpEarned, timeSpent, difficulty,        │
+│           timestamp, gameMode (single/multiplayer),             │
+│           opponentId, result (win/lose)                         │
+│ Quan hệ:  → users.id, player_data.id                            │
+│ Vị trí:   GameResultManager.cs (CẦN VIẾT)                       │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 5️⃣ leaderboard_score (Xếp hạng điểm)                            │
+├─────────────────────────────────────────────────────────────────┤
+│ Mục đích: TOP player theo tổng điểm (Top 100)                   │
+│ Trường:   rank (PK), userId (FK), playerDataId (FK),            │
+│           username, score, level, avatar, lastUpdated           │
+│ Quan hệ:  → users.id, player_data.id                            │
+│ Tự động:  Auto-update qua trigger hoặc app logic                │
+│ Vị trí:   LeaderboardManager.cs (CẦN VIẾT)                      │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│ 6️⃣ leaderboard_level (Xếp hạng level)                           │
+├─────────────────────────────────────────────────────────────────┤
+│ Mục đích: TOP player theo level cao nhất                        │
+│ Trường:   rank (PK), userId (FK), username,                     │
+│           currentLevel, score, lastUpdated                      │
+│ Quan hệ:  → users.id                                            │
+│ Tự động:  Auto-update qua trigger hoặc app logic                │
+│ Vị trí:   LeaderboardManager.cs                                 │
+└─────────────────────────────────────────────────────────────────┘
+
+========================================================================================
+
+🔥 THỨ TỰ VIẾT CODE TRONG UNITY (TỪ ÁN ĐẾN DƯỡng)
+========================================================================================
+
+BƯỚC 1️⃣: AuthManager.cs ⚡ [PHải làm trước]
+  ├─ Mục đích: Xử lý Signup/Login
+  ├─ Tạo: users table entry
+  ├─ Tạo: player_data entry (kết hợp)
+  ├─ Tạo: level_progress entry (5-6 records cho mỗi level)
+  ├─ Dependency: KHÔNG có
+  ├─ Dùng: Firebase Auth + MySQL
+  └─ File: d:\...\AuthManager.cs
+
+         │
+         ▼
+
+BƯỚC 2️⃣: PlayerDataManager.cs ⚡ [Phải làm sau bước 1]
+  ├─ Mục đích: Quản lý player stats (load/update)
+  ├─ Load: player_data từ MySQL
+  ├─ Load: level_progress từ MySQL
+  ├─ Update: tổng điểm, XP, level khi game end
+  ├─ Dependency: users & player_data table
+  ├─ Dùng: MySQL connection
+  └─ File: d:\...\PlayerDataManager.cs
+
+         │
+         ▼
+
+BƯỚC 3️⃣: GameResultManager.cs ⚡ [Phải làm sau bước 2]
+  ├─ Mục đích: Lưu game result sau mỗi ván
+  ├─ Insert: game_history record
+  ├─ Update: player_data stats
+  ├─ Update: level_progress (nếu hoàn thành level)
+  ├─ Call: PlayerDataManager.Update()
+  ├─ Dependency: game_history, player_data, level_progress
+  ├─ Dùng: MySQL connection
+  └─ File: d:\...\GameResultManager.cs
+
+         │
+         ▼
+
+BƯỚC 4️⃣: LeaderboardManager.cs ⚡ [Phải làm sau bước 3]
+  ├─ Mục đích: Quản lý BXH
+  ├─ Fetch: TOP 100 từ leaderboard_score & leaderboard_level
+  ├─ Update: rank khi player stats thay đổi
+  ├─ Dependency: leaderboard_score, leaderboard_level, player_data
+  ├─ Dùng: MySQL queries
+  └─ File: d:\...\LeaderboardManager.cs
+
+         │
+         ▼
+
+BƯỚC 5️⃣: Tích hợp vào MathManager.cs ⚡
+  ├─ Gọi: GameResultManager.Save() sau khi game kết thúc
+  ├─ Cập nhật: player stats dựa trên kết quả
+  ├─ Dependency: GameResultManager
+  └─ File: Chỉnh sửa MathManager.cs
+
+         │
+         ▼
+
+BƯỚC 6️⃣: Tích hợp vào UIManager.cs
+  ├─ Hiển thị: User stats & leaderboard
+  ├─ Dependency: PlayerDataManager, LeaderboardManager
+  └─ File: Chỉnh sửa UIManager.cs
+
+========================================================================================
+
+📊 DEPENDENCY MAP (Cái nào phụ thuộc cái nào)
+========================================================================================
+
+LEVEL 0 (Không phụ thuộc gì):
+  └─ AuthManager.cs
+     └─ Tạo: users, player_data, level_progress
+
+LEVEL 1:
+  └─ PlayerDataManager.cs
+     └─ Dùng: player_data, level_progress từ AuthManager
+
+LEVEL 2:
+  └─ GameResultManager.cs
+     └─ Dùng: PlayerDataManager để update stats
+
+LEVEL 3:
+  └─ LeaderboardManager.cs
+     └─ Dùng: PlayerDataManager để fetch & rank
+
+LEVEL 4 (Tích hợp vào game):
+  ├─ MathManager.cs
+  │  └─ Gọi: GameResultManager
+  └─ UIManager.cs
+     └─ Gọi: PlayerDataManager, LeaderboardManager
+
+========================================================================================
+
+✅ MỐI LIÊN KẾT GIỮA BẢNG (để viết code đúng)
+========================================================================================
+
+users
+  │
+  ├─→ player_data (1:1)
+  │    │
+  │    ├─→ level_progress (1:Many)
+  │    │
+  │    ├─→ game_history (1:Many)
+  │    │
+  │    └─→ leaderboard_score (0:1)
+  │
+  ├─→ game_history (1:Many)
+  │    └─ Lưu từng ván chơi
+  │
+  └─→ leaderboard_level (0:1)
+       └─ Chỉ TOP player
+
+========================================================================================
+
+🎯 KHUYẾN NGHỊ VIẾT CODE
+========================================================================================
+
+1. ✅ AuthManager - Viết TRƯỚC HẾT
+   └─ Test: Signup user → Kiểm tra 1 users + 1 player_data + 6 level_progress
+
+2. ✅ PlayerDataManager - Viết THỨ 2
+   └─ Test: Load player → Kiểm tra stats hiển thị đúng
+
+3. ✅ GameResultManager - Viết THỨ 3
+   └─ Test: Play game → Save result → Kiểm tra game_history & update stats
+
+4. ✅ LeaderboardManager - Viết THỨ 4
+   └─ Test: Fetch TOP 100 → Kiểm tra ranking
+
+5. ✅ Tích hợp vào MathManager & UIManager
+   └─ Test: Chạy game full → Kiểm tra toàn bộ flow
+
+========================================================================================
+
+📱 PHẦN CÒN LẠI (CÓ THỂ BỎ QUA HOẶC THÊM SAU)
+========================================================================================
+
+❌ math_questions table: KO CẦN
+   └─ Lý do: Sinh ngẫu nhiên trong MathManager (app), không cần DB
+
+❓ Có cần thêm tables khác không?
+   ├─ user_settings: Tùy chọn (Settings âm thanh, ngôn ngữ...)
+   ├─ achievements: Tùy chọn (Achievements, badges)
+   ├─ friends: Tùy chọn (Kết bạn)
+   └─ daily_challenges: Tùy chọn (Thử thách hàng ngày)
+   
+   → Các tables này ĐỀ XUẤT thêm TRONG TƯƠNG LAI nếu còn thời gian
+
+========================================================================================
+
+Tác giả: AI Assistant
+Cập nhật: 29/03/2026
+Trạng thái: Ready to implement ✓

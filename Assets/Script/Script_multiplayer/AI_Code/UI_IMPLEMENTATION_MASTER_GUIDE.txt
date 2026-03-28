@@ -1,0 +1,3135 @@
+═══════════════════════════════════════════════════════════════════
+        🎮 HƯỚNG DẪN TẠO UI - GAME TOÁN HỌC (NGẮN GỌN)
+═══════════════════════════════════════════════════════════════════
+
+UI 1: WELCOME PANEL
+────────────────────────────────────────
+┌─────────────────────────────────┐
+│    🎮 DoAnGame (Logo)           │
+│                                 │
+│    Game Title / Welcome Text    │
+│                                 │
+│   ┌──────────────┐              │
+│   │  ĐĂNG NHẬP   │              │
+│   └──────────────┘              │
+│                                 │
+│   ┌──────────────┐              │
+│   │  ĐĂNG KÝ     │              │
+│   └──────────────┘              │
+│                                 │
+│      [⚙️ Settings]              │
+└─────────────────────────────────┘
+
+📋 COMPONENTS CẦN:
+- Image (Background)
+- Image (Logo)
+- Text (Welcome title)
+- Button (ĐĂNG NHẬP)
+- Button (ĐĂNG KÝ)
+- Button (⚙️ Settings)
+
+
+UI 2: LOGIN PANEL
+────────────────────────────────────────
+┌─────────────────────────────────┐
+│  ← BACK                         │
+│                                 │
+│   ĐĂNG NHẬP                     │
+│                                 │
+│  ┌─────────────────────────┐    │
+│  │ Email/Username          │    │
+│  └─────────────────────────┘    │
+│                                 │
+│  ┌─────────────────────────┐    │
+│  │ Password                │    │
+│  └─────────────────────────┘    │
+│                                 │
+│  [Quên mật khẩu?]               │
+│  [Error Message - if any]       │
+│                                 │
+│  ┌─────────────────────────┐    │
+│  │   ĐĂNG NHẬP             │    │
+│  └─────────────────────────┘    │
+│                                 │
+│  Chưa có tài khoản? [ĐĂNG KÝ]   │
+└─────────────────────────────────┘
+
+📋 COMPONENTS CẦN:
+- Button (← Back)
+- Text (ĐĂNG NHẬP title)
+- InputField (Email/Username)
+- InputField (Password)
+- Button (Quên mật khẩu?)
+- Text (Error message)
+- Button (ĐĂNG NHẬP)
+- Text (Chưa có tài khoản?)
+- Button (ĐĂNG KÝ)
+
+
+UI 3: REGISTER PANEL
+────────────────────────────────────────
+┌─────────────────────────────────┐
+│  ← BACK                         │
+│                                 │
+│   ĐĂNG KÝ                       │
+│                                 │
+│  ┌─────────────────────────┐    │
+│  │ Email (hợp lệ)         │    │
+│  └─────────────────────────┘    │
+│                                 │
+│  ┌─────────────────────────┐    │
+│  │ Username (3-20 ký tự)   │    │
+│  └─────────────────────────┘    │
+│                                 │
+│  ┌─────────────────────────┐    │
+│  │ Password (8+ ký tự)     │    │
+│  └─────────────────────────┘    │
+│                                 │
+│  ┌─────────────────────────┐    │
+│  │ Confirm Password        │    │
+│  └─────────────────────────┘    │
+│                                 │
+│  Tuổi: [Select Dropdown ▼]      │
+│                                 │
+│  ☐ Chấp nhận điều khoản         │
+│                                 │
+│  [Error Message - if any]       │
+│                                 │
+│  ┌─────────────────────────┐    │
+│  │   HOÀN TẤT              │    │
+│  └─────────────────────────┘    │
+└─────────────────────────────────┘
+
+📋 COMPONENTS CẦN:
+- Button (← Back)
+- Text (ĐĂNG KÝ title)
+- InputField (Email)
+- InputField (Username)
+- InputField (Password)
+- InputField (Confirm Password)
+- Text (Tuổi label)
+- Dropdown (Age)
+- Checkbox (Chấp nhận điều khoản)
+- Text (Error message)
+- Button (HOÀN TẤT)
+
+
+UI 4: MAIN MENU PANEL
+────────────────────────────────────────
+┌─────────────────────────────────┐
+│ Lv: 5  Score: 1000              │  ← Header
+├─────────────────────────────────┤
+│   👤 CHARACTER (ảnh 3:4)        │
+│                                 │
+├─────────────────────────────────┤
+│                                 │
+│ ┌──────────────────────────┐    │
+│ │  CHƠI ĐƠN                │    │
+│ └──────────────────────────┘    │
+│                                 │
+│ ┌──────────────────────────┐    │
+│ │  MULTIPLAYER             │    │
+│ └──────────────────────────┘    │
+│                                 │
+│ ┌──────────┐  ┌──────────┐     │
+│ │   BXH    │  │  HỒ SƠ   │     │
+│ └──────────┘  └──────────┘     │
+│                                 │
+│                            ⚙️   │
+└─────────────────────────────────┘
+
+📋 COMPONENTS CẦN:
+- Text (Lv: 5)
+- Text (Score: 1000)
+- Image (Character avatar)
+- Button (CHƠI ĐƠN)
+- Button (MULTIPLAYER)
+- Button (BXH)
+- Button (HỒ SƠ)
+- Button (⚙️ Settings)
+
+
+UI 5: MODE SELECTION PANEL
+────────────────────────────────────────
+┌─────────────────────────────────┐
+│  ← BACK                         │
+│                                 │
+│   CHỌN CHẾ ĐỘ                   │
+│                                 │
+│                                 │
+│  ┌──────────────────────────┐   │
+│  │  SINGLE PLAYER           │   │
+│  │  Chơi một mình           │   │
+│  └──────────────────────────┘   │
+│                                 │
+│  ┌──────────────────────────┐   │
+│  │  MULTIPLAYER             │   │
+│  │  Chơi cùng bạn           │   │
+│  └──────────────────────────┘   │
+│                                 │
+└─────────────────────────────────┘
+
+📋 COMPONENTS CẦN:
+- Button (← Back)
+- Text (CHỌN CHẾ ĐỘ title)
+- Button (SINGLE PLAYER card)
+- Text (SINGLE PLAYER desc)
+- Button (MULTIPLAYER card)
+- Text (MULTIPLAYER desc)
+
+
+UI 6: LEVEL SELECTION PANEL
+────────────────────────────────────────
+┌─────────────────────────────────┐
+│  ← BACK                         │
+│                                 │
+│   CHỌN CẦP ĐỀ                   │
+│                                 │
+│  ┌──────────┐ ┌──────────┐     │
+│  │ LEVEL 1  │ │ LEVEL 2  │     │
+│  │ ⭐⭐⭐  │ │ ⭐⭐     │     │
+│  └──────────┘ └──────────┘     │
+│                                 │
+│  ┌──────────┐ ┌──────────┐     │
+│  │ LEVEL 3  │ │ LEVEL 4  │     │
+│  │ ⭐       │ │ 🔒 KHÓA  │     │
+│  └──────────┘ └──────────┘     │
+│                                 │
+│  ┌──────────┐ ┌──────────┐     │
+│  │ LEVEL 5  │ │ LEVEL 6  │     │
+│  │ 🔒 KHÓA  │ │ 🔒 KHÓA  │     │
+│  └──────────┘ └──────────┘     │
+│                                 │
+└─────────────────────────────────┘
+
+📋 COMPONENTS CẦN:
+- Button (← Back)
+- Text (CHỌN CẦP ĐỀ title)
+- Button (LEVEL 1)
+- Text (Level 1 stars)
+- Button (LEVEL 2)
+- Text (Level 2 stars)
+- Button (LEVEL 3)
+- Text (Level 3 stars)
+- Button (LEVEL 4 - locked)
+- Button (LEVEL 5 - locked)
+- Button (LEVEL 6 - locked)
+
+
+UI 7: DIFFICULTY SELECTION PANEL
+────────────────────────────────────────
+┌─────────────────────────────────┐
+│  ← BACK                         │
+│                                 │
+│   CHỌN ĐỘ KHÓ                   │
+│                                 │
+│                                 │
+│  ┌──────────────────────────┐   │
+│  │  ⭐ EASY                 │   │
+│  │  Dễ hơn, nhiều thời gian │   │
+│  └──────────────────────────┘   │
+│                                 │
+│  ┌──────────────────────────┐   │
+│  │  ⭐⭐ NORMAL              │   │
+│  │  Bình thường             │   │
+│  └──────────────────────────┘   │
+│                                 │
+│  ┌──────────────────────────┐   │
+│  │  ⭐⭐⭐ HARD            │   │
+│  │  Khó, ít thời gian       │   │
+│  └──────────────────────────┘   │
+│                                 │
+└─────────────────────────────────┘
+
+📋 COMPONENTS CẦN:
+- Button (← Back)
+- Text (CHỌN ĐỘ KHÓ title)
+- Button (EASY card)
+- Text (EASY desc)
+- Button (NORMAL card)
+- Text (NORMAL desc)
+- Button (HARD card)
+- Text (HARD desc)
+
+
+UI 8: IN-GAME PANEL
+────────────────────────────────────────
+┌─────────────────────────────────┐
+│ Time: 30s   Score: +100  | ⏸️  │  ← TopBar
+├─────────────────────────────────┤
+│                                 │
+│        Câu 3 / 10               │
+│                                 │
+│        5 + 3 = ?                │
+│                                 │
+├─────────────────────────────────┤
+│                                 │
+│  ┌──────────────┐ ┌──────────┐ │
+│  │      8       │ │    9     │ │
+│  └──────────────┘ └──────────┘ │
+│                                 │
+│  ┌──────────────┐ ┌──────────┐ │
+│  │     10       │ │    12    │ │
+│  └──────────────┘ └──────────┘ │
+│                                 │
+│        ✓ Chính xác!             │
+│                                 │
+└─────────────────────────────────┘
+
+📋 COMPONENTS CẦN:
+- Text (Time: 30s)
+- Text (Score: +100)
+- Button (⏸️ Pause)
+- Text (Câu 3 / 10)
+- Text (Question: 5 + 3 = ?)
+- Button (Answer 1: 8)
+- Button (Answer 2: 9)
+- Button (Answer 3: 10)
+- Button (Answer 4: 12)
+- Text (Feedback text: ✓ Chính xác!)
+
+
+UI 9: PAUSE MENU PANEL
+────────────────────────────────────────
+┌─────────────────────────────────┐
+│      [Bán trong suốt]           │
+│                                 │
+│   ┌──────────────────────┐      │
+│   │  TIẾP TỤC CHƠI       │      │
+│   └──────────────────────┘      │
+│                                 │
+│   ┌──────────────────────┐      │
+│   │  CÀI ĐẶT             │      │
+│   └──────────────────────┘      │
+│                                 │
+│   ┌──────────────────────┐      │
+│   │  QUAY LẠI MENU       │      │
+│   └──────────────────────┘      │
+│                                 │
+└─────────────────────────────────┘
+
+📋 COMPONENTS CẦN:
+- Image (Dark overlay - bán trong suốt)
+- Button (TIẾP TỤC CHƠI)
+- Button (CÀI ĐẶT)
+- Button (QUAY LẠI MENU)
+
+
+UI 10: GAME RESULT PANEL
+────────────────────────────────────────
+┌─────────────────────────────────┐
+│                                 │
+│   ✓ CHÍNH XÁC HOÀN HẢO!        │
+│                                 │
+│   ⭐⭐⭐                        │
+│                                 │
+│   Câu trả lời: 8/10             │
+│   Thời gian: 145s               │
+│                                 │
+│   Điểm: +250 EXP                │
+│                                 │
+├─────────────────────────────────┤
+│                                 │
+│   ┌─────────┐ ┌─────────┐      │
+│   │ CẢI LẠI │ │ TIẾP TỤC │      │
+│   └─────────┘ └─────────┘      │
+│                                 │
+│   ┌──────────────────────┐      │
+│   │ QUAY LẠI MENU        │      │
+│   └──────────────────────┘      │
+│                                 │
+└─────────────────────────────────┘
+
+📋 COMPONENTS CẦN:
+- Text (✓ CHÍNH XÁC HOÀN HẢO!)
+- Text (Stars: ⭐⭐⭐)
+- Text (Stats: Câu trả lời 8/10)
+- Text (Stats: Thời gian 145s)
+- Text (Points: +250 EXP)
+- Button (CẢI LẠI)
+- Button (TIẾP TỤC)
+- Button (QUAY LẠI MENU)
+
+
+UI 11: LEADERBOARD PANEL
+────────────────────────────────────────
+┌─────────────────────────────────┐
+│  ← BACK                         │
+│                                 │
+│   BXH TOÀN SERVER               │
+│                                 │
+│  [TOP TUẦN] [TOP THÁNG] [TOP ALL]
+│                                 │
+│  #1  👤 Player1  - 10,000 pts   │
+│  #2  👤 Player2  - 9,500 pts    │
+│  #3  👤 Player3  - 9,000 pts    │
+│  #4  👤 Player4  - 8,500 pts    │
+│  #5  👤 Player5  - 8,000 pts    │
+│  #6  👤 Player6  - 7,500 pts    │
+│                                 │
+│  ... (ScrollView)               │
+│                                 │
+│  ┌──────────────────────┐      │
+│  │ 🔄 LÀM MỚI           │      │
+│  └──────────────────────┘      │
+└─────────────────────────────────┘
+
+📋 COMPONENTS CẦN:
+- Button (← Back)
+- Text (BXH TOÀN SERVER title)
+- Button (TOP TUẦN)
+- Button (TOP THÁNG)
+- Button (TOP ALL)
+- ScrollView (Leaderboard list)
+- Text (Rank entry: #1 Player1...)
+- Text (Score: 10,000 pts)
+- Button (🔄 LÀM MỚI)
+
+
+UI 12: PROFILE PANEL
+────────────────────────────────────────
+┌─────────────────────────────────┐
+│  ← BACK                         │
+│                                 │
+│   HỒ SƠ CÁ NHÂN                  │
+│                                 │
+│   👤 Character Avatar (3:4)     │
+│                                 │
+│   Level: 5  EXP: 2,500/5,000   │
+│   [◼◼◼◼◼░░░░░ 50%]             │
+│                                 │
+│   Tổng điểm: 45,000             │
+│   Trận thắng: 28 / Thua: 12     │
+│   Tỷ lệ thắng: 70%              │
+│                                 │
+│   🏆 THÀNH TÍCH                  │
+│   ┌────┐ ┌────┐ ┌────┐         │
+│   │🥇  │ │🥈  │ │🥉  │         │
+│   └────┘ └────┘ └────┘         │
+│                                 │
+│   ┌──────────────────────┐      │
+│   │ CHỈNH SỬA PROFILE    │      │
+│   └──────────────────────┘      │
+└─────────────────────────────────┘
+
+📋 COMPONENTS CẦN:
+- Button (← Back)
+- Text (HỒ SƠ CÁ NHÂN title)
+- Image (Character avatar)
+- Text (Level: 5)
+- Text (EXP: 2,500/5,000)
+- Image (Experience bar)
+- Text (Tổng điểm: 45,000)
+- Text (Trận thắng: 28 / Thua: 12)
+- Text (Tỷ lệ thắng: 70%)
+- Text (THÀNH TÍCH label)
+- Image (Achievement 1: 🥇)
+- Image (Achievement 2: 🥈)
+- Image (Achievement 3: 🥉)
+- Button (CHỈNH SỬA PROFILE)
+
+
+UI 13: SETTINGS PANEL
+────────────────────────────────────────
+┌─────────────────────────────────┐
+│                                 │
+│      CÀI ĐẶT                    │
+│                                 │
+│  🔊 ÂM THANH                     │
+│     [Âm thanh: ON/OFF]           │
+│     [Nhạc nền: ON/OFF]           │
+│                                 │
+│  🌍 NGÔN NGỮ                     │
+│     [Vietnamese] [English]       │
+│                                 │
+│  🎨 ĐỒ HOẠ                       │
+│     [Chất lượng: High/Normal]    │
+│     [Hiệu ứng: ON/OFF]           │
+│                                 │
+│  🔔 THÔNG BÁO                    │
+│     [Thông báo: ON/OFF]          │
+│     [Chat: ON/OFF]               │
+│                                 │
+│  ┌──────────────────────┐        │
+│  │      ĐÓNG            │        │
+│  └──────────────────────┘        │
+│                                 │
+└─────────────────────────────────┘
+
+📋 COMPONENTS CẦN:
+- Text (CÀI ĐẶT title)
+- Text (🔊 ÂM THANH label)
+- Toggle (Âm thanh: ON/OFF)
+- Toggle (Nhạc nền: ON/OFF)
+- Text (🌍 NGÔN NGỮ label)
+- Button (Vietnamese)
+- Button (English)
+- Text (🎨 ĐỒ HOẠ label)
+- Dropdown (Chất lượng graphic)
+- Toggle (Hiệu ứng: ON/OFF)
+- Text (🔔 THÔNG BÁO label)
+- Toggle (Thông báo: ON/OFF)
+- Toggle (Chat: ON/OFF)
+- Button (ĐÓNG)
+
+
+═══════════════════════════════════════════════════════════════════
+                         ✅ HOÀN TẤT
+═══════════════════════════════════════════════════════════════════
+      │
+      └─ Reference Pixels Per Unit: 100
+
+3. Bật Safe Area (nếu điện thoại có phần notch - camera trên đỉnh):
+   
+   Safe Area là gì? 
+   → Trên một số điện thoại Android mới, phần camera ở trên đỉnh ăn mất không gian UI
+   → "Safe Area" = "vùng an toàn" không bị che bởi camera
+   → Nếu bật, UI tự động tránh vùng camera
+   
+   Cách làm:
+   ├─ Click vào "Canvas" (Hierarchy)
+   ├─ Ở Inspector (phía phải), tìm "Canvas Scaler" component
+   ├─ Kéo xuống, tìm checkbox "Respect Safe Area"
+   ├─ Tích ✓ vào (check box)
+   └─ Done!
+   
+   Lưu scene:
+   ├─ Ctrl + S
+
+═══════════════════════════════════════════════════════════════════════════════════════
+BƯỚC 1B: RESPONSIVE DESIGN PRINCIPLES (Để tất cả điện thoại vừa vặn)
+═══════════════════════════════════════════════════════════════════════════════════════
+
+🔑 KEY PRINCIPLES:
+
+1️⃣ ANCHORS & PIVOT (Căn chỉnh linh hoạt)
+   ────────────────────────────────────────
+
+   ✓ Luôn set Anchor + Pivot TRƯỚC khi adjust Position/Size
+   
+   Common Anchor Presets:
+   ├─ Full Screen:         Anchor: Stretch, Stretch
+   ├─ Top Center:          Anchor: Top, Center X
+   ├─ Bottom Center:       Anchor: Bottom, Center X
+   ├─ Center:              Anchor: Center, Center
+   ├─ Left Side:           Anchor: Left, Stretch (for sidebars)
+   └─ Top Left:            Anchor: Top Left (for corners)
+
+   Cách apply:
+   → Rect Transform component → Anchor Presets (icon góc trái)
+   → Hold ALT để preview, hold SHIFT để set pivot cùng lúc
+
+2️⃣ LAYOUT GROUPS (Tự động sắp xếp components)
+   ──────────────────────────────────────────
+
+   VerticalLayoutGroup: Xếp con từ trên xuống
+   ├─ Dùng cho: Menu items, level buttons, leaderboard list
+   ├─ Setup:
+   │  ├─ Add Component: VerticalLayoutGroup
+   │  ├─ Spacing: 10 (khoảng cách giữa items)
+   │  ├─ Child Controls: Width ✓, Height ✓
+   │  ├─ Child Force Size: Width ✓, Height ✓
+   │  └─ Preferred Size: Leave empty (auto calculate)
+   │
+   └─ Mỗi child cần Layout Element:
+      ├─ Add Component: Layout Element
+      ├─ Preferred Width: 400, Preferred Height: 80
+      └─ Enable cả 2 ✓
+
+   HorizontalLayoutGroup: Xếp con từ trái sang phải
+   ├─ Dùng cho: 4 answer buttons, avatar selection
+   ├─ Setup tương tự VerticalLayoutGroup
+   ├─ Spacing: 15 giữa buttons
+   ├─ Child Controls: Width ✓, Height ✓
+   └─ Thường dùng kết hợp GridLayoutGroup
+
+   GridLayoutGroup: Xếp thành lưới
+   ├─ Dùng cho: Level selection 3x2, avatar grid 6 items
+   ├─ Setup:
+   │  ├─ Add Component: GridLayoutGroup
+   │  ├─ Cell Size: 180 x 180 (adaptive)
+   │  │  └─ Hoặc tính: Cell Width = (Screen Width - margins - spacing) / columns
+   │  ├─ Spacing: 15 x 15
+   │  ├─ Constraint: Flexible (tự wrap)
+   │  └─ Child Layout Elements: Set preferred size
+   │
+   └─ Công thức responsive cho cell size:
+      Cell Width = (Canvas Width - Left Padding - Right Padding - Spacing * (Columns - 1)) / Columns
+      Ví dụ: (1080 - 40 - 40 - 15*2) / 3 = 320 each
+
+3️⃣ IMAGE SCALING (Ảnh không bị méo)
+   ────────────────────────────────
+
+   ├─ Add Component: AspectRatioFitter (nếu ảnh fixed ratio)
+   │  ├─ Aspect Ratio: 1 (square), 16:9, etc
+   │  └─ Fit In Parent: ✓
+   │
+   └─ Image Component:
+      ├─ Preserve Aspect: ✓
+      └─ Layout Element: Set min/preferred size
+
+4️⃣ FONT SCALING (Text vừa vặn tất cả màn hình)
+   ────────────────────────────────────────
+
+   KHÔNG hard-code font size!
+   
+   ├─ Use TextMeshPro với Canvas preferredSize
+   ├─ Set Font Size = 48 (for 1080px canvas width)
+   ├─ TextMeshPro sẽ auto-scale dựa Canvas Scaler
+   │  └─ Hoặc dùng Dynamic mode + auto-shrink
+   │
+   └─ Layout Element:
+      ├─ Preferred Width: -1 (auto)
+      ├─ Preferred Height: -1 (auto)
+      └─ Fit Preferred Size: ✓
+
+5️⃣ SAFE AREA (Tránh notch Android)
+   ───────────────────────────────
+
+   ├─ Canvas → Canvas Scaler → Respect Safe Area: ✓
+   │  (Tự động xử lý notch Android)
+   │
+   └─ Hoặc custom code (nếu cần debug):
+      
+public class SafeAreaDebugger : MonoBehaviour
+      {
+          private void Start()
+          {
+              Rect safeArea = Screen.safeArea;
+              Debug.Log($"[SafeArea] Position: {safeArea.position}, Size: {safeArea.size}");
+              Debug.Log($"[Screen] Width: {Screen.width}, Height: {Screen.height}");
+              
+              if (safeArea.width < Screen.width || safeArea.height < Screen.height)
+                  Debug.Log("[SafeArea] NOTCH DETECTED - Canvas Scaler will handle it");
+          }
+      }
+
+═══════════════════════════════════════════════════════════════════════════════════════
+BƯỚC 2: TẠO CÁC PANEL (VỚI RESPONSIVE LAYOUT)
+═══════════════════════════════════════════════════════════════════════════════════════
+
+Trong GameUICanvas, tạo 12 Panels như sau:
+
+[⭐ RESPONSIVE PATTERN ⭐]
+Tất cả buttons, text fields phải dùng:
+├─ Anchors: Top → Bottom (Stretch, Stretch) để fit screen
+├─ Layout Groups: VerticalLayoutGroup để sắp xếp tự động
+├─ Layout Element: Set preferred size
+└─ Aspect Ratio Fitter: Cho images (nếu cần)
+
+┌─ PANEL 1: WelcomePanel ("[✓] Ban đầu ACTIVE - màn hình khởi động)
+│
+├─ Name: "WelcomePanel"
+├─ Thành phần chính (Add Component):
+│  ├─ Image (background xanh dương)
+│  ├─ VerticalLayoutGroup (auto arrange)
+│  └─ Layout Element (nếu cần)
+├─ Anchor: Stretch, Stretch ✓ (phủ toàn màn)
+├─ Initial State: ✓ ACTIVE
+│
+└──┬─ CharacterWave (Image)
+   │  ├─ Layout Element: Preferred Height: 300
+   │  └─ Aspect Ratio: 3:4
+   │
+   ├─ GameLogoTop (Image)
+   │  ├─ Layout Element: Preferred Height: 250
+   │  └─ Aspect Ratio: 1:1
+   │
+   ├─ WelcomeText (TextMeshPro)
+   │  ├─ Layout Element: Preferred Height: 80
+   │  ├─ Text: "Chào mừng bạn"
+   │  ├─ Font Size: 48
+   │  ├─ Alignment: Center Center
+   │  └─ Color: FFFFFF
+   │
+   ├─ ButtonsContainer (Panel + VerticalLayoutGroup)
+   │  ├─ Layout Element: Preferred Height: 250
+   │  ├─ Spacing: 15
+   │  │
+   │  ├─ LoginButton (Button)
+   │  │  ├─ Layout Element: Preferred Height: 80
+   │  │  ├─ Text: "ĐĂNG NHẬP"
+   │  │  └─ Color: Blue
+   │  │
+   │  ├─ RegisterButton (Button)
+   │  │  ├─ Layout Element: Preferred Height: 80
+   │  │  ├─ Text: "ĐĂNG KÝ"
+   │  │  └─ Color: Green
+   │  │
+   │  └─ SettingsButton (Button)
+   │     ├─ Layout Element: Preferred Height: 60
+   │     ├─ Text: "⚙"
+   │     └─ Color: Gray
+   │
+   └─ Spacer (Image - tạo khoảng trống)
+      └─ Layout Element: Flexible Height: 1
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+┌─ PANEL 2: LoginPanel ("✗ Ban đầu INACTIVE)
+│
+├─ Name: "LoginPanel"
+├─ Anchor: Stretch, Stretch ✓ (RESPONSIVE)
+├─ Initial State: ✗ INACTIVE
+│
+└──┬─ LoginBackground (Image)
+   │  ├─ Anchor: Stretch, Stretch ✓
+   │  └─ Source Image: "login_bg_dark"
+   │
+   ├─ LoginCard (Panel)
+   │  ├─ Anchor: Center, Center (nổi giữa màn)
+   │  ├─ Layout Element: Preferred Width: 650, Height: 900
+   │  │  └─ Hoặc: Percentage based - Width: Screen * 0.6, Height: Screen * 0.7
+   │  ├─ Image: "panel_white_rounded"
+   │  ├─ VerticalLayoutGroup (auto arrange fields)
+   │  │  ├─ Padding: 50 (margin nội bộ)
+   │  │  ├─ Spacing: 20
+   │  │  └─ Child Controls: Width ✓, Height ✓
+   │  │
+   │  ├─ LoginTitle (TextMeshPro)
+   │  │  ├─ Layout Element: Height: 70
+   │  │  ├─ Text: "ĐĂNG NHẬP"
+   │  │  ├─ Font Size: 48
+   │  │  └─ Alignment: Center Center
+   │  │
+   │  ├─ EmailLabel (TextMeshPro)
+   │  │  ├─ Layout Element: Height: 30
+   │  │  ├─ Text: "Email"
+   │  │  └─ Font Size: 20
+   │  │
+   │  ├─ EmailInputField (InputField)
+   │  │  ├─ Layout Element: Height: 70
+   │  │  ├─ Placeholder: "user@gmail.com"
+   │  │  └─ Content Type: Email Address
+   │  │
+   │  ├─ PasswordLabel (TextMeshPro)
+   │  │  ├─ Layout Element: Height: 30
+   │  │  ├─ Text: "Mật khẩu"
+   │  │  └─ Font Size: 20
+   │  │
+   │  ├─ PasswordInputField (InputField)
+   │  │  ├─ Layout Element: Height: 70
+   │  │  ├─ Content Type: Password
+   │  │  └─ Placeholder: "••••••••"
+   │  │
+   │  ├─ ForgotPasswordLink (Button)
+   │  │  ├─ Layout Element: Height: 40
+   │  │  ├─ Text: "<u>Quên mật khẩu?</u>"
+   │  │  └─ Color: 0099FF
+   │  │
+   │  ├─ ErrorMessage (TextMeshPro)
+   │  │  ├─ Layout Element: Height: 60
+   │  │  ├─ Text: "" (rỗng)
+   │  │  ├─ Color: FF0000
+   │  │  └─ Initial: ✗ Hidden
+   │  │
+   │  ├─ LoginButton (Button)
+   │  │  ├─ Layout Element: Height: 70
+   │  │  ├─ Text: "ĐĂNG NHẬP"
+   │  │  └─ Image: "button_blue"
+   │  │
+   │  └─ BackButton (Button)
+   │     ├─ Layout Element: Height: 60
+   │     ├─ Text: "QUAY LẠI"
+   │     └─ Image: "button_gray"
+   │
+   └─ Spacers (để tạo responsive spacing)
+      └─ Layout Element: Flexible Height: 1
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+┌─ PANEL 3: RegisterPanel ("✗ Ban đầu INACTIVE)
+│
+├─ Name: "RegisterPanel"
+├─ Anchor: Stretch, Stretch ✓
+├─ Initial State: ✗ INACTIVE
+│
+└──┬─ RegisterBackground (Image) - Stretch, Stretch
+   │
+   ├─ RegisterCard (Panel)
+   │  ├─ Anchor: Center, Center
+   │  ├─ Layout Element: Preferred Width: 650, Height: 1100
+   │  ├─ VerticalLayoutGroup
+   │  │  ├─ Padding: 50
+   │  │  ├─ Spacing: 15
+   │  │  └─ Child Controls: Width ✓, Height ✓
+   │  │
+   │  ├─ RegisterTitle (TextMeshPro) - Height: 70
+   │  │
+   │  ├─ EmailInputField - Height: 70
+   │  ├─ UsernameInputField - Height: 70
+   │  ├─ PasswordInputField - Height: 70
+   │  ├─ ConfirmPasswordInputField - Height: 70
+   │  │
+   │  ├─ AgeLabel (TextMeshPro) - Height: 30
+   │  ├─ AgeDropdown - Height: 70
+   │  │
+   │  ├─ AvatarLabel (TextMeshPro) - Height: 30
+   │  │
+   │  ├─ AvatarGrid (Panel)
+   │  │  ├─ Layout Element: Height: 120
+   │  │  ├─ GridLayoutGroup
+   │  │  │  ├─ Cell Size: 80 x 80
+   │  │  │  ├─ Spacing: 15 x 15
+   │  │  │  └─ Constraint: Flexible Rows
+   │  │  │
+   │  │  └─ Avatar1Button → Avatar6Button
+   │  │     ├─ Layout Element: Height: 80
+   │  │     └─ Image: "avatar_X"
+   │  │
+   │  ├─ TermsCheckbox - Height: 50
+   │  ├─ ErrorMessage - Height: 60
+   │  ├─ RegisterButton - Height: 70
+   │  └─ BackButton - Height: 60
+   │
+   └─ Spacers (Flexible)
+      └─ Layout Element: Flexible Height: 1
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+┌─ PANEL 4: MainMenuPanel ("✗ Ban đầu INACTIVE)
+│
+├─ Name: "MainMenuPanel"
+├─ Anchor: Stretch, Stretch ✓
+├─ Initial State: ✗ INACTIVE
+├─ Background: "menu_bg" - Stretch, Stretch
+│
+└──┬─ MenuHeader (Panel)
+   │  ├─ Anchor: Top Stretch
+   │  ├─ Layout Element: Height: 150
+   │  ├─ HorizontalLayoutGroup (spacing: 20)
+   │  │  └─ Child Controls: Width ✓, Height ✓
+   │  │
+   │  ├─ PlayerNameText (TextMeshPro) - Flex Width
+   │  ├─ LevelText (TextMeshPro) - Flex Width
+   │  └─ ScoreText (TextMeshPro) - Flex Width
+   │
+   ├─ ContentContainer (Panel)
+   │  ├─ Anchor: Stretch, Stretch (except top)
+   │  ├─ Offset Top: 150 (dưới header)
+   │  ├─ VerticalLayoutGroup (spacing: 20)
+   │  │  ├─ Padding: 30
+   │  │  └─ Child Controls: Width ✓, Height ✓
+   │  │
+   │  ├─ CharacterDisplay (Image)
+   │  │  ├─ Layout Element: Height: 300
+   │  │  └─ Aspect Ratio Fitter: 3:4
+   │  │
+   │  ├─ ButtonsContainer (Panel)
+   │  │  ├─ VerticalLayoutGroup (spacing: 15)
+   │  │  │  ├─ Padding: 20
+   │  │  │  └─ Child Controls: Width ✓, Height ✓
+   │  │  │
+   │  │  ├─ MainPlayButton - Height: 100
+   │  │  ├─ MultiplayerButton - Height: 100
+   │  │  │
+   │  │  ├─ HorizontalContainer (Panel)
+   │  │  │  ├─ Layout Element: Height: 90
+   │  │  │  ├─ HorizontalLayoutGroup (spacing: 15)
+   │  │  │  │  └─ Child Controls: Width ✓, Height ✓
+   │  │  │  │
+   │  │  │  ├─ LeaderboardButton - Width Flex
+   │  │  │  └─ ProfileButton - Width Flex
+   │  │  │
+   │  │  └─ Spacer (Flexible)
+   │  │
+   │  └─ SettingsButton (Button - top right)
+   │     ├─ Anchor: Top Right
+   │     ├─ Size: 80 x 80
+   │     └─ Position: (-30, -30, 0)
+   │
+   └─ Spacers mở rộng cho responsive
+      └─ Layout Element: Flexible Height: 1
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+┌─ PANEL 5-12: Remaining Panels (Tương tự cấu trúc trên)
+│
+│
+├─ ModeSelectionPanel (Mode: Single vs Multiplayer)
+│  ├─ SingleModeCard (Button with description)
+│  ├─ MultiplayerModeCard (Button with description)
+│  └─ BackButton → ShowMainMenuPanel()
+│
+├─ LevelSelectionPanel (6 level buttons)
+│  ├─ Level1Button → Level6Button
+│  └─ BackButton → ShowMainMenuPanel()
+│
+├─ DifficultySelectionPanel (Easy/Normal/Hard)
+│  ├─ EasyButton
+│  ├─ NormalButton
+│  ├─ HardButton
+│  └─ BackButton → ShowLevelSelectionPanel()
+│
+├─ InGamePanel (Core gameplay)
+│  ├─ ProgressBar (Slider - số câu)
+│  ├─ TimerText (đếm ngược)
+│  ├─ ScoreText (điểm)
+│  ├─ QuestionText
+│  ├─ AnswerButton x4
+│  ├─ PauseButton → ShowPauseMenuPanel()
+│  └─ FeedbackAnimation (Initial: ✗ Hidden)
+│
+├─ PauseMenuPanel (Overlay semi-transparent)
+│  ├─ DarkOverlay (Initial: ✗ Hidden)
+│  ├─ ResumeButton → Resume game
+│  ├─ SettingsButton → ShowSettingsPanel()
+│  └─ MenuButton → ShowMainMenuPanel()
+│
+├─ GameResultPanel (Result screen)
+│  ├─ ResultBanner (Win/Loss text)
+│  ├─ StatsDisplay (Score, XP, etc)
+│  ├─ StarRating (1-3 stars)
+│  ├─ ReplayButton → Replay same level
+│  ├─ NextButton → Next level
+│  └─ MenuButton → ShowMainMenuPanel()
+│
+├─ LeaderboardPanel (BXH)
+│  ├─ TabButtons (Score/Level/Friends)
+│  ├─ LeaderboardList (ScrollView)
+│  │  └─ LeaderboardEntry x100 (Prefab động)
+│  ├─ YourRankDisplay (Highlight vị trí của bạn)
+│  ├─ RefreshButton
+│  └─ BackButton → ShowMainMenuPanel()
+│
+├─ ProfilePanel (Hồ sơ cá nhân)
+│  ├─ PlayerAvatar (Image)
+│  ├─ PlayerStats (Level, Score, XP, etc)
+│  ├─ AchievementList (Nếu có)
+│  ├─ EditButton (Future feature)
+│  └─ BackButton → Previous panel
+│
+└─ SettingsPanel (Overlay)
+   ├─ DarkOverlay
+   ├─ VolumeSlider (Master, Music, SFX)
+   ├─ LanguageDropdown (Vi/En)
+   ├─ GraphicsDropdown (High/Medium/Low)
+   ├─ NotificationToggle
+   ├─ LogoutButton
+   ├─ SaveButton
+   └─ CloseButton (X)
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+BƯỚC 3: TẠO UIManager.cs (Master Controller)
+═══════════════════════════════════════════════════════════════════════════════════════
+
+Tạo file: Assets/Script/Script_multiplayer/UIManager.cs
+
+using UnityEngine;
+using System.Collections.Generic;
+
+public class UIManager : MonoBehaviour
+{
+    public static UIManager Instance { get; private set; }
+
+    [SerializeField] private Dictionary<string, GameObject> panels = new Dictionary<string, GameObject>();
+    
+    // Panel references
+    public GameObject welcomePanel;
+    public GameObject loginPanel;
+    public GameObject registerPanel;
+    public GameObject mainMenuPanel;
+    public GameObject modeSelectionPanel;
+    public GameObject levelSelectionPanel;
+    public GameObject difficultySelectionPanel;
+    public GameObject inGamePanel;
+    public GameObject pauseMenuPanel;
+    public GameObject gameResultPanel;
+    public GameObject leaderboardPanel;
+    public GameObject profilePanel;
+    public GameObject settingsPanel;
+
+    private GameObject currentPanel = null;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+        InitializePanels();
+    }
+
+    private void InitializePanels()
+    {
+        // Register all panels
+        panels.Add("Welcome", welcomePanel);
+        panels.Add("Login", loginPanel);
+        panels.Add("Register", registerPanel);
+        panels.Add("MainMenu", mainMenuPanel);
+        panels.Add("ModeSelection", modeSelectionPanel);
+        panels.Add("LevelSelection", levelSelectionPanel);
+        panels.Add("DifficultySelection", difficultySelectionPanel);
+        panels.Add("InGame", inGamePanel);
+        panels.Add("PauseMenu", pauseMenuPanel);
+        panels.Add("GameResult", gameResultPanel);
+        panels.Add("Leaderboard", leaderboardPanel);
+        panels.Add("Profile", profilePanel);
+        panels.Add("Settings", settingsPanel);
+
+        // Hide all except welcome
+        HideAllPanels();
+        ShowPanel("Welcome");
+    }
+
+    public void ShowPanel(string panelName)
+    {
+        if (!panels.ContainsKey(panelName))
+        {
+            Debug.LogError($"Panel '{panelName}' not found!");
+            return;
+        }
+
+        if (currentPanel != null)
+            currentPanel.SetActive(false);
+
+        currentPanel = panels[panelName];
+        currentPanel.SetActive(true);
+        Debug.Log($"[UI] Showing panel: {panelName}");
+    }
+
+    public void HideAllPanels()
+    {
+        foreach (var panel in panels.Values)
+        {
+            panel.SetActive(false);
+        }
+    }
+
+    // Convenience methods for each panel
+    public void ShowWelcomePanel() => ShowPanel("Welcome");
+    public void ShowLoginPanel() => ShowPanel("Login");
+    public void ShowRegisterPanel() => ShowPanel("Register");
+    public void ShowMainMenuPanel() => ShowPanel("MainMenu");
+    public void ShowModeSelectionPanel() => ShowPanel("ModeSelection");
+    public void ShowLevelSelectionPanel() => ShowPanel("LevelSelection");
+    public void ShowDifficultySelectionPanel() => ShowPanel("DifficultySelection");
+    public void ShowInGamePanel() => ShowPanel("InGame");
+    public void ShowPauseMenuPanel() => ShowPanel("PauseMenu");
+    public void ShowGameResultPanel() => ShowPanel("GameResult");
+    public void ShowLeaderboardPanel() => ShowPanel("Leaderboard");
+    public void ShowProfilePanel() => ShowPanel("Profile");
+    public void ShowSettingsPanel() => ShowPanel("Settings");
+}
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+BƯỚC 4: GẮN UIManager vào Canvas
+═══════════════════════════════════════════════════════════════════════════════════════
+
+1. Tạo Empty GameObject: "UIManager" (parent của Canvas hoặc sibling)
+2. Attach UIManager.cs script
+3. Drag tất cả 13 Panels vào Inspector fields của UIManager
+4. Lưu Scene
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+BƯỚC 5: GẮN BUTTON HANDLERS vào Buttons
+═══════════════════════════════════════════════════════════════════════════════════════
+
+Ví dụ Button "ĐĂNG NHẬP" (Welcome Panel):
+
+1. Select LoginButton (trên WelcomePanel)
+2. Inspector → Button component
+3. Click "+" dưới "On Click ()"
+4. Drag UIManager object vào
+5. Dropdown: UIManager → ShowLoginPanel()
+6. Save
+
+─ Repeat cho tất cả buttons:
+
+   LoginButton (Welcome)     → UIManager.ShowLoginPanel()
+   RegisterButton (Welcome)  → UIManager.ShowRegisterPanel()
+   BackButton (Login)        → UIManager.ShowWelcomePanel()
+   LoginButton (Login)       → AuthManager.Login()  ← Code xử lý
+   BackButton (Register)     → UIManager.ShowWelcomePanel()
+   RegisterButton (Register) → AuthManager.Register() ← Code xử lý
+   
+   PlayButton (MainMenu)     → UIManager.ShowModeSelectionPanel()
+   LeaderboardButton         → UIManager.ShowLeaderboardPanel()
+   ProfileButton             → UIManager.ShowProfilePanel()
+   SettingsButton            → UIManager.ShowSettingsPanel()
+   
+   ...và so on
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+✅ FLOW LOGIC FROM DRAWIO
+═══════════════════════════════════════════════════════════════════════════════════════
+
+Game Start (Scene khởi động)
+         ↓
+    [🎬 Splash] ← Bỏ qua vì có sẵn
+         ↓
+   [Welcome Panel] ✓ ACTIVE
+    ├─ Click "Đăng Nhập" → Hide Welcome, Show Login Panel
+    │   ├─ Enter email/password
+    │   ├─ Click "Đăng Nhập" → Call AuthManager.Login()
+    │   │   ├─ Success → Hide Login, Show MainMenu Panel
+    │   │   └─ Error → Show ErrorMessage
+    │   └─ Click "Quay lại" → Hide Login, Show Welcome
+    │
+    └─ Click "Đăng Ký" → Hide Welcome, Show Register Panel
+        ├─ Fill all fields
+        ├─ Click "Đăng Ký" → Call AuthManager.Register()
+        │   ├─ Success → Hide Register, Show MainMenu Panel
+        │   └─ Error → Show ErrorMessage
+        └─ Click "Quay lại" → Hide Register, Show Welcome
+
+[Main Menu Panel] ✓ Active
+├─ Click "Chơi Đơn" → Show Mode Selection Panel
+│   ├─ Click "Single" → Show Level Selection Panel
+│   │   ├─ Click Level 1 → Show Difficulty Selection Panel
+│   │   │   ├─ Click "Easy/Normal/Hard" → Show In-Game Panel
+│   │   │   │   ├─ Play game (MathManager xử lý)
+│   │   │   │   ├─ Game ends → Show Game Result Panel
+│   │   │   │   │   ├─ Click "Replay" → Show Difficulty Selection Panel (same level)
+│   │   │   │   │   ├─ Click "Next" → Show Level Selection Panel
+│   │   │   │   │   └─ Click "Menu" → Show Main Menu Panel
+│   │   │   │   └─ Click "Pause" → Show Pause Menu (overlay)
+│   │   │   │       ├─ Click "Continue" → Resume game
+│   │   │   │       ├─ Click "Menu" → Show Main Menu Panel
+│   │   │   │       └─ Click "Settings" → Show Settings Panel
+│   │   │   └─ Click "Back" → Show Level Selection Panel
+│   │   └─ Click "Back" → Show Mode Selection Panel
+│   └─ Click "Back" → Show Main Menu Panel
+│
+├─ Click "BXH" → Show Leaderboard Panel
+│   └─ Click "Back" → Show Main Menu Panel
+│
+├─ Click "Hồ Sơ" → Show Profile Panel
+│   └─ Click "Back" → Show Main Menu Panel
+│
+└─ Click "Settings" → Show Settings Panel (overlay)
+   └─ Click "X" → Hide Settings Panel (return to previous)
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+📊 TÓMANH TẮTTHÀNH PHẦN
+═══════════════════════════════════════════════════════════════════════════════════════
+
+Total:
+- 1 Canvas (Master)
+- 13 Panels (1 active, others inactive)
+- 1 UIManager.cs (controller)
+- Multiple Button handlers (gọi UIManager methods)
+
+Initial State Breakdown:
+├─ WelcomePanel: ✓ ACTIVE (First screen)
+└─ All others (12): ✗ INACTIVE (Activated on demand)
+
+File Structure:
+Assets/
+├─ Script/Script_multiplayer/
+│  ├─ UIManager.cs (Master controller)
+│  ├─ AuthManager.cs (Login/Register logic) - To be created
+│  ├─ PlayerDataManager.cs (Load player stats) - To be created
+│  ├─ GameResultManager.cs (Save game results) - To be created
+│  └─ LeaderboardManager.cs (Fetch rankings) - To be created
+│
+└─ Scenes/
+   └─ GameUI.unity (Scene containing Canvas + all Panels)
+
+═══════════════════════════════════════════════════════════════════════════════════════
+🧪 TEST RESPONSIVE DESIGN (Android phones)
+═══════════════════════════════════════════════════════════════════════════════════════
+
+Unity có Game View resolution simulator để test responsive:
+
+1️⃣ Mở Game View
+   ├─ Window → General → Game (or Ctrl + Alt + P)
+   └─ Ở tab "Game" panel
+
+2️⃣ Chọn/Thêm resolutions
+   ├─ Game View top toolbar: Dropdown "Free Aspect"
+   └─ Chọn từ danh sách Android devices:
+
+   ┌─ Điện thoại Android nhỏ (phổ biến):
+   │  ├─ Samsung A12 (6.5"):  720 x 1600
+   │  ├─ Redmi Note (6.5"):   720 x 1600
+   │  └─ Moto G (6"):         720 x 1480
+   │
+   ├─ Điện thoại Android vừa (cao cấp):
+   │  ├─ Galaxy S21 (6.2"):   1080 x 2340
+   │  ├─ Galaxy S22 (6.1"):   1080 x 2340
+   │  └─ OnePlus (6.5"):      1440 x 3120
+   │
+   └─ Điện thoại Android lớn (flagship):
+      ├─ Galaxy S21 Ultra (6.8"):  1440 x 3200
+      ├─ Galaxy Z Fold (7.6"):     2208 x 1768
+      └─ OnePlus Ultra (6.7"):     1440 x 3216
+
+3️⃣ Test trên mỗi resolution
+   ├─ Chạy game (Play button)
+   ├─ Check các vấn đề:
+   │  ├─ ✓ Buttons vừa vặn, không cắt
+   │  ├─ ✓ Text không bi kéo giãn
+   │  ├─ ✓ Images không bị méo
+   │  ├─ ✓ Safe area (notch) không che buttons
+   │  ├─ ✓ Spacing nhất quán
+   │  └─ ✓ Không bị "squashed" hoặc "stretched"
+   │
+   └─ Nếu lỗi → Adjust Layout Groups / Anchors
+
+4️⃣ Custom aspect ratio tests
+   ├─ Game View: Tab Điều chỉnh → Nhập kích thước custom
+   └─ Ví dụ test:
+      ├─ 1080 x 1920 (base design)
+      ├─ 720 x 1280 (nhỏ hơn)
+      ├─ 1440 x 2560 (lớn hơn)
+      └─ 1080 x 2340 (notch)
+
+5️⃣ Build & Test trên Android
+   ├─ File → Build Settings
+   ├─ Platform: Android ✓ (ANDROID ONLY)
+   ├─ Build & deploy lên điện thoại
+   ├─ Kiểm tra:
+   │  ├─ Touch inputs
+   │  ├─ Layout trên màn hình thật
+   │  ├─ Notch handling (nếu có)
+   │  └─ Orientation (lock to Portrait)
+   │
+   └─ Player Settings (Android):
+      ├─ Resolution and Presentation
+      │  ├─ Portrait orientation ✓ (khóa màn hình dọc)
+      │  ├─ Default Orientation: Portrait ✓
+      │  └─ Fullscreen: ✓
+      │
+      ├─ Safe Area (Android)
+      │  └─ Canvas Scaler: Respect Safe Area ✓ (handles notch)
+      │
+      └─ Graphics (Android):
+         ├─ Supported Aspect Ratios: All ✓
+         ├─ Screen Resolution: Adaptive ✓
+         └─ Default Screen Width/Height: Leave -1 (auto detect)
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+💡 RESPONSIVE LAYOUT TIPS
+═══════════════════════════════════════════════════════════════════════════════════════
+
+1. **Percentage-Based Layout** (Nếu muốn chi tiết hơn)
+   
+   Sử dụng Layout Element với Flexible Size:
+   ├─ LoginCard:
+   │  ├─ Layout Element: Preferred Width: -1 (auto)
+   │  ├─ Rect Transform:
+   │  │  ├─ Width: Screen Width * 0.85 (85% màn hình)
+   │  │  └─ Height: Screen Height * 0.8 (80% màn hình)
+   │  └─ Code:
+   │     
+   │     RectTransform rect = loginCard.GetComponent<RectTransform>();
+   │     rect.sizeDelta = new Vector2(
+   │         Screen.width * 0.85f,    // 85% màn hình ngang
+   │         Screen.height * 0.8f     // 80% màn hình dọc
+   │     );
+
+2. **Breakpoint-Based Design** (Android - tối ưu cho nhóm devices)
+   
+   public class AndroidResponsiveUIManager : MonoBehaviour
+   {
+       public enum ScreenSize { Small, Medium, Large }
+       
+       private ScreenSize currentSize = ScreenSize.Medium;
+       
+       private void Start()
+       {
+           DetermineScreenSize();
+           ApplyLayout();
+       }
+       
+       private void DetermineScreenSize()
+       {
+           float screenHeight = Screen.height;
+           
+           if (screenHeight < 1280)
+               currentSize = ScreenSize.Small;      // Điện thoại nhỏ
+           else if (screenHeight < 2000)
+               currentSize = ScreenSize.Medium;     // Điện thoại vừa
+           else
+               currentSize = ScreenSize.Large;      // Điện thoại lớn / tablet
+       }
+       
+       private void ApplyLayout()
+       {
+           switch (currentSize)
+           {
+               case ScreenSize.Small:
+                   // Adjust: Button size nhỏ, Font size nhỏ
+                   mainPlayButton.GetComponent<LayoutElement>().preferredHeight = 70;
+                   break;
+               case ScreenSize.Medium:
+                   // Default layout
+                   mainPlayButton.GetComponent<LayoutElement>().preferredHeight = 100;
+                   break;
+               case ScreenSize.Large:
+                   // Adjust: Button size lớn, Font size lớn
+                   mainPlayButton.GetComponent<LayoutElement>().preferredHeight = 120;
+                   break;
+           }
+       }
+   }
+
+3. **Aspect Ratio Maintenance**
+   
+   Cho images (character, logo):
+   ├─ Đặt Aspect Ratio Fitter
+   ├─ Hoặc Raw Image layout:
+   │  ├─ Preferred Width: 300, Height: 400 (4:3 ratio)
+   │  └─ Preserve Aspect: ✓
+   │
+   └─ Code option:
+      
+      Image charImage = characterDisplay.GetComponent<Image>();
+      AspectRatioFitter fitter = characterDisplay.AddComponent<AspectRatioFitter>();
+      fitter.aspectRatio = 0.75f;  // 3:4 aspect
+      fitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
+
+4. **Safe Area Support** (Android notch)
+   
+   Safe area khung hình:
+   ├─ Android: Không notch / có notch (newer phones)
+   ├─ Canvas Scaler: Respect Safe Area ✓ tự động xử lý
+   └─ Không cần code riêng (Canvas Scaler xử lý)
+   
+   Debug code (nếu cần check):
+   
+   public class SafeAreaDebug : MonoBehaviour
+   {
+       private void Start()
+       {
+           Rect safeArea = Screen.safeArea;
+           Debug.Log($"Screen Dimensions: {Screen.width}x{Screen.height}");
+           Debug.Log($"Safe Area: Position({safeArea.x}, {safeArea.y}) Size({safeArea.width}x{safeArea.height})");
+           
+           // Canvas Scaler should handle this automatically
+           // This is just for debugging
+       }
+   }
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+🎬 NEXT STEPS
+═══════════════════════════════════════════════════════════════════════════════════════
+
+1. ✓ Tạo Canvas + 13 Panels (Theo hướng dẫn Bước 1-2)
+   └─ ✓ Dùng Anchors (Stretch, Stretch)
+   └─ ✓ Dùng Layout Groups (VerticalLayoutGroup, etc)
+
+2. ✓ Gắn UIManager.cs
+
+3. ✓ Setup Button handlers
+
+4. 🧪 TEST RESPONSIVE trên nhiều resolution:
+   ├─ Game View: Test 5-6 device sizes
+   ├─ Kiểm tra: Buttons, Text, Images không bị cắt/méo
+   ├─ Safe Area: Notch không che elements
+   └─ Điều chỉnh Layout Groups/Anchors nếu cần
+
+5. → Build sanitize cho Android/iOS (nếu có thiết bị)
+
+6. → Create AuthManager.cs (Login/Register)
+
+7. → Create PlayerDataManager.cs (API)
+
+8. → Integrate với MathManager (In-Game logic)
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+Tác giả: AI Assistant
+Cập nhật: 29/03/2026
+Trạng thái: Ready for UI Implementation
+
+═══════════════════════════════════════════════════════════════════════════════════════
+🔒 LOCK SCREEN TO PORTRAIT (Khóa cho chế độ dọc - Android)
+═══════════════════════════════════════════════════════════════════════════════════════
+
+Đảm bảo game luôn chạy ở chế độ dọc (portrait) trên tất cả Android phones:
+
+1️⃣ Settings Cách 1: Unity Player Settings
+   
+   Edit → Project Settings → Player
+   ├─ Resolution and Presentation
+   │  ├─ Default Orientation: Portrait ✓
+   │  ├─ Allowed Orientations:
+   │  │  ├─ Portrait: ✓ (bật)
+   │  │  ├─ Portrait Upside Down: ✓ (option)
+   │  │  ├─ Landscape Left: ✗ (tắt)
+   │  │  └─ Landscape Right: ✗ (tắt)
+   │  │
+   │  └─ Fullscreen: ✓ (bật fullscreen)
+   │
+   └─ Canvas Scaler (như đã config):
+      ├─ UI Scale Mode: Scale With Screen Size ✓
+      ├─ Reference Resolution: 1080 x 1920 ✓
+      └─ Respect Safe Area: ✓
+
+2️⃣ Settings Cách 2: Code (AndroidInitializeOnLoad)
+   
+   Tạo file: Assets/Script/AndroidScreenManager.cs
+   
+   using UnityEngine;
+   
+   public class AndroidScreenManager : MonoBehaviour
+   {
+       // Static khởi tạo chỉ 1 lần khi game start
+       [RuntimeInitializeOnLoadMethod]
+       public static void SetAndroidScreenOrientation()
+       {
+           #if UNITY_ANDROID
+           // Lock to portrait
+           Screen.orientation = ScreenOrientation.Portrait;
+           
+           // Disable auto-rotate
+           Screen.autorotateToPortrait = true;
+           Screen.autorotateToPortraitUpsideDown = false;
+           Screen.autorotateToLandscapeLeft = false;
+           Screen.autorotateToLandscapeRight = false;
+           
+           Debug.Log("[Android] Locked to Portrait mode");
+           #endif
+       }
+   }
+
+3️⃣ Android Manifest (AndroidManifest.xml) - QUAN TRỌNG
+   
+   Build cho Android, AndroidManifest.xml trong:
+   Assets/Plugins/Android/AndroidManifest.xml
+   
+   Thêm hoặc check (BẮT BUỘC cho portrait lock):
+   
+   <activity android:name="com.unity3d.player.UnityPlayerActivity"
+             android:screenOrientation="portrait"
+             android:configChanges="screenLayout|uiMode|screenSize|smallestScreenSize|density|orientation">
+       <intent-filter>
+           <action android:name="android.intent.action.MAIN"/>
+           <category android:name="android.intent.category.LAUNCHER"/>
+       </intent-filter>
+   </activity>
+   
+   ✓ Hoàn toàn cho Android - không có iOS
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+✅ TÓMANH TẮTRESPONSIVE APPROACH
+═══════════════════════════════════════════════════════════════════════════════════════
+
+Dự án game / Điện thoại dọc:
+
+┌─ CANVAS SETUP:
+├─ Canvas Scaler: Scale With Screen Size ✓
+├─ Reference Resolution: 1080 x 1920 (design base)
+├─ Match: Height (prioritize vertical fit)
+└─ Respect Safe Area: ✓ (notch support)
+
+┌─ PANEL DESIGN:
+├─ All Anchors: Stretch, Stretch (hoặc Top/Bottom/Center)
+├─ Layout Groups: VerticalLayoutGroup cho tất cả stacking
+├─ Spacing: 15-20 pixels
+├─ Padding: 30-50 pixels
+└─ Button Heights: 70-100 pixels (scalable)
+
+┌─ TESTING:
+├─ 5-6 device resolutions trong Game View
+├─ Check: Buttons, Text, Images không cắt
+├─ Safe Area: Verify notch không che buttons
+├─ No squash/stretch artifacts
+└─ Consistent spacing tất cả màn hình
+
+┌─ DEPLOYMENT:
+├─ Screen Orientation: PORTRAIT ONLY
+├─ Player Settings: Default Orientation = Portrait ✓
+├─ Android: AndroidManifest.xml screenOrientation="portrait"
+├─ iOS: Device Orientation = Portrait only
+└─ Build & test on real devices (if possible)
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+Tác giả: AI Assistant
+Cập nhật: 29/03/2026
+Trạng thái: Ready for Responsive UI Implementation
+
+═══════════════════════════════════════════════════════════════════════════════════════
+🎨 ASCII UI MOCKUPS - TẤT CẢ 13 PANELS
+═══════════════════════════════════════════════════════════════════════════════════════
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ UI 1: WELCOME PANEL - FULL SCREEN LAYOUT (Màn hình khởi động - PORTRAIT 1080x1920)┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║                         🎮 GAME LOGO (Image)                                  ║
+║                      Width: 1080px, Height: 250px                             ║
+║                         Aspect Ratio: 1:1                                     ║
+║                                                                                ║
+║ ┌────────────────────────────────────────────────────────────────────────────┐ ║
+║ │                        ┌──────────────────────┐                            │ ║
+║ │                        │    🎮 Math Games     │                            │ ║
+║ │                        │   (Logo Image)       │                            │ ║
+║ │                        └──────────────────────┘                            │ ║
+║ └────────────────────────────────────────────────────────────────────────────┘ ║
+║                                                                                ║
+║                    👋 CHARACTER WAVE (Image) - Animated                        ║
+║                      Width: 1080px, Height: 300px                             ║
+║                       Aspect Ratio: 3:4                                       ║
+║                                                                                ║
+║ ┌────────────────────────────────────────────────────────────────────────────┐ ║
+║ │                                                                            │ ║
+║ │                          ┌──────────────────┐                             │ ║
+║ │                          │   👋 Character   │                             │ ║
+║ │                          │   Wave Image     │                             │ ║
+║ │                          │   (Looping)      │                             │ ║
+║ │                          └──────────────────┘                             │ ║
+║ │                                                                            │ ║
+║ └────────────────────────────────────────────────────────────────────────────┘ ║
+║                                                                                ║
+║              CHÀO MỪNG BẠN ĐẾN VỚI THẾ GIỚI TOÁN HỌC! (TextMeshPro)           ║
+║                    Font Size: 48pt, Color: White, Bold                        ║
+║                         Height: 80px, Flexible Width                          ║
+║                                                                                ║
+║ ┌────────────────────────────────────────────────────────────────────────────┐ ║
+║ │          [────────────────────────────────────────────]                    │ ║
+║ │          │ CHÀO MỪNG BẠN ĐẾN VỚI THẾ GIỚI TOÁN HỌC! │                    │ ║
+║ │          [────────────────────────────────────────────]                    │ ║
+║ └────────────────────────────────────────────────────────────────────────────┘ ║
+║                                                                                ║
+║                       🔘 BUTTONS CONTAINER (Panel)                             ║
+║                     VerticalLayoutGroup - Spacing: 15px                        ║
+║                    Width: 1080px, Height: 250px                               ║
+║                                                                                ║
+║ ┌────────────────────────────────────────────────────────────────────────────┐ ║
+║ │                                                                            │ ║
+║ │  ╔════════════════════════════════════════════════════════════════════╗  │ ║
+║ │  ║                   📱 ĐĂNG NHẬP (Blue - #0066FF)                  ║  │ ║
+║ │  ║              Button Size: 1000x80px, Font Size: 36pt              ║  │ ║
+║ │  ║            On Click → UIManager.ShowLoginPanel()                 ║  │ ║
+║ │  ╚════════════════════════════════════════════════════════════════════╝  │ ║
+║ │                                                                            │ ║
+║ │  ╔════════════════════════════════════════════════════════════════════╗  │ ║
+║ │  ║                   ✨ ĐĂNG KÝ (Green - #00CC66)                   ║  │ ║
+║ │  ║              Button Size: 1000x80px, Font Size: 36pt              ║  │ ║
+║ │  ║            On Click → UIManager.ShowRegisterPanel()              ║  │ ║
+║ │  ╚════════════════════════════════════════════════════════════════════╝  │ ║
+║ │                                                                            │ ║
+║ │  ┌────────────────────────────────────────────────────────────────────┐  │ ║
+║ │  │                ⚙️ CẤU HÌNH (Gray - #888888)                      │  │ ║
+║ │  │           Button Size: 1000x60px, Font Size: 32pt                │  │ ║
+║ │  │         On Click → UIManager.ShowSettingsPanel()                 │  │ ║
+║ │  └────────────────────────────────────────────────────────────────────┘  │ ║
+║ │                                                                            │ ║
+║ └────────────────────────────────────────────────────────────────────────────┘ ║
+║                                                                                ║
+║                          💫 Flexible Spacer (Auto)                             ║
+║                        Layout Element: Flexible Height: 1                     ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+📋 COMPONENTS CHI TIẾT - UI 1: WELCOME PANEL
+═══════════════════════════════════════════════════════════════════════════════════════
+
+┌─ WelcomePanel (Panel - Root)
+│  ├─ Anchor: Stretch, Stretch ✓ (phủ toàn màn hình)
+│  ├─ Rect Transform: Width -1, Height -1 (fill parent)
+│  ├─ VerticalLayoutGroup (Stack downward)
+│  │  ├─ Padding: Top 50, Bottom 50, Left 40, Right 40
+│  │  ├─ Spacing: 20 (khoảng cách giữa items)
+│  │  ├─ Child Controls: Width ✓, Height ✓
+│  │  └─ Child Force Size: Width ✓, Height ✓
+│  │
+│  ├─ Image "Background" (thành phần đầu tiên)
+│  │  ├─ Source Image: "welcome_bg_blue" (xanh dương gradient)
+│  │  ├─ Color: #0099FF (cyan xanh dương)
+│  │  ├─ Anchor: Stretch, Stretch
+│  │  (Phải đặt ở vị trí đầu tiên, hoặc tách ra ngoài VerticalLayoutGroup)
+│  │
+│  ├─ GameLogoTop (Image) - Component
+│  │  ├─ Layout Element: Preferred Height: 250, Preferred Width: -1 (auto)
+│  │  ├─ Source Image: "game_logo_math" (biểu tượng game)
+│  │  ├─ Preserve Aspect: ✓
+│  │  ├─ Aspect Ratio Fitter: Aspect Ratio 1.0 (square)
+│  │  └─ Content Size Fitter: Preferred Size ✓ (both)
+│  │
+│  ├─ CharacterWave (Image) - Component
+│  │  ├─ Layout Element: Preferred Height: 300, Preferred Width: -1 (auto)
+│  │  ├─ Source Image: "character_wave_animation"
+│  │  ├─ Preserve Aspect: ✓
+│  │  ├─ Aspect Ratio Fitter: Aspect Ratio 0.75 (3:4)
+│  │  ├─ Animator: (nếu có animation)
+│  │  └─ Content Size Fitter: Preferred Size ✓ (both)
+│  │
+│  ├─ WelcomeText (TextMeshPro) - Component
+│  │  ├─ Layout Element: Preferred Height: 80, Preferred Width: -1 (auto)
+│  │  ├─ Text: "CHÀO MỪNG BẠN ĐẾN VỚI THẾ GIỚI TOÁN HỌC! 🎓"
+│  │  ├─ Font Size: 48pt (auto-scale dựa Canvas Scaler)
+│  │  ├─ Alignment: Center Center
+│  │  ├─ Color: #FFFFFF (white)
+│  │  ├─ Bold: ✓
+│  │  ├─ Word Wrap: ✓ (wrap text nếu dài)
+│  │  └─ Content Size Fitter: Preferred Size ✓ (both)
+│  │
+│  ├─ ButtonsContainer (Panel) - Component
+│  │  ├─ Name: "ButtonsContainer"
+│  │  ├─ Layout Element: Preferred Height: 250, Preferred Width: -1 (auto)
+│  │  ├─ Image: (none, hoặc transparent background)
+│  │  ├─ VerticalLayoutGroup
+│  │  │  ├─ Padding: 20 (all sides)
+│  │  │  ├─ Spacing: 15 (giữa buttons)
+│  │  │  ├─ Child Controls: Width ✓, Height ✓
+│  │  │  └─ Child Force Size: Width ✓, Height ✓
+│  │  │
+│  │  ├─ LoginButton (Button) - Child of ButtonsContainer
+│  │  │  ├─ Name: "LoginButton"
+│  │  │  ├─ Layout Element: Preferred Height: 80, Preferred Width: -1 (auto flex)
+│  │  │  ├─ Button Component: (Standard Button)
+│  │  │  ├─ Image: "button_blue" (blue background)
+│  │  │  ├─ Color: #0066FF (bright blue)
+│  │  │  ├─ Navigation: (set to other buttons)
+│  │  │  │
+│  │  │  ├─ Text Child (TextMeshPro)
+│  │  │  │  ├─ Name: "Text - LoginButton"
+│  │  │  │  ├─ Text: "📱 ĐĂNG NHẬP"
+│  │  │  │  ├─ Font Size: 36pt
+│  │  │  │  ├─ Alignment: Center Center
+│  │  │  │  ├─ Color: #FFFFFF (white)
+│  │  │  │  ├─ Bold: ✓
+│  │  │  │  └─ Outline: 2 (để text bật lên trên button)
+│  │  │  │
+│  │  │  └─ On Click Event
+│  │  │     └─ Call: UIManager.ShowLoginPanel()
+│  │  │
+│  │  ├─ RegisterButton (Button) - Child of ButtonsContainer
+│  │  │  ├─ Name: "RegisterButton"
+│  │  │  ├─ Layout Element: Preferred Height: 80, Preferred Width: -1 (auto flex)
+│  │  │  ├─ Button Component: (Standard Button)
+│  │  │  ├─ Image: "button_green" (green background)
+│  │  │  ├─ Color: #00CC66 (bright green)
+│  │  │  ├─ Navigation: (set to other buttons)
+│  │  │  │
+│  │  │  ├─ Text Child (TextMeshPro)
+│  │  │  │  ├─ Name: "Text - RegisterButton"
+│  │  │  │  ├─ Text: "✨ ĐĂNG KÝ"
+│  │  │  │  ├─ Font Size: 36pt
+│  │  │  │  ├─ Alignment: Center Center
+│  │  │  │  ├─ Color: #FFFFFF (white)
+│  │  │  │  ├─ Bold: ✓
+│  │  │  │  └─ Outline: 2
+│  │  │  │
+│  │  │  └─ On Click Event
+│  │  │     └─ Call: UIManager.ShowRegisterPanel()
+│  │  │
+│  │  └─ SettingsButton (Button) - Child of ButtonsContainer
+│  │     ├─ Name: "SettingsButton"
+│  │     ├─ Layout Element: Preferred Height: 60, Preferred Width: -1 (auto flex)
+│  │     ├─ Button Component: (Standard Button)
+│  │     ├─ Image: "button_gray" (gray background)
+│  │     ├─ Color: #888888 (gray)
+│  │     ├─ Navigation: (set to other buttons)
+│  │     │
+│  │     ├─ Text Child (TextMeshPro)
+│  │     │  ├─ Name: "Text - SettingsButton"
+│  │     │  ├─ Text: "⚙️ CẤU HÌNH"
+│  │     │  ├─ Font Size: 32pt
+│  │     │  ├─ Alignment: Center Center
+│  │     │  ├─ Color: #FFFFFF (white)
+│  │     │  ├─ Bold: ✓
+│  │     │  └─ Outline: 2
+│  │     │
+│  │     └─ On Click Event
+│  │        └─ Call: UIManager.ShowSettingsPanel()
+│  │
+│  └─ Spacer (Image) - Flexible Space
+│     ├─ Name: "Spacer_Bottom"
+│     ├─ Layout Element: Preferred Height: -1 (none)
+│     │  └─ Flexible Height: 1 (takes all remaining space)
+│     └─ Color: Transparent (or match background)
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+🎮 SETUP STEPS - UI 1: WELCOME PANEL
+═══════════════════════════════════════════════════════════════════════════════════════
+
+1️⃣ CREATE THE ROOT PANEL
+   ├─ Select Canvas → Right-click → UI → Panel - Empty
+   ├─ Rename: "WelcomePanel"
+   ├─ Rect Transform:
+   │  ├─ Anchor Preset: Stretch, Stretch (hold ALT for visual preview)
+   │  ├─ Left: 0, Top: 0, Right: 0, Bottom: 0
+   │  └─ Offset: All 0
+   │
+   ├─ Add Component: VerticalLayoutGroup
+   │  ├─ Padding: Top 50, Bottom 50, Left 40, Right 40
+   │  ├─ Spacing: 20
+   │  ├─ Child Controls: Width ✓, Height ✓
+   │  ├─ Child Force Size: Width ✓, Height ✓
+   │  └─ Layout Element: (Add Component)
+   │     ├─ Preferred Width: -1 (auto)
+   │     └─ Preferred Height: -1 (auto)
+   │
+   └─ Add Component: Image
+      ├─ Source Image: Select "welcome_bg_blue" từ Assets/Images
+      ├─ Color: #0099FFFF (cyan xanh dương + alpha 255)
+      ├─ Image Type: Simple
+      └─ Preserve Aspect: ✗ (let it stretch to fill)
+
+2️⃣ ADD GAME LOGO IMAGE
+   ├─ Hierarchy: Right-click WelcomePanel → UI → Image - Simple
+   ├─ Rename: "GameLogoTop"
+   ├─ Rect Transform:
+   │  └─ Anchor: Center, Center ✓
+   │
+   ├─ Image Component:
+   │  ├─ Source Image: "game_logo_math"
+   │  ├─ Color: White #FFFFFFFF
+   │  └─ Preserve Aspect: ✓
+   │
+   ├─ Add Component: Aspect Ratio Fitter
+   │  ├─ Aspect Ratio: 1 (square - 1:1)
+   │  └─ Fit In Parent: ✓
+   │
+   ├─ Add Component: Layout Element
+   │  ├─ Preferred Height: 250
+   │  ├─ Width: -1 (auto)
+   │  └─ Both ✓
+   │
+   └─ Add Component: Content Size Fitter
+      ├─ Horizontal Fit: Preferred Size ✓
+      └─ Vertical Fit: Preferred Size ✓
+
+3️⃣ ADD CHARACTER WAVE IMAGE
+   ├─ Right-click WelcomePanel → UI → Image - Simple
+   ├─ Rename: "CharacterWave"
+   ├─ Same setup như GameLogoTop, nhưng:
+   │
+   ├─ Image Component:
+   │  ├─ Source Image: "character_wave" (animated sprite nếu có)
+   │  └─ Preserve Aspect: ✓
+   │
+   ├─ Aspect Ratio Fitter:
+   │  ├─ Aspect Ratio: 0.75 (3:4 portrait)
+   │  └─ Fit In Parent: ✓
+   │
+   ├─ Layout Element:
+   │  ├─ Preferred Height: 300
+   │  ├─ Preferred Width: -1 (auto)
+   │  └─ Both ✓
+   │
+   └─ (Optional) Animator - nếu có animation wave:
+      ├─ Controller: Character_Wave_Animator
+      └─ Loop: ✓
+
+4️⃣ ADD WELCOME TEXT
+   ├─ Right-click WelcomePanel → TextMeshPro - Text
+   ├─ Rename: "WelcomeText"
+   ├─ Rect Transform: Anchor Center, Center
+   │
+   ├─ TextMeshPro Component:
+   │  ├─ Text: "CHÀO MỪNG BẠN ĐẾN VỚI THẾ GIỚI TOÁN HỌC! 🎓"
+   │  ├─ Font Size: 48
+   │  ├─ Alignment: Center, Center
+   │  ├─ Color: White #FFFFFF
+   │  ├─ Font Style: Bold (B button)
+   │  ├─ Word Wrap: ✓
+   │  └─ Overflow: Overflow
+   │
+   ├─ Layout Element:
+   │  ├─ Preferred Height: 80
+   │  ├─ Preferred Width: -1
+   │  └─ Both ✓
+   │
+   └─ Content Size Fitter:
+      ├─ Horizontal Fit: Preferred Size ✓
+      └─ Vertical Fit: Preferred Size ✓
+
+5️⃣ ADD BUTTONS CONTAINER (sub-panel)
+   ├─ Right-click WelcomePanel → UI → Panel - Empty
+   ├─ Rename: "ButtonsContainer"
+   ├─ Rect Transform: Anchor Center, Center
+   │
+   ├─ Image: (leave empty or transparent - không background)
+   │  └─ Can disable Image component
+   │
+   ├─ Add Component: VerticalLayoutGroup
+   │  ├─ Padding: 20 all
+   │  ├─ Spacing: 15
+   │  ├─ Child Controls: Width ✓, Height ✓
+   │  ├─ Child Force Size: Width ✓, Height ✓
+   │  └─ Layout Element: (-1, -1, both✓)
+   │
+   └─ Layout Element:
+      ├─ Preferred Height: 250
+      ├─ Preferred Width: -1
+      └─ Both ✓
+
+6️⃣ ADD LOGIN BUTTON (vào ButtonsContainer)
+   ├─ Right-click ButtonsContainer → UI → Button
+   ├─ Rename: "LoginButton"
+   ├─ Remove default Text child
+   │  └─ Right-click Text (child) → Delete
+   │
+   ├─ Create TextMeshPro Text child
+   │  ├─ Right-click LoginButton → TextMeshPro - Text
+   │  ├─ Rename: "Text"
+   │  ├─ Rect Transform: Stretch, Stretch (fill button)
+   │  ├─ TextMeshPro:
+   │  │  ├─ Text: "📱 ĐĂNG NHẬP"
+   │  │  ├─ Font Size: 36
+   │  │  ├─ Alignment: Center, Center
+   │  │  ├─ Color: White #FFFFFF
+   │  │  ├─ Bold: ✓
+   │  │  ├─ Outline Width: 0.2 (để text nổi)
+   │  │  └─ Margin all: 0
+   │  │
+   │  └─ Layout Element: (-1, -1, both✓)
+   │
+   ├─ Button Component:
+   │  ├─ Navigation: Explicit (set to next button)
+   │  └─ On Click (): 1 event
+   │     ├─ Object: UIManager
+   │     ├─ Function: UIManager.ShowLoginPanel()
+   │     └─ (Save kiểu này trong script)
+   │
+   ├─ Image: "button_blue" (sprite from Resources)
+   │  ├─ Color: #0066FFFF (bright blue)
+   │  ├─ Image Type: Simple
+   │  └─ Native Size: ✓
+   │
+   └─ Layout Element:
+      ├─ Preferred Height: 80
+      ├─ Preferred Width: -1 (auto flex)
+      └─ Both ✓
+
+7️⃣ ADD REGISTER BUTTON (similar to LoginButton)
+   ├─ Duplicate LoginButton (Ctrl + D)
+   ├─ Rename: "RegisterButton"
+   ├─ Update components:
+   │  ├─ Image → Color: #00CC66FF (green)
+   │  ├─ Text → Text: "✨ ĐĂNG KÝ"
+   │  │
+   │  └─ Button → On Click ():
+   │     └─ Function: UIManager.ShowRegisterPanel()
+   │
+   └─ Layout Element: Height 80 (same)
+
+8️⃣ ADD SETTINGS BUTTON
+   ├─ Duplicate RegisterButton
+   ├─ Rename: "SettingsButton"
+   ├─ Update components:
+   │  ├─ Image → Color: #888888FF (gray)
+   │  ├─ Text → Text: "⚙️ CẤU HÌNH"
+   │  ├─ Text → Font Size: 32 (nhỏ hơn)
+   │  │
+   │  └─ Button → On Click ():
+   │     └─ Function: UIManager.ShowSettingsPanel()
+   │
+   └─ Layout Element: Height 60 (nhỏ hơn)
+
+9️⃣ ADD BOTTOM SPACER (để auto-spacing)
+   ├─ Right-click ButtonsContainer → UI → Image - Simple
+   ├─ Rename: "Spacer_Bottom"
+   ├─ Image: (disable Image component, or transparent)
+   │
+   └─ Layout Element:
+      ├─ Preferred Height: -1 (none)
+      ├─ Flexible Height: 1 (takes all remaining space)
+      └─ Only Height enabled
+
+🔟 FINAL CHECK
+   ├─ WelcomePanel Initial State: ✓ ACTIVE
+   ├─ All buttons clickable: ✓
+   ├─ Text visible & readable: ✓
+   ├─ Layout responsive: ✓ (test multiple resolutions)
+   ├─ Button colors distinct: ✓ (Blue, Green, Gray)
+   ├─ No overlapping: ✓
+   └─ Save Scene: Ctrl + S
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+───────────────────────────────────────────────────────────────────────────────────
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ UI 2: LOGIN PANEL - FULL SCREEN LAYOUT (Đăng nhập - PORTRAIT 1080x1920)       ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║                                                                                ║
+║                    🟫 Dark Background (Semi-transparent overlay)              ║
+║                                                                                ║
+║              ┌─────────────────────────────────────────────────────┐           ║
+║              │      ╔═══════════════════════════════════╗          │           ║
+║              │      ║   ĐĂNG NHẬP (48pt, White, Bold)  ║          │           ║
+║              │      ╚═══════════════════════════════════╝          │           ║
+║              │                                                     │           ║
+║              │      Email:                                         │           ║
+║              │      ┌──────────────────────────────────┐           │           ║
+║              │      │ user@gmail.com            [X]    │           │           ║
+║              │      └──────────────────────────────────┘           │           ║
+║              │                                                     │           ║
+║              │      Mật khẩu:                                      │           ║
+║              │      ┌──────────────────────────────────┐           │           ║
+║              │      │ •••••••••••••• [•]               │           │           ║
+║              │      └──────────────────────────────────┘           │           ║
+║              │                                                     │           ║
+║              │          <u>Quên mật khẩu?</u> (Blue link)        │           ║
+║              │                                                     │           ║
+║              │      [❌ ERROR: Email hoặc mật khẩu sai - Red]     │           ║
+║              │                                                     │           ║
+║              │      ╔════════════════════════════════════╗        │           ║
+║              │      ║  🔓 ĐĂNG NHẬP (Blue - #0066FF)   ║        │           ║
+║              │      ║     Button 80x height, 36pt font ║        │           ║
+║              │      ╚════════════════════════════════════╝        │           ║
+║              │                                                     │           ║
+║              │      ┌──────────────────────────────────┐           │           ║
+║              │      │  ← QUAY LẠI (Gray - #888888)    │           │           ║
+║              │      │     Button 60x height            │           │           ║
+║              │      └──────────────────────────────────┘           │           ║
+║              │                                                     │           ║
+║              └─────────────────────────────────────────────────────┘           ║
+║                       LoginCard (centered panel, white bg)                     ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+📋 COMPONENTS CHI TIẾT - UI 2: LOGIN PANEL
+─────────────────────────────────────────────────────────────────────────────────
+
+Structure:
+├─ LoginPanel (Panel Root, Stretch, Stretch, INACTIVE)
+│  ├─ DarkOverlay (Image - semi-transparent black)
+│  │  ├─ Color: #000000 with Alpha 180 (70% opaque)
+│  │  └─ Anchor: Stretch, Stretch
+│  │
+│  └─ LoginCard (Panel - centered)
+│     ├─ Anchor: Center, Center
+│     ├─ Layout Element: Width 650, Height 900
+│     ├─ VerticalLayoutGroup (Spacing: 20, Padding: 50)
+│     ├─ Image: "panel_white_rounded" Color: White
+│     │
+│     ├─ LoginTitle (TextMeshPro)
+│     │  ├─ Text: "ĐĂNG NHẬP"
+│     │  ├─ Font Size: 48pt, Bold ✓
+│     │  ├─ Color: #333333 (dark)
+│     │  ├─ Layout Element: Height 70
+│     │  └─ Alignment: Center Center
+│     │
+│     ├─ EmailLabel (TextMeshPro)
+│     │  ├─ Text: "Email"
+│     │  ├─ Font Size: 20pt
+│     │  ├─ Color: #555555 (gray)
+│     │  └─ Layout Element: Height 30
+│     │
+│     ├─ EmailInputField (InputField + TextMeshPro)
+│     │  ├─ Text: "user@gmail.com" (placeholder)
+│     │  ├─ Content Type: Email Address
+│     │  ├─ Layout Element: Height 70
+│     │  ├─ Image: "input_bg_white"
+│     │  └─ Navigation: Down → PasswordInputField
+│     │
+│     ├─ PasswordLabel (TextMeshPro)
+│     │  ├─ Text: "Mật khẩu"
+│     │  ├─ Font Size: 20pt
+│     │  └─ Layout Element: Height 30
+│     │
+│     ├─ PasswordInputField (InputField)
+│     │  ├─ Content Type: Password
+│     │  ├─ Layout Element: Height 70
+│     │  ├─ Image: "input_bg_white"
+│     │  └─ Navigation: Down → ForgotPasswordLink
+│     │
+│     ├─ ForgotPasswordLink (Button)
+│     │  ├─ Text: "<u>Quên mật khẩu?</u>"
+│     │  ├─ Text Color: #0099FF (blue)
+│     │  ├─ Layout Element: Height 40
+│     │  ├─ Image: (none, or transparent)
+│     │  └─ On Click: → ShowForgotPasswordPanel() [future feature]
+│     │
+│     ├─ ErrorMessage (TextMeshPro)
+│     │  ├─ Text: "" (empty initially)
+│     │  ├─ Font Size: 18pt
+│     │  ├─ Color: #FF0000 (red)
+│     │  ├─ Layout Element: Height 60, Flexible ✓
+│     │  ├─ Word Wrap: ✓
+│     │  └─ Initial: Hidden (or empty text)
+│     │
+│     ├─ LoginButton (Button)
+│     │  ├─ Text: "🔓 ĐĂNG NHẬP"
+│     │  ├─ Font Size: 36pt, Bold ✓
+│     │  ├─ Color: White on Blue (#0066FF)
+│     │  ├─ Layout Element: Height 70
+│     │  ├─ Image: "button_blue"
+│     │  └─ On Click: AuthManager.Login()
+│     │
+│     └─ BackButton (Button)
+│        ├─ Text: "← QUAY LẠI"
+│        ├─ Font Size: 32pt
+│        ├─ Color: White on Gray (#888888)
+│        ├─ Layout Element: Height 60
+│        ├─ Image: "button_gray"
+│        └─ On Click: UIManager.ShowWelcomePanel()
+
+🎮 SETUP STEPS - UI 2: LOGIN PANEL
+─────────────────────────────────────────────────────────────────────────────────
+
+1️⃣ CREATE ROOT PANEL (LoginPanel)
+   ├─ Right-click Canvas → UI → Panel - Empty
+   ├─ Rename: "LoginPanel"
+   ├─ Rect Transform: Anchor Stretch, Stretch (fill entire screen)
+   └─ Initial State: ✗ INACTIVE
+
+2️⃣ ADD DARK OVERLAY
+   ├─ Right-click LoginPanel → UI → Image - Simple
+   ├─ Rename: "DarkOverlay"
+   ├─ Image Component:
+   │  ├─ Source Image: "white_pixel" hoặc solid color
+   │  └─ Color: #000000B4 (black, 70% opacity)
+   ├─ Rect Transform: Anchor Stretch, Stretch
+   └─ Layout Element: (-1, -1, both✓)
+
+3️⃣ CREATE LOGIN CARD (centered panel)
+   ├─ Right-click LoginPanel → UI → Panel - Empty
+   ├─ Rename: "LoginCard"
+   ├─ Rect Transform:
+   │  ├─ Anchor: Center, Center
+   │  ├─ Position: (0, 0, 0)
+   │  └─ Size: Width 650, Height 900
+   ├─ Image: "panel_white_rounded"
+   │  ├─ Color: #FFFFFF (white)
+   │  └─ Border Padding: 20px (for rounded corners)
+   ├─ Add Component: VerticalLayoutGroup
+   │  ├─ Padding: 50 all
+   │  ├─ Spacing: 20
+   │  ├─ Child Controls: Width ✓, Height ✓
+   │  └─ Child Force Size: Width ✓, Height ✓
+   └─ Add Component: Layout Element (-1, -1, both✓)
+
+4️⃣ ADD LOGIN TITLE
+   ├─ Right-click LoginCard → TextMeshPro - Text
+   ├─ Rename: "LoginTitle"
+   ├─ TextMeshPro:
+   │  ├─ Text: "ĐĂNG NHẬP"
+   │  ├─ Font Size: 48, Bold ✓
+   │  ├─ Color: #333333FF (dark gray)
+   │  ├─ Alignment: Center, Center
+   │  └─ Word Wrap: ✓
+   ├─ Layout Element: Height 70, Width -1, both ✓
+   └─ Content Size Fitter: both ✓
+
+5️⃣ ADD EMAIL LABEL & INPUT
+   ├─ Right-click LoginCard → TextMeshPro - Text
+   ├─ Rename: "EmailLabel"
+   ├─ TextMeshPro: Text "Email", Font Size 20, Dark color
+   ├─ Layout Element: Height 30, both ✓
+   │
+   ├─ Right-click LoginCard → UI → InputField
+   ├─ Rename: "EmailInputField"
+   ├─ InputField Component:
+   │  ├─ Content Type: Email Address
+   │  ├─ Placeholder Text: "user@gmail.com"
+   │  ├─ On Value Changed: (for validation)
+   │  └─ Navigation: Down
+   ├─ Image: "input_bg_white" (white background with border)
+   │  └─ Color: #FFFFFFFF
+   ├─ TextComponent: Set to child Text element
+   └─ Layout Element: Height 70, both ✓
+
+6️⃣ ADD PASSWORD LABEL & INPUT
+   ├─ Right-click LoginCard → TextMeshPro - Text
+   ├─ Rename: "PasswordLabel"
+   ├─ TextMeshPro: Text "Mật khẩu", Font Size 20
+   ├─ Layout Element: Height 30, both ✓
+   │
+   ├─ Right-click LoginCard → UI → InputField
+   ├─ Rename: "PasswordInputField"
+   ├─ InputField Component:
+   │  ├─ Content Type: Password
+   │  ├─ Input Type: Password
+   │  ├─ Placeholder Text: "Nhập mật khẩu"
+   │  └─ Navigation: Down
+   ├─ Image: "input_bg_white"
+   └─ Layout Element: Height 70, both ✓
+
+7️⃣ ADD FORGOT PASSWORD LINK
+   ├─ Right-click LoginCard → UI → Button
+   ├─ Rename: "ForgotPasswordLink"
+   ├─ Delete default Text child, create TextMeshPro child
+   ├─ Text: "<u>Quên mật khẩu?</u>" (underlined)
+   ├─ TextMeshPro: Font Size 20, Color #0099FF (blue)
+   ├─ Button: Remove Image background (transparent)
+   ├─ Layout Element: Height 40, both ✓
+   └─ On Click: (placeholder, not implemented yet)
+
+8️⃣ ADD ERROR MESSAGE
+   ├─ Right-click LoginCard → TextMeshPro - Text
+   ├─ Rename: "ErrorMessage"
+   ├─ TextMeshPro:
+   │  ├─ Text: "" (empty)
+   │  ├─ Font Size: 18
+   │  ├─ Color: #FF0000 (red)
+   │  ├─ Alignment: Center, Center
+   │  └─ Word Wrap: ✓
+   ├─ Layout Element: Height 60, flexible ✓, both ✓
+   └─ Content Size Fitter: both ✓
+
+9️⃣ ADD LOGIN BUTTON
+   ├─ Right-click LoginCard → UI → Button
+   ├─ Rename: "LoginButton"
+   ├─ Delete default Text, add TextMeshPro child
+   ├─ Text: "🔓 ĐĂNG NHẬP"
+   ├─ TextMeshPro:
+   │  ├─ Font Size: 36, Bold ✓
+   │  ├─ Color: White #FFFFFF
+   │  ├─ Alignment: Center, Center
+   │  └─ Outline: 0.2
+   ├─ Image: "button_blue"
+   │  └─ Color: #0066FF (bright blue)
+   ├─ Button Navigation: Down to BackButton
+   ├─ On Click:
+   │  ├─ Object: AuthManager
+   │  └─ Function: Login()
+   └─ Layout Element: Height 70, both ✓
+
+🔟 ADD BACK BUTTON
+   ├─ Duplicate LoginButton (Ctrl + D)
+   ├─ Rename: "BackButton"
+   ├─ Update Text: "← QUAY LẠI"
+   ├─ Update Image Color: #888888 (gray)
+   ├─ TextMeshPro Font Size: 32 (smaller)
+   ├─ On Click:
+   │  ├─ Object: UIManager
+   │  └─ Function: ShowWelcomePanel()
+   └─ Layout Element: Height 60
+
+1️⃣1️⃣ FINAL CHECK
+   ├─ LoginPanel Initial State: ✗ INACTIVE
+   ├─ DarkOverlay covers background: ✓
+   ├─ LoginCard centered: ✓
+   ├─ All inputs type-able: ✓
+   ├─ Error message red & hidden: ✓
+   ├─ Button onclick handlers set: ✓
+   ├─ Save Scene: Ctrl + S
+   └─ Ready for test
+
+───────────────────────────────────────────────────────────────────────────────────
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ UI 3: REGISTER PANEL - FULL SCREEN LAYOUT (Đăng ký - PORTRAIT 1080x1920)      ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+╔════════════════════════════════════════════════════════════════════════════════╗
+║           RegisterPanel (ScrollView để có thể scroll nếu quá dài)             ║
+║                                                                                ║
+║              ┌─────────────────────────────────────────────────────┐           ║
+║              │      ╔═══════════════════════════════════╗          │           ║
+║              │      ║   ĐĂNG KÝ (48pt, Dark, Bold)     ║          │           ║
+║              │      ╚═══════════════════════════════════╝          │           ║
+║              │                                                     │           ║
+║              │      Email: [Email input field]                     │           ║
+║              │      Tên đăng nhập: [Username field]               │           ║
+║              │      Mật khẩu: [Password field]                    │           ║
+║              │      Xác nhận mật khẩu: [Confirm pwd field]        │           ║
+║              │                                                     │           ║
+║              │      Tuổi: [Dropdown: 6-12, default 10]           │           ║
+║              │                                                     │           ║
+║              │      Chọn Avatar:                                   │           ║
+║              │      ┌────┬────┬────┐                              │           ║
+║              │      │ 👦 │ 👧 │ 🧒 │ (6 options total)            │           ║
+║              │      ├────┼────┼────┤                              │           ║
+║              │      │ 👨 │ 👩 │ 🧑 │                              │           ║
+║              │      └────┴────┴────┘                              │           ║
+║              │                                                     │           ║
+║              │      ☑ Đồng ý điều khoản sử dụng                   │           ║
+║              │      [❌ ERROR: Xin lỗi, đã xảy ra lỗi - Red]     │           ║
+║              │                                                     │           ║
+║              │      ╔════════════════════════════════════╗        │           ║
+║              │      ║  ✨ ĐĂNG KÝ (Green - #00CC66)    ║        │           ║
+║              │      ╚════════════════════════════════════╝        │           ║
+║              │      ┌──────────────────────────────────┐           │           ║
+║              │      │  ← QUAY LẠI (Gray)              │           │           ║
+║              │      └──────────────────────────────────┘           │           ║
+║              │                                                     │           ║
+║              └─────────────────────────────────────────────────────┘           ║
+║                       RegisterCard (ScrollView container)                     ║
+║                                                                                ║
+╚════════════════════════════════════════════════════════════════════════════════╝
+
+📋 COMPONENTS CHI TIẾT - UI 3: REGISTER PANEL
+─────────────────────────────────────────────────────────────────────────────────
+
+Structure:
+├─ RegisterPanel (Panel, Stretch/Stretch, INACTIVE)
+│  ├─ Background: "panel_light_bg"
+│  │
+│  └─ RegisterCard (ScrollView - để scroll nếu content dài)
+│     ├─ Image (background white)
+│     ├─ Viewport
+│     │  └─ Content (VerticalLayoutGroup, Spacing 15, Padding 50)
+│     │
+│     ├─ RegisterTitle (TextMeshPro) - Height 70
+│     ├─ EmailLabel + EmailInputField - Height 30 + 70
+│     ├─ UsernameLabel + UsernameInputField - Height 30 + 70
+│     ├─ PasswordLabel + PasswordInputField - Height 30 + 70
+│     ├─ ConfirmPasswordLabel + ConfirmPasswordInputField - Height 30 + 70
+│     ├─ AgeLabel (TextMeshPro) - Height 30
+│     ├─ AgeDropdown - Height 70
+│     ├─ AvatarLabel (TextMeshPro) - Height 30
+│     ├─ AvatarGrid (GridLayoutGroup 3x2) - Height 180
+│     │  └─ 6 Avatar Button children
+│     ├─ TermsCheckbox (Toggle) - Height 50
+│     ├─ ErrorMessage (TextMeshPro, Red) - Height 60
+│     ├─ RegisterButton (Green) - Height 70
+│     └─ BackButton (Gray) - Height 60
+
+🎮 SETUP STEPS - UI 3: REGISTER PANEL
+─────────────────────────────────────────────────────────────────────────────────
+
+1️⃣ CREATE ROOT PANEL
+   ├─ Right-click Canvas → UI → Panel - Empty
+   ├─ Rename: "RegisterPanel"
+   ├─ Anchor: Stretch, Stretch
+   ├─ Image: "panel_light_bg" (light gray)
+   └─ Initial State: ✗ INACTIVE
+
+2️⃣ CREATE SCROLLVIEW
+   ├─ Right-click RegisterPanel → UI → ScrollView - Vertical
+   ├─ Rename: "RegisterCard"
+   ├─ Rect Transform: Anchor Stretch, Stretch
+   ├─ ScrollRect:
+   │  ├─ Content: Scrollable ✓
+   │  ├─ Horizontal: ✗
+   │  ├─ Vertical: ✓
+   │  ├─ Movement Type: Elastic (spring effect)
+   │  └─ Scrollbar Visibility: Auto Hide and Expand Viewport
+   │
+   └─ Scroll View Layout:
+      ├─ Viewport (Auto-generated)
+      │  ├─ Image: (none, transparent)
+      │  ├─ Mask: ✓
+      │  └─ Rect Mask 2D: ✓
+      │
+      └─ Content (Auto-generated, rename to "ScrollContent")
+         ├─ VerticalLayoutGroup
+         │  ├─ Padding: 50
+         │  ├─ Spacing: 15
+         │  ├─ Child Controls: Width ✓, Height ✓
+         │  └─ Child Force Size: Width ✓, Height ✓
+         │
+         └─ Layout Element: Height -1, Width -1, both ✓
+
+3️⃣ ADD REGISTER TITLE
+   ├─ Right-click ScrollContent → TextMeshPro - Text
+   ├─ Rename: "RegisterTitle"
+   ├─ TextMeshPro: Text "ĐĂNG KÝ", Font 48, Dark, Bold
+   ├─ Layout Element: Height 70
+   └─ Content Size Fitter: both ✓
+
+4️⃣ ADD EMAIL INPUT GROUP
+   ├─ Right-click ScrollContent → TextMeshPro - Text → Rename "EmailLabel"
+   ├─ TextMeshPro: "Email", Font 20
+   ├─ Layout Element: Height 30
+   │
+   ├─ Right-click ScrollContent → UI → InputField
+   ├─ Rename: "EmailInputField"
+   ├─ Content Type: Email Address
+   ├─ Layout Element: Height 70
+   └─ Image: "input_bg_white"
+
+5️⃣ ADD USERNAME INPUT GROUP
+   ├─ Right-click ScrollContent → TextMeshPro - Text → "UsernameLabel"
+   ├─ Font 20, Layout Element Height 30
+   │
+   ├─ Right-click ScrollContent → UI → InputField
+   ├─ Rename: "UsernameInputField"
+   ├─ Content Type: Standard
+   ├─ Layout Element: Height 70
+   └─ Image: "input_bg_white"
+
+6️⃣ ADD PASSWORD INPUT GROUP
+   ├─ Right-click ScrollContent → TextMeshPro - Text → "PasswordLabel"
+   ├─ Right-click ScrollContent → UI → InputField
+   ├─ Rename: "PasswordInputField"
+   ├─ Content Type: Password
+   ├─ Layout Element: Height 70
+   └─ Image: "input_bg_white"
+
+7️⃣ ADD CONFIRM PASSWORD INPUT GROUP
+   ├─ Right-click ScrollContent → TextMeshPro - Text → "ConfirmPasswordLabel"
+   ├─ Right-click ScrollContent → UI → InputField
+   ├─ Rename: "ConfirmPasswordInputField"
+   ├─ Content Type: Password
+   ├─ Layout Element: Height 70
+   └─ Image: "input_bg_white"
+
+8️⃣ ADD AGE DROPDOWN
+   ├─ Right-click ScrollContent → TextMeshPro - Text → "AgeLabel"
+   ├─ Text "Tuổi:", Font 20
+   ├─ Right-click ScrollContent → UI → Dropdown
+   ├─ Rename: "AgeDropdown"
+   ├─ Options: ["6", "7", "8", "9", "10", "11", "12"]
+   ├─ Default Index: 4 (age 10)
+   ├─ Layout Element: Height 70
+   └─ Image: "input_bg_white"
+
+9️⃣ ADD AVATAR GRID
+   ├─ Right-click ScrollContent → TextMeshPro - Text → "AvatarLabel"
+   ├─ Text "Chọn Avatar:", Font 20
+   ├─ Right-click ScrollContent → UI → Panel - Empty
+   ├─ Rename: "AvatarGrid"
+   ├─ GridLayoutGroup:
+   │  ├─ Cell Size: 150 x 150
+   │  ├─ Spacing: 15 x 15
+   │  ├─ Constraint: Fixed Columns 3
+   │  └─ Child Layout Elements: all set
+   ├─ Layout Element: Height 180
+   │
+   └─ Add 6 Avatar Buttons inside:
+      ├─ Button "Avatar1" → "Avatar6"
+      ├─ Image: "avatar_1" ~ "avatar_6"
+      ├─ Layout Element: 150 x 150 each
+      └─ On Click: Save selected avatar index
+
+🔟 ADD TERMS CHECKBOX
+   ├─ Right-click ScrollContent → UI → Toggle
+   ├─ Rename: "TermsCheckbox"
+   ├─ Label: "Đồng ý điều khoản sử dụng"
+   ├─ Layout Element: Height 50
+   ├─ Text Component: Color white on dark
+   └─ Toggle: Initially OFF ✗
+
+1️⃣1️⃣ ADD ERROR MESSAGE
+   ├─ Right-click ScrollContent → TextMeshPro - Text
+   ├─ Rename: "ErrorMessage"
+   ├─ TextMeshPro: "" (empty), Font 18, Red #FF0000
+   ├─ Layout Element: Height 60, flexible
+   └─ Content Size Fitter: both ✓
+
+1️⃣2️⃣ ADD REGISTER BUTTON
+   ├─ Right-click ScrollContent → UI → Button
+   ├─ Rename: "RegisterButton"
+   ├─ Text: "✨ ĐĂNG KÝ", Font 36, White, Bold
+   ├─ Image: "button_green" Color #00CC66
+   ├─ Layout Element: Height 70
+   ├─ On Click: AuthManager.Register()
+   └─ Navigation: Down to BackButton
+
+1️⃣3️⃣ ADD BACK BUTTON
+   ├─ Duplicate RegisterButton
+   ├─ Rename: "BackButton"
+   ├─ Text: "← QUAY LẠI", Font 32
+   ├─ Image Color: #888888 (gray)
+   ├─ Layout Element: Height 60
+   ├─ On Click: UIManager.ShowWelcomePanel()
+   └─ Add bottom Spacer if needed
+
+1️⃣4️⃣ FINAL CHECK
+   ├─ RegisterPanel: ✗ INACTIVE
+   ├─ ScrollView working: ✓ (test scroll)
+   ├─ All input fields type-able: ✓
+   ├─ Avatar buttons 6 total: ✓
+   ├─ Checkbox works: ✓
+   ├─ Button onclick: ✓
+   └─ Save Scene: Ctrl + S
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+───────────────────────────────────────────────────────────────────────────────────
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ UI 4-13: CÁC PANEL CÒN LẠI (SETUP NHANH)                                       ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+🎮 UI 4: MAIN MENU PANEL (Menu chính)
+─────────────────────────────────────────────────────────────────────────────────
+
+LAYOUT:
+┌─ MainMenuPanel (Stretch/Stretch, INACTIVE)
+│  ├─ Background Image: "menu_bg_gradient"
+│  │
+│  ├─ TopBar/Header (Panel, Height 150)
+│  │  ├─ HorizontalLayoutGroup (Spacing 30)
+│  │  ├─ PlayerLevelText (TextMeshPro): "Lv: {level}"
+│  │  ├─ PlayerScoreText (TextMeshPro): "Score: {score}"
+│  │  └─ PlayerXPText (TextMeshPro): "XP: {xp}"
+│  │
+│  ├─ ContentContainer (Panel, Flex height)
+│  │  ├─ VerticalLayoutGroup (Spacing 20, Padding 30)
+│  │  │
+│  │  ├─ CharacterDisplay (Image, Height 300, Aspect 3:4)
+│  │  ├─ MainPlayButton (Button, Height 100, Text "🎮 CHƠI ĐƠN")
+│  │  ├─ MultiplayerButton (Button, Height 100, Text "👥 MULTIPLAYER")
+│  │  │
+│  │  ├─ HorizontalContainer (Panel, Height 90)
+│  │  │  ├─ HorizontalLayoutGroup (Spacing 15)
+│  │  │  ├─ LeaderboardButton (Button, flex width, Text "📊 BXH")
+│  │  │  └─ ProfileButton (Button, flex width, Text "👤 HỒ SƠ")
+│  │  │
+│  │  └─ Spacer (flex height)
+│  │
+│  └─ SettingsButton (Button, Top-Right corner, 80x80, Text "⚙️")
+│
+SETUP (7 steps):
+1. Create MainMenuPanel canvas panel
+2. Add background image
+3. Create TopBar with 3 text labels (HorizontalLayoutGroup)
+4. Create ContentContainer with VerticalLayoutGroup
+5. Add CharacterDisplay image (300h, 3:4 aspect)
+6. Add 2 big buttons: MainPlay + Multiplayer (100h each)
+7. Add HorizontalContainer with 2 side-by-side buttons (Leaderboard, Profile)
+8. Add SettingsButton (top-right, 80x80)
+9. Initialize: MainMenuPanel ✗ INACTIVE, set button click handlers
+Key: All buttons need On Click → UIManager.ShowXPanel() or AuthManager functions
+
+─────────────────────────────────────────────────────────────────────────────────
+
+🎮 UI 5: MODE SELECTION PANEL (Chọn chế độ)
+─────────────────────────────────────────────────────────────────────────────────
+
+LAYOUT:
+├─ ModeSelectionPanel (Stretch/Stretch, INACTIVE)
+│  ├─ Background: gradient blue to cyan
+│  ├─ Title (TextMeshPro): "CHỌN CHẾ ĐỘ CHƠI" (Height 100)
+│  │
+│  ├─ SingleModeCard (Button Panel, Height 180)
+│  │  ├─ Image: "card_single_mode"
+│  │  ├─ Text: "🎮 CHƠI ĐƠN"
+│  │  ├─ Description: "Không cần internet, chơi riêng"
+│  │  └─ On Click: UIManager.ShowLevelSelectionPanel()
+│  │
+│  ├─ MultiplayerModeCard (Button Panel, Height 180)
+│  │  ├─ Image: "card_multiplayer_mode"
+│  │  ├─ Text: "👥 MULTIPLAYER"
+│  │  ├─ Description: "Cạnh tranh với bạn bè, live match"
+│  │  └─ On Click: ShowMultiplayerLobby() [future]
+│  │
+│  ├─ Spacer (flex)
+│  └─ BackButton (Height 60)
+
+SETUP (5 steps):
+1. Create ModeSelectionPanel with background
+2. Add Title TextMeshPro (100h)
+3. Create SingleModeCard (Button with description, 180h)
+4. Create MultiplayerModeCard (duplicate SingleModeCard, 180h)
+5. Add Spacer + BackButton
+
+─────────────────────────────────────────────────────────────────────────────────
+
+🎮 UI 6: LEVEL SELECTION PANEL (Chọn màn)
+─────────────────────────────────────────────────────────────────────────────────
+
+LAYOUT:
+├─ LevelSelectionPanel (Stretch/Stretch, INACTIVE)
+│  ├─ Background: "level_select_bg"
+│  ├─ Title: "CHỌN MÀN CHƠI" (100h)
+│  │
+│  ├─ LevelGrid (GridLayoutGroup 2x3)
+│  │  ├─ Cell Size: 200 x 200
+│  │  ├─ Spacing: 20 x 20
+│  │  │
+│  │  ├─ Level1Button (Button, has Star rating ⭐⭐⭐)
+│  │  ├─ Level2Button (locked if not completed)
+│  │  ├─ Level3Button
+│  │  ├─ Level4Button (🔒 KHÓA or grayed out)
+│  │  ├─ Level5Button (🔒)
+│  │  └─ Level6Button (🔒)
+│  │
+│  ├─ Spacer (flex)
+│  └─ BackButton (60h)
+
+SETUP (6 steps):
+1. Create LevelSelectionPanel
+2. Add Title
+3. Create GridLayoutGroup (2 columns, 3 rows, 200x200 cells)
+4. Add 6 Level buttons (Button + Image + Stars + Lock icon)
+5. Add Spacer
+6. Add BackButton → UIManager.ShowModeSelectionPanel()
+
+─────────────────────────────────────────────────────────────────────────────────
+
+🎮 UI 7: DIFFICULTY SELECTION PANEL (Chọn độ khó)
+─────────────────────────────────────────────────────────────────────────────────
+
+LAYOUT:
+├─ DifficultySelectionPanel (Stretch/Stretch, INACTIVE)
+│  ├─ Background: gradient purple
+│  ├─ Title: "CHỌN ĐỘ KHÓ" (100h)
+│  ├─ LevelInfoText: "Màn chơi 3 - Cộng số" (50h)
+│  │
+│  ├─ EasyButton (Panel, 150h)
+│  │  ├─ Text: "✅ DỄ"
+│  │  ├─ Details: "⏱️ 60s | 🎯 80%"
+│  │  └─ Color: Green accent
+│  │
+│  ├─ NormalButton (Panel, 150h)
+│  │  ├─ Text: "⚖️ BÌNH THƯỜNG"
+│  │  ├─ Details: "⏱️ 45s | 🎯 70%"
+│  │  └─ Color: Yellow accent
+│  │
+│  ├─ HardButton (Panel, 150h)
+│  │  ├─ Text: "🔥 KHÓ"
+│  │  ├─ Details: "⏱️ 30s | 🎯 50%"
+│  │  └─ Color: Red accent
+│  │
+│  ├─ Spacer (flex)
+│  └─ BackButton (60h)
+
+SETUP (6 steps):
+1. Create DifficultySelectionPanel
+2. Add Title + LevelInfo
+3. Create 3 difficulty cards (EasyButton, NormalButton, HardButton)
+4. Each card: Panel + Image + TextMeshPro (title + details)
+5. Add Spacer
+6. Add BackButton → UIManager.ShowLevelSelectionPanel()
+7. Button clicks: → UIManager.ShowDifficultySelectionPanel(difficulty)
+
+─────────────────────────────────────────────────────────────────────────────────
+
+🎮 UI 8: IN-GAME PANEL (Màn chơi)
+─────────────────────────────────────────────────────────────────────────────────
+
+LAYOUT:
+├─ InGamePanel (Stretch/Stretch, INACTIVE)
+│  ├─ Background: "gameplay_bg"
+│  │
+│  ├─ TopBar (Panel, Height 120)
+│  │  ├─ HorizontalLayoutGroup (Spacing 20)
+│  │  ├─ HealthText: "❤️ 3"
+│  │  ├─ TimerText: "⏱️ 00:45"
+│  │  ├─ ScoreText: "🎯 Score: 80"
+│  │  └─ ProgressBar (Slider): "Câu 5/10" with visual bar
+│  │
+│  ├─ QuestionDisplay (TextMeshPro, Height 150)
+│  │  ├─ Text: "Tính: 25 + 17 = ?"
+│  │  ├─ Font Size: 48pt, Bold
+│  │  └─ Color: Dark
+│  │
+│  ├─ AnswerButtons (GridLayoutGroup 2x2, 300x300)
+│  │  ├─ AnswerButton1: "42"
+│  │  ├─ AnswerButton2: "35"
+│  │  ├─ AnswerButton3: "40"
+│  │  └─ AnswerButton4: "38"
+│  │  Each: Button + TextMeshPro, Font 36pt, can turn green/red
+│  │
+│  ├─ FeedbackText (TextMeshPro, Hidden)
+│  │  ├─ Text: "" (dynamically change to "✅ ĐÚNG VUI QUÁ!" or "❌ SAI RỒI!")
+│  │  ├─ Font Size: 40pt
+│  │  └─ Color: Green or Red
+│  │
+│  └─ PauseButton (Top-Right 80x80)
+│     ├─ Text: "⏸️ TẠMBIENTIONAL DỪNG"
+│     └─ On Click: UIManager.ShowPauseMenuPanel()
+
+SETUP (8 steps):
+1. Create InGamePanel
+2. Add TopBar with 4 elements (health, timer, score, progress bar)
+3. Add QuestionDisplay (TextMeshPro, big text, 150h)
+4. Create AnswerGrid (GridLayoutGroup 2x2, 4 buttons, 300x300 each)
+5. Add FeedbackText (initially hidden, show on answer)
+6. Add PauseButton (top-right)
+7. Button clicks: Answer buttons → GameManager.CheckAnswer(index)
+8. TimeScript: Update timer text every 1 second
+
+─────────────────────────────────────────────────────────────────────────────────
+
+🎮 UI 9: PAUSE MENU PANEL (Menu tạm dừng - Overlay)
+─────────────────────────────────────────────────────────────────────────────────
+
+LAYOUT:
+├─ PauseMenuPanel (Stretch/Stretch, INACTIVE)
+│  ├─ DarkOverlay (Image, Alpha 180, black)
+│  │
+│  └─ PauseCard (Panel, centered, 500x600)
+│     ├─ Image: "panel_dark"
+│     ├─ Title: "⏸️ TẠMBIENTIONAL DỪNG" (100h)
+│     ├─ ResumeButton (Button, 100h, Blue): "▶️ TIẾP TỤC"
+│     │  └─ On Click: GameManager.ResumeGame() + UIManager.HideInGamePanel()
+│     ├─ SettingsButton (Button, 100h, Gray): "⚙️ CẤU HÌNH"
+│     │  └─ On Click: UIManager.ShowSettingsPanel()
+│     ├─ MenuButton (Button, 100h, Red): "🏠 MENU CHÍNH"
+│     │  └─ On Click: UIManager.ShowMainMenuPanel()
+│     └─ CloseButton (X, Top-Right): Close pause
+│        └─ On Click: GameManager.ResumeGame()
+
+SETUP (5 steps):
+1. Create PauseMenuPanel
+2. Add DarkOverlay (180 alpha black)
+3. Create PauseCard (centered panel, white/dark bg)
+4. Add Title + 3 buttons (Resume, Settings, Menu)
+5. Add close X button (top-right)
+
+─────────────────────────────────────────────────────────────────────────────────
+
+🎮 UI 10: GAME RESULT PANEL (Kết quả)
+─────────────────────────────────────────────────────────────────────────────────
+
+LAYOUT:
+├─ GameResultPanel (Stretch/Stretch, INACTIVE)
+│  ├─ Background: "result_bg_confetti" (celebratory)
+│  │
+│  ├─ ResultBanner (TextMeshPro, 150h)
+│  │  ├─ Text: "🎉 CHIẾN THẮNG!" or "😢 THUA CUỘC!"
+│  │  ├─ Font: 60pt, Bold, Dynamic color (green/red)
+│  │  └─ Subtext: "Bạn là tuyệt vời!" or "Cố gắng lần sau!"
+│  │
+│  ├─ StarsDisplay (Image Array, Height 80)
+│  │  └─ 1-3 Gold stars ⭐ depend on score
+│  │
+│  ├─ StatsPanel (Panel, 250h)
+│  │  ├─ VerticalLayoutGroup (Spacing 15)
+│  │  ├─ ScoreText: "📊 Điểm: 850"
+│  │  ├─ TimeText: "⏱️ Thời gian: 45 giây"
+│  │  ├─ AccuracyText: "✓ Tính chính xác: 100%"
+│  │  └─ RewardText: "⭐ Thưởng XP: +250"
+│  │
+│  ├─ ReplayButton (Button, 100h, Orange): "🔄 CHƠI LẠI"
+│  │  └─ On Click: UIManager.ShowDifficultySelectionPanel(same_level)
+│  ├─ NextButton (Button, 100h, Green): "➡️ MÀN TIẾP"
+│  │  └─ On Click: UIManager.ShowDifficultySelectionPanel(next_level)
+│  ├─ MenuButton (Button, 80h, Gray): "🏠 MENU CHÍNH"
+│  │  └─ On Click: UIManager.ShowMainMenuPanel()
+│  └─ Spacer (flex)
+
+SETUP (8 steps):
+1. Create GameResultPanel
+2. Add background image
+3. Add ResultBanner (TextMeshPro, 150h, dynamic color)
+4. Add StarsDisplay (3 star images, show 1-3 depending on score)
+5. Create StatsPanel (TextMeshPro x4, vertical layout)
+6. Add 3 buttons (Replay, Next, Menu)
+7. Each button click: save result to database
+8. Spacer for responsive layout
+
+─────────────────────────────────────────────────────────────────────────────────
+
+🎮 UI 11: LEADERBOARD PANEL (Bảng xếp hạng)
+─────────────────────────────────────────────────────────────────────────────────
+
+LAYOUT:
+├─ LeaderboardPanel (Stretch/Stretch, INACTIVE)
+│  ├─ Background: "leaderboard_bg_gradient"
+│  │
+│  ├─ Title: "🏆 BẢNG XẾP HẠNG" (80h)
+│  │
+│  ├─ TabContainer (HorizontalLayoutGroup, 100h)
+│  │  ├─ ScoreTabButton (Toggle): "🏆 Toàn thời"
+│  │  ├─ LevelTabButton (Toggle): "👥 Bạn"
+│  │  └─ FriendsTabButton (Toggle): "📅 Ngày" [Future]
+│  │
+│  ├─ RefreshButton (Button, 60x60, Top-Right): "🔄"
+│  │  └─ On Click: LeaderboardManager.RefreshRankings()
+│  │
+│  ├─ LeaderboardList (ScrollView, Flex height)
+│  │  └─ Viewport + Content (VerticalLayoutGroup)
+│  │     └─ LeaderboardEntry Prefab (dynamic, multiple instances)
+│  │        ├─ RankText: "#1 🥇"
+│  │        ├─ AvatarImage: (small icon)
+│  │        ├─ NameText: "Player123"
+│  │        ├─ ScoreText: "9500"
+│  │        └─ [Highlight if it's the player]
+│  │
+│  ├─ PlayerHighlightCard (Panel, 80h)
+│  │  ├─ Your rank: "#45 🎯"
+│  │  ├─ Your score: "5200"
+│  │  └─ Arrow: "◄ You are here"
+│  │
+│  ├─ Spacer (flex)
+│  └─ BackButton (60h)
+
+SETUP (9 steps):
+1. Create LeaderboardPanel
+2. Add Title + 3 Tab buttons (HorizontalLayoutGroup)
+3. Add RefreshButton (top-right)
+4. Create ScrollView (LeaderboardList)
+5. Create LeaderboardEntry Prefab:
+   - Panel (80h) + HorizontalLayoutGroup
+   - RankText, AvatarImage, NameText, ScoreText
+6. Populate list dynamically with LeaderboardManager data
+7. Highlight player's own entry
+8. Add BackButton
+9. Tab buttons toggle between Score/Level/Friends view
+
+─────────────────────────────────────────────────────────────────────────────────
+
+🎮 UI 12: PROFILE PANEL (Hồ sơ)
+─────────────────────────────────────────────────────────────────────────────────
+
+LAYOUT:
+├─ ProfilePanel (Stretch/Stretch, INACTIVE)
+│  ├─ Background: gradient light to dark
+│  │
+│  ├─ ProfileTitle: "👤 HỒ SƠ CÁ NHÂN" (80h)
+│  │
+│  ├─ PlayerAvatar (Image, circular, 200x200)
+│  │  └─ AspectRatioFitter: 1:1
+│  │
+│  ├─ StatsContainer (Panel, 200h)
+│  │  ├─ VerticalLayoutGroup (Spacing 10)
+│  │  ├─ NameText: "Tên: Player123"
+│  │  ├─ LevelText: "Lv: 15"
+│  │  ├─ ExperienceBar (Slider, 40h): 12500 / 15000 XP
+│  │  ├─ TotalScoreText: "Tổng điểm: 45000"
+│  │  └─ RankText: "Hạng: 45 / 10000"
+│  │
+│  ├─ AchievementTitle: "📜 THÀNH TỰU" (50h)
+│  │
+│  ├─ AchievementGrid (GridLayoutGroup 3x2, 350h)
+│  │  ├─ AchievementIcon1 ~ 6 (Images, 150x150 each)
+│  │  ├─ Unlocked: Gold color
+│  │  └─ Locked: Grayed out with?
+│  │
+│  ├─ EditButton (Button, 80h): "✏️ CHỈNH SỬA" [Future]
+│  ├─ Spacer (flex)
+│  └─ BackButton (60h): → UIManager.ShowMainMenuPanel()
+
+SETUP (9 steps):
+1. Create ProfilePanel
+2. Add Title
+3. Add PlayerAvatar (Image, circular, 200x200)
+4. Create StatsContainer (TextMeshPro x 5)
+5. Add ExperienceBar (Slider, visual progress)
+6. Create AchievementTitle
+7. Create AchievementGrid (GridLayoutGroup, 3 columns, 2 rows)
+8. Add 6 Achievement icons (unlock based on player progress)
+9. Add EditButton + BackButton
+
+─────────────────────────────────────────────────────────────────────────────────
+
+🎮 UI 13: SETTINGS PANEL (Cài đặt - Overlay)
+─────────────────────────────────────────────────────────────────────────────────
+
+LAYOUT:
+├─ SettingsPanel (Stretch/Stretch, INACTIVE)
+│  ├─ DarkOverlay (Image, 180 alpha black)
+│  │
+│  └─ SettingsCard (Panel, centered, 600x900)
+│     ├─ Title: "⚙️ CẤU HÌNH" (80h)
+│     │
+│     ├─ SoundSection (Panel, 200h)
+│     │  ├─ Label: "🔊 Âm lượng"
+│     │  ├─ MasterVolumeSlider (Slider, 50h): 0-100
+│     │  ├─ MusicVolumeSlider (Slider, 50h): 0-100
+│     │  └─ SFXVolumeSlider (Slider, 50h): 0-100
+│     │
+│     ├─ LanguageSection (Panel, 100h)
+│     │  ├─ Label: "🌐 Ngôn ngữ"
+│     │  └─ LanguageDropdown: [Tiếng Việt, English, 中文, ...]
+│     │
+│     ├─ GraphicsSection (Panel, 100h)
+│     │  ├─ Label: "🎨 Đồ họa"
+│     │  └─ GraphicsDropdown: [Cao, Trung, Thấp]
+│     │
+│     ├─ NotificationSection (Panel, 60h)
+│     │  ├─ Label: "🔔 Thông báo"
+│     │  └─ NotificationToggle: ON/OFF
+│     │
+│     ├─ SaveButton (Button, 70h, Green): "💾 LƯU"
+│     │  └─ On Click: PlayerPrefs.Save() + ShowNotification("Lưu thành công!")
+│     │
+│     ├─ LogoutButton (Button, 70h, Red): "🚪 ĐĂNG XUẤT"
+│     │  └─ On Click: AuthManager.Logout() → ShowWelcomePanel()
+│     │
+│     └─ CloseButton (X, Top-Right, 60x60)
+│        └─ On Click: Hide Settings (return to previous panel)
+
+SETUP (10 steps):
+1. Create SettingsPanel
+2. Add DarkOverlay
+3. Create SettingsCard (centered, white/dark bg)
+4. Add Title
+5. Create SoundSection (3 sliders: Master, Music, SFX)
+6. Create LanguageSection (Dropdown with language options)
+7. Create GraphicsSection (Dropdown: High/Medium/Low)
+8. Create NotificationSection (Toggle: ON/OFF)
+9. Add SaveButton + LogoutButton + CloseButton (X)
+10. All inputs bind to PlayerPrefs for persistence
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+✅ TÓMANH TẮT SETUP - TẤT CẢ 13 PANELS
+═══════════════════════════════════════════════════════════════════════════════════════
+
+Total Components Needed:
+├─ 13 Root Panels
+├─ ~80+ Child components (Buttons, TextMeshPro, InputFields, Images, Sliders, Dropdowns, Toggles)
+├─ ~15 Layout Groups (VerticalLayoutGroup, HorizontalLayoutGroup, GridLayoutGroup)
+├─ ~50+ Button click handlers
+├─ ~1000+ lines of setup across all panels
+│
+Panel Status:
+├─ UI 1 (WelcomePanel): Detailed ✓
+├─ UI 2 (LoginPanel): Detailed ✓
+├─ UI 3 (RegisterPanel): Detailed ✓
+├─ UI 4 (MainMenuPanel): Quick ✓
+├─ UI 5 (ModeSelectionPanel): Quick ✓
+├─ UI 6 (LevelSelectionPanel): Quick ✓
+├─ UI 7 (DifficultySelectionPanel): Quick ✓
+├─ UI 8 (InGamePanel): Quick ✓
+├─ UI 9 (PauseMenuPanel): Quick ✓
+├─ UI 10 (GameResultPanel): Quick ✓
+├─ UI 11 (LeaderboardPanel): Quick ✓
+├─ UI 12 (ProfilePanel): Quick ✓
+└─ UI 13 (SettingsPanel): Quick ✓
+
+NEXT STEPS AFTER UI SETUP:
+1. Create all 13 Panels in Unity (follow setup guide)
+2. Create UIManager.cs and attach to Canvas
+3. Set button click handlers (On Click → UIManager/ManagerFunctions)
+4. Create AuthManager.cs (Login/Register)
+5. Create GameManager.cs (In-Game logic, question display, answer checking)
+6. Create LeaderboardManager.cs (API calls)
+7. Create PlayerDataManager.cs (Load/Save player data)
+8. Hook up with backend (MySQL + API)
+9. Test responsive layout on multiple devices
+10. Build for Android
+
+        ┌────────────────────────────┐
+        │  CHỌN ĐỘ KHÓ (Title)      │
+        │  Màn chơi 3 - Cộng số     │
+        └────────────────────────────┘
+        
+        ╔══════════════════════════╗
+        ║  ✅ DỄ                  ║
+        ║  ⏱️ Thời gian: 60s       ║
+        ║  🎯 Tỉ lệ: 80%          ║
+        ╚══════════════════════════╝
+        
+        ╔══════════════════════════╗
+        ║  ⚖️ BÌNH THƯỜNG         ║
+        ║  ⏱️ Thời gian: 45s       ║
+        ║  🎯 Tỉ lệ: 70%          ║
+        ╚══════════════════════════╝
+        
+        ╔══════════════════════════╗
+        ║  🔥 KHÓ                 ║
+        ║  ⏱️ Thời gian: 30s       ║
+        ║  🎯 Tỉ lệ: 50%          ║
+        ╚══════════════════════════╝
+        
+        ┌────────────────────────────┐
+        │      QUAY LẠI (Back)      │
+        └────────────────────────────┘
+
+Components:
+├─ Image (background)
+├─ Title (TextMeshPro)
+├─ LevelInfoText (màn chơi nào)
+├─ DifficultyContainer (VerticalLayoutGroup)
+│  ├─ EasyButton (Card)
+│  │  ├─ EasyTitle
+│  │  ├─ EasyTimeText
+│  │  └─ EasyRewardText
+│  ├─ NormalButton (Card)
+│  └─ HardButton (Card)
+├─ Spacer (flex)
+└─ BackButton
+
+───────────────────────────────────────────────────────────────────────────────────
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ UI 8: IN-GAME PANEL (Màn chơi chính)                                           ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+        ┌─────────┬─────────────┬─────────┐
+        │ ❤️ 3 LS │ ⏱️ 00:45   │ Score:80│
+        ├─────────┴─────────────┴─────────┤
+        │ Câu 5/10: ▓▓▓░░░░░░░░░░░      │
+        └─────────────────────────────────┘
+        
+        ┌────────────────────────────┐
+        │  Tính: 25 + 17 = ?         │
+        │                            │
+        │  (Big text - 36pt)         │
+        └────────────────────────────┘
+        
+        ╔════════╗ ╔════════╗
+        ║   42   ║ ║   35   ║
+        ╚════════╝ ╚════════╝
+        
+        ╔════════╗ ╔════════╗
+        ║   40   ║ ║   38   ║
+        ╚════════╝ ╚════════╝
+        
+        ┌────────────────────────────┐
+        │      Ⅱ PAUSE (top-right)  ║
+        └────────────────────────────┘
+        
+        [FEEDBACK: ✅ ĐÚNG VUI QUÁ! (Hidden)]
+
+Components:
+├─ Image (background game)
+├─ TopBar (Panel)
+│  ├─ HealthText + HealthImage
+│  ├─ TimerText
+│  └─ ScoreText
+├─ ProgressBar (Slider - question counter)
+├─ QuestionDisplay (TextMeshPro - big)
+├─ AnswerButtonsGrid (GridLayoutGroup 2x2)
+│  ├─ AnswerButton1 (Button)
+│  ├─ AnswerButton2
+│  ├─ AnswerButton3
+│  └─ AnswerButton4
+├─ PauseButton (top-right)
+└─ FeedbackAnimation (TextMeshPro - Hidden, shows on answer)
+
+───────────────────────────────────────────────────────────────────────────────────
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ UI 9: PAUSE MENU PANEL (Menu tạm dừng - Overlay)                              ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+        🟫 DarkOverlay (semi-transparent background)
+        
+              ╔══════════════════════╗
+              ║   TẠMBIENTIONAL DỪNG ║
+              ╚══════════════════════╝
+              
+              ╔══════════════════════╗
+              ║   ▶️ TIẾP TỤC (100) ║
+              ╚══════════════════════╝
+              
+              ╔══════════════════════╗
+              ║   ⚙️ CẤU HÌNH (100) ║
+              ╚══════════════════════╝
+              
+              ╔══════════════════════╗
+              ║   🏠 MENU CHÍNH (100)║
+              ╚══════════════════════╝
+              
+              ┌────────────────────────┐
+              │   QUAY LẠI (Close)    │
+              └────────────────────────┘
+
+Components:
+├─ DarkOverlay (Panel - semi-transparent black)
+├─ PauseCard (Panel - centered, white background)
+│  ├─ PauseTitle (TextMeshPro)
+│  ├─ ResumeButton
+│  ├─ SettingsButton
+│  ├─ MenuButton
+│  └─ CloseButton (X - top right)
+└─ [Spacers for responsive layout]
+
+───────────────────────────────────────────────────────────────────────────────────
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ UI 10: GAME RESULT PANEL (Kết quả chơi)                                        ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+        ┌──────────────────────────┐
+        │  🎉 CHIẾN THẮNG! (Big)  │
+        │    Bạn là tuyệt vời!    │
+        └──────────────────────────┘
+        
+        ╔═══════════════════════════╗
+        ║  ⭐ ⭐ ⭐ (3 sao)      ║
+        ║                           ║
+        ║  Điểm: 850               ║
+        ║  Mốc thời gian: 45 giây  ║
+        ║  Tính chính xác: 100%    ║
+        ║  Thưởng XP: +250         ║
+        ╚═══════════════════════════╝
+        
+        ╔═══════════════════════════╗
+        ║  🔄 CHƠI LẠI (100)      ║
+        ╚═══════════════════════════╝
+        
+        ╔═══════════════════════════╗
+        ║  ➡️ MÀN TIẾP (100)      ║
+        ╚═══════════════════════════╝
+        
+        ┌─────────────────────────────┐
+        │     🏠 MENU CHÍNH (80)     │
+        └─────────────────────────────┘
+
+Components:
+├─ Image (background confetti)
+├─ ResultTitle (TextMeshPro - "CHIẾN THẮNG!")
+├─ StarsDisplay (Image x3 for rating)
+├─ StatsPanel (Panel)
+│  ├─ ScoreText
+│  ├─ TimeText
+│  ├─ AccuracyText
+│  └─ XPRewardText
+├─ ReplayButton (Button - 100h)
+├─ NextButton (Button - 100h)
+├─ MenuButton (Button - 80h)
+└─ [Spacers]
+
+───────────────────────────────────────────────────────────────────────────────────
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ UI 11: LEADERBOARD PANEL (Bảng xếp hạng)                                       ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+        ┌──────────┬──────────┬──────────┐
+        │ 🏆 Toàn │  👥 Bạn │  🎯 Ngày │
+        └──────────┴──────────┴──────────┘
+        ⚙️ Refresh
+
+        ┌─────────────────────────────┐
+        │ Hạng │ Tên       │ Điểm     │
+        ├─────────────────────────────┤
+        │ 1 🥇│ Player A  │ 9500     │
+        │ 2 🥈│ Player B  │ 9200     │
+        │ 3 🥉│ Player C  │ 8900     │
+        │ 4    │ Player D  │ 8600     │
+        │ 5    │ Player E  │ 8300     │
+        │ ... (scroll)...             │
+        │ 45   │ BẠNHẠNG   │ 5200 ◄   │ (Highlight)
+        └─────────────────────────────┘
+        
+        ┌─────────────────────────────┐
+        │      QUAY LẠI (Back)       │
+        └─────────────────────────────┘
+
+Components:
+├─ Image (background)
+├─ TabContainer (HorizontalLayoutGroup)
+│  ├─ ScoreTabButton
+│  ├─ LevelTabButton
+│  └─ FriendsTabButton
+├─ RefreshButton (top-right)
+├─ LeaderboardList (ScrollView)
+│  └─ LeaderboardEntryPrefab (multiple instances)
+│     ├─ RankText
+│     ├─ NameText
+│     ├─ ScoreText
+│     └─ [Highlight if player's own rank]
+├─ PlayerRankDisplayHighlight (Panel - own rank)
+└─ BackButton
+
+───────────────────────────────────────────────────────────────────────────────────
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ UI 12: PROFILE PANEL (Hồ sơ cá nhân)                                           ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+        ┌──────────────────────────┐
+        │   👤 HỒ SƠ CÁ NHÂN      │
+        └──────────────────────────┘
+        
+        ┌──────────────────────────┐
+        │     👨 Avatar (200x200)  │
+        └──────────────────────────┘
+        
+        ┌──────────────────────────┐
+        │   Tên: Player123         │
+        │   Lv: 15                 │
+        │   Kinh nghiệm: 12500 XP  │
+        │   Tổng điểm: 45000       │
+        │   Hạng: 45 / 10000       │
+        └──────────────────────────┘
+        
+        📜 THÀNH TỰU / BADGE
+        ┌────────┬────────┬────────┐
+        │ 🏅    │ 🏅    │ 🏅    │
+        ├────────┼────────┼────────┤
+        │ 🏅    │ 🏅    │ 🏅    │
+        └────────┴────────┴────────┘
+        
+        ╔══════════════════════════╗
+        ║   ✏️ CHỈNH SỬA (80)    ║
+        ╚══════════════════════════╝
+        
+        ┌──────────────────────────┐
+        │      QUAY LẠI (Back)    │
+        └──────────────────────────┘
+
+Components:
+├─ Image (background)
+├─ ProfileTitle
+├─ PlayerAvatar (Image - circular)
+├─ PlayerStatsContainer (Panel)
+│  ├─ NameText
+│  ├─ LevelText
+│  ├─ ExperienceBar (Slider)
+│  ├─ TotalScoreText
+│  └─ RankText
+├─ AchievementTitle
+├─ AchievementGrid (GridLayoutGroup 3x2)
+│  ├─ AchievementIcon1...6 (Images)
+│  └─ [Click to view details]
+├─ EditButton
+└─ BackButton
+
+───────────────────────────────────────────────────────────────────────────────────
+
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ UI 13: SETTINGS PANEL (Cài đặt - Overlay)                                      ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+        🟫 DarkOverlay (semi-transparent)
+        
+              ╔══════════════════════════╗
+              ║   ⚙️ CẤU HÌNH           ║
+              ╚══════════════════════════╝
+              
+              🔊 Âm lượng:
+              ├─ 🔊 Master: ████░░
+              ├─ 🎵 Nhạc: ███░░░
+              └─ 🔔 Hiệu ứng: ███░░░
+              
+              🌐 Ngôn ngữ:
+              └─ [Dropdown: Tiếng Việt ▼]
+              
+              🎨 Đồ họa:
+              └─ [Dropdown: Cao ▼]
+              
+              🔔 Thông báo: ✓ (Toggle)
+              
+              ╔══════════════════════════╗
+              ║   💾 LƯU (80)           ║
+              ╚══════════════════════════╝
+              
+              ╔══════════════════════════╗
+              ║   🚪 ĐĂNG XUẤT (80)    ║
+              ╚══════════════════════════╝
+              
+              ┌────────────────────────────┐
+              │   ✕ (Close - top right)   │
+              └────────────────────────────┘
+
+Components:
+├─ DarkOverlay (Panel - semi-transparent)
+├─ SettingsCard (Panel - centered)
+│  ├─ SettingsTitle
+│  ├─ VolumeSection
+│  │  ├─ MasterVolumeSlider
+│  │  ├─ MusicVolumeSlider
+│  │  └─ SFXVolumeSlider
+│  ├─ LanguageSection
+│  │  └─ LanguageDropdown
+│  ├─ GraphicsSection
+│  │  └─ GraphicsDropdown
+│  ├─ NotificationSection
+│  │  └─ NotificationToggle
+│  ├─ SaveButton
+│  ├─ LogoutButton
+│  └─ CloseButton (X)
+└─ [Spacers]
+
+═══════════════════════════════════════════════════════════════════════════════════════
+
+✅ TÓMANH TẮT: 13 UI PANELS
+═══════════════════════════════════════════════════════════════════════════════════════
+
+UI 1: WelcomePanel       ✓ Initial ACTIVE
+UI 2: LoginPanel         ✗ Initial INACTIVE
+UI 3: RegisterPanel      ✗ Initial INACTIVE
+UI 4: MainMenuPanel      ✗ Initial INACTIVE
+UI 5: ModeSelectionPanel ✗ Initial INACTIVE
+UI 6: LevelSelectionPanel ✗ Initial INACTIVE
+UI 7: DifficultySelectionPanel ✗ Initial INACTIVE
+UI 8: InGamePanel        ✗ Initial INACTIVE
+UI 9: PauseMenuPanel     ✗ Initial INACTIVE (Overlay)
+UI 10: GameResultPanel   ✗ Initial INACTIVE
+UI 11: LeaderboardPanel  ✗ Initial INACTIVE
+UI 12: ProfilePanel      ✗ Initial INACTIVE
+UI 13: SettingsPanel     ✗ Initial INACTIVE (Overlay)
+
+═══════════════════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,534 @@
+🎨 UI LAYERED STRUCTURE - TẤT CẢ SCREENS (Template)
+═══════════════════════════════════════════════════════════════════════════════
+
+HƯỚNG DẪN CHUNG:
+1. Mỗi screen có 1 Canvas riêng + 1 SceneManager.cs
+2. Các component được liệt kê theo tầp (parent → children)
+3. Initial State: ✓ Active (hiển thị) hay ✗ Inactive (ẩn)
+4. Z-Order: Thứ tự hiển thị từ phía sau (0) đến phía trước (10)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SCREEN 2 - WELCOME SCREEN
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 HIERARCHY
+─────────────────────────────────────────────
+
+Canvas (Canvas Scaler: 1080x1920)
+│ Initial State: ✓ ACTIVE
+│
+├─ WelcomeBackground (Image)
+│  ├─ Initial: ✓ ACTIVE
+│  ├─ Component: Image
+│  ├─ Source Image: "welcome_bg"
+│  ├─ Anchor: Stretch, Stretch
+│  ├─ Size: 1080 x 1920
+│  ├─ Z-Order: 0
+│  └─ Color: FFFFFF
+│
+├─ CharacterSprite (Image)
+│  ├─ Initial: ✓ ACTIVE
+│  ├─ Component: Image
+│  ├─ Source Image: "character_wave"
+│  ├─ Anchor: Bottom Center
+│  ├─ Position: (0, 100, 0)
+│  ├─ Size: 300 x 400
+│  ├─ Z-Order: 1
+│  └─ Add Animator: Loop wave animation
+│
+├─ GameLogo (Image)
+│  ├─ Initial: ✓ ACTIVE
+│  ├─ Component: Image
+│  ├─ Source Image: "game_logo"
+│  ├─ Anchor: Top Center
+│  ├─ Position: (0, -150, 0)
+│  ├─ Size: 250 x 250
+│  ├─ Z-Order: 2
+│  └─ Color: FFFFFF
+│
+├─ WelcomeText (TextMeshPro)
+│  ├─ Initial: ✓ ACTIVE
+│  ├─ Component: TextMeshProUGUI
+│  ├─ Text: "Chào mừng bạn"
+│  ├─ Font Size: 48
+│  ├─ Alignment: Center
+│  ├─ Anchor: Top Center
+│  ├─ Position: (0, -400, 0)
+│  ├─ Size: 600 x 100
+│  ├─ Z-Order: 2
+│  └─ Color: FFFFFF
+│
+├─ LoginButton (Button - TextMeshPro)
+│  ├─ Initial: ✓ ACTIVE
+│  ├─ Parent: Canvas
+│  ├─ Component: Button
+│  ├─ Navigation: Auto
+│  ├─ Anchor: Center
+│  ├─ Position: (0, 200, 0)
+│  ├─ Size: 300 x 80
+│  ├─ Z-Order: 3
+│  ├─ Image (Button):
+│  │  ├─ Source Image: "button_blue"
+│  │  └─ Color: 0080FF
+│  ├─ Text (Child):
+│  │  ├─ Text: "ĐĂNG NHẬP"
+│  │  ├─ Font Size: 32
+│  │  ├─ Color: FFFFFF
+│  │  └─ Alignment: Center
+│  └─ Interactive: ON
+│
+├─ RegisterButton (Button - TextMeshPro)
+│  ├─ Initial: ✓ ACTIVE
+│  ├─ ParentCanvas
+│  ├─ Component: Button
+│  ├─ Anchor: Center
+│  ├─ Position: (0, 80, 0)
+│  ├─ Size: 300 x 80
+│  ├─ Z-Order: 3
+│  ├─ Image (Button):
+│  │  ├─ Source Image: "button_green"
+│  │  └─ Color: 00CC66
+│  ├─ Text (Child):
+│  │  ├─ Text: "ĐĂNG KÝ"
+│  │  ├─ Font Size: 32
+│  │  ├─ Color: FFFFFF
+│  │  └─ Alignment: Center
+│  └─ Interactive: ON
+│
+└─ SettingsButton (Button)
+   ├─ Initial: ✓ ACTIVE
+   ├─ Component: Button (Icon only)
+   ├─ Anchor: Top Right
+   ├─ Position: (-50, -50, 0)
+   ├─ Size: 60 x 60
+   ├─ Z-Order: 4
+   ├─ Image (Button):
+   │  ├─ Source Image: "icon_settings"
+   │  └─ Color: FFFFFF
+   └─ Interactive: ON
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SCREEN 3 - LOGIN SCREEN
+═══════════════════════════════════════════════════════════════════════════════
+
+📋 HIERARCHY
+─────────────────────────────────────────────
+
+Canvas (Canvas Scaler: 1080x1920)
+│ Initial State: ✓ ACTIVE
+│
+├─ LoginBackground (Image)
+│  ├─ Initial: ✓ ACTIVE
+│  ├─ Anchor: Stretch, Stretch
+│  ├─ Source Image: "login_bg"
+│  ├─ Z-Order: 0
+│  └─ Color: 1A1A1A (Dark)
+│
+├─ LoginPanel (Panel/Image)
+│  ├─ Initial: ✓ ACTIVE
+│  ├─ Component: Image (white panel)
+│  ├─ Anchor: Middle Center
+│  ├─ Position: (0, 0, 0)
+│  ├─ Size: 600 x 800
+│  ├─ Z-Order: 1
+│  ├─ Color: FFFFFF
+│  ├─ Image: "panel_white_rounded"
+│  └─ Shadow: ON (Image > Shadow)
+│
+│  └──┬─ LoginTitle (TextMeshPro)
+│     ├─ Initial: ✓ ACTIVE
+│     ├─ Text: "ĐĂNG NHẬP"
+│     ├─ Font Size: 48
+│     ├─ Anchor: Top Center (within panel)
+│     ├─ Position: (0, -30, 0)
+│     ├─ Size: 500 x 60
+│     ├─ Z-Order: 2
+│     ├─ Color: 000000
+│     └─ Alignment: Center
+│
+│  └──┬─ EmailLabel (TextMeshPro)
+│     ├─ Initial: ✓ ACTIVE
+│     ├─ Text: "Email"
+│     ├─ Font Size: 24
+│     ├─ Anchor: Top Left (within panel)
+│     ├─ Position: (50, -120, 0)
+│     ├─ Size: 400 x 30
+│     ├─ Z-Order: 2
+│     ├─ Color: 333333 (Dark gray)
+│     └─ Alignment: Left
+│
+│  └──┬─ EmailInputField (InputField - TextMeshPro)
+│     ├─ Initial: ✓ ACTIVE
+│     ├─ Component: InputField
+│     ├─ Anchor: Top Center (within panel)
+│     ├─ Position: (0, -170, 0)
+│     ├─ Size: 500 x 60
+│     ├─ Z-Order: 2
+│     ├─ Placeholder Text: "user@gmail.com"
+│     ├─ Text Component:
+│     │  ├─ Font Size: 28
+│     │  ├─ Color: 000000
+│     │  └─ Alignment: Left
+│     ├─ Background Image: "input_bg_white"
+│     ├─ Outline Color: 0099FF
+│     └─ Outline Width: 2
+│
+│  └──┬─ PasswordLabel (TextMeshPro)
+│     ├─ Initial: ✓ ACTIVE
+│     ├─ Text: "Mật khẩu"
+│     ├─ Font Size: 24
+│     ├─ Anchor: Top Left (within panel)
+│     ├─ Position: (50, -280, 0)
+│     ├─ Size: 400 x 30
+│     ├─ Z-Order: 2
+│     └─ Color: 333333
+│
+│  └──┬─ PasswordInputField (InputField - TextMeshPro)
+│     ├─ Initial: ✓ ACTIVE
+│     ├─ Component: InputField
+│     ├─ Content Type: Password
+│     ├─ Anchor: Top Center (within panel)
+│     ├─ Position: (0, -330, 0)
+│     ├─ Size: 500 x 60
+│     ├─ Z-Order: 2
+│     ├─ Placeholder Text: "••••••••"
+│     ├─ Text Component:
+│     │  ├─ Font Size: 28
+│     │  ├─ Color: 000000
+│     │  └─ In Input: ON
+│     ├─ Background Image: "input_bg_white"
+│     └─ Outline Color: 0099FF
+│
+│  └──┬─ ForgotPasswordLink (Button)
+│     ├─ Initial: ✓ ACTIVE
+│     ├─ Component: Button (text-only, no image)
+│     ├─ Anchor: Bottom Left (within panel)
+│     ├─ Position: (50, 200, 0)
+│     ├─ Size: 300 x 40
+│     ├─ Z-Order: 2
+│     ├─ Text: "<u>Quên mật khẩu?</u>"
+│     ├─ Font Size: 18
+│     ├─ Color: 0099FF (Blue link)
+│     └─ Interactive: ON
+│
+│  └──┬─ LoginButton (Button)
+│     ├─ Initial: ✓ ACTIVE
+│     ├─ Component: Button
+│     ├─ Anchor: Bottom Center (within panel)
+│     ├─ Position: (0, 100, 0)
+│     ├─ Size: 500 x 70
+│     ├─ Z-Order: 2
+│     ├─ Image (Button):
+│     │  ├─ Source Image: "button_blue"
+│     │  └─ Color: 0080FF
+│     ├─ Text (Child):
+│     │  ├─ Text: "ĐĂNG NHẬP"
+│     │  ├─ Font Size: 32
+│     │  ├─ Color: FFFFFF
+│     │  └─ Alignment: Center
+│     └─ Interactive: ON
+│
+│  └──┬─ BackButton (Button)
+│     ├─ Initial: ✓ ACTIVE
+│     ├─ Component: Button
+│     ├─ Anchor: Bottom Left (within panel)
+│     ├─ Position: (50, 30, 0)
+│     ├─ Size: 200 x 50
+│     ├─ Z-Order: 2
+│     ├─ Image (Button):
+│     │  ├─ Source Image: "button_gray"
+│     │  └─ Color: CCCCCC
+│     ├─ Text (Child):
+│     │  ├─ Text: "QUAY LẠI"
+│     │  ├─ Font Size: 24
+│     │  ├─ Color: 000000
+│     │  └─ Alignment: Center
+│     └─ Interactive: ON
+│
+└─ ErrorMessage (TextMeshPro)
+   ├─ Initial: ✗ INACTIVE (Hiển thị khi có lỗi)
+   ├─ Text: "" (Sẽ update qua code)
+   ├─ Font Size: 20
+   ├─ Anchor: Bottom Center
+   ├─ Position: (0, 30, 0)
+   ├─ Size: 800 x 50
+   ├─ Z-Order: 5
+   ├─ Color: FF0000 (Red)
+   └─ Alignment: Center
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SCREEN 4 - REGISTER SCREEN (Similar to Login)
+═══════════════════════════════════════════════════════════════════════════════
+
+Canvas → RegisterPanel
+├─ RegisterTitle (TextMeshPro): "ĐĂNG KÝ"
+│
+├─ EmailInputField (InputField)
+│  ├─ Placeholder: "Email"
+│  ├─ Content Type: Email Address
+│  └─ Size: 500 x 60
+│
+├─ UsernameInputField (InputField)
+│  ├─ Placeholder: "Tên người chơi"
+│  ├─ Content Type: Standard
+│  └─ Size: 500 x 60
+│
+├─ PasswordInputField (InputField)
+│  ├─ Placeholder: "Mật khẩu"
+│  ├─ Content Type: Password
+│  └─ Size: 500 x 60
+│
+├─ ConfirmPasswordInputField (InputField)
+│  ├─ Placeholder: "Xác nhận mật khẩu"
+│  ├─ Content Type: Password
+│  └─ Size: 500 x 60
+│
+├─ AgeLabel (TextMeshPro): "Tuổi"
+│
+├─ AgeDropdown (Dropdown - TextMeshPro)
+│  ├─ Options: 5, 6, 7, ... 18
+│  ├─ Anchor: Top Center
+│  ├─ Position: (0, -380, 0)
+│  ├─ Size: 500 x 60
+│  ├─ Z-Order: 2
+│  └─ Value: 0 (default 5 tuổi)
+│
+├─ AvatarLabel (TextMeshPro): "Chọn nhân vật"
+│
+├─ AvatarGrid (LayoutGroup)
+│  ├─ Position: (0, -500, 0)
+│  ├─ Size: 500 x 150
+│  ├─ Layout: HorizontalLayoutGroup
+│  ├─ Spacing: 10
+│  │
+│  └──┬─ Avatar1 (Button)
+│     ├─ Image: "avatar_1"
+│     ├─ Size: 60 x 60
+│     └─ Toggle: ON (Select state)
+│
+│  └──┬─ Avatar2 (Button)
+│  └──┬─ Avatar3 (Button)
+│  └──┬─ Avatar4 (Button)
+│  └──┬─ Avatar5 (Button)
+│  └──┬─ Avatar6 (Button)
+│
+├─ TermsCheckbox (Toggle)
+│  ├─ Position: (0, -650, 0)
+│  ├─ Size: 400 x 40
+│  ├─ Label Text: "Tôi đồng ý với Điều khoản"
+│  ├─ Is On: OFF (default)
+│  └─ Checkmark: ON (when selected)
+│
+├─ RegisterButton (Button)
+│  ├─ Text: "ĐĂNG KÝ"
+│  ├─ Position: (0, -750, 0)
+│  ├─ Size: 500 x 70
+│  ├─ Interactive: ON
+│  └─ Color: 00CC66 (Green)
+│
+└─ BackButton (Button)
+   ├─ Text: "QUAY LẠI"
+   ├─ Position: (0, -850, 0)
+   ├─ Size: 500 x 50
+   ├─ Interactive: ON
+   └─ Color: CCCCCC (Gray)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SCREEN 5 - MAIN MENU SCREEN (Complex)
+═══════════════════════════════════════════════════════════════════════════════
+
+Canvas
+├─ MenuBackground (Image)
+│  ├─ Source Image: "menu_bg"
+│  ├─ Anchor: Stretch, Stretch
+│  ├─ Z-Order: 0
+│  └─ Color: FFFFFF
+│
+├─ Header (Panel)
+│  ├─ Anchor: Top Stretch
+│  ├─ Position: (0, -20, 0)
+│  ├─ Size: 1080 x 150
+│  ├─ Z-Order: 1
+│  ├─ Color: 333333 (Dark bar)
+│  │
+│  ├─ PlayerNameText (TextMeshPro)
+│  │  ├─ Text: "Nguyễn Huy" (Dynamic)
+│  │  ├─ Font Size: 28
+│  │  ├─ Anchor: Left Center
+│  │  ├─ Position: (30, 0, 0)
+│  │  ├─ Z-Order: 2
+│  │  └─ Color: FFFFFF
+│  │
+│  ├─ LevelText (TextMeshPro)
+│  │  ├─ Text: "Level: 5"
+│  │  ├─ Font Size: 24
+│  │  ├─ Anchor: Center
+│  │  ├─ Position: (0, 0, 0)
+│  │  ├─ Z-Order: 2
+│  │  └─ Color: FFFF00 (Yellow)
+│  │
+│  ├─ ScoreText (TextMeshPro)
+│  │  ├─ Text: "Score: 50000"
+│  │  ├─ Font Size: 24
+│  │  ├─ Anchor: Right Center
+│  │  ├─ Position: (-30, 0, 0)
+│  │  ├─ Z-Order: 2
+│  │  └─ Color: FFFFFF
+│
+├─ CharacterDisplay (Image)
+│  ├─ Source Image: "character_idle"
+│  ├─ Anchor: Bottom Center
+│  ├─ Position: (0, 50, 0)
+│  ├─ Size: 300 x 400
+│  ├─ Z-Order: 1
+│  └─ Animation: Idle loop
+│
+├─ PlayButton (Button - Large)
+│  ├─ Anchor: Center
+│  ├─ Position: (0, 300, 0)
+│  ├─ Size: 400 x 100
+│  ├─ Z-Order: 2
+│  ├─ Image: "button_blue"
+│  ├─ Text: "CHƠI ĐƠN"
+│  ├─ Font Size: 40
+│  ├─ Interactive: ON
+│  └─ Color: 0080FF
+│
+├─ MultiplayerButton (Button)
+│  ├─ Anchor: Center
+│  ├─ Position: (0, 150, 0)
+│  ├─ Size: 400 x 100
+│  ├─ Z-Order: 2
+│  ├─ Image: "button_purple"
+│  ├─ Text: "CHƠI CÙNG BẠN BÈ"
+│  ├─ Font Size: 40
+│  ├─ Interactive: ON
+│  └─ Color: 9900FF
+│
+├─ LeaderboardButton (Button)
+│  ├─ Anchor: Center
+│  ├─ Position: (-250, 0, 0)
+│  ├─ Size: 350 x 80
+│  ├─ Z-Order: 2
+│  ├─ Image: "button_orange"
+│  ├─ Text: "BXH"
+│  ├─ Font Size: 32
+│  ├─ Interactive: ON
+│  └─ Color: FF9900
+│
+├─ ProfileButton (Button)
+│  ├─ Anchor: Center
+│  ├─ Position: (250, 0, 0)
+│  ├─ Size: 350 x 80
+│  ├─ Z-Order: 2
+│  ├─ Image: "button_pink"
+│  ├─ Text: "HỒ SƠ"
+│  ├─ Font Size: 32
+│  ├─ Interactive: ON
+│  └─ Color: FF0099
+│
+└─ SettingsButton (Button - Top Right)
+   ├─ Anchor: Top Right
+   ├─ Position: (-50, -50, 0)
+   ├─ Size: 80 x 80
+   ├─ Z-Order: 3
+   ├─ Image: "icon_settings"
+   ├─ Interactive: ON
+   └─ Color: FFFFFF
+
+═══════════════════════════════════════════════════════════════════════════════
+
+TEMPLATE FORMAT CHO CÁC SCREEN KHÁC
+═══════════════════════════════════════════════════════════════════════════════
+
+SCREEN 6 - MODE SELECTION:
+├─ Background
+├─ TitleText
+├─ SingleModeCard (Button)
+│  ├─ Image
+│  ├─ Label
+│  └─ Description
+├─ MultiplayerModeCard (Button)
+│  ├─ Image
+│  ├─ Label
+│  └─ Description
+└─ BackButton
+
+SCREEN 7 - LEVEL SELECTION:
+├─ Background
+├─ TitleText
+├─ Level1Button (Button): "MẦU GIÁO"
+├─ Level2Button (Button): "LỚP 1"
+├─ Level3Button (Button): "LỚP 2"
+├─ Level4Button (Button): "LỚP 3"
+├─ Level5Button (Button): "LỚP 4"
+├─ Level6Button (Button): "LỚP 5"
+└─ BackButton
+
+SCREEN 8 - DIFFICULTY SELECTION:
+├─ Background
+├─ TitleText
+├─ EasyButton (Button)
+│  ├─ Image
+│  ├─ StarRating (1/3 stars)
+│  ├─ Description
+│  └─ SelectButton
+├─ NormalButton (Button)
+│  ├─ Image
+│  ├─ StarRating (2/3 stars)
+│  ├─ Description
+│  └─ SelectButton
+├─ HardButton (Button)
+│  ├─ Image
+│  ├─ StarRating (3/3 stars)
+│  ├─ Description
+│  └─ SelectButton
+└─ BackButton
+
+SCREEN 9 - IN-GAME SCREEN:
+├─ Background
+├─ ProgressBar (Slider)
+├─ Timer (TextMeshPro)
+├─ Score (TextMeshPro)
+├─ QuestionText (TextMeshPro)
+├─ AnswerButton1 (Button)
+├─ AnswerButton2 (Button)
+├─ AnswerButton3 (Button)
+├─ AnswerButton4 (Button)
+├─ PauseButton (Button)
+└─ Feedback Animation (Image - Hidden by default)
+
+SCREEN 10 - PAUSE MENU:
+├─ DarkOverlay (Image - Semi-transparent)
+├─ PausePanel (Panel)
+│  ├─ Title
+│  ├─ ResumeButton
+│  ├─ AudioButton
+│  └─ MenuButton
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ QUICK REFERENCE: COMPONENT TYPES
+═══════════════════════════════════════════════════════════════════════════════
+
+Image              → Background, Icons, Sprites
+TextMeshPro        → Tất cả text trên màn hình
+Button             → Click-able với callback
+InputField         → Nhập input (email, password, etc)
+Dropdown           → Dropdown list (Age, Language, etc)
+Slider             → Progress bar, Volume control
+Toggle             → Checkbox
+Panel              → Container (use Image with color)
+CanvasGroup        → Để animate alpha/fade in-out
+LayoutGroup        → Auto-arrange children (Horizontal/Vertical)
+Animator           → Animations (fade, scale, rotate)
+ScrollView         → Scrollable list (Leaderboard)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Tác giả: AI Assistant
+Cập nhật: 29/03/2026
