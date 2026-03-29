@@ -1,6 +1,220 @@
 ═══════════════════════════════════════════════════════════════════
         🎮 HƯỚNG DẪN TẠO UI - GAME TOÁN HỌC (NGẮN GỌN)
 ═══════════════════════════════════════════════════════════════════
+🔄 CẬP NHẬT UI STRUCTURE (2026-03-29):
+📌 Thêm UI 1 mới (Welcome Screen) → đẩy tất cả UI khác lên 1
+   
+   NEW STRUCTURE:
+   ├─ UI 1: Welcome Screen (INTRO - Play button) - NEW 🆕
+   ├─ UI 2: Welcome Panel (Auth) - cũ là UI 1
+   ├─ UI 3: Login Panel - cũ là UI 2
+   ├─ UI 4: Register Panel - cũ là UI 3
+   ├─ UI 5: Main Menu Panel - cũ là UI 4
+   ├─ UI 6: Mode Selection Panel - cũ là UI 5
+   ├─ UI 7: Level Selection Panel - cũ là UI 6
+   ├─ UI 8: Difficulty Selection - cũ là UI 7
+   ├─ UI 9: In-Game Panel - cũ là UI 8
+   ├─ UI 10: Pause Menu Panel - cũ là UI 9
+   ├─ UI 11: Game Result Panel - cũ là UI 10
+   ├─ UI 12: Leaderboard Panel - cũ là UI 11
+   ├─ UI 13: Profile Panel - cũ là UI 12
+   └─ UI 14: Settings Panel (Global) - cũ là UI 13
+
+⚠️ NOTE: 
+   - UI 1 mới: Play button → đi tới UI 2
+   - Các UI definitions ở phía dưới file CHƯA được rename đầy đủ
+   - Khi dev: Cần thay thế "UI X:" → "UI (X+1):" trong tất cả UI definitions
+   - Search and Replace: "UI 1: WELCOME" → "UI 2: WELCOME PANEL" (for old UI 1)
+   - Tiếp tục cho tất cả 13 UI
+═══════════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════════════
+                   UI 1: WELCOME SCREEN (INTRO) 🎬
+════════════════════════════════════════════════════════════════════
+┌─────────────────────────────────┐
+│    Welcome Screen               │
+│                                 │
+│   🎮 TÊN GAME (Logo)            │
+│   🐱 (Game mascot/character)    │
+│                                 │
+│        [▶️ PLAY]                │
+│                                 │
+│     ⚙️ Settings (top right)     │
+│                                 │
+└─────────────────────────────────┘
+
+📝 DESCRIPTION:
+- Màn hình đầu tiên xuất hiện khi khởi chạy game
+- Hiển thị logo game & mascot (con mèo xanh)
+- Nút ▶️ PLAY chính giữa - click → đi tới UI 1 (Welcome - Auth)
+- Có nút Settings ở góc - click → UI 13 (Settings)
+
+📋 COMPONENTS CẦN:
+- Image (Background)
+- Image (Logo game)
+- Image (Mascot/Character - mèo xanh)
+- Button ([▶️ PLAY])
+- Button (⚙️ Settings - corner)
+
+
+════════════════════════════════════════════════════════════════════              🔥 BIỂU ĐỒ LUỒNG HOẠT ĐỘNG NHANH (Quick Flow)
+════════════════════════════════════════════════════════════════════
+
+SCENARIO 1️⃣: CHƠI NHANH (Không đăng nhập)
+───────────────────────────────────────────
+  UI 1 (Welcome Screen)
+    ↓
+  Click "▶️ PLAY"
+    ↓
+  UI 1 (Welcome - Auth) 
+    ↓
+  Click "Chơi Nhanh"
+    ↓
+  UI 4 (Main Menu)
+    ├─ [CHƠI ĐƠN] → UI 5 → UI 6 → UI 7 → UI 8 (Chơi) → UI 10 (Kết quả)
+    │                                        ↑
+    │                                      [Pause] ⏸️ → UI 9 → Quay lại UI 8
+    │
+    ├─ [BXH] → UI 11 → Back → UI 4
+    ├─ [HỒ SƠ] → UI 12 → Back → UI 4
+    └─ [⚙️ Settings] → UI 13 → Back → UI 4
+
+
+SCENARIO 2️⃣: ĐĂNG KÝ & ĐĂNG NHẬP (Multiplayer)
+───────────────────────────────────────────
+  UI 1 (Welcome Screen)
+    ↓
+  Click "▶️ PLAY"
+    ↓
+  UI 2 (Welcome - Auth)
+    ↓
+  Click "ĐĂNG KÝ"
+    ↓
+  UI 4 (Register Form) → Nhập email, username, password, tuổi
+    ├─ Back → UI 2
+    └─ Click "HOÀN TẤT"
+       ├─ ❌ Lỗi → Hiện error, Stay UI 4
+       └─ ✅ Thành công → UI 3 (Login with message "Đăng ký thành công!")
+          ↓
+       Click "ĐĂNG NHẬP"
+          ├─ ❌ Sai → Hiện error, Stay UI 3
+          └─ ✅ Đúng → UI 5 (Main Menu)
+
+
+SCENARIO 3️⃣: ĐĂNG NHẬP (Nhanh)
+──────────────────────────────
+  UI 1 (Welcome Screen)
+    ↓
+  Click "▶️ PLAY"
+    ↓
+  UI 2 (Welcome - Auth)
+    ↓
+  Click "ĐĂNG NHẬP"
+    ↓
+  UI 3 (Login Form)
+    ├─ Back → UI 2
+    ├─ Click "Quên mật khẩu?" → Reset Password Flow
+    └─ Click "ĐĂNG NHẬP"
+       ├─ ❌ Sai email/password → Error message, Stay UI 3
+       └─ ✅ Đúng → UI 5 (Main Menu)
+
+
+SCENARIO 4️⃣: MULTIPLAYER GAME FLOW
+────────────────────────────────
+  UI 5 (Main Menu - đã đăng nhập)
+    ↓
+  Click "MULTIPLAYER"
+    ↓
+  UI 6 (Mode Selection)
+    ├─ Click "SINGLE PLAYER" → UI 7 (Level Selection)
+    └─ Click "MULTIPLAYER" → UI 7 (Level Selection - Multiplayer Mode)
+       ↓
+    UI 7 (Chọn level - Candy Crush style)
+       ├─ Scroll xem các level
+       ├─ Click level khóa 🔒 → "Mở khóa level trước đó"
+       └─ Click level mở ✅ → UI 8 (Difficulty)
+          ↓
+       UI 8 (Chọn độ khó: Easy/Normal/Hard)
+          ├─ Back → UI 7
+          └─ Click độ khó → UI 9 (Chơi game)
+             ↓
+          UI 9 (In-Game - 10 câu hỏi)
+             ├─ [Pause] → UI 10 (Pause Menu)
+             │            ├─ [Resume] → Back UI 9
+             │            ├─ [Settings] → UI 14 → Back → UI 10
+             │            └─ [Quit] → Confirm? → Yes: UI 5, No: UI 10
+             │
+             ├─ Trả lời đúng 10 câu ✅ → UI 11 (Kết quả)
+             └─ Hết thời gian ❌ → UI 11 (Kết quả)
+                ↓
+             UI 11 (Game Result)
+                ├─ [CẢI LẠI] → Lại UI 7 (chọn lại level)
+                ├─ [TIẾP TỤC] → UI 7 (level tiếp theo nếu mở khóa)
+                └─ [QUAY LẠI MENU] → UI 5
+
+
+════════════════════════════════════════════════════════════════════
+              📊 BẢNG TÓM TẮT: UI → ĐI ĐẾN ĐÂU → BACK ĐI ĐÂU
+════════════════════════════════════════════════════════════════════
+
+│ UI # │ Tên UI              │ Đi đến UI nào              │ Back → UI │
+├──────┼─────────────────────┼────────────────────────────┼───────────┤
+│ 0    │ Welcome Screen      │ 1                          │ Exit App  │
+│ 1    │ Welcome (Auth)      │ 2, 3, 4, 13                │ Exit App  │
+│ 2    │ Login               │ 1, 3, 4 (success)          │ 1         │
+│ 3    │ Register            │ 1, 2 (success)             │ 1         │
+│ 4    │ Main Menu (HUB)     │ 5, 11, 12, 13              │ Logout→1  │
+│ 5    │ Mode Selection      │ 6                          │ 4         │
+│ 6    │ Level Selection     │ 7 (nếu unlock)             │ 5         │
+│ 7    │ Difficulty Select   │ 8                          │ 6         │
+│ 8    │ In-Game             │ 9, 10                      │ Quit→6    │
+│ 9    │ Pause Menu          │ 8, 13, 4                   │ 8         │
+│ 10   │ Game Result         │ 6, 4                       │ Tùy nút   │
+│ 11   │ Leaderboard         │ Refresh data               │ 4         │
+│ 12   │ Profile             │ Edit profile (optional)    │ 4         │
+│ 13   │ Settings (Global)   │ Toggle/Dropdown            │ Nơi gọi   │
+└──────┴─────────────────────┴────────────────────────────┴───────────┘
+
+
+════════════════════════════════════════════════════════════════════
+              💾 LƯU TRỮ DỮ LIỆU: LOCAL vs SERVER
+════════════════════════════════════════════════════════════════════
+
+🎮 QUICK PLAY (Chơi Nhanh)
+  ├─ Lưu trữ: LOCAL ONLY (PlayerPrefs - máy điện thoại)
+  ├─ Dữ liệu: Level progression, Points, Settings
+  └─ Khi thoát: Dữ liệu RESET hoặc chỉ lưu cục bộ (KHÔNG đồng bộ server)
+
+👥 MULTIPLAYER (Đăng nhập)
+  ├─ Lưu trữ: SERVER (Backend Database)
+  ├─ Dữ liệu: Level progression, Points, Rankings, Profile
+  └─ Khi thoát: Dữ liệu BẢO LƯU trên server (có thể tải lại)
+
+⚙️ SETTINGS
+  ├─ Âm thanh, Nhạc: LOCAL + SERVER (nếu đăng nhập)
+  ├─ Ngôn ngữ: LOCAL + SERVER
+  └─ Đồ họa, Thông báo: LOCAL + SERVER
+
+
+════════════════════════════════════════════════════════════════════
+              🔐 UNLOCK LOGIC & PROGRESSION
+════════════════════════════════════════════════════════════════════
+
+✅ Level 1: LUÔN UNLOCK (mặc định)
+  └─ Người chơi bắt đầu từ Level 1
+
+✳️ Level N+1: MỞ KHÓA KHI
+  ├─ Hoàn thành Level N (UI 10 Result)
+  └─ Hệ thống ghi nhớ: PlayerPrefs("UnlockedLevel_" + (N+1))
+
+🔒 Level khóa: 
+  ├─ Click → Show "Hoàn thành Level trước"
+  └─ Unlock sau khi hoàn thành level trước đó
+
+
+════════════════════════════════════════════
+                         ✅ HOÀN TẤT PHẦ
+════════════════════════════════════════════
 
 UI 1: WELCOME PANEL
 ────────────────────────────────────────
@@ -178,42 +392,55 @@ UI 5: MODE SELECTION PANEL
 - Text (MULTIPLAYER desc)
 
 
-UI 6: LEVEL SELECTION PANEL
+UI 6: LEVEL SELECTION PANEL (CANDY CRUSH STYLE)
 ────────────────────────────────────────
 ┌─────────────────────────────────┐
-│  ← BACK                         │
+│  ← BACK                    ↗ ↙  │  ← Scroll indicators
 │                                 │
 │   CHỌN CẦP ĐỀ                   │
 │                                 │
-│  ┌──────────┐ ┌──────────┐     │
-│  │ LEVEL 1  │ │ LEVEL 2  │     │
-│  │ ⭐⭐⭐  │ │ ⭐⭐     │     │
-│  └──────────┘ └──────────┘     │
+│  [ScrollView - Horizontal]      │
 │                                 │
-│  ┌──────────┐ ┌──────────┐     │
-│  │ LEVEL 3  │ │ LEVEL 4  │     │
-│  │ ⭐       │ │ 🔒 KHÓA  │     │
-│  └──────────┘ └──────────┘     │
+│     🔒    ⭐⭐⭐    ⭐⭐        │
+│    LEVEL  LEVEL 1  LEVEL 2      │
+│      0    [Play]   [Play]       │
+│          ────●────────●────     │ ← Line connecting levels
+│    ⭐     ⭐⭐⭐  ⭐       │
+│   LEVEL  LEVEL 3  LEVEL 4       │
+│     5    [Play]   🔒 LOCK       │
 │                                 │
-│  ┌──────────┐ ┌──────────┐     │
-│  │ LEVEL 5  │ │ LEVEL 6  │     │
-│  │ 🔒 KHÓA  │ │ 🔒 KHÓA  │     │
-│  └──────────┘ └──────────┘     │
+│          ────●────────●────     │
+│    🔒     🔒       ⭐⭐        │
+│   LEVEL  LEVEL 5  LEVEL 6       │
+│     X    🔒 LOCK  [Play]        │
+│                                 │
+│  ┌──────────────────────┐      │
+│  │ 🎯 Current Level: 4  │      │
+│  └──────────────────────┘      │
 │                                 │
 └─────────────────────────────────┘
+
+📋 LAYOUT DESCRIPTION (CANDY CRUSH):
+- ScrollView ngang (Horizontal Scroll) để cuộn các level
+- Các level được xếp theo "Journey Map" style:
+  • Level odd (1,3,5,...) ở hàng trên
+  • Level even (2,4,6,...) ở hàng dưới
+  • Có đường nối (●────●) giữa các level để tạo cảm giác hành trình
+  • Level hiện tại được highlight
+  • Level mở khóa có nút [Play] xanh
+  • Level bị khóa là 🔒
 
 📋 COMPONENTS CẦN:
 - Button (← Back)
 - Text (CHỌN CẦP ĐỀ title)
-- Button (LEVEL 1)
-- Text (Level 1 stars)
-- Button (LEVEL 2)
-- Text (Level 2 stars)
-- Button (LEVEL 3)
-- Text (Level 3 stars)
-- Button (LEVEL 4 - locked)
-- Button (LEVEL 5 - locked)
-- Button (LEVEL 6 - locked)
+- ScrollView (Horizontal)
+  ├─ Button (LEVEL X) - với sao đánh giá
+  ├─ Image (Star rating - ⭐⭐⭐)
+  ├─ Button ([Play] nếu unlock)
+  ├─ Image (🔒 Lock icon nếu locked)
+  └─ Image (Line connector - đường nối giữa level)
+- Text (Current Level indicator)
+- Arrow indicators (↗ ↙ để chỉ có thể scroll)
 
 
 UI 7: DIFFICULTY SELECTION PANEL
@@ -429,7 +656,7 @@ UI 12: PROFILE PANEL
 - Button (CHỈNH SỬA PROFILE)
 
 
-UI 13: SETTINGS PANEL
+UI 14: SETTINGS PANEL
 ────────────────────────────────────────
 ┌─────────────────────────────────┐
 │                                 │
@@ -474,5 +701,265 @@ UI 13: SETTINGS PANEL
 
 
 ═══════════════════════════════════════════════════════════════════
-                         ✅ HOÀN TẤT
+           📊 LUỒNG ĐIỀU HƯỚNG & FLOW DỮ LIỆU GIỮA CÁC UI
 ═══════════════════════════════════════════════════════════════════
+
+🔄 FLOW ĐIỀU HƯỚNG CHI TIẾT:
+
+┌─────────┐
+│  UI 1   │ ← WELCOME SCREEN (Play button)
+├─────────┘
+│
+├─→ Click "▶️ PLAY" ──→ UI 2 (Welcome - Auth)
+│
+└─→ Click "⚙️ Settings" ──→ UI 14 (Settings) → Back → UI 1
+
+
+Từ UI 2 (Welcome - Auth):
+├─→ Click "Chơi Nhanh" → Bypass → UI 5 (Main Menu)
+├─→ Click "ĐĂNG KÝ" → UI 4 (Register) 
+│                      ├─→ Success → UI 3 (Login)
+│                      └─→ Back → UI 2
+├─→ Click "ĐĂNG NHẬP" → UI 3 (Login)
+│                        ├─→ Success → UI 5 (Main Menu)
+│                        └─→ Back → UI 2
+└─→ Click "⚙️ Settings" → UI 14 (Settings) → Back → UI 2
+
+
+Từ UI 5 (Main Menu - HUB):
+├─→ "CHƠI ĐƠN" → UI 6 (Mode) → UI 7 (Level) → UI 8 (Difficulty)
+│                → UI 9 (Game) → UI 11 (Result)
+│
+├─→ "MULTIPLAYER" → UI 6 (Mode - Multiplayer) → Same path as CHƠI ĐƠN
+│
+├─→ "BXH" → UI 12 (Leaderboard) → Back → UI 5
+│
+├─→ "HỒ SƠ" → UI 13 (Profile) → Back → UI 5
+│
+└─→ "⚙️ Settings" → UI 14 (Settings) → Back → UI 5
+
+════════════════════════════════════════════════════════════════════
+
+UI 1: WELCOME PANEL
+────────────────────────────────────────
+  🎯 Đây là UI KHỞI ĐẦU (Entry Point)
+  
+  Các nút dẫn đến:
+  ├─ "Chơi Nhanh"    → UI 4 (Main Menu) - [Back → UI 1]
+  ├─ "ĐĂNG NHẬP"     → UI 2 (Login Panel) - [Back → UI 1]
+  ├─ "ĐĂNG KÝ"       → UI 3 (Register Panel) - [Back → UI 1]
+  └─ "⚙️ Settings"   → UI 13 (Settings) - [Back → UI 1]
+
+
+UI 2: LOGIN PANEL
+────────────────────────────────────────
+  🔐 Form đăng nhập
+
+  Các nút dẫn đến:
+  ├─ "← BACK"            → UI 1 (Welcome Panel)
+  ├─ "Quên mật khẩu?"    → Reset Password Flow
+  ├─ "[ĐĂNG KÝ]"         → UI 3 (Register Panel)
+  └─ "[ĐĂNG NHẬP]" (button)
+      ├─ ✅ Success → UI 4 (Main Menu) - [Back → Logout → UI 1]
+      └─ ❌ Failed  → Show Error & stay UI 2
+
+
+UI 3: REGISTER PANEL
+────────────────────────────────────────
+  📝 Form đăng ký tài khoản
+
+  Các nút dẫn đến:
+  ├─ "← BACK"        → UI 1 (Welcome Panel)
+  └─ "[HOÀN TẤT]" (button)
+      ├─ ✅ Success → UI 2 (Login Panel) - với thông báo "Đăng ký thành công"
+      └─ ❌ Failed  → Show Error & stay UI 3
+
+
+UI 4: MAIN MENU PANEL ⭐ HỨB TRỤ
+────────────────────────────────────────
+  🏠 Đây là MENU CHÍNH (Hub trung tâm)
+
+  Các nút dẫn đến:
+  ├─ "[CHƠI ĐƠN]"       → UI 5 (Mode Selection: SINGLE PLAYER)
+  │                      └─ Back → UI 4
+  │
+  ├─ "[MULTIPLAYER]"    → UI 5 (Mode Selection: MULTIPLAYER)
+  │                      └─ Back → UI 4
+  │
+  ├─ "[BXH]"            → UI 11 (Leaderboard Panel)
+  │                      └─ Back → UI 4
+  │
+  ├─ "[HỒ SƠ]"          → UI 12 (Profile Panel)
+  │                      └─ Back → UI 4
+  │
+  └─ "[⚙️ Settings]"    → UI 13 (Settings Panel)
+                         └─ Back/Close → UI 4
+
+
+UI 5: MODE SELECTION PANEL
+────────────────────────────────────────
+  🎮 Chọn chế độ chơi
+
+  Các nút dẫn đến:
+  ├─ "← BACK"                → UI 4 (Main Menu)
+  │
+  ├─ "[SINGLE PLAYER]"       → UI 6 (Level Selection - SINGLE PLAYER)
+  │                           └─ Back → UI 5
+  │
+  └─ "[MULTIPLAYER]"         → UI 6 (Level Selection - MULTIPLAYER MODE)
+                               └─ Back → UI 5
+
+
+UI 6: LEVEL SELECTION PANEL (Candy Crush Style) 🍬
+────────────────────────────────────────
+  📍 Chọn cấp độ
+
+  Các nút dẫn đến:
+  ├─ "← BACK"          → UI 5 (Mode Selection Panel)
+  │
+  └─ "[LEVEL X - Play]" (click level)
+      ├─ Check Level mở khóa?
+      │   ├─ 🔒 Khóa → Show "Mở khóa level trước đó"
+      │   │
+      │   └─ ✅ Mở → UI 7 (Difficulty Selection)
+      │              └─ Back → UI 6
+      │
+      └─ Show Level Info (sao, thời gian, điểm cao nhất)
+
+
+UI 7: DIFFICULTY SELECTION PANEL
+────────────────────────────────────────
+  ⭐ Chọn độ khó
+
+  Các nút dẫn đến:
+  ├─ "← BACK"           → UI 6 (Level Selection Panel)
+  │
+  └─ "[EASY/NORMAL/HARD]" (click difficulty)
+      └─ Start Game → UI 8 (In-Game Panel) 🎮
+                     └─ Back → Xác nhận Quit?
+                             ├─ Yes → UI 6 (Level Selection)
+                             └─ No  → Quay lại UI 8
+
+
+UI 8: IN-GAME PANEL 🎮 MAIN GAME SCREEN
+────────────────────────────────────────
+  🎯 Chơi game - câu hỏi toán học
+
+  Các nút dẫn đến:
+  ├─ "[⏸️ Pause]"       → UI 9 (Pause Menu Panel)
+  │                      └─ Back (Resume) → UI 8
+  │
+  ├─ Trả lời đúng 10 câu → UI 10 (Game Result Panel - WIN)
+  │
+  └─ Hết thời gian/Sai quá nhiều → UI 10 (Game Result Panel - FAIL)
+
+
+UI 9: PAUSE MENU PANEL ⏸️ (Overlay)
+────────────────────────────────────────
+  ⏸️ Menu tạm dừng
+
+  Các nút dẫn đến:
+  ├─ "[TIẾP TỤC CHƠI]"  → Back to UI 8 (Resume Game)
+  │
+  ├─ "[CÀI ĐẶT]"        → UI 13 (Settings Panel)
+  │                      └─ Back/Close → UI 9
+  │
+  └─ "[QUAY LẠI MENU]"   → Xác nhận Quit?
+                          ├─ Yes → UI 4 (Main Menu)
+                          └─ No  → Back to UI 9
+
+
+UI 10: GAME RESULT PANEL 📊 RESULT SCREEN
+────────────────────────────────────────
+  ✅/❌ Kết quả trận chơi
+
+  Các nút dẫn đến:
+  ├─ "[CẢI LẠI]"        → Quay lại UI 6 (Level Selection)
+  │                      → Chọn lại cùng level
+  │
+  ├─ "[TIẾP TỤC]"       → UI 6 (Level Selection - cấp độ tiếp theo)
+  │                      → Nếu mở khóa level mới → show celebration
+  │
+  └─ "[QUAY LẠI MENU]"  → UI 4 (Main Menu)
+
+
+UI 11: LEADERBOARD PANEL 🏆 (BXH)
+────────────────────────────────────────
+  🏆 Bảng xếp hạng toàn server
+
+  Các nút dẫn đến:
+  ├─ "← BACK"           → UI 4 (Main Menu)
+  │
+  ├─ "[TOP TUẦN]"       → Reload & Show Week Rankings
+  │
+  ├─ "[TOP THÁNG]"      → Reload & Show Month Rankings
+  │
+  ├─ "[TOP ALL]"        → Reload & Show All-Time Rankings
+  │
+  └─ "[🔄 LÀM MỚI]"    → Fetch dữ liệu từ server
+
+
+UI 12: PROFILE PANEL 👤 (HỒ SƠ)
+────────────────────────────────────────
+  👤 Hồ sơ cá nhân
+
+  Các nút dẫn đến:
+  ├─ "← BACK"                  → UI 4 (Main Menu)
+  │
+  └─ "[CHỈNH SỬA PROFILE]"    → UI 12b (Edit Profile) - Optional
+                              └─ Back → UI 12
+
+
+UI 13: SETTINGS PANEL ⚙️ (GLOBAL)
+────────────────────────────────────────
+  ⚙️ Cài đặt (có thể gọi từ bất kỳ UI nào)
+
+  Các nút dẫn đến:
+  ├─ "[ĐÓNG]"           → Back to Nơi gọi UI 13
+  │
+  └─ Toggle/Dropdown    → Save to PlayerPrefs (Local)
+                        → Nếu Multiplayer → Sync to Server
+
+
+════════════════════════════════════════════════════════════════════
+                    📈 LOGIC QUAN TRỌNG
+════════════════════════════════════════════════════════════════════
+
+1️⃣ LEVEL UNLOCK LOGIC (UI 6):
+   ├─ Level đầu tiên (Level 1) mở khóa mặc định
+   ├─ Level tiếp theo mở khóa khi hoàn thành level trước
+   ├─ Lưu trữ: PlayerPrefs ("UnlockedLevel_" + levelNumber)
+   └─ Multiplayer chỉ hoạt động sau khi đăng nhập
+
+2️⃣ SAVE DATA LOCATION:
+   ├─ Quick Play (Chơi Nhanh)
+   │  └─ Dữ liệu chỉ lưu LOCAL (PlayerPrefs - máy điện thoại)
+   │     → Thoát app → Dữ liệu RESET
+   │
+   └─ Multiplayer (Đăng nhập)
+      └─ Dữ liệu lưu trên SERVER
+         → Thoát app → Dữ liệu BẢO LƯU
+
+3️⃣ NAVIGATION STACK (Back Button):
+   ├─ UI 1 (Welcome) 
+   │  ├─ Back → Thoát ứng dụng
+   │  └─ Hay quay về UI 1 (nếu có Back từ các child)
+   │
+   ├─ UI 4 (Main Menu) - Back → Logout → UI 1
+   │
+   └─ Các UI khác → Back → UI cha
+
+4️⃣ SPECIAL FLOWS:
+   ├─ Logout Flow
+   │  └─ Click Logout button → Clear token → UI 1
+   │
+   ├─ Settings Auto-save
+   │  └─ Mỗi toggle/dropdown change → Tự động lưu
+   │
+   └─ Error Handling
+      └─ Nếu API fail → Show error modal → Retry or Go Back
+
+
+════════════════════════════════════════════════════════════════════
+                         ✅ HOÀN TẤT
+════════════════════════════════════════════════════════════════════
