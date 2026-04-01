@@ -10551,12 +10551,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   screensRoot: {fileID: 1706967058}
   restorePreviousScreenOnClose: 1
-  debugMode: 1
   openButtons:
   - {fileID: 1565057657}
   - {fileID: 1041864683}
   - {fileID: 663175096}
-  - {fileID: 663175096}
+  - {fileID: 0}
   openButtonsUseToggle: 0
   popupRoot: {fileID: 959446429}
   closeButton: {fileID: 1957515909}
@@ -11632,8 +11631,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65b458e56f260954b92da1b750f1bf2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneAsset: {fileID: 102900000, guid: 3feeb2ab75d809e47ad6097b0d6dc39f, type: 3}
-  targetSceneName: Test_FireBase_multi
+  sceneAsset: {fileID: 0}
+  targetSceneName: 
   screensRoot: {fileID: 1706967058}
   targetScreen: {fileID: 0}
   rootsToHide: []
