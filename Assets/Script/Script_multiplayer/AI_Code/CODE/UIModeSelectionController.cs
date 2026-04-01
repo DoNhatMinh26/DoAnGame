@@ -11,6 +11,8 @@ namespace DoAnGame.UI
         [SerializeField] private Button singlePlayerButton;
         [SerializeField] private Button multiplayerButton;
         [SerializeField] private UIFlowManager flowManager;
+        [SerializeField] private UIFlowManager.Screen singlePlayerTargetScreen = UIFlowManager.Screen.LevelSelection;
+        [SerializeField] private UIFlowManager.Screen multiplayerTargetScreen = UIFlowManager.Screen.MultiplayerRoom;
 
         protected override UIFlowManager FlowManager => flowManager;
 
@@ -22,10 +24,14 @@ namespace DoAnGame.UI
             if (config.Button == singlePlayerButton)
             {
                 GameModeContext.SetMode(false);
+                flowManager.ShowScreen(singlePlayerTargetScreen);
+                return true;
             }
             else if (config.Button == multiplayerButton)
             {
                 GameModeContext.SetMode(true);
+                flowManager.ShowScreen(multiplayerTargetScreen);
+                return true;
             }
 
             return false;

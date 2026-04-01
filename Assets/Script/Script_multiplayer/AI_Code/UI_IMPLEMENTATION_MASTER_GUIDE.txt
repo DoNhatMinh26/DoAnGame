@@ -5,7 +5,7 @@
 
 Tài liệu này phản ánh **các scene hiện có**:
 - Scene **WELCOME SCREEN** → UI 1 (Welcome Screen / Intro)
-- Scene **GameUIPlay** → UI 2–UI 6 (Auth, Login, Register, Main Menu, Mode Selection)
+- Scene **GameUIPlay** → UI 2–UI 6 (Auth, Login, Register, Main Menu, Mode)
   Mọi script nằm trong `Assets/Script/Script_multiplayer/AI_Code/CODE`.
 
 Khi tạo các UI mới (6 → 14) hãy mở rộng file theo đúng khung này.
@@ -38,6 +38,14 @@ UI5 Main Menu (Hub) ─┬─ Chơi → UI6 Mode Selection
 UI6 Mode Selection ─┬─ Solo → UI7 Level Selection
       ├─ Multiplayer → UI7 Level Selection
       └─ Back → UI5
+
+UI15 Multiplayer Room ─┬─ Tạo phòng (Host) → hiện mã phòng
+     ├─ Vào nhanh (Quick Join) → vào phòng có sẵn
+     ├─ Nhập mã phòng → Join theo code
+         └─ Đủ 2 người + Host nhấn Bắt đầu → UI16
+
+UI16 Multiplayer Battle ─┬─ Player 1 (local)
+       └─ Player 2 (đối thủ/AI fallback)
 ```
 
 ----------------------------------------------------------------
@@ -202,7 +210,48 @@ UI6 Mode Selection ─┬─ Solo → UI7 Level Selection
 ║ • singlePlayerButton / multiplayerButton                    ║
 ║ • flowManager → `UIFlowManagerRoot`                         ║
 ╠════════ Navigation ════════════════════════════════════════╣
-║ Solo/Multi → UI7 (Level Selection) | Back → UI5             ║
+║ Solo → UI7 Level Selection | Multiplayer → UI15 Multiplayer Room║
+║ Back → UI5                                                   ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║ UI 15 – Multiplayer Room (Scene: GameUIPlay)                ║
+╠════════ Layout Mock ════════════════════════════════════════╣
+║  ┌────────────────────────────────────────────────────────┐  ║
+║  │             SẢNH CHỜ TOÁN HỌC                          │  ║
+║  │ [TẠO PHÒNG]   [VÀO NHANH]                              │  ║
+║  │ [MÃ PHÒNG HIỂN THỊ]                                     │  ║
+║  │ [NHẬP MÃ]  [JOIN THEO MÃ]                               │  ║
+║  │ [TRẠNG THÁI + SỐ NGƯỜI]                                 │  ║
+║  │                    [BẮT ĐẦU]                            │  ║
+║  └────────────────────────────────────────────────────────┘  ║
+╠════════ Binding ════════════════════════════════════════════╣
+║ GameObject: panel lobby multiplayer mới                     ║
+║ Script: `UIMultiplayerRoomController`                       ║
+║ • createRoomButton / quickJoinButton / joinByCodeButton     ║
+║ • startMatchButton / roomCodeInput                          ║
+║ • lobbyCodeText / statusText / playerCountText              ║
+║ • flowManager → `UIFlowManagerRoot`                         ║
+╠════════ Navigation ════════════════════════════════════════╣
+║ Host tạo phòng, client vào nhanh hoặc nhập mã; khi đủ 2 người║
+║ và host bấm Bắt đầu → UI16 Multiplayer Battle                ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║ UI 16 – Multiplayer Battle (Scene: GameUIPlay)              ║
+╠════════ Layout Mock ════════════════════════════════════════╣
+║  ┌────────────────────────────────────────────────────────┐  ║
+║  │           Player 2 / Máy AI (trên)                     │  ║
+║  │ [Kết quả trả lời] [Phép tính] [Đáp án]                 │  ║
+║  │           Player 1 - local player (dưới)               │  ║
+║  └────────────────────────────────────────────────────────┘  ║
+╠════════ Binding ════════════════════════════════════════════╣
+║ GameObject: panel battle multiplayer mới                   ║
+║ Script: `UIMultiplayerBattleController`                     ║
+║ • topPlayerText / bottomPlayerText / battleStatusText       ║
+║ • roomInfoText (optional)                                   ║
+╠════════ Navigation ════════════════════════════════════════╣
+║ Vào từ UI15 khi host bắt đầu trận và lobby đủ 2 người        ║
 ╚══════════════════════════════════════════════════════════════╝
 
 ----------------------------------------------------------------

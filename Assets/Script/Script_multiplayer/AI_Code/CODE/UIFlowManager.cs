@@ -51,7 +51,13 @@ namespace DoAnGame.UI
             Profile = 13,
 
             [InspectorName("UI 14 · Settings")]
-            Settings = 14
+            Settings = 14,
+
+            [InspectorName("UI 15 · Multiplayer Room")]
+            MultiplayerRoom = 15,
+
+            [InspectorName("UI 16 · Multiplayer Battle")]
+            MultiplayerBattle = 16
         }
 
         [Serializable]
