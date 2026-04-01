@@ -1,49 +1,49 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class LevelManager : MonoBehaviour
 {
-   
-    [Header("Các Canvas")]
-    public GameObject mainMenuCanvas; // Canvas Menu chính
-    public GameObject M1Canvas;
-    public GameObject M2Canvas;
-    public GameObject M3Canvas;
+    [Header("Giao diện chính")]
+    public GameObject mainMenuCanvas;
+
+    [Header("Danh sách các màn chơi")]
+    // Bạn chỉ cần kéo tất cả Canvas màn chơi vào danh sách này trong Inspector
+    public GameObject[] levelCanvases;
 
     private void Start()
     {
-        // Lúc đầu game, chỉ hiện Menu, ẩn màn chơi
-        mainMenuCanvas.SetActive(true);
-        M1Canvas.SetActive(false);
-        M2Canvas.SetActive(false);
-        M3Canvas.SetActive(false);
+        // Khi bắt đầu, quay về Menu chính
+        QuayLaiMenu();
     }
-    // Hàm này gắn vào Nút Chọn Màn
-    public void ChonM1()
+
+    /// <summary>
+    /// Hàm mở một màn chơi theo số thứ tự (Index)
+    /// </summary>
+    /// <param name="levelIndex">Số thứ tự màn chơi (bắt đầu từ 0)</param>
+    public void OpenLevel(int levelIndex)
     {
+        // 1. Ẩn menu chính
         mainMenuCanvas.SetActive(false);
-        M1Canvas.SetActive(true);
-        M2Canvas.SetActive(false);
-        M3Canvas.SetActive(false);
+
+        // 2. Duyệt qua mảng để bật màn được chọn và tắt các màn còn lại
+        for (int i = 0; i < levelCanvases.Length; i++)
+        {
+            // Nếu i bằng index truyền vào thì bật, ngược lại thì tắt
+            levelCanvases[i].SetActive(i == levelIndex);
+        }
     }
-    public void ChonM2()
-    {
-        mainMenuCanvas.SetActive(false);
-        M1Canvas.SetActive(false);
-        M2Canvas.SetActive(true);
-        M3Canvas.SetActive(false);
-    }
-    public void ChonM3()
-    {
-        mainMenuCanvas.SetActive(false);
-        M1Canvas.SetActive(false);
-        M2Canvas.SetActive(false);
-        M3Canvas.SetActive(true);
-    }// Hàm để quay lại Menu chính
-    public void QuayLaiChonMan()
+
+    /// <summary>
+    /// Hàm quay lại Menu chính
+    /// </summary>
+    public void QuayLaiMenu()
     {
         mainMenuCanvas.SetActive(true);
-        M1Canvas.SetActive(false);
-        M2Canvas.SetActive(false);
-        M3Canvas.SetActive(false);
+
+        // Tắt tất cả các màn chơi đang có trong danh sách
+        foreach (GameObject level in levelCanvases)
+        {
+            level.SetActive(false);
+        }
     }
 }
