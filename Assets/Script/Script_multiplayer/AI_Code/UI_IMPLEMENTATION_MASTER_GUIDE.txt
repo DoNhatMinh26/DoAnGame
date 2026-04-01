@@ -1,14 +1,20 @@
 ================================================================
- HƯỚNG DẪN TRIỂN KHAI UI DOANGAME (UI 1 → UI 6)
- Bản chụp: 2026-03-30
+ HƯỚNG DẪN TRIỂN KHAI UI DOANGAME (UI 1 → UI 6 + FIREBASE)
+ Bản chụp: 2026-04-02
 ================================================================
 
 Tài liệu này phản ánh **các scene hiện có**:
 - Scene **WELCOME SCREEN** → UI 1 (Welcome Screen / Intro)
 - Scene **GameUIPlay** → UI 2–UI 6 (Auth, Login, Register, Main Menu, Mode)
+- Scene **GameUIPlay** → UI 15-16 (Multiplayer Room + Battle)
   Mọi script nằm trong `Assets/Script/Script_multiplayer/AI_Code/CODE`.
 
 Khi tạo các UI mới (6 → 14) hãy mở rộng file theo đúng khung này.
+
+🔥 **VỀ FIREBASE**: Dự án đã có Firebase Auth + Realtime Database setup
+- Xem chi tiết: `FIREBASE_STORAGE_SOLUTION.md`
+- Dữ liệu được lưu: Avatar, Tên, Điểm, Level, Rank, Lịch sử trận, Cài đặt
+- Cross-device: Đăng nhập máy khác vẫn có toàn bộ data
 
 ----------------------------------------------------------------
  TỔNG QUAN FLOW
@@ -241,17 +247,240 @@ UI16 Multiplayer Battle ─┬─ Player 1 (local)
 ║ UI 16 – Multiplayer Battle (Scene: GameUIPlay)              ║
 ╠════════ Layout Mock ════════════════════════════════════════╣
 ║  ┌────────────────────────────────────────────────────────┐  ║
-║  │           Player 2 / Máy AI (trên)                     │  ║
-║  │ [Kết quả trả lời] [Phép tính] [Đáp án]                 │  ║
-║  │           Player 1 - local player (dưới)               │  ║
+║  │ ┌──────────────────────────────────────────────────┐  │  ║
+║  │ │ Player 2 (Opponent)         [Score: 500]        │  │  ║
+║  │ │ [Avatar]  [━━━━━━━O━━] HP: 80/100               │  │  ║
+║  │ └──────────────────────────────────────────────────┘  │  ║
+║  │                                                        │  ║
+║  │ ┌──────────────────────────────────────────────────┐  │  ║
+║  │ │              ⏱ 30 giây                           │  │  ║
+║  │ │          2 + 3 = ?                               │  │  ║
+║  │ │  [Đáp án A:4]            [Đáp án B:5]           │  │  ║
+║  │ │  [Đáp án C:6]            [Đáp án D:7]           │  │  ║
+║  │ └──────────────────────────────────────────────────┘  │  ║
+║  │                                                        │  ║
+║  │ ┌──────────────────────────────────────────────────┐  │  ║
+║  │ │ Player 1 (You)              [Score: 350]        │  │  ║
+║  │ │ [Avatar]  [━━━━O━━━━━━] HP: 60/100              │  │  ║
+║  │ └──────────────────────────────────────────────────┘  │  ║
 ║  └────────────────────────────────────────────────────────┘  ║
 ╠════════ Binding ════════════════════════════════════════════╣
 ║ GameObject: panel battle multiplayer mới                   ║
 ║ Script: `UIMultiplayerBattleController`                     ║
-║ • topPlayerText / bottomPlayerText / battleStatusText       ║
-║ • roomInfoText (optional)                                   ║
+║                                                             ║
+║ [OPPONENT DISPLAY - TOP]                                   ║
+║ • topPlayerAvatarImage (Image) → Ảnh đối thủ               ║
+║ • topPlayerNameText (TMP_Text) → "Player 2 - chủ phòng"    ║
+║ • topPlayerHpBar (Image/Slider) → Thanh máu đối thủ        ║
+║ • topPlayerHpText (TMP_Text) → "80/100"                    ║
+║ • topPlayerScoreText (TMP_Text) → "Score: 500"             ║
+║                                                             ║
+║ [QUESTION & ANSWERS - MIDDLE]                              ║
+║ • timerText (TMP_Text) → "⏱ 30 giây"                       ║
+║ • questionText (TMP_Text) → "2 + 3 = ?"                    ║
+║ • answerButtons[] (Button[4]) → 4 nút đáp án A/B/C/D       ║
+║ • answerTexts[] (TMP_Text[4]) → Text trên mỗi nút, VD: "4" ║
+║                                                             ║
+║ [LOCAL PLAYER DISPLAY - BOTTOM]                            ║
+║ • bottomPlayerAvatarImage (Image) → Ảnh người chơi         ║
+║ • bottomPlayerNameText (TMP_Text) → "Player 1 - bạn"       ║
+║ • bottomPlayerHpBar (Image/Slider) → Thanh máu player      ║
+║ • bottomPlayerHpText (TMP_Text) → "60/100"                 ║
+║ • bottomPlayerScoreText (TMP_Text) → "Score: 350"          ║
+║                                                             ║
+║ [STATUS / DEBUG]                                           ║
+║ • battleStatusText (TMP_Text) → "Đang đấu 1v1"             ║
+║ • roomInfoText (TMP_Text) → "Connected: 2/2"               ║
 ╠════════ Navigation ════════════════════════════════════════╣
-║ Vào từ UI15 khi host bắt đầu trận và lobby đủ 2 người        ║
+║ Vào từ UI15 khi host bấm "Bắt đầu" → Load UI16             ║
+║ Hiển thị câu hỏi từ QuestionManager trên cả 2 người        ║
+║ Khi trả lời: cập nhật HP/Score riêng biệt                  ║
+║ Sau khi game kết thúc → UI11 (Result)                       ║
+╠════════ IMPLEMENTATION NOTES ════════════════════════════════║
+║ 1. Avatar:                                                  ║
+║    - Load từ AuthManager hoặc ProfileManager               ║
+║    - Dùng UnityWebRequest để tải hình từ URL               ║
+║    - Fallback: placeholder avatar mặc định                 ║
+║                                                             ║
+║ 2. HP Tracking:                                            ║
+║    - Sử dụng NetworkVariable<int> để sync với opponent     ║
+║    - Trên trị sai → -10 HP, trả lời đúng → +5 HP          ║
+║    - Update UI 16 khi nhận OnValueChanged event             ║
+║                                                             ║
+║ 3. Score:                                                   ║
+║    - Tăng khi trả lời đúng (VD: +50 điểm)                  ║
+║    - Sync qua NetworkVariable hoặc RPC call                ║
+║                                                             ║
+║ 4. Question Distribution:                                  ║
+║    - Host: Tải câu hỏi từ QuestionManager                  ║
+║    - Host gửi question data qua RPC tới Client            ║
+║    - Cả 2 player thấy cùng câu hỏi, nhưng trả lời độc lập ║
+║                                                             ║
+║ 5. Timer:                                                   ║
+║    - Countdown 30 giây cho mỗi câu                         ║
+║    - Khi hết giờ → tính câu đó sai → update HP            ║
+║    - Tự động load câu tiếp theo                            ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║ UI 7 – Level Selection (Scene: GameUIPlay)                   ║
+╠════════ Layout Mock ════════════════════════════════════════╣
+║  ┌────────────────────────────────────────────────────────┐  ║
+║  │ ← Back | CHỌN MÀN CHƠI                                │  ║
+║  │                                                        │  ║
+║  │  [Màn 1]  [Màn 2]  [Màn 3]                             │  ║
+║  │  [Màn 4]  [Màn 5]  [Màn 6]                             │  ║
+║  │                                                        │  ║
+║  └────────────────────────────────────────────────────────┘  ║
+╠════════ Binding ════════════════════════════════════════════╣
+║ GameObject: (Chờ bổ sung)                                   ║
+║ Script: `UILevelSelectionController`                        ║
+║ • backButton → nút quay lại UI 6                            ║
+║ • levelButtons[] → danh sách nút màn chơi                   ║
+╠════════ Navigation ════════════════════════════════════════╣
+║ Back → UI 6 | Chọn màn → UI 8 (Độ khó) hoặc UI 9 (Vào game)  ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║ UI 8 – Difficulty (Scene: GameUIPlay)                        ║
+╠════════ Layout Mock ════════════════════════════════════════╣
+║  ┌────────────────────────────────────────────────────────┐  ║
+║  │ ← Back | CHỌN ĐỘ KHÓ                                  │  ║
+║  │                                                        │  ║
+║  │                [ DỄ ]                                  │  ║
+║  │                [ TRUNG BÌNH ]                          │  ║
+║  │                [ KHÓ ]                                 │  ║
+║  │                                                        │  ║
+║  └────────────────────────────────────────────────────────┘  ║
+╠════════ Binding ════════════════════════════════════════════╣
+║ GameObject: (Chờ bổ sung)                                   ║
+║ Script: `UIDifficultySelectionController`                   ║
+║ • backButton → nút quay lại UI 7                            ║
+║ • easyBtn, normalBtn, hardBtn                               ║
+╠════════ Navigation ════════════════════════════════════════╣
+║ Back → UI 7 | Chọn độ khó → UI 9 (Vào game)                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║ UI 9 – In Game (Scene: Gameplay)                             ║
+╠════════ Layout Mock ════════════════════════════════════════╣
+║  ┌────────────────────────────────────────────────────────┐  ║
+║  │ [⏸ Pause]                       [Điểm: 0] [⏱ 00:00]  │  ║
+║  │                                                        │  ║
+║  │             CÂU HỎI / PHÉP TÍNH                        │  ║
+║  │                                                        │  ║
+║  │      [Đáp án A]              [Đáp án B]                │  ║
+║  │      [Đáp án C]              [Đáp án D]                │  ║
+║  └────────────────────────────────────────────────────────┘  ║
+╠════════ Binding ════════════════════════════════════════════╣
+║ GameObject: (Chờ bổ sung)                                   ║
+║ Script: `UIInGameController`                                ║
+║ • pauseButton → Mở đè UI 10                                 ║
+║ • scoreText, timerText, questionText                        ║
+║ • answerButtons[]                                           ║
+╠════════ Navigation ════════════════════════════════════════╣
+║ Pause → UI 10 | Hết giờ/Hoàn thành → UI 11                   ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║ UI 10 – Pause Menu (Popup đè màn hình)                       ║
+╠════════ Layout Mock ════════════════════════════════════════╣
+║  ┌────────────────────────────────────────────────────────┐  ║
+║  │                    TẠM DỪNG                            │  ║
+║  │                                                        │  ║
+║  │                 [ TIẾP TỤC ]                           │  ║
+║  │                 [ CÀI ĐẶT ]                            │  ║
+║  │                 [ THOÁT VỀ MENU ]                      │  ║
+║  └────────────────────────────────────────────────────────┘  ║
+╠════════ Binding ════════════════════════════════════════════╣
+║ GameObject: (Chờ bổ sung)                                   ║
+║ Script: `UIPauseMenuController`                             ║
+║ • resumeButton → Đóng popup này                             ║
+║ • settingsButton → Mở đè UI 14                              ║
+║ • homeButton → Quay về UI 5                                 ║
+╠════════ Navigation ════════════════════════════════════════╣
+║ Tiếp tục → Về lại UI 9 | Thoát → UI 5                        ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║ UI 11 – Game Result (Scene: Gameplay)                        ║
+╠════════ Layout Mock ════════════════════════════════════════╣
+║  ┌────────────────────────────────────────────────────────┐  ║
+║  │                   KẾT QUẢ                              │  ║
+║  │          Tuyệt vời! / Rất tiếc...                      │  ║
+║  │              Điểm số: 1500                             │  ║
+║  │                                                        │  ║
+║  │          [ CHƠI LẠI ]   [ TRANG CHỦ ]                  │  ║
+║  └────────────────────────────────────────────────────────┘  ║
+╠════════ Binding ════════════════════════════════════════════╣
+║ GameObject: (Chờ bổ sung)                                   ║
+║ Script: `UIResultPanelController`                           ║
+║ • resultTitleText, scoreText                                ║
+║ • replayButton → Tải lại UI 9                               ║
+║ • homeButton → Trở về UI 5                                  ║
+╠════════ Navigation ════════════════════════════════════════╣
+║ Chơi lại → Phục hồi UI 9 | Trang chủ → UI 5                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║ UI 12 – Leaderboard (Scene: GameUIPlay)                      ║
+╠════════ Layout Mock ════════════════════════════════════════╣
+║  ┌────────────────────────────────────────────────────────┐  ║
+║  │ ← Back | BẢNG XẾP HẠNG                                │  ║
+║  │                                                        │  ║
+║  │   1. PlayerA   -   5000 Điểm                           │  ║
+║  │   2. PlayerB   -   4200 Điểm                           │  ║
+║  │   3. PlayerC   -   3100 Điểm                           │  ║
+║  │                                                        │  ║
+║  └────────────────────────────────────────────────────────┘  ║
+╠════════ Binding ════════════════════════════════════════════╣
+║ GameObject: (Chờ bổ sung)                                   ║
+║ Script: `UILeaderboardController`                           ║
+║ • backButton → Quay lại UI 5                                ║
+║ • entryContainers (Danh sách text điểm số)                  ║
+╠════════ Navigation ════════════════════════════════════════╣
+║ Back → UI 5                                                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║ UI 13 – Profile (Scene: GameUIPlay)                          ║
+╠════════ Layout Mock ════════════════════════════════════════╣
+║  ┌────────────────────────────────────────────────────────┐  ║
+║  │ ← Back | HỒ SƠ NGƯỜI CHƠI                             │  ║
+║  │                                                        │  ║
+║  │     [AVATAR]  Tên: Player123                           │  ║
+║  │               Tuổi: 18                                 │  ║
+║  │               Trận thắng: 45 / Tổng: 100               │  ║
+║  │                                                        │  ║
+║  └────────────────────────────────────────────────────────┘  ║
+╠════════ Binding ════════════════════════════════════════════╣
+║ GameObject: (Chờ bổ sung)                                   ║
+║ Script: `UIProfilePanelController`                          ║
+║ • backButton → Quay lại UI 5                                ║
+║ • usernameText, statsText, avatarImage                      ║
+╠════════ Navigation ════════════════════════════════════════╣
+║ Back → UI 5                                                  ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║ UI 14 – Settings (Popup đè)                                  ║
+╠════════ Layout Mock ════════════════════════════════════════╣
+║  ┌────────────────────────────────────────────────────────┐  ║
+║  │                      CÀI ĐẶT                      [X]  │  ║
+║  │                                                        │  ║
+║  │       Âm thanh:  [▬▬▬O▬▬▬▬]                            │  ║
+║  │       Nhạc nền:  [▬▬▬▬▬O▬▬]                            │  ║
+║  │                                                        │  ║
+║  │       [ ĐĂNG XUẤT ]                                    │  ║
+║  └────────────────────────────────────────────────────────┘  ║
+╠════════ Binding ════════════════════════════════════════════╣
+║ GameObject: `Setting`                                       ║
+║ Script: `UISettingsPopupController`                         ║
+║ • closeButton → Đóng popup (Nút X)                          ║
+║ • bgmSlider, sfxSlider (Tùy chọn)                           ║
+║ • logoutButton (Tùy chọn)                                   ║
+╠════════ Navigation ════════════════════════════════════════╣
+║ Đóng (X) → Quay lại màn hình cũ bị đè                        ║
 ╚══════════════════════════════════════════════════════════════╝
 
 ----------------------------------------------------------------

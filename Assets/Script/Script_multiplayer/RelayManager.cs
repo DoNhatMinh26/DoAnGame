@@ -33,7 +33,20 @@ public class RelayManager : MonoBehaviour
             return true;
 
         try {
-            await UnityServices.InitializeAsync();
+            var options = new InitializationOptions();
+#if UNITY_EDITOR
+            // Tách profile đăng nhập khi chạy song song 2 màn hình bằng ParrelSync (để không bị lỗi trùng người chơi)
+            if (ParrelSync.ClonesManager.IsClone())
+            {
+                options.SetProfile("Clone_" + ParrelSync.ClonesManager.GetArgument());
+            }
+            else
+            {
+                options.SetProfile("Primary_Editor");
+            }
+#endif
+            await UnityServices.InitializeAsync(options);
+
             if (!AuthenticationService.Instance.IsSignedIn) {
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
                 Debug.Log("[Relay] Đã đăng nhập ẩn danh thành công!");

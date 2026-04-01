@@ -38,6 +38,9 @@ namespace DoAnGame.UI
                 return;
             }
 
+            // Capture source screen from this button hierarchy (robust against event order).
+            popupController.CapturePreviousScreenFrom(transform);
+
             if (useToggle)
             {
                 popupController.Toggle();

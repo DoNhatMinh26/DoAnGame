@@ -74,12 +74,25 @@ namespace DoAnGame.UI
                 return; // Dừng, không tiếp tục xử lý UI nữa
             }
 
+            // 2. Bảo vệ: nếu không load Scene thì phải có targetScreen
+            if (targetScreen == null)
+            {
+                Debug.LogError($"[{nameof(UIButtonScreenNavigator)}] targetScreen chưa được gán trên {name}. Hủy điều hướng để tránh màn hình trống.");
+                return;
+            }
+
             // 2. Xử lý chuyển UI nếu không chuyển Scene
             SwitchTo(targetScreen);
         }
 
         private void SwitchTo(GameObject screenToShow)
         {
+            if (screenToShow == null)
+            {
+                Debug.LogError($"[{nameof(UIButtonScreenNavigator)}] screenToShow null trên {name}. Không thể chuyển màn.");
+                return;
+            }
+
             // A. Tắt toàn bộ anh em trong root (nếu dùng chung 1 Menu/Canvas)
             if (screensRoot != null)
             {
@@ -115,6 +128,28 @@ namespace DoAnGame.UI
             if (screenToShow != null)
             {
                 screenToShow.SetActive(true);
+                
+                // E. Notify UISettingsPopupController để cache screen này
+                // ⚠️ BUT: chỉ cache nếu không phải popup Settings
+                if (!screenToShow.name.Contains("Setting"))
+                {
+                    DoAnGame.UI.UISettingsPopupController.SetLastActiveScreen(screenToShow);
+                }
+            }
+            else
+            {
+                // Fallback an toàn: bật startScreen hoặc child đầu tiên để tránh màn xanh trống
+                if (startScreen != null)
+                {
+                    startScreen.SetActive(true);
+                    Debug.LogWarning($"[{nameof(UIButtonScreenNavigator)}] Fallback sang startScreen vì target null.");
+                }
+                else if (screensRoot != null && screensRoot.childCount > 0)
+                {
+                    var first = screensRoot.GetChild(0)?.gameObject;
+                    first?.SetActive(true);
+                    Debug.LogWarning($"[{nameof(UIButtonScreenNavigator)}] Fallback sang child đầu tiên vì target null.");
+                }
             }
         }
 

@@ -1,15 +1,18 @@
 using System.Threading.Tasks;
 using UnityEngine;
+using DoAnGame.Data;
+using DoAnGame.Multiplayer;
 
 /// <summary>
 /// Quản lý luồng Authentication
-/// Kết nối Firebase Auth + UI
+/// Kết nối Firebase Auth + Local DB + Cloud Sync
 /// </summary>
 public class AuthManager : MonoBehaviour
 {
     public static AuthManager Instance { get; private set; }
 
     private FirebaseManager firebaseManager;
+    private CloudSyncManager cloudSyncManager;
     private PlayerData currentPlayerData;
 
     private void Awake()
@@ -26,6 +29,7 @@ public class AuthManager : MonoBehaviour
     private void Start()
     {
         firebaseManager = FirebaseManager.Instance;
+        cloudSyncManager = CloudSyncManager.Instance;
         
         if (firebaseManager == null)
         {
@@ -48,16 +52,22 @@ public class AuthManager : MonoBehaviour
         
         if (success)
         {
-            // Tải player data
+            // Tải player data từ Firebase
             var user = firebaseManager.GetCurrentUser();
             currentPlayerData = await firebaseManager.LoadPlayerDataAsync(user.UserId);
+            
+            // Lưu local
+            if (currentPlayerData != null)
+            {
+                LocalDataManager.SavePlayerDataLocal(currentPlayerData);
+            }
         }
 
         return success;
     }
 
     /// <summary>
-    /// Đăng nhập
+    /// Đăng nhập (load từ Firebase + cache local)
     /// </summary>
     public async Task<bool> Login(string email, string password)
     {
@@ -67,9 +77,22 @@ public class AuthManager : MonoBehaviour
         
         if (success)
         {
-            // Tải player data
             var user = firebaseManager.GetCurrentUser();
+            
+            // 1. Tải player data từ Firebase
             currentPlayerData = await firebaseManager.LoadPlayerDataAsync(user.UserId);
+            if (currentPlayerData != null)
+            {
+                // 2. Lưu local (instant cache)
+                LocalDataManager.SavePlayerDataLocal(currentPlayerData);
+                Debug.Log($"[Auth] ✅ Logged in as {currentPlayerData.username}");
+            }
+            
+            // 3. Trigger sync manager (background)
+            if (cloudSyncManager != null)
+            {
+                await cloudSyncManager.SyncPlayerDataIfNeeded();
+            }
         }
 
         return success;
@@ -97,18 +120,25 @@ public class AuthManager : MonoBehaviour
                 gamesPlayed = 0,
                 gamesWon = 0
             };
+            
+            // Lưu local
+            LocalDataManager.SavePlayerDataLocal(currentPlayerData);
         }
 
         return success;
     }
 
     /// <summary>
-    /// Đăng xuất
+    /// Đăng xuất (clear local + Firebase)
     /// </summary>
     public void Logout()
     {
         firebaseManager.Logout();
         currentPlayerData = null;
+        
+        // Clear local data
+        LocalDataManager.ClearAllData();
+        
         Debug.Log("[Auth] 👋 Đã đăng xuất");
     }
 

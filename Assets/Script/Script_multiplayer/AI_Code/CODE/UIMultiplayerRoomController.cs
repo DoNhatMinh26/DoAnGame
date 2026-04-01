@@ -15,7 +15,7 @@ namespace DoAnGame.UI
     /// <summary>
     /// UI 15: Multiplayer Room - tạo phòng, quick join, nhập code join và start khi đủ 2 người.
     /// </summary>
-    public class UIMultiplayerRoomController : FlowPanelController
+    public class UIMultiplayerRoomController : MonoBehaviour
     {
         private const string JoinCodeKey = "JoinCode";
         private const string StartedKey = "Started";
@@ -27,6 +27,7 @@ namespace DoAnGame.UI
         [SerializeField] private Button quickJoinButton;
         [SerializeField] private Button joinByCodeButton;
         [SerializeField] private Button startMatchButton;
+        [SerializeField] private Button quitRoomButton;
 
         [Header("Room Inputs")]
         [SerializeField] private TMP_InputField roomCodeInput;
@@ -36,29 +37,30 @@ namespace DoAnGame.UI
         [SerializeField] private TMP_Text statusText;
         [SerializeField] private TMP_Text playerCountText;
 
-        [Header("Flow")]
-        [SerializeField] private UIFlowManager flowManager;
-        [SerializeField] private UIFlowManager.Screen battleScreen = UIFlowManager.Screen.MultiplayerBattle;
+        [Header("Chuyển Cảnh Khi Game Bắt Đầu")]
+        [LocalizedLabel("Tên Scene Battle (Nếu khác Scene)")]
+        [SerializeField] private string battleSceneName;
+        [LocalizedLabel("Màn hình Battle (Màn hình đích)")]
+        [SerializeField] private GameObject battleScreenObject;
+        [LocalizedLabel("Root chứa UI phòng hiện tại (Để tắt đi)")]
+        [SerializeField] private GameObject currentRoomScreen;
 
         private Lobby currentLobby;
         private bool isHost;
         private Coroutine pollingRoutine;
         private Coroutine heartbeatRoutine;
 
-        protected override UIFlowManager FlowManager => flowManager;
-
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
             createRoomButton?.onClick.AddListener(() => _ = HandleCreateRoom());
             quickJoinButton?.onClick.AddListener(() => _ = HandleQuickJoin());
             joinByCodeButton?.onClick.AddListener(() => _ = HandleJoinByCode());
             startMatchButton?.onClick.AddListener(() => _ = HandleStartMatch());
+            quitRoomButton?.onClick.AddListener(() => _ = HandleQuitRoom());
         }
 
-        protected override void OnShow()
+        private void OnEnable()
         {
-            base.OnShow();
             SetStatus("Chọn tạo phòng, vào nhanh hoặc nhập mã phòng.");
             SetPlayerCount("Người chơi: 1/2");
             lobbyCodeText?.SetText("Mã phòng: -----");
@@ -68,20 +70,19 @@ namespace DoAnGame.UI
             pollingRoutine = StartCoroutine(PollLobbyRoutine());
         }
 
-        protected override void OnHide()
+        private void OnDisable()
         {
-            base.OnHide();
             StopRoutines();
         }
 
-        protected override void OnDestroy()
+        private void OnDestroy()
         {
-            base.OnDestroy();
             StopRoutines();
             createRoomButton?.onClick.RemoveAllListeners();
             quickJoinButton?.onClick.RemoveAllListeners();
             joinByCodeButton?.onClick.RemoveAllListeners();
             startMatchButton?.onClick.RemoveAllListeners();
+            quitRoomButton?.onClick.RemoveAllListeners();
         }
 
         private async Task HandleCreateRoom()
@@ -240,7 +241,7 @@ namespace DoAnGame.UI
                 });
 
                 SetStatus("Bắt đầu trận đấu...");
-                flowManager.ShowScreen(battleScreen);
+                GoToBattleScreen();
             }
             catch (Exception ex)
             {
@@ -276,7 +277,7 @@ namespace DoAnGame.UI
             if (currentLobby.Data.TryGetValue(StartedKey, out var startedData) && startedData.Value == "1")
             {
                 SetStatus("Trận đấu bắt đầu.");
-                flowManager.ShowScreen(battleScreen);
+                GoToBattleScreen();
             }
         }
 
@@ -366,6 +367,64 @@ namespace DoAnGame.UI
         private void SetPlayerCount(string text)
         {
             playerCountText?.SetText(text);
+        }
+
+        private void GoToBattleScreen()
+        {
+            if (!string.IsNullOrEmpty(battleSceneName))
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene(battleSceneName);
+                return;
+            }
+
+            if (battleScreenObject != null)
+            {
+                // Ẩn phòng chờ, hiện phòng đánh
+                if (currentRoomScreen != null) currentRoomScreen.SetActive(false);
+                battleScreenObject.SetActive(true);
+            }
+        }
+
+        private async Task HandleQuitRoom()
+        {
+            if (currentLobby == null)
+            {
+                SetStatus("Chưa vào phòng nào.");
+                return;
+            }
+
+            try
+            {
+                SetStatus("Đang thoát phòng...");
+
+                // Thoát lobby
+                await LobbyService.Instance.RemovePlayerAsync(currentLobby.Id, AuthenticationService.Instance.PlayerId);
+                Debug.Log("[UIRoom] Đã thoát lobby thành công.");
+
+                // Shutdown network
+                if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+                {
+                    NetworkManager.Singleton.Shutdown();
+                    Debug.Log("[UIRoom] Đã shutdown network.");
+                }
+
+                // Reset trạng thái
+                currentLobby = null;
+                isHost = false;
+                StopRoutines();
+
+                // Reset UI
+                lobbyCodeText?.SetText("Mã phòng: -----");
+                SetPlayerCount("Người chơi: 0/2");
+                SetStatus("Đã thoát phòng. Chọn một tùy chọn khác.");
+                startMatchButton?.gameObject.SetActive(false);
+                if (roomCodeInput != null) roomCodeInput.text = "";
+            }
+            catch (Exception ex)
+            {
+                SetStatus($"Lỗi thoát phòng: {ex.Message}");
+                Debug.LogError($"[UIRoom] HandleQuitRoom lỗi: {ex.Message}");
+            }
         }
     }
 }
