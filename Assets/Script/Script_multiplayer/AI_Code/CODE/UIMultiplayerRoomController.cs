@@ -420,6 +420,33 @@ namespace DoAnGame.UI
             onBattleStarted?.Invoke();
         }
 
+        // Public wrappers to allow other UI layers (e.g. UI16 action hub)
+        // to invoke the same validated flow as internal button listeners.
+        public void RequestCreateRoom()
+        {
+            _ = HandleCreateRoom();
+        }
+
+        public void RequestQuickJoin()
+        {
+            _ = HandleQuickJoin();
+        }
+
+        public void RequestJoinByCode()
+        {
+            _ = HandleJoinByCode();
+        }
+
+        public void RequestStartMatch()
+        {
+            _ = HandleStartMatch();
+        }
+
+        public void RequestQuitRoom()
+        {
+            _ = HandleQuitRoom();
+        }
+
         private IEnumerator HeartbeatRoutine()
         {
             while (true)

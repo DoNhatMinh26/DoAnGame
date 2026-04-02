@@ -255,6 +255,119 @@ UI16 Multiplayer Battle ─┬─ Player 1 (local)
 ╚══════════════════════════════════════════════════════════════╝
 
 ----------------------------------------------------------------
+ HƯỚNG DẪN GÁN UI16 (DỄ HIỂU - LÀM THEO TỪNG BƯỚC)
+----------------------------------------------------------------
+Mục tiêu UI16 trong dự án này:
+- Có nút `Setting` để mở popup cài đặt.
+- Có nút `Back` hoạt động như `Quit Room`.
+- Có nút `Quit Room` để rời trận.
+- Khi 1 bên thoát, bên còn lại cũng tự thoát khỏi UI16.
+
+Script dùng cho UI16:
+- `UI16ButtonActionHub` (điều khiển nút Setting/Back/Quit).
+- `UIMultiplayerBattleController` (hiển thị vai trò + tự thoát khi đối thủ rời).
+
+1) GÁN `UI16ButtonActionHub` (trên panel UI16)
+- Chọn GameObject panel UI16 (battle panel).
+- Add Component: `UI16ButtonActionHub`.
+
+Điền các field tối thiểu:
+- `Room Controller`:
+  Kéo object có `UIMultiplayerRoomController` (thường là panel UI15/lobby).
+  Dùng để quit lobby đúng chuẩn host/client.
+- `Setting Button`:
+  Kéo nút Setting của UI16.
+- `Back Button`:
+  Kéo nút Back của UI16.
+- `Quit Room Button`:
+  Kéo nút Quit của UI16.
+
+Behavior nên bật/tắt như sau:
+- `Auto Bind On Awake` = ON
+- `Auto Resolve Settings Popup` = ON
+- `Back Acts As Quit Room` = ON
+- `Bind Optional Room Buttons` = OFF (UI16 không dùng nút Create/Join/Start)
+
+Field có thể để trống:
+- `Settings Popup Controller` (nếu bật auto resolve).
+- `Back To Room Navigator` (không cần khi Back=Quit).
+- `Fallback Quit Navigator` (chỉ dùng khi không có room controller).
+- Nhóm `Optional: UI15 Room Buttons` (để trống cho UI16).
+
+2) GÁN `UIMultiplayerBattleController` (trên panel UI16)
+- Chọn panel UI16 có `UIMultiplayerBattleController`.
+- Gán text:
+  - `topPlayerText`
+  - `bottomPlayerText`
+  - `battleStatusText`
+  - `roomInfoText` (tùy chọn)
+- Gán điều hướng khi session kết thúc:
+  - `onSessionEndedNavigator` = navigator quay về UI15 hoặc menu bạn muốn.
+  - `autoNavigateOnSessionEnded` = ON.
+
+Ý nghĩa:
+- Nếu host thoát hoặc client thoát, số người còn <2.
+- UI16 tự nhận biết session kết thúc và điều hướng ra ngoài.
+
+3) QUY TẮC CHỐNG LỖI (RẤT QUAN TRỌNG)
+- Không gán trùng nhiều script cho cùng một button.
+- Nếu đã để `UI16ButtonActionHub` bind nút, không thêm OnClick thủ công cho các nút đó.
+- Nút Setting chỉ mở popup settings, không gán thêm navigator vào chính nút Setting.
+
+4) TEST NHANH 2 NGƯỜI
+- B1: Host vào UI16, Client vào UI16.
+- B2: Host bấm Back (Back=Quit).
+  Kỳ vọng: Host out, Client tự out khỏi UI16.
+- B3: Test ngược lại, Client bấm Quit.
+  Kỳ vọng: Client out, Host tự out khỏi UI16.
+- B4: Bấm Setting trên UI16.
+  Kỳ vọng: popup mở/đóng bình thường, không phá flow battle.
+
+5) BỔ SUNG QUAN TRỌNG (TRÁNH THIẾU GÁN)
+- Nếu trong Inspector của `UI16ButtonActionHub` các ô sau đang là `None`, nút sẽ KHÔNG chạy:
+  - `Setting Button`
+  - `Back Button`
+  - `Quit Room Button`
+- Trạng thái đúng tối thiểu phải là:
+  - `Room Controller` = object `LobbyPanel (UIMultiplayerRoomController)`
+  - `Setting Button` = nút setting nằm trên panel UI16
+  - `Back Button` = nút back nằm trên panel UI16
+  - `Quit Room Button` = nút quit nằm trên panel UI16
+
+6) SETTINGS Ở SCREEN KHÁC THÌ GÁN THẾ NÀO?
+- Cách 1 (khuyên dùng, ổn định nhất): kéo thẳng `Settings Popup Controller` tới object chứa `UISettingsPopupController`.
+- Cách 2 (không kéo tay): bật `Auto Resolve Settings Popup` để script tự tìm trong scene đang load.
+- Nếu dùng Cách 2 mà không mở được popup:
+  - Scene chứa popup có thể chưa load.
+  - Hoặc popup không có `UISettingsPopupController`.
+
+7) CHECKLIST 30 GIÂY TRƯỚC KHI TEST
+- `Back Acts As Quit Room` = ON
+- `Bind Optional Room Buttons` = OFF (đúng UI16)
+- Trong `Button -> On Click()` của 3 nút UI16 không gán lệnh trùng với hub
+- `UIMultiplayerBattleController.onSessionEndedNavigator` đã gán để tự thoát khi đối thủ rời
+- Test host/client: bấm Back hoặc Quit bên nào thì bên còn lại cũng rời UI16
+
+8) GHI NHỚ CHO BẢN UPDATE SAU (ĐỒNG BỘ SETTINGS 2 SCENE)
+- Mục tiêu: setting đổi ở scene này phải dùng lại được ở scene khác.
+- Khuyến nghị kiến trúc:
+  - UI popup settings đặt tập trung trong `GameUIPlay` (hoặc 1 root global).
+  - Dữ liệu settings tách riêng khỏi UI (không phụ thuộc scene nào đang mở).
+- Nơi lưu dữ liệu:
+  - Local: `PlayerPrefs` (áp dụng ngay trên cùng máy).
+  - Cloud (tùy chọn): Firebase/Cloud Save để đồng bộ theo tài khoản nhiều máy.
+- Luồng chuẩn:
+  - Mở scene: gọi `LoadSettings` và apply cho UI + gameplay.
+  - Người dùng đổi setting: `SaveSettings` ngay + phát event cập nhật runtime.
+- Lưu ý quan trọng:
+  - Chỉ đặt popup cùng scene KHÔNG tự động đồng bộ, bắt buộc có lớp lưu dữ liệu chung.
+  - Nếu popup ở scene khác chưa load thì không thể mở qua reference runtime.
+- TODO (sẽ triển khai sau):
+  - Tạo `SettingsDataService` (load/save/apply/event).
+  - Kết nối `UISettingsPanelController` với service thay vì đọc/ghi rải rác.
+  - Thêm bước sync cloud sau khi login thành công.
+
+----------------------------------------------------------------
  QUẢN LÝ FLOW (GameUIPlay)
 ----------------------------------------------------------------
 Thành phần: `UIFlowManager` đặt trên `UIFlowManagerRoot`

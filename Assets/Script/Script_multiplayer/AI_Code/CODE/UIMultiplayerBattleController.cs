@@ -22,10 +22,31 @@ namespace DoAnGame.UI
         [SerializeField] private string enemyPlayerLabel = "Player 2 - đối thủ";
         [SerializeField] private string aiEnemyLabel = "Máy AI - đối thủ";
 
+        [Header("Session End Handling")]
+        [SerializeField] private UIButtonScreenNavigator onSessionEndedNavigator;
+        [SerializeField] private bool autoNavigateOnSessionEnded = true;
+        [SerializeField] private bool enableDebugLogs;
+
+        private bool hadTwoPlayersInSession;
+        private bool sessionEndedHandled;
+
         protected override void OnShow()
         {
             base.OnShow();
+            sessionEndedHandled = false;
             BindRoles();
+            RegisterNetCallbacks();
+        }
+
+        protected override void OnHide()
+        {
+            base.OnHide();
+            UnregisterNetCallbacks();
+        }
+
+        private void OnDestroy()
+        {
+            UnregisterNetCallbacks();
         }
 
         private void BindRoles()
@@ -43,6 +64,10 @@ namespace DoAnGame.UI
 
             int count = net.ConnectedClientsIds.Count;
             bool hasOpponent = count >= 2;
+            if (hasOpponent)
+            {
+                hadTwoPlayersInSession = true;
+            }
 
             if (net.IsHost)
             {
@@ -59,6 +84,69 @@ namespace DoAnGame.UI
             roomInfoText?.SetText($"Connected: {count}/2");
         }
 
+        private void RegisterNetCallbacks()
+        {
+            var net = NetworkManager.Singleton;
+            if (net == null)
+                return;
+
+            net.OnClientDisconnectCallback -= HandleClientDisconnect;
+            net.OnClientDisconnectCallback += HandleClientDisconnect;
+            net.OnClientConnectedCallback -= HandleClientConnected;
+            net.OnClientConnectedCallback += HandleClientConnected;
+
+            Log("Registered net callbacks");
+        }
+
+        private void UnregisterNetCallbacks()
+        {
+            var net = NetworkManager.Singleton;
+            if (net == null)
+                return;
+
+            net.OnClientDisconnectCallback -= HandleClientDisconnect;
+            net.OnClientConnectedCallback -= HandleClientConnected;
+        }
+
+        private void HandleClientConnected(ulong clientId)
+        {
+            var net = NetworkManager.Singleton;
+            if (net == null)
+                return;
+
+            int count = net.ConnectedClientsIds.Count;
+            if (count >= 2)
+            {
+                hadTwoPlayersInSession = true;
+            }
+
+            BindRoles();
+            Log($"Client connected: {clientId} | count={count}");
+        }
+
+        private void HandleClientDisconnect(ulong clientId)
+        {
+            var net = NetworkManager.Singleton;
+            int count = net != null ? net.ConnectedClientsIds.Count : 0;
+
+            BindRoles();
+            Log($"Client disconnected: {clientId} | count={count}");
+
+            if (!autoNavigateOnSessionEnded || sessionEndedHandled)
+                return;
+
+            if (hadTwoPlayersInSession && count < 2)
+            {
+                sessionEndedHandled = true;
+                battleStatusText?.SetText("Đối thủ đã thoát phòng.");
+
+                if (onSessionEndedNavigator != null)
+                {
+                    onSessionEndedNavigator.NavigateNow();
+                }
+            }
+        }
+
         private void SetTop(string text)
         {
             topPlayerText?.SetText(text);
@@ -67,6 +155,14 @@ namespace DoAnGame.UI
         private void SetBottom(string text)
         {
             bottomPlayerText?.SetText(text);
+        }
+
+        private void Log(string message)
+        {
+            if (!enableDebugLogs)
+                return;
+
+            Debug.Log($"[{nameof(UIMultiplayerBattleController)}:{name}] {message}");
         }
     }
 }
