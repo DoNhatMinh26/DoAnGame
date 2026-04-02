@@ -8,6 +8,7 @@ using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace DoAnGame.UI
@@ -15,7 +16,7 @@ namespace DoAnGame.UI
     /// <summary>
     /// UI 15: Multiplayer Room - tạo phòng, quick join, nhập code join và start khi đủ 2 người.
     /// </summary>
-    public class UIMultiplayerRoomController : FlowPanelController
+    public class UIMultiplayerRoomController : BasePanelController
     {
         private const string JoinCodeKey = "JoinCode";
         private const string StartedKey = "Started";
@@ -36,16 +37,14 @@ namespace DoAnGame.UI
         [SerializeField] private TMP_Text statusText;
         [SerializeField] private TMP_Text playerCountText;
 
-        [Header("Flow")]
-        [SerializeField] private UIFlowManager flowManager;
-        [SerializeField] private UIFlowManager.Screen battleScreen = UIFlowManager.Screen.MultiplayerBattle;
+        [Header("Callbacks")]
+        [SerializeField] private UnityEvent onBattleStarted;
 
         private Lobby currentLobby;
         private bool isHost;
         private Coroutine pollingRoutine;
         private Coroutine heartbeatRoutine;
-
-        protected override UIFlowManager FlowManager => flowManager;
+        private bool battleStartNotified;
 
         protected override void Awake()
         {
@@ -59,6 +58,7 @@ namespace DoAnGame.UI
         protected override void OnShow()
         {
             base.OnShow();
+            battleStartNotified = false;
             SetStatus("Chọn tạo phòng, vào nhanh hoặc nhập mã phòng.");
             SetPlayerCount("Người chơi: 1/2");
             lobbyCodeText?.SetText("Mã phòng: -----");
@@ -74,9 +74,8 @@ namespace DoAnGame.UI
             StopRoutines();
         }
 
-        protected override void OnDestroy()
+        private void OnDestroy()
         {
-            base.OnDestroy();
             StopRoutines();
             createRoomButton?.onClick.RemoveAllListeners();
             quickJoinButton?.onClick.RemoveAllListeners();
@@ -240,7 +239,7 @@ namespace DoAnGame.UI
                 });
 
                 SetStatus("Bắt đầu trận đấu...");
-                flowManager.ShowScreen(battleScreen);
+                NotifyBattleStarted();
             }
             catch (Exception ex)
             {
@@ -276,8 +275,17 @@ namespace DoAnGame.UI
             if (currentLobby.Data.TryGetValue(StartedKey, out var startedData) && startedData.Value == "1")
             {
                 SetStatus("Trận đấu bắt đầu.");
-                flowManager.ShowScreen(battleScreen);
+                NotifyBattleStarted();
             }
+        }
+
+        private void NotifyBattleStarted()
+        {
+            if (battleStartNotified)
+                return;
+
+            battleStartNotified = true;
+            onBattleStarted?.Invoke();
         }
 
         private IEnumerator HeartbeatRoutine()

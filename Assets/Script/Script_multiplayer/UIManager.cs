@@ -95,7 +95,7 @@ public class UIManager : NetworkBehaviour
         authManager = AuthManager.Instance;
         relayManager = RelayManager.Instance;
 
-        // Thiết lập Panel ban đầu
+        // Thiết lập Panel ban đầu (an toàn khi đổi scene)
         ShowUI(0); // Hiện Welcome Screen
 
         // Bind buttons
@@ -113,12 +113,30 @@ public class UIManager : NetworkBehaviour
     void Update()
     {
         // Cập nhật số người chơi (nếu ở trong Multiplayer Lobby)
-        if (lobbyPanel.activeSelf && (NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsServer))
+        if (lobbyPanel != null && lobbyPanel.activeSelf && NetworkManager.Singleton != null && (NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsServer))
         {
             int playerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
-            statusText.text = $"Người chơi: {playerCount}/2";
-            startButton.interactable = (IsServer && playerCount >= 2);
+            if (statusText != null)
+            {
+                statusText.text = $"Người chơi: {playerCount}/2";
+            }
+
+            if (startButton != null)
+            {
+                startButton.interactable = (IsServer && playerCount >= 2);
+            }
         }
+    }
+
+    private void SetPanelActiveSafe(GameObject panel, bool active, string panelName)
+    {
+        if (panel == null)
+        {
+            Debug.LogWarning($"[UIManager] ⚠️ Panel '{panelName}' chưa được gán hoặc đã bị destroy.");
+            return;
+        }
+
+        panel.SetActive(active);
     }
 
     /// <summary>
@@ -175,41 +193,41 @@ public class UIManager : NetworkBehaviour
     private void ShowUI(int uiIndex)
     {
         // Ẩn tất cả
-        welcomeScreenPanel.SetActive(false);
-        authChoicePanel.SetActive(false);
-        loginPanel.SetActive(false);
-        registerPanel.SetActive(false);
-        mainMenuPanel.SetActive(false);
-        lobbyPanel.SetActive(false);
-        gameplayPanel.SetActive(false);
+        SetPanelActiveSafe(welcomeScreenPanel, false, nameof(welcomeScreenPanel));
+        SetPanelActiveSafe(authChoicePanel, false, nameof(authChoicePanel));
+        SetPanelActiveSafe(loginPanel, false, nameof(loginPanel));
+        SetPanelActiveSafe(registerPanel, false, nameof(registerPanel));
+        SetPanelActiveSafe(mainMenuPanel, false, nameof(mainMenuPanel));
+        SetPanelActiveSafe(lobbyPanel, false, nameof(lobbyPanel));
+        SetPanelActiveSafe(gameplayPanel, false, nameof(gameplayPanel));
 
         // Hiện UI được chọn
         switch (uiIndex)
         {
             case 0:
-                welcomeScreenPanel.SetActive(true);
+                SetPanelActiveSafe(welcomeScreenPanel, true, nameof(welcomeScreenPanel));
                 Debug.Log("[UIManager] 📱 UI 0: Welcome Screen");
                 break;
             case 1:
-                authChoicePanel.SetActive(true);
+                SetPanelActiveSafe(authChoicePanel, true, nameof(authChoicePanel));
                 Debug.Log("[UIManager] 📱 UI 1: Auth Choice");
                 break;
             case 2:
-                loginPanel.SetActive(true);
+                SetPanelActiveSafe(loginPanel, true, nameof(loginPanel));
                 Debug.Log("[UIManager] 📱 UI 2: Login");
                 break;
             case 3:
-                registerPanel.SetActive(true);
+                SetPanelActiveSafe(registerPanel, true, nameof(registerPanel));
                 Debug.Log("[UIManager] 📱 UI 3: Register");
                 break;
             case 4:
-                mainMenuPanel.SetActive(true);
+                SetPanelActiveSafe(mainMenuPanel, true, nameof(mainMenuPanel));
                 if (welcomeText != null)
                     welcomeText.text = $"Chào {authManager.GetCurrentPlayerData()?.username ?? "Khách"}! 👋";
                 Debug.Log("[UIManager] 📱 UI 4: Main Menu");
                 break;
             case 5:
-                lobbyPanel.SetActive(true);
+                SetPanelActiveSafe(lobbyPanel, true, nameof(lobbyPanel));
                 Debug.Log("[UIManager] 📱 UI 5: Multiplayer Lobby");
                 break;
         }
@@ -360,8 +378,8 @@ public class UIManager : NetworkBehaviour
     /// </summary>
     private void SwitchToGameplay()
     {
-        lobbyPanel.SetActive(false);
-        gameplayPanel.SetActive(true);
+        SetPanelActiveSafe(lobbyPanel, false, nameof(lobbyPanel));
+        SetPanelActiveSafe(gameplayPanel, true, nameof(gameplayPanel));
         Debug.Log("[UIManager] 🎮 Chuyển sang Gameplay!");
     }
 }
