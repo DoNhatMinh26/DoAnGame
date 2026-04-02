@@ -45,27 +45,54 @@ namespace DoAnGame.UI
         private Coroutine pollingRoutine;
         private Coroutine heartbeatRoutine;
         private bool battleStartNotified;
+        private bool initialized;
 
         protected override void Awake()
         {
             base.Awake();
+
+            if (statusText != null && playerCountText != null && statusText == playerCountText)
+            {
+                Debug.LogWarning("[UIRoom] Status Text và Player Count Text đang trỏ cùng 1 TMP_Text. Nên tách ra để tránh ghi đè nội dung.");
+            }
+
             createRoomButton?.onClick.AddListener(() => _ = HandleCreateRoom());
             quickJoinButton?.onClick.AddListener(() => _ = HandleQuickJoin());
             joinByCodeButton?.onClick.AddListener(() => _ = HandleJoinByCode());
             startMatchButton?.onClick.AddListener(() => _ = HandleStartMatch());
         }
 
+        private void Start()
+        {
+            // Khi không dùng Flow.Show(), vẫn cần init state + polling nếu panel đang active.
+            EnsureInitialized();
+            if (gameObject.activeInHierarchy && pollingRoutine == null)
+            {
+                pollingRoutine = StartCoroutine(PollLobbyRoutine());
+            }
+        }
+
         protected override void OnShow()
         {
             base.OnShow();
+            EnsureInitialized();
+            battleStartNotified = false;
+
+            StopRoutines();
+            pollingRoutine = StartCoroutine(PollLobbyRoutine());
+        }
+
+        private void EnsureInitialized()
+        {
+            if (initialized)
+                return;
+
+            initialized = true;
             battleStartNotified = false;
             SetStatus("Chọn tạo phòng, vào nhanh hoặc nhập mã phòng.");
             SetPlayerCount("Người chơi: 1/2");
             lobbyCodeText?.SetText("Mã phòng: -----");
             startMatchButton?.gameObject.SetActive(false);
-
-            StopRoutines();
-            pollingRoutine = StartCoroutine(PollLobbyRoutine());
         }
 
         protected override void OnHide()
@@ -172,8 +199,22 @@ namespace DoAnGame.UI
             }
             catch (Exception ex)
             {
-                SetStatus("Không vào được phòng. Kiểm tra lại mã.");
-                Debug.LogWarning($"[UIRoom] JoinByCode lỗi: {ex.Message}");
+                Debug.LogWarning($"[UIRoom] JoinByCode lobby code lỗi: {ex.Message}");
+
+                // Fallback: người chơi có thể nhập Relay Join Code thay vì Lobby Code.
+                bool relayJoined = await RelayManager.Instance.TryJoinRelay(lobbyCode);
+                if (relayJoined)
+                {
+                    isHost = false;
+                    currentLobby = null;
+                    lobbyCodeText?.SetText($"Mã phòng: {lobbyCode}");
+                    SetStatus("Đã join bằng Relay code. Chờ host bắt đầu...");
+                    SetPlayerCount("Người chơi: 2/2");
+                    startMatchButton?.gameObject.SetActive(false);
+                    return;
+                }
+
+                SetStatus("Không vào được phòng. Kiểm tra lại mã Lobby/Relay.");
             }
         }
 
