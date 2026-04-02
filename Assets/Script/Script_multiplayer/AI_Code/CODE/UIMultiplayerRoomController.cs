@@ -22,6 +22,8 @@ namespace DoAnGame.UI
         private const string StartedKey = "Started";
         private const string ModeKey = "Mode";
         private const int MaxPlayers = 2;
+        private const float DefaultPollIntervalSeconds = 3.5f;
+        private const float DefaultRateLimitBackoffSeconds = 2.5f;
 
         [Header("Room Buttons")]
         [SerializeField] private Button createRoomButton;
@@ -44,6 +46,10 @@ namespace DoAnGame.UI
         [SerializeField] private UnityEvent onBattleStarted;
         [SerializeField] private UnityEvent onQuitRoom;
 
+        [Header("Lobby Read Tuning")]
+        [SerializeField] private float pollIntervalSeconds = DefaultPollIntervalSeconds;
+        [SerializeField] private float rateLimitBackoffSeconds = DefaultRateLimitBackoffSeconds;
+
         private Lobby currentLobby;
         private bool isHost;
         private Coroutine pollingRoutine;
@@ -52,6 +58,7 @@ namespace DoAnGame.UI
         private bool initialized;
         private bool isBusy;
         private bool isQuitting;
+        private float nextLobbyReadAt;
 
         protected override void Awake()
         {
@@ -296,7 +303,13 @@ namespace DoAnGame.UI
                 return;
             }
 
-            var lobby = await RefreshLobbySafe();
+            var lobby = currentLobby;
+            if (lobby != null && lobby.Players.Count < MaxPlayers)
+            {
+                // Chỉ refresh khi local snapshot chưa đủ người để giảm spam API.
+                lobby = await RefreshLobbySafe();
+            }
+
             if (lobby == null)
             {
                 SetStatus("Không đọc được lobby để bắt đầu.");
@@ -379,13 +392,16 @@ namespace DoAnGame.UI
             while (true)
             {
                 _ = PollLobbyOnce();
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(Mathf.Max(1.5f, pollIntervalSeconds));
             }
         }
 
         private async Task PollLobbyOnce()
         {
             if (currentLobby == null || isQuitting) return;
+
+            if (Time.unscaledTime < nextLobbyReadAt)
+                return;
 
             var refreshed = await RefreshLobbySafe();
             if (refreshed == null) return;
@@ -474,15 +490,38 @@ namespace DoAnGame.UI
 
         private async Task<Lobby> RefreshLobbySafe()
         {
+            if (currentLobby == null)
+                return null;
+
+            if (Time.unscaledTime < nextLobbyReadAt)
+                return currentLobby;
+
             try
             {
                 return await LobbyService.Instance.GetLobbyAsync(currentLobby.Id);
+            }
+            catch (LobbyServiceException ex) when (IsRateLimitException(ex))
+            {
+                nextLobbyReadAt = Time.unscaledTime + Mathf.Max(1f, rateLimitBackoffSeconds);
+                Debug.LogWarning($"[UIRoom] Refresh lobby bị rate limit, tạm dừng đọc đến t={nextLobbyReadAt:F1}. {ex.Reason} - {ex.Message}");
+                return currentLobby;
             }
             catch (Exception ex)
             {
                 Debug.LogWarning($"[UIRoom] Refresh lobby lỗi: {ex.Message}");
                 return null;
             }
+        }
+
+        private bool IsRateLimitException(LobbyServiceException ex)
+        {
+            if (ex == null)
+                return false;
+
+            string msg = ex.Message ?? string.Empty;
+            return msg.IndexOf("Too Many Requests", StringComparison.OrdinalIgnoreCase) >= 0
+                   || ex.Reason.ToString().IndexOf("Rate", StringComparison.OrdinalIgnoreCase) >= 0
+                   || ex.Reason.ToString().IndexOf("TooMany", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private async Task<bool> EnsureRelayManager()
