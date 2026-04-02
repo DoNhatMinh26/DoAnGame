@@ -78,6 +78,15 @@ namespace DoAnGame.UI
             SwitchTo(targetScreen);
         }
 
+        /// <summary>
+        /// Cho phép script khác gọi điều hướng bằng code.
+        /// Dùng cho case host bắt đầu trận và muốn cả 2 client chuyển màn đồng bộ.
+        /// </summary>
+        public void NavigateNow()
+        {
+            HandleClick();
+        }
+
         private void SwitchTo(GameObject screenToShow)
         {
             // A. Tắt toàn bộ anh em trong root (nếu dùng chung 1 Menu/Canvas)

@@ -1122,6 +1122,7 @@ MonoBehaviour:
   lobbyCodeText: {fileID: 470168473}
   statusText: {fileID: 1714769037}
   playerCountText: {fileID: 1714769037}
+  startBattleNavigator: {fileID: 1333591440}
   onBattleStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -2199,6 +2200,7 @@ GameObject:
   - component: {fileID: 1333591439}
   - component: {fileID: 1333591438}
   - component: {fileID: 1333591437}
+  - component: {fileID: 1333591440}
   m_Layer: 5
   m_Name: StartButton
   m_TagString: Untagged
@@ -2320,6 +2322,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1333591435}
   m_CullTransparentMesh: 1
+--- !u!114 &1333591440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333591435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65b458e56f260954b92da1b750f1bf2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneAsset: {fileID: 0}
+  targetSceneName: 
+  screensRoot: {fileID: 503741200}
+  targetScreen: {fileID: 909707722}
+  rootsToHide: []
+  rootsToShow: []
+  initializeStartStateOnAwake: 0
+  startScreen: {fileID: 0}
 --- !u!1 &1385194508
 GameObject:
   m_ObjectHideFlags: 0

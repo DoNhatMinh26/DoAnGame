@@ -38,6 +38,7 @@ namespace DoAnGame.UI
         [SerializeField] private TMP_Text playerCountText;
 
         [Header("Callbacks")]
+        [SerializeField] private UIButtonScreenNavigator startBattleNavigator;
         [SerializeField] private UnityEvent onBattleStarted;
 
         private Lobby currentLobby;
@@ -326,6 +327,12 @@ namespace DoAnGame.UI
                 return;
 
             battleStartNotified = true;
+
+            if (startBattleNavigator != null)
+            {
+                startBattleNavigator.NavigateNow();
+            }
+
             onBattleStarted?.Invoke();
         }
 
