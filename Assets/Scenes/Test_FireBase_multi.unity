@@ -1251,13 +1251,18 @@ MonoBehaviour:
   createRoomButton: {fileID: 916142644}
   quickJoinButton: {fileID: 1114688361}
   joinByCodeButton: {fileID: 2110987054}
+  quitRoomButton: {fileID: 1385194510}
   startMatchButton: {fileID: 1333591437}
   roomCodeInput: {fileID: 592893749}
   lobbyCodeText: {fileID: 470168473}
   statusText: {fileID: 1714769037}
   playerCountText: {fileID: 1714769037}
   startBattleNavigator: {fileID: 1333591440}
+  quitRoomNavigator: {fileID: 0}
   onBattleStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  onQuitRoom:
     m_PersistentCalls:
       m_Calls: []
 --- !u!1 &687295239

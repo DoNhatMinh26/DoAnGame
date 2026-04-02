@@ -27,6 +27,7 @@ namespace DoAnGame.UI
         [SerializeField] private Button createRoomButton;
         [SerializeField] private Button quickJoinButton;
         [SerializeField] private Button joinByCodeButton;
+        [SerializeField] private Button quitRoomButton;
         [SerializeField] private Button startMatchButton;
 
         [Header("Room Inputs")]
@@ -39,7 +40,9 @@ namespace DoAnGame.UI
 
         [Header("Callbacks")]
         [SerializeField] private UIButtonScreenNavigator startBattleNavigator;
+        [SerializeField] private UIButtonScreenNavigator quitRoomNavigator;
         [SerializeField] private UnityEvent onBattleStarted;
+        [SerializeField] private UnityEvent onQuitRoom;
 
         private Lobby currentLobby;
         private bool isHost;
@@ -48,6 +51,7 @@ namespace DoAnGame.UI
         private bool battleStartNotified;
         private bool initialized;
         private bool isBusy;
+        private bool isQuitting;
 
         protected override void Awake()
         {
@@ -61,6 +65,7 @@ namespace DoAnGame.UI
             createRoomButton?.onClick.AddListener(() => _ = HandleCreateRoom());
             quickJoinButton?.onClick.AddListener(() => _ = HandleQuickJoin());
             joinByCodeButton?.onClick.AddListener(() => _ = HandleJoinByCode());
+            quitRoomButton?.onClick.AddListener(() => _ = HandleQuitRoom());
             startMatchButton?.onClick.AddListener(() => _ = HandleStartMatch());
         }
 
@@ -109,6 +114,7 @@ namespace DoAnGame.UI
             createRoomButton?.onClick.RemoveAllListeners();
             quickJoinButton?.onClick.RemoveAllListeners();
             joinByCodeButton?.onClick.RemoveAllListeners();
+            quitRoomButton?.onClick.RemoveAllListeners();
             startMatchButton?.onClick.RemoveAllListeners();
             _ = LeaveLobbySafe();
         }
@@ -276,7 +282,7 @@ namespace DoAnGame.UI
 
         private async Task HandleStartMatch()
         {
-            if (isBusy)
+            if (isBusy || isQuitting)
                 return;
 
             isBusy = true;
@@ -333,6 +339,41 @@ namespace DoAnGame.UI
             }
         }
 
+        private async Task HandleQuitRoom()
+        {
+            if (isBusy)
+                return;
+
+            isBusy = true;
+            isQuitting = true;
+            SetActionButtonsInteractable(false);
+            SetStatus("Đang rời phòng...");
+
+            StopRoutines();
+            await LeaveLobbySafe();
+
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+            {
+                NetworkManager.Singleton.Shutdown();
+            }
+
+            battleStartNotified = false;
+            lobbyCodeText?.SetText("Mã phòng: -----");
+            SetPlayerCount("Người chơi: 1/2");
+            startMatchButton?.gameObject.SetActive(false);
+            SetStatus("Đã rời phòng.");
+
+            onQuitRoom?.Invoke();
+            if (quitRoomNavigator != null)
+            {
+                quitRoomNavigator.NavigateNow();
+            }
+
+            isBusy = false;
+            isQuitting = false;
+            SetActionButtonsInteractable(true);
+        }
+
         private IEnumerator PollLobbyRoutine()
         {
             while (true)
@@ -344,7 +385,7 @@ namespace DoAnGame.UI
 
         private async Task PollLobbyOnce()
         {
-            if (currentLobby == null) return;
+            if (currentLobby == null || isQuitting) return;
 
             var refreshed = await RefreshLobbySafe();
             if (refreshed == null) return;
@@ -366,7 +407,7 @@ namespace DoAnGame.UI
 
         private void NotifyBattleStarted()
         {
-            if (battleStartNotified)
+            if (battleStartNotified || isQuitting)
                 return;
 
             battleStartNotified = true;
@@ -505,6 +546,7 @@ namespace DoAnGame.UI
             if (createRoomButton != null) createRoomButton.interactable = interactable;
             if (quickJoinButton != null) quickJoinButton.interactable = interactable;
             if (joinByCodeButton != null) joinByCodeButton.interactable = interactable;
+            if (quitRoomButton != null) quitRoomButton.interactable = interactable;
 
             if (startMatchButton != null)
             {
