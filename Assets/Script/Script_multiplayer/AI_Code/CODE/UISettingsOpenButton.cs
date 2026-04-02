@@ -17,12 +17,17 @@ namespace DoAnGame.UI
         [LocalizedLabel("Dùng chế độ bật/tắt")]
         [SerializeField] private bool useToggle;
 
+        [Header("Debug")]
+        [LocalizedLabel("Bật log debug")]
+        [SerializeField] private bool enableDebugLogs = true;
+
         private Button cachedButton;
 
         private void Awake()
         {
             cachedButton = GetComponent<Button>();
             cachedButton.onClick.AddListener(HandleOpen);
+            LogDebug($"Awake | button={cachedButton.name} | popupController={(popupController != null ? popupController.name : "null")} | mode={(useToggle ? "Toggle" : "Open")}");
         }
 
         private void OnDestroy()
@@ -38,6 +43,8 @@ namespace DoAnGame.UI
                 return;
             }
 
+            LogDebug($"HandleOpen | clicked by {name} | popup={popupController.name} | mode={(useToggle ? "Toggle" : "Open")}");
+
             if (useToggle)
             {
                 popupController.Toggle();
@@ -46,6 +53,14 @@ namespace DoAnGame.UI
             {
                 popupController.Open();
             }
+        }
+
+        private void LogDebug(string message)
+        {
+            if (!enableDebugLogs)
+                return;
+
+            Debug.Log($"[{nameof(UISettingsOpenButton)}:{name}] {message}");
         }
     }
 }
