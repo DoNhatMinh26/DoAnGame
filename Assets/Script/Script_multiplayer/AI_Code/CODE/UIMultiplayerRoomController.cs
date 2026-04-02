@@ -47,6 +47,7 @@ namespace DoAnGame.UI
         private Coroutine heartbeatRoutine;
         private bool battleStartNotified;
         private bool initialized;
+        private bool isBusy;
 
         protected override void Awake()
         {
@@ -109,10 +110,17 @@ namespace DoAnGame.UI
             quickJoinButton?.onClick.RemoveAllListeners();
             joinByCodeButton?.onClick.RemoveAllListeners();
             startMatchButton?.onClick.RemoveAllListeners();
+            _ = LeaveLobbySafe();
         }
 
         private async Task HandleCreateRoom()
         {
+            if (isBusy)
+                return;
+
+            isBusy = true;
+            SetActionButtonsInteractable(false);
+
             if (!await EnsureRelayManager()) return;
 
             SetStatus("Đang tạo phòng...");
@@ -120,6 +128,8 @@ namespace DoAnGame.UI
             if (string.IsNullOrEmpty(relayJoinCode))
             {
                 SetStatus("Tạo phòng thất bại.");
+                isBusy = false;
+                SetActionButtonsInteractable(true);
                 return;
             }
 
@@ -152,10 +162,21 @@ namespace DoAnGame.UI
                 Debug.LogError($"[UIRoom] CreateLobby lỗi: {ex.Message}");
                 SetStatus("Không thể tạo lobby cloud.");
             }
+            finally
+            {
+                isBusy = false;
+                SetActionButtonsInteractable(true);
+            }
         }
 
         private async Task HandleQuickJoin()
         {
+            if (isBusy)
+                return;
+
+            isBusy = true;
+            SetActionButtonsInteractable(false);
+
             if (!await EnsureRelayManager()) return;
 
             SetStatus("Đang tìm phòng nhanh...");
@@ -178,16 +199,29 @@ namespace DoAnGame.UI
                 SetStatus("Không có phòng phù hợp để vào nhanh.");
                 Debug.LogWarning($"[UIRoom] QuickJoin lỗi: {ex.Reason} - {ex.Message}");
             }
+            finally
+            {
+                isBusy = false;
+                SetActionButtonsInteractable(true);
+            }
         }
 
         private async Task HandleJoinByCode()
         {
+            if (isBusy)
+                return;
+
+            isBusy = true;
+            SetActionButtonsInteractable(false);
+
             if (!await EnsureRelayManager()) return;
 
             string lobbyCode = roomCodeInput?.text?.Trim().ToUpperInvariant();
             if (string.IsNullOrEmpty(lobbyCode))
             {
                 SetStatus("Vui lòng nhập mã phòng.");
+                isBusy = false;
+                SetActionButtonsInteractable(true);
                 return;
             }
 
@@ -201,21 +235,13 @@ namespace DoAnGame.UI
             catch (Exception ex)
             {
                 Debug.LogWarning($"[UIRoom] JoinByCode lobby code lỗi: {ex.Message}");
-
-                // Fallback: người chơi có thể nhập Relay Join Code thay vì Lobby Code.
-                bool relayJoined = await RelayManager.Instance.TryJoinRelay(lobbyCode);
-                if (relayJoined)
-                {
-                    isHost = false;
-                    currentLobby = null;
-                    lobbyCodeText?.SetText($"Mã phòng: {lobbyCode}");
-                    SetStatus("Đã join bằng Relay code. Chờ host bắt đầu...");
-                    SetPlayerCount("Người chơi: 2/2");
-                    startMatchButton?.gameObject.SetActive(false);
-                    return;
-                }
-
-                SetStatus("Không vào được phòng. Kiểm tra lại mã Lobby/Relay.");
+                // Giữ logic ổn định cho 2 người: yêu cầu join bằng Lobby Code để sync trạng thái Started.
+                SetStatus("Không vào được phòng. Hãy nhập đúng Lobby Code.");
+            }
+            finally
+            {
+                isBusy = false;
+                SetActionButtonsInteractable(true);
             }
         }
 
@@ -250,9 +276,17 @@ namespace DoAnGame.UI
 
         private async Task HandleStartMatch()
         {
+            if (isBusy)
+                return;
+
+            isBusy = true;
+            SetActionButtonsInteractable(false);
+
             if (!isHost || currentLobby == null)
             {
                 SetStatus("Chỉ chủ phòng mới được bắt đầu.");
+                isBusy = false;
+                SetActionButtonsInteractable(true);
                 return;
             }
 
@@ -260,6 +294,8 @@ namespace DoAnGame.UI
             if (lobby == null)
             {
                 SetStatus("Không đọc được lobby để bắt đầu.");
+                isBusy = false;
+                SetActionButtonsInteractable(true);
                 return;
             }
 
@@ -267,6 +303,8 @@ namespace DoAnGame.UI
             {
                 SetStatus("Chưa đủ 2 người chơi.");
                 startMatchButton.interactable = false;
+                isBusy = false;
+                SetActionButtonsInteractable(true);
                 return;
             }
 
@@ -287,6 +325,11 @@ namespace DoAnGame.UI
             {
                 SetStatus("Không thể bắt đầu trận.");
                 Debug.LogError($"[UIRoom] StartMatch lỗi: {ex.Message}");
+            }
+            finally
+            {
+                isBusy = false;
+                SetActionButtonsInteractable(true);
             }
         }
 
@@ -380,22 +423,55 @@ namespace DoAnGame.UI
             {
                 SetStatus("Thiếu RelayManager trong scene.");
                 Debug.LogError("[UIRoom] RelayManager.Instance == null");
+                isBusy = false;
+                SetActionButtonsInteractable(true);
                 return false;
             }
 
             if (!await RelayManager.Instance.EnsureServicesReady())
             {
                 SetStatus("Không kết nối được dịch vụ multiplayer.");
+                isBusy = false;
+                SetActionButtonsInteractable(true);
                 return false;
             }
 
             if (!AuthenticationService.Instance.IsSignedIn)
             {
                 SetStatus("Chưa đăng nhập dịch vụ multiplayer.");
+                isBusy = false;
+                SetActionButtonsInteractable(true);
                 return false;
             }
 
             return true;
+        }
+
+        private async Task LeaveLobbySafe()
+        {
+            if (currentLobby == null)
+                return;
+
+            try
+            {
+                if (isHost)
+                {
+                    await LobbyService.Instance.DeleteLobbyAsync(currentLobby.Id);
+                }
+                else if (AuthenticationService.Instance.IsSignedIn)
+                {
+                    await LobbyService.Instance.RemovePlayerAsync(currentLobby.Id, AuthenticationService.Instance.PlayerId);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[UIRoom] LeaveLobby lỗi: {ex.Message}");
+            }
+            finally
+            {
+                currentLobby = null;
+                isHost = false;
+            }
         }
 
         private void StopRoutines()
@@ -422,6 +498,19 @@ namespace DoAnGame.UI
         private void SetPlayerCount(string text)
         {
             playerCountText?.SetText(text);
+        }
+
+        private void SetActionButtonsInteractable(bool interactable)
+        {
+            if (createRoomButton != null) createRoomButton.interactable = interactable;
+            if (quickJoinButton != null) quickJoinButton.interactable = interactable;
+            if (joinByCodeButton != null) joinByCodeButton.interactable = interactable;
+
+            if (startMatchButton != null)
+            {
+                // Start chỉ có ý nghĩa với host, trạng thái đủ người sẽ được cập nhật trong poll/create.
+                startMatchButton.interactable = interactable && isHost;
+            }
         }
     }
 }
