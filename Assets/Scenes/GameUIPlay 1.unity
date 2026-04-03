@@ -792,6 +792,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &58337226
 GameObject:
   m_ObjectHideFlags: 0
@@ -2533,6 +2534,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 1179138729}
+  enableDebugLogs: 0
 --- !u!1 &346740167
 GameObject:
   m_ObjectHideFlags: 0
@@ -2675,6 +2677,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &356917588
 GameObject:
   m_ObjectHideFlags: 0
@@ -2817,6 +2820,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 1179138729}
+  enableDebugLogs: 0
 --- !u!1 &371732408
 GameObject:
   m_ObjectHideFlags: 0
@@ -3451,6 +3455,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 1179138729}
+  enableDebugLogs: 0
 --- !u!1 &465903513
 GameObject:
   m_ObjectHideFlags: 0
@@ -3779,6 +3784,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &497979130
 GameObject:
   m_ObjectHideFlags: 0
@@ -3921,6 +3927,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &523629202
 GameObject:
   m_ObjectHideFlags: 0
@@ -5695,6 +5702,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &911829893
 GameObject:
   m_ObjectHideFlags: 0
@@ -5837,6 +5845,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &919534623
 GameObject:
   m_ObjectHideFlags: 0
@@ -6261,6 +6270,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 1179138729}
+  enableDebugLogs: 0
 --- !u!1 &959446429
 GameObject:
   m_ObjectHideFlags: 0
@@ -6624,6 +6634,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &1041999364
 GameObject:
   m_ObjectHideFlags: 0
@@ -8271,6 +8282,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &1381792434
 GameObject:
   m_ObjectHideFlags: 0
@@ -9609,6 +9621,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &1569771993
 GameObject:
   m_ObjectHideFlags: 0
@@ -10562,6 +10575,7 @@ MonoBehaviour:
   backdropButton: {fileID: 0}
   hideOnStart: 1
   closeOnEscape: 1
+  enableDebugLogs: 1
 --- !u!1 &1713496845
 GameObject:
   m_ObjectHideFlags: 0
@@ -11639,6 +11653,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 1179138729}
+  enableDebugLogs: 0
 --- !u!1 &1819803645
 GameObject:
   m_ObjectHideFlags: 0
@@ -12505,6 +12520,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &1876816061
 GameObject:
   m_ObjectHideFlags: 0
@@ -13090,6 +13106,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 1179138729}
+  enableDebugLogs: 0
 --- !u!1 &1957515907
 GameObject:
   m_ObjectHideFlags: 0
@@ -13353,6 +13370,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &1978668789
 GameObject:
   m_ObjectHideFlags: 0
@@ -13937,6 +13955,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &2126987038
 GameObject:
   m_ObjectHideFlags: 0

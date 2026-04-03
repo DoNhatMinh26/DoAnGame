@@ -367,6 +367,42 @@ Field có thể để trống:
   - Kết nối `UISettingsPanelController` với service thay vì đọc/ghi rải rác.
   - Thêm bước sync cloud sau khi login thành công.
 
+9) GHI NHỚ ROADMAP MULTIPLAYER + CƠ SỞ DỮ LIỆU NGƯỜI CHƠI
+- Trạng thái hiện tại:
+  - Multiplayer đang chạy bằng đăng nhập ẩn danh (UGS Authentication Anonymous).
+  - Dùng tốt cho test host/client, nhưng chưa gắn danh tính tài khoản thật.
+
+- Mục tiêu phiên bản tiếp theo:
+  - Dùng logic đăng nhập/đăng ký ở UI Auth (Login/Register).
+  - Qua Main Menu hiển thị dữ liệu người chơi thật (tên, id, thông tin hồ sơ).
+  - Khi vào Multiplayer Room, hiển thị danh sách người tham gia room:
+    - Host
+    - Client(s)
+  - Đồng bộ dữ liệu người chơi giữa UI local, Lobby metadata, và DB cloud.
+
+- Định hướng kỹ thuật (triển khai sau):
+  - Tạo lớp `PlayerIdentityService`:
+    - map giữa Firebase user (hoặc tài khoản app) và UGS PlayerId.
+    - cung cấp `DisplayName`, `PlayerId`, `Avatar` (nếu có).
+  - Tạo lớp `MultiplayerRoomPresenceService`:
+    - cập nhật danh sách thành viên từ Lobby players.
+    - publish event cho UI room/battle để render list người chơi.
+  - Trong create/join room:
+    - đẩy `displayName` vào player data/lobby data.
+    - khi poll/refresh lobby, đọc lại danh sách và cập nhật UI.
+
+- Quy tắc đồng bộ cần giữ:
+  - UI chỉ hiển thị dữ liệu từ service (single source of truth), không tự đoán state.
+  - Khi out room hoặc bị disconnect:
+    - xóa state room cục bộ.
+    - trả UI về idle state.
+    - dữ liệu tài khoản vẫn giữ (không mất phiên đăng nhập app).
+
+- Nhắc cho các lần làm việc sau:
+  - Trước khi code tiếp multiplayer data sync, đọc lại mục này.
+  - Giữ tương thích logic hiện tại: host/client start, quit, back, auto-return UI15.
+  - Không phá flow đang ổn khi thêm identity/database layer.
+
 ----------------------------------------------------------------
  QUẢN LÝ FLOW (GameUIPlay)
 ----------------------------------------------------------------

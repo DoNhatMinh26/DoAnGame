@@ -1622,6 +1622,9 @@ MonoBehaviour:
   onQuitRoom:
     m_PersistentCalls:
       m_Calls: []
+  screensRootForBattleFallback: {fileID: 503741200}
+  battleScreenFallback: {fileID: 909707722}
+  enableDetailedLogs: 0
   pollIntervalSeconds: 3.5
   rateLimitBackoffSeconds: 2.5
 --- !u!1 &687295239
@@ -2062,12 +2065,17 @@ MonoBehaviour:
   topPlayerText: {fileID: 1236058840}
   bottomPlayerText: {fileID: 716041620}
   battleStatusText: {fileID: 1875919414}
-  roomInfoText: {fileID: 0}
+  roomInfoText: {fileID: 1875919414}
   localPlayerLabel: "Player 1 - ng\u01B0\u1EDDi ch\u01A1i"
   enemyPlayerLabel: "Player 2 - \u0111\u1ED1i th\u1EE7"
   aiEnemyLabel: "M\xE1y AI - \u0111\u1ED1i th\u1EE7"
-  onSessionEndedNavigator: {fileID: 1387869346}
+  roomController: {fileID: 0}
+  resetRoomStateOnSessionEnded: 1
+  onSessionEndedNavigator: {fileID: 1387869350}
+  sessionEndedFallbackNavigator: {fileID: 2094929393}
+  autoResolveSessionEndedNavigator: 1
   autoNavigateOnSessionEnded: 1
+  sessionCheckInterval: 0.5
   enableDebugLogs: 0
 --- !u!114 &909707727
 MonoBehaviour:
@@ -2083,7 +2091,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomController: {fileID: 673608103}
   settingsPopupController: {fileID: 503741201}
-  backToRoomNavigator: {fileID: 1387869346}
+  backToRoomNavigator: {fileID: 1387869350}
   fallbackQuitNavigator: {fileID: 2094929393}
   settingButton: {fileID: 1048015625}
   backButton: {fileID: 1387869347}
@@ -2093,9 +2101,13 @@ MonoBehaviour:
   quickJoinButton: {fileID: 0}
   joinByCodeButton: {fileID: 0}
   autoBindOnAwake: 1
+  rebindOnEnable: 1
   autoResolveSettingsPopup: 1
   backActsAsQuitRoom: 1
   bindOptionalRoomButtons: 0
+  autoRepairInputIssues: 1
+  navigateToRoomAfterQuit: 1
+  quitNavigateDelaySeconds: 0.08
   enableDebugLogs: 0
   onAnyActionTriggered:
     m_PersistentCalls:
@@ -2711,7 +2723,6 @@ GameObject:
   - component: {fileID: 1048015627}
   - component: {fileID: 1048015626}
   - component: {fileID: 1048015625}
-  - component: {fileID: 1048015624}
   m_Layer: 5
   m_Name: Setting
   m_TagString: Untagged
@@ -2739,26 +2750,6 @@ RectTransform:
   m_AnchoredPosition: {x: 755, y: 430}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1048015624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1048015622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65b458e56f260954b92da1b750f1bf2b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneAsset: {fileID: 0}
-  targetSceneName: 
-  screensRoot: {fileID: 503741200}
-  targetScreen: {fileID: 673608099}
-  rootsToHide: []
-  rootsToShow: []
-  initializeStartStateOnAwake: 0
-  startScreen: {fileID: 0}
 --- !u!114 &1048015625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3962,6 +3953,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &1385194508
 GameObject:
   m_ObjectHideFlags: 0
@@ -4107,7 +4099,7 @@ GameObject:
   - component: {fileID: 1387869349}
   - component: {fileID: 1387869348}
   - component: {fileID: 1387869347}
-  - component: {fileID: 1387869346}
+  - component: {fileID: 1387869350}
   m_Layer: 5
   m_Name: Back
   m_TagString: Untagged
@@ -4135,26 +4127,6 @@ RectTransform:
   m_AnchoredPosition: {x: -747, y: 430}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1387869346
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1387869344}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65b458e56f260954b92da1b750f1bf2b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sceneAsset: {fileID: 0}
-  targetSceneName: 
-  screensRoot: {fileID: 503741200}
-  targetScreen: {fileID: 673608099}
-  rootsToHide: []
-  rootsToShow: []
-  initializeStartStateOnAwake: 0
-  startScreen: {fileID: 0}
 --- !u!114 &1387869347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4237,6 +4209,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1387869344}
   m_CullTransparentMesh: 1
+--- !u!114 &1387869350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1387869344}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65b458e56f260954b92da1b750f1bf2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneAsset: {fileID: 0}
+  targetSceneName: 
+  screensRoot: {fileID: 503741200}
+  targetScreen: {fileID: 673608099}
+  rootsToHide: []
+  rootsToShow: []
+  initializeStartStateOnAwake: 0
+  startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &1404914312
 GameObject:
   m_ObjectHideFlags: 0
@@ -6067,6 +6060,7 @@ MonoBehaviour:
   rootsToShow: []
   initializeStartStateOnAwake: 0
   startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &2096637780
 GameObject:
   m_ObjectHideFlags: 0

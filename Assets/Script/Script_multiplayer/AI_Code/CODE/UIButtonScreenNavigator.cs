@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement; // Bổ sung thư viện quản lý Scene
+using UnityEngine.EventSystems;
 
 namespace DoAnGame.UI
 {
@@ -40,6 +41,9 @@ namespace DoAnGame.UI
         [LocalizedLabel("Màn hình bắt đầu")]
         [SerializeField] private GameObject startScreen;
 
+        [Header("Debug")]
+        [SerializeField] private bool enableDebugLogs;
+
         private Button cachedButton;
 
         private void Awake()
@@ -70,8 +74,15 @@ namespace DoAnGame.UI
             // 1. Kiểm tra nếu có nhập tên Scene -> Ưu tiên chuyển Scene
             if (!string.IsNullOrEmpty(targetSceneName))
             {
+                Log($"LoadScene -> {targetSceneName}");
                 SceneManager.LoadScene(targetSceneName);
                 return; // Dừng, không tiếp tục xử lý UI nữa
+            }
+
+            if (!HasUiDestination())
+            {
+                Debug.LogWarning($"[{nameof(UIButtonScreenNavigator)}:{name}] Chưa cấu hình đích UI (targetScreen/rootsToShow). Bỏ qua điều hướng để tránh màn hình trống.");
+                return;
             }
 
             // 2. Xử lý chuyển UI nếu không chuyển Scene
@@ -89,6 +100,12 @@ namespace DoAnGame.UI
 
         private void SwitchTo(GameObject screenToShow)
         {
+            if (screenToShow == null && !HasRootsToShow())
+            {
+                Debug.LogWarning($"[{nameof(UIButtonScreenNavigator)}:{name}] Không có targetScreen và rootsToShow trống. Không thực hiện ẩn/hiện để tránh blank UI.");
+                return;
+            }
+
             // A. Tắt toàn bộ anh em trong root (nếu dùng chung 1 Menu/Canvas)
             if (screensRoot != null)
             {
@@ -97,6 +114,12 @@ namespace DoAnGame.UI
                     var child = screensRoot.GetChild(i);
                     if (child != null)
                     {
+                        if (ShouldSkipAutoHide(child.gameObject))
+                        {
+                            Log($"Skip auto-hide: {child.gameObject.name}");
+                            continue;
+                        }
+
                         child.gameObject.SetActive(false);
                     }
                 }
@@ -124,7 +147,48 @@ namespace DoAnGame.UI
             if (screenToShow != null)
             {
                 screenToShow.SetActive(true);
+                Log($"SwitchTo -> {screenToShow.name}");
             }
+            else
+            {
+                Log("SwitchTo -> targetScreen null, dùng rootsToShow");
+            }
+        }
+
+        private bool HasUiDestination()
+        {
+            return targetScreen != null || HasRootsToShow();
+        }
+
+        private bool ShouldSkipAutoHide(GameObject go)
+        {
+            if (go == null)
+                return true;
+
+            // EventSystem phải luôn bật để UI nhận click.
+            return go.GetComponent<EventSystem>() != null;
+        }
+
+        private bool HasRootsToShow()
+        {
+            if (rootsToShow == null || rootsToShow.Length == 0)
+                return false;
+
+            for (int i = 0; i < rootsToShow.Length; i++)
+            {
+                if (rootsToShow[i] != null)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private void Log(string message)
+        {
+            if (!enableDebugLogs)
+                return;
+
+            Debug.Log($"[{nameof(UIButtonScreenNavigator)}:{name}] {message}");
         }
 
         [ContextMenu("Apply Start State")]

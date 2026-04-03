@@ -7,6 +7,7 @@ using Unity.Services.Relay;
 using Unity.Services.Relay.Models;
 using UnityEngine;
 using System.Reflection; // Bắt buộc thêm dòng này để dùng BindingFlags
+using System.Text;
 
 public class RelayManager : MonoBehaviour
 {
@@ -33,10 +34,18 @@ public class RelayManager : MonoBehaviour
             return true;
 
         try {
-            await UnityServices.InitializeAsync();
+            var initOptions = new InitializationOptions();
+            string profile = BuildProfileName();
+            initOptions.SetProfile(profile);
+
+            await UnityServices.InitializeAsync(initOptions);
             if (!AuthenticationService.Instance.IsSignedIn) {
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
-                Debug.Log("[Relay] Đã đăng nhập ẩn danh thành công!");
+                Debug.Log($"[Relay] Đã đăng nhập ẩn danh thành công! Profile={profile}, PlayerId={AuthenticationService.Instance.PlayerId}");
+            }
+            else
+            {
+                Debug.Log($"[Relay] Đang dùng phiên đăng nhập sẵn. Profile={profile}, PlayerId={AuthenticationService.Instance.PlayerId}");
             }
             servicesReady = true;
             return true;
@@ -44,6 +53,30 @@ public class RelayManager : MonoBehaviour
             Debug.LogError("[Relay] Lỗi khởi tạo: " + e.Message);
             return false;
         }
+    }
+
+    private string BuildProfileName()
+    {
+        // Profile tách theo project path để main và clone không dùng chung PlayerId.
+        // Unity profile name chỉ nên gồm ký tự an toàn.
+        string source = Application.dataPath;
+        if (string.IsNullOrEmpty(source))
+            return "default_profile";
+
+        int hash = source.GetHashCode();
+        string raw = $"profile_{Mathf.Abs(hash)}";
+
+        var sb = new StringBuilder(raw.Length);
+        for (int i = 0; i < raw.Length; i++)
+        {
+            char c = raw[i];
+            if (char.IsLetterOrDigit(c) || c == '_' || c == '-')
+            {
+                sb.Append(c);
+            }
+        }
+
+        return sb.Length > 0 ? sb.ToString() : "default_profile";
     }
 
     public async Task<string> CreateRelay() {

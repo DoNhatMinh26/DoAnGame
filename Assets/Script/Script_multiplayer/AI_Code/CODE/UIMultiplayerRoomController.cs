@@ -10,6 +10,7 @@ using Unity.Services.Lobbies.Models;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace DoAnGame.UI
 {
@@ -22,6 +23,9 @@ namespace DoAnGame.UI
         private const string StartedKey = "Started";
         private const string ModeKey = "Mode";
         private const int MaxPlayers = 2;
+        private const string DefaultIdleStatus = "Mời tạo phòng để chơi.";
+        private const string DefaultIdleCode = "Mã phòng: -----";
+        private const string DefaultIdlePlayerCount = "Người chơi: 1/2";
         private const float DefaultPollIntervalSeconds = 3.5f;
         private const float DefaultRateLimitBackoffSeconds = 2.5f;
 
@@ -46,6 +50,11 @@ namespace DoAnGame.UI
         [SerializeField] private UnityEvent onBattleStarted;
         [SerializeField] private UnityEvent onQuitRoom;
 
+        [Header("Battle Fallback UI")]
+        [SerializeField] private Transform screensRootForBattleFallback;
+        [SerializeField] private GameObject battleScreenFallback;
+        [SerializeField] private bool enableDetailedLogs = true;
+
         [Header("Lobby Read Tuning")]
         [SerializeField] private float pollIntervalSeconds = DefaultPollIntervalSeconds;
         [SerializeField] private float rateLimitBackoffSeconds = DefaultRateLimitBackoffSeconds;
@@ -59,6 +68,7 @@ namespace DoAnGame.UI
         private bool isBusy;
         private bool isQuitting;
         private float nextLobbyReadAt;
+        private Coroutine delayedBattleFallbackRoutine;
 
         protected override void Awake()
         {
@@ -103,10 +113,8 @@ namespace DoAnGame.UI
 
             initialized = true;
             battleStartNotified = false;
-            SetStatus("Chọn tạo phòng, vào nhanh hoặc nhập mã phòng.");
-            SetPlayerCount("Người chơi: 1/2");
-            lobbyCodeText?.SetText("Mã phòng: -----");
-            startMatchButton?.gameObject.SetActive(false);
+            ApplyIdleVisualState(DefaultIdleStatus);
+            TryAutoResolveBattleFallback();
         }
 
         protected override void OnHide()
@@ -370,11 +378,7 @@ namespace DoAnGame.UI
                 NetworkManager.Singleton.Shutdown();
             }
 
-            battleStartNotified = false;
-            lobbyCodeText?.SetText("Mã phòng: -----");
-            SetPlayerCount("Người chơi: 1/2");
-            startMatchButton?.gameObject.SetActive(false);
-            SetStatus("Đã rời phòng.");
+            ResetRoomSessionState(DefaultIdleStatus);
 
             onQuitRoom?.Invoke();
             if (quitRoomNavigator != null)
@@ -385,6 +389,29 @@ namespace DoAnGame.UI
             isBusy = false;
             isQuitting = false;
             SetActionButtonsInteractable(true);
+        }
+
+        private void ResetRoomSessionState(string status)
+        {
+            currentLobby = null;
+            isHost = false;
+            battleStartNotified = false;
+            nextLobbyReadAt = 0f;
+            ApplyIdleVisualState(status);
+            roomCodeInput?.SetTextWithoutNotify(string.Empty);
+        }
+
+        private void ApplyIdleVisualState(string status)
+        {
+            SetStatus(status);
+            SetPlayerCount(DefaultIdlePlayerCount);
+            lobbyCodeText?.SetText(DefaultIdleCode);
+
+            if (startMatchButton != null)
+            {
+                startMatchButton.gameObject.SetActive(false);
+                startMatchButton.interactable = false;
+            }
         }
 
         private IEnumerator PollLobbyRoutine()
@@ -423,17 +450,134 @@ namespace DoAnGame.UI
 
         private void NotifyBattleStarted()
         {
-            if (battleStartNotified || isQuitting)
+            if (isQuitting)
+                return;
+
+            // Nếu đã notify trước đó nhưng UI16 vẫn chưa visible, cho phép retry.
+            if (battleStartNotified && IsBattleScreenVisible())
                 return;
 
             battleStartNotified = true;
+            LogState("NotifyBattleStarted: begin");
 
             if (startBattleNavigator != null)
             {
+                Log($"NotifyBattleStarted: navigator={startBattleNavigator.name}");
                 startBattleNavigator.NavigateNow();
+            }
+            else
+            {
+                Log("NotifyBattleStarted: startBattleNavigator is NULL");
+            }
+
+            // Fallback chống case client bị blank (đã ẩn lobby nhưng chưa bật được panel battle).
+            // Nếu object đã bị inactive bởi navigator thì không thể StartCoroutine trên object này.
+            if (isActiveAndEnabled && gameObject.activeInHierarchy)
+            {
+                if (delayedBattleFallbackRoutine != null)
+                {
+                    StopCoroutine(delayedBattleFallbackRoutine);
+                }
+                delayedBattleFallbackRoutine = StartCoroutine(EnsureBattleScreenVisibleNextFrame());
+            }
+            else
+            {
+                Log("NotifyBattleStarted: room panel inactive sau navigate, áp fallback ngay lập tức");
+                EnsureBattleScreenVisibleImmediate();
             }
 
             onBattleStarted?.Invoke();
+            LogState("NotifyBattleStarted: end");
+        }
+
+        private bool IsBattleScreenVisible()
+        {
+            return battleScreenFallback != null && battleScreenFallback.activeInHierarchy;
+        }
+
+        private IEnumerator EnsureBattleScreenVisibleNextFrame()
+        {
+            yield return null;
+
+            EnsureBattleScreenVisibleImmediate();
+            delayedBattleFallbackRoutine = null;
+        }
+
+        private void EnsureBattleScreenVisibleImmediate()
+        {
+            TryAutoResolveBattleFallback();
+            LogState("EnsureBattleScreenVisibleImmediate: check");
+
+            if (battleScreenFallback == null)
+            {
+                Log("EnsureBattleScreenVisibleImmediate: battleScreenFallback is NULL");
+                return;
+            }
+
+            if (battleScreenFallback.activeInHierarchy)
+            {
+                Log("EnsureBattleScreenVisibleImmediate: battle screen already active");
+                return;
+            }
+
+            if (screensRootForBattleFallback != null)
+            {
+                for (int i = 0; i < screensRootForBattleFallback.childCount; i++)
+                {
+                    var child = screensRootForBattleFallback.GetChild(i);
+                    if (child != null)
+                    {
+                        if (child.GetComponent<EventSystem>() != null)
+                        {
+                            Log("Fallback skip auto-hide EventSystem");
+                            continue;
+                        }
+
+                        child.gameObject.SetActive(false);
+                    }
+                }
+            }
+
+            battleScreenFallback.SetActive(true);
+            Log("Applied battle fallback UI activation.");
+            LogState("EnsureBattleScreenVisibleImmediate: done");
+        }
+
+        private void TryAutoResolveBattleFallback()
+        {
+            if (battleScreenFallback != null && screensRootForBattleFallback != null)
+                return;
+
+            var allBattleControllers = Resources.FindObjectsOfTypeAll<UIMultiplayerBattleController>();
+            if (allBattleControllers != null && allBattleControllers.Length > 0)
+            {
+                for (int i = 0; i < allBattleControllers.Length; i++)
+                {
+                    var ctrl = allBattleControllers[i];
+                    if (ctrl == null)
+                        continue;
+
+                    var go = ctrl.gameObject;
+                    var scene = go.scene;
+                    if (!scene.IsValid() || !scene.isLoaded)
+                        continue;
+
+                    if (battleScreenFallback == null)
+                    {
+                        battleScreenFallback = go;
+                        Log($"Auto-resolved battleScreenFallback={go.name}");
+                    }
+
+                    if (screensRootForBattleFallback == null)
+                    {
+                        screensRootForBattleFallback = go.transform.parent;
+                        Log($"Auto-resolved screensRootForBattleFallback={(screensRootForBattleFallback != null ? screensRootForBattleFallback.name : "null")}");
+                    }
+
+                    if (battleScreenFallback != null && screensRootForBattleFallback != null)
+                        return;
+                }
+            }
         }
 
         // Public wrappers to allow other UI layers (e.g. UI16 action hub)
@@ -594,12 +738,38 @@ namespace DoAnGame.UI
                 StopCoroutine(heartbeatRoutine);
                 heartbeatRoutine = null;
             }
+
+            if (delayedBattleFallbackRoutine != null)
+            {
+                StopCoroutine(delayedBattleFallbackRoutine);
+                delayedBattleFallbackRoutine = null;
+            }
         }
 
         private void SetStatus(string text)
         {
             statusText?.SetText(text);
             Debug.Log($"[UIRoom] {text}");
+        }
+
+        private void Log(string message)
+        {
+            if (!enableDetailedLogs)
+                return;
+
+            Debug.Log($"[UIRoom:{name}] {message}");
+        }
+
+        private void LogState(string tag)
+        {
+            if (!enableDetailedLogs)
+                return;
+
+            string navigatorName = startBattleNavigator != null ? startBattleNavigator.name : "null";
+            string fallbackName = battleScreenFallback != null ? battleScreenFallback.name : "null";
+            bool fallbackActive = battleScreenFallback != null && battleScreenFallback.activeInHierarchy;
+            string rootName = screensRootForBattleFallback != null ? screensRootForBattleFallback.name : "null";
+            Debug.Log($"[UIRoom:{name}] {tag} | roomActive={gameObject.activeInHierarchy} | enabled={isActiveAndEnabled} | navigator={navigatorName} | fallback={fallbackName} active={fallbackActive} | root={rootName}");
         }
 
         private void SetPlayerCount(string text)

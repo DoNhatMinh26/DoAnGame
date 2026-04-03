@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace DoAnGame.UI
 {
@@ -31,14 +34,22 @@ namespace DoAnGame.UI
 
         [Header("Behavior")]
         [SerializeField] private bool autoBindOnAwake = true;
+        [SerializeField] private bool rebindOnEnable = true;
         [SerializeField] private bool autoResolveSettingsPopup = true;
         [SerializeField] private bool backActsAsQuitRoom = true;
         [SerializeField] private bool bindOptionalRoomButtons;
+        [SerializeField] private bool autoRepairInputIssues = true;
+        [SerializeField] private bool navigateToRoomAfterQuit = true;
+        [SerializeField] private float quitNavigateDelaySeconds = 0.08f;
         [SerializeField] private bool enableDebugLogs;
 
         [Header("Events")]
         [SerializeField] private UnityEvent onAnyActionTriggered;
         [SerializeField] private UnityEvent onQuitTriggered;
+
+        public UIMultiplayerRoomController RoomController => roomController;
+        public UIButtonScreenNavigator BackToRoomNavigator => backToRoomNavigator;
+        public UIButtonScreenNavigator FallbackQuitNavigator => fallbackQuitNavigator;
 
         private void Awake()
         {
@@ -50,6 +61,37 @@ namespace DoAnGame.UI
             if (autoBindOnAwake)
             {
                 BindButtons();
+            }
+
+            ValidateUiInputReadiness();
+        }
+
+        private void OnEnable()
+        {
+            if (rebindOnEnable)
+            {
+                BindButtons();
+            }
+
+            // Ensure UI16 action buttons are usable each time panel becomes visible.
+            SetNavigationActionsInteractable(true);
+
+            if (autoRepairInputIssues)
+            {
+                RepairUiInputIfNeeded();
+            }
+
+            ValidateUiInputReadiness();
+        }
+
+        private void Update()
+        {
+            if (!enableDebugLogs)
+                return;
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                LogPointerRaycastUnderMouse();
             }
         }
 
@@ -118,6 +160,7 @@ namespace DoAnGame.UI
         public void OnClickSetting()
         {
             onAnyActionTriggered?.Invoke();
+            Log("OnClickSetting invoked");
 
             if (settingsPopupController == null)
             {
@@ -164,6 +207,7 @@ namespace DoAnGame.UI
 
         public void OnClickBackToUI15()
         {
+            Log("OnClickBackToUI15 invoked");
             if (backActsAsQuitRoom)
             {
                 Log("Action: Back -> acts as QuitRoom");
@@ -187,6 +231,9 @@ namespace DoAnGame.UI
         {
             onAnyActionTriggered?.Invoke();
             onQuitTriggered?.Invoke();
+            Log("OnClickQuitRoom invoked");
+
+            ScheduleQuitNavigation();
 
             if (roomController != null)
             {
@@ -205,9 +252,62 @@ namespace DoAnGame.UI
             Log("Action: Quit ignored (no controller, no navigator)");
         }
 
+        private void ScheduleQuitNavigation()
+        {
+            if (!navigateToRoomAfterQuit)
+                return;
+
+            if (quitNavigateDelaySeconds <= 0f)
+            {
+                NavigateAfterQuitNow();
+                return;
+            }
+
+            if (isActiveAndEnabled && gameObject.activeInHierarchy)
+            {
+                StartCoroutine(NavigateAfterQuitDelay());
+            }
+            else
+            {
+                Log("ScheduleQuitNavigation -> GameplayPanel inactive, navigate immediately");
+                NavigateAfterQuitNow();
+            }
+        }
+
+        private IEnumerator NavigateAfterQuitDelay()
+        {
+            if (quitNavigateDelaySeconds > 0f)
+            {
+                yield return new WaitForSeconds(quitNavigateDelaySeconds);
+            }
+
+            NavigateAfterQuitNow();
+        }
+
+        private void NavigateAfterQuitNow()
+        {
+            if (fallbackQuitNavigator != null)
+            {
+                fallbackQuitNavigator.NavigateNow();
+                Log("QuitNavigateDelay -> fallbackQuitNavigator.NavigateNow");
+                return;
+            }
+
+            if (backToRoomNavigator != null)
+            {
+                backToRoomNavigator.NavigateNow();
+                Log("QuitNavigateDelay -> backToRoomNavigator.NavigateNow");
+            }
+            else
+            {
+                Log("QuitNavigateDelay -> no navigator assigned");
+            }
+        }
+
         public void OnClickStartMatch()
         {
             onAnyActionTriggered?.Invoke();
+            Log("OnClickStartMatch invoked");
 
             if (roomController != null)
             {
@@ -223,6 +323,7 @@ namespace DoAnGame.UI
         public void OnClickCreateRoom()
         {
             onAnyActionTriggered?.Invoke();
+            Log("OnClickCreateRoom invoked");
 
             if (roomController != null)
             {
@@ -238,6 +339,7 @@ namespace DoAnGame.UI
         public void OnClickQuickJoin()
         {
             onAnyActionTriggered?.Invoke();
+            Log("OnClickQuickJoin invoked");
 
             if (roomController != null)
             {
@@ -253,6 +355,7 @@ namespace DoAnGame.UI
         public void OnClickJoinByCode()
         {
             onAnyActionTriggered?.Invoke();
+            Log("OnClickJoinByCode invoked");
 
             if (roomController != null)
             {
@@ -271,6 +374,224 @@ namespace DoAnGame.UI
                 return;
 
             Debug.Log($"[{nameof(UI16ButtonActionHub)}:{name}] {message}");
+        }
+
+        [ContextMenu("Debug/Validate UI Input")]
+        public void ValidateUiInputReadiness()
+        {
+            if (!enableDebugLogs)
+                return;
+
+            var currentEventSystem = EventSystem.current;
+            string esState = currentEventSystem == null
+                ? "EventSystem=NULL"
+                : $"EventSystem={currentEventSystem.name}, active={currentEventSystem.gameObject.activeInHierarchy}, enabled={currentEventSystem.enabled}";
+            Log($"InputCheck | {esState}");
+
+            LogButtonState("Setting", settingButton);
+            LogButtonState("Back", backButton);
+            LogButtonState("Quit", quitRoomButton);
+        }
+
+        private void LogButtonState(string label, Button button)
+        {
+            if (!enableDebugLogs)
+                return;
+
+            if (button == null)
+            {
+                Log($"InputCheck | {label} button=NULL");
+                return;
+            }
+
+            bool active = button.gameObject.activeInHierarchy;
+            bool interactable = button.interactable;
+            bool enabled = button.enabled;
+            Log($"InputCheck | {label} button={button.name}, active={active}, enabled={enabled}, interactable={interactable}");
+        }
+
+        [ContextMenu("Debug/Repair UI Input")]
+        public void RepairUiInputIfNeeded()
+        {
+            EnsureEventSystemReady();
+            EnsureGraphicRaycasterReady();
+            DisableNonInteractiveRaycastTargets();
+            EnsureButtonReady(settingButton, "Setting");
+            EnsureButtonReady(backButton, "Back");
+            EnsureButtonReady(quitRoomButton, "Quit");
+        }
+
+        private void DisableNonInteractiveRaycastTargets()
+        {
+            var graphics = GetComponentsInChildren<Graphic>(true);
+            int disabledCount = 0;
+
+            for (int i = 0; i < graphics.Length; i++)
+            {
+                var g = graphics[i];
+                if (g == null)
+                    continue;
+
+                // Keep raycast for actual button visuals.
+                bool underButton = g.GetComponentInParent<Button>() != null;
+                if (underButton)
+                    continue;
+
+                if (g.raycastTarget)
+                {
+                    g.raycastTarget = false;
+                    disabledCount++;
+                }
+            }
+
+            Log($"Repair | Disabled non-interactive raycast targets: {disabledCount}");
+        }
+
+        private void EnsureEventSystemReady()
+        {
+            var current = EventSystem.current;
+            if (current != null)
+            {
+                current.gameObject.SetActive(true);
+                current.enabled = true;
+                if (current.GetComponent<StandaloneInputModule>() == null)
+                {
+                    current.gameObject.AddComponent<StandaloneInputModule>();
+                }
+                EnableInputModules(current);
+                Log($"Repair | EventSystem ready: {current.name}");
+                return;
+            }
+
+            var any = FindObjectOfType<EventSystem>(true);
+            if (any != null)
+            {
+                any.gameObject.SetActive(true);
+                any.enabled = true;
+                if (any.GetComponent<StandaloneInputModule>() == null)
+                {
+                    any.gameObject.AddComponent<StandaloneInputModule>();
+                }
+                EnableInputModules(any);
+                Log($"Repair | Activated existing EventSystem: {any.name}");
+                return;
+            }
+
+            var go = new GameObject("EventSystem (AutoCreated)");
+            var es = go.AddComponent<EventSystem>();
+            go.AddComponent<StandaloneInputModule>();
+            EnableInputModules(es);
+            Log("Repair | Created EventSystem (AutoCreated)");
+        }
+
+        private void EnableInputModules(EventSystem es)
+        {
+            if (es == null)
+                return;
+
+            var modules = es.GetComponents<BaseInputModule>();
+            for (int i = 0; i < modules.Length; i++)
+            {
+                if (modules[i] != null)
+                {
+                    modules[i].enabled = true;
+                    Log($"Repair | InputModule enabled: {modules[i].GetType().Name}");
+                }
+            }
+        }
+
+        private void EnsureGraphicRaycasterReady()
+        {
+            var canvas = GetComponentInParent<Canvas>(true);
+            if (canvas == null)
+                return;
+
+            var raycaster = canvas.GetComponent<GraphicRaycaster>();
+            if (raycaster == null)
+            {
+                raycaster = canvas.gameObject.AddComponent<GraphicRaycaster>();
+                Log($"Repair | Added GraphicRaycaster on {canvas.name}");
+            }
+            raycaster.enabled = true;
+        }
+
+        private void EnsureButtonReady(Button button, string label)
+        {
+            if (button == null)
+                return;
+
+            button.enabled = true;
+            button.interactable = true;
+
+            var image = button.GetComponent<Graphic>();
+            if (image != null)
+            {
+                image.raycastTarget = true;
+            }
+
+            // Make button root graphic the only click target to avoid child TMP overlay intercept.
+            var childGraphics = button.GetComponentsInChildren<Graphic>(true);
+            for (int i = 0; i < childGraphics.Length; i++)
+            {
+                var g = childGraphics[i];
+                if (g == null)
+                    continue;
+
+                g.raycastTarget = false;
+            }
+
+            if (button.targetGraphic != null)
+            {
+                button.targetGraphic.raycastTarget = true;
+            }
+            else if (image != null)
+            {
+                image.raycastTarget = true;
+            }
+
+            var groups = button.GetComponentsInParent<CanvasGroup>(true);
+            for (int i = 0; i < groups.Length; i++)
+            {
+                if (groups[i] == null)
+                    continue;
+
+                groups[i].interactable = true;
+                groups[i].blocksRaycasts = true;
+            }
+
+            Log($"Repair | {label} button ensured ready: {button.name}");
+        }
+
+        private void LogPointerRaycastUnderMouse()
+        {
+            var es = EventSystem.current;
+            if (es == null)
+            {
+                Log("ClickProbe | EventSystem is NULL");
+                return;
+            }
+
+            var pointerData = new PointerEventData(es)
+            {
+                position = Input.mousePosition
+            };
+
+            var results = new List<RaycastResult>();
+            es.RaycastAll(pointerData, results);
+
+            if (results.Count == 0)
+            {
+                Log($"ClickProbe | no raycast hit at {Input.mousePosition}");
+                return;
+            }
+
+            int take = Mathf.Min(5, results.Count);
+            for (int i = 0; i < take; i++)
+            {
+                var hit = results[i];
+                string hitName = hit.gameObject != null ? hit.gameObject.name : "null";
+                Log($"ClickProbe | hit[{i}]={hitName}, depth={hit.depth}, dist={hit.distance}");
+            }
         }
     }
 }
