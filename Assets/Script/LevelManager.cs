@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class LevelManager : MonoBehaviour
 {
     [Header("Giao diện chính")]
-    public GameObject mainMenuCanvas;
+    [SerializeField] private GameObject chonMan;
 
     [Header("Danh sách các màn chơi")]
     // Bạn chỉ cần kéo tất cả Canvas màn chơi vào danh sách này trong Inspector
@@ -13,7 +13,7 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         // Khi bắt đầu, quay về Menu chính
-        QuayLaiMenu();
+        QuayLaiChonMan();
     }
 
     /// <summary>
@@ -23,7 +23,7 @@ public class LevelManager : MonoBehaviour
     public void OpenLevel(int levelIndex)
     {
         // 1. Ẩn menu chính
-        mainMenuCanvas.SetActive(false);
+        chonMan.SetActive(false);
 
         // 2. Duyệt qua mảng để bật màn được chọn và tắt các màn còn lại
         for (int i = 0; i < levelCanvases.Length; i++)
@@ -36,9 +36,9 @@ public class LevelManager : MonoBehaviour
     /// <summary>
     /// Hàm quay lại Menu chính
     /// </summary>
-    public void QuayLaiMenu()
+    public void QuayLaiChonMan()
     {
-        mainMenuCanvas.SetActive(true);
+        chonMan.SetActive(true);
 
         // Tắt tất cả các màn chơi đang có trong danh sách
         foreach (GameObject level in levelCanvases)

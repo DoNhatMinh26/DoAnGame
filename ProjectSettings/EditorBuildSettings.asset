@@ -11,4 +11,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Test_FireBase_multi.unity
     guid: 3feeb2ab75d809e47ad6097b0d6dc39f
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: 7660982d079205846b37f25811b52eaf
+  - enabled: 1
+    path: Assets/Scenes/ChonDA.unity
+    guid: daad5358ee7d76249b073a5c6b0d4927
+  - enabled: 1
+    path: Assets/Scenes/KeoThaDA.unity
+    guid: 3fcbf278a1c15574184c84a862cf2c89
+  - enabled: 1
+    path: Assets/Scenes/HungDA.unity
+    guid: 05daec240806f40498353927ada83ba8
   m_configObjects: {}

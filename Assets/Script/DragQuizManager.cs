@@ -62,39 +62,59 @@ public class DragQuizManager : MonoBehaviour
                 n1 = Random.Range(CTu, CDen + 1);
                 n2 = Random.Range(CTu, CDen + 1);
                 dapAnDung = n1 + n2;
-                cauHoiText.text = $"{n1} + {n2} = ?";
+                cauHoiText.text = $"{n1} + {n2} = ";
                 break;
             case "-":
                 n1 = Random.Range(TTu, TDen + 1);
                 n2 = Random.Range(TTu, TDen + 1);
                 if (n1 < n2) { int t = n1; n1 = n2; n2 = t; }
                 dapAnDung = n1 - n2;
-                cauHoiText.text = $"{n1} - {n2} = ?";
+                cauHoiText.text = $"{n1} - {n2} = ";
                 break;
             case "x":
                 n1 = Random.Range(NTu, NDen + 1);
                 n2 = Random.Range(NTu, NDen + 1);
                 dapAnDung = n1 * n2;
-                cauHoiText.text = $"{n1} x {n2} = ?";
+                cauHoiText.text = $"{n1} x {n2} = ";
                 break;
             case ":":
                 int ketQua = Random.Range(CCTu, CCDen + 1);
                 int soChia = Random.Range(CCTu, CCDen + 1);
                 dapAnDung = ketQua;
-                cauHoiText.text = $"{soChia * ketQua} : {soChia} = ?";
+                cauHoiText.text = $"{soChia * ketQua} : {soChia} = ";
                 break;
             case "2":
-                n1 = Random.Range(Tu, Den + 1);
-                n2 = Random.Range(Tu, Den + 1);
-                n3 = Random.Range(Tu, Den + 1);
-                List<string> op2 = new List<string>();
-                if (congHaiPhep) op2.Add("+");
-                if (truHaiPhep) op2.Add("-");
-                string d1 = op2[Random.Range(0, op2.Count)];
-                string d2 = op2[Random.Range(0, op2.Count)];
-                int mid = (d1 == "+") ? (n1 + n2) : Mathf.Max(0, n1 - n2);
-                dapAnDung = (d2 == "+") ? (mid + n3) : Mathf.Max(0, mid - n3);
-                cauHoiText.text = $"{n1} {d1} {n2} {d2} {n3} = ?";
+                n1 = Random.Range(Tu, Den);
+                n2 = Random.Range(Tu, Den);
+                n3 = Random.Range(Tu, Den);
+                // 1. Lấy danh sách phép tính khả dụng
+                List<string> optionsHaiPhep = new List<string>();
+                if (congHaiPhep) optionsHaiPhep.Add("+");
+                if (truHaiPhep) optionsHaiPhep.Add("-");
+                //if (nhanHaiPhep) optionsHaiPhep.Add("x");
+                //if (chiaHaiPhep) optionsHaiPhep.Add(":");
+                string dau1 = optionsHaiPhep[Random.Range(0, optionsHaiPhep.Count)];
+                string dau2 = optionsHaiPhep[Random.Range(0, optionsHaiPhep.Count)];
+                // 2. Tính toán kết quả trung gian và kết quả cuối
+                int ketQuaTrungGian = 0;
+                // Tính bước 1: number1 [dau1] number2
+                if (dau1 == "+") ketQuaTrungGian = n1 + n2;
+                else
+                {
+                    // Đảm bảo kết quả trung gian không âm (nếu làm game cho trẻ em)
+                    if (n1 < n2) { int tem = n1; n1 = n2; n2 = tem; }
+                    ketQuaTrungGian = n1 - n2;
+                }
+                // Tính bước 2: ketQuaTrungGian [dau2] number3
+                if (dau2 == "+") dapAnDung = ketQuaTrungGian + n3;
+                else
+                {
+                    // Đảm bảo không ra đáp án âm
+                    if (ketQuaTrungGian < n3) n3 = Random.Range(0, ketQuaTrungGian);
+                    dapAnDung = ketQuaTrungGian - n3;
+                }
+                // 3. Hiển thị câu hỏi lên UI
+                cauHoiText.text = $"{n1} {dau1} {n2} {dau2} {n3} = ";
                 break;
         }
 
