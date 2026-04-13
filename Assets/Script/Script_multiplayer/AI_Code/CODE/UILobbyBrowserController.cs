@@ -16,6 +16,8 @@ namespace DoAnGame.UI
     public class UILobbyBrowserController : BasePanelController
     {
         private const string StartedKey = "Started";
+        private const string CharacterNameKey = "characterName";
+        private const string HostNameKey = "HostName";
 
         [Header("Browser Buttons")]
         [SerializeField] private Button refreshButton;
@@ -227,6 +229,14 @@ namespace DoAnGame.UI
 
             if (string.IsNullOrWhiteSpace(hostName))
             {
+                if (lobby.Data != null && lobby.Data.TryGetValue(HostNameKey, out var hostNameData) && hostNameData != null)
+                {
+                    hostName = hostNameData.Value;
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(hostName))
+            {
                 hostName = !string.IsNullOrWhiteSpace(lobby.HostId) ? lobby.HostId : "Không rõ";
             }
 
@@ -327,7 +337,7 @@ namespace DoAnGame.UI
                 displayName = lobbyPlayer.Profile.Name;
             }
 
-            if (string.IsNullOrWhiteSpace(displayName) && lobbyPlayer.Data != null && lobbyPlayer.Data.TryGetValue("characterName", out var nameData))
+            if (string.IsNullOrWhiteSpace(displayName) && lobbyPlayer.Data != null && lobbyPlayer.Data.TryGetValue(CharacterNameKey, out var nameData))
             {
                 displayName = nameData != null ? nameData.Value : null;
             }

@@ -264,6 +264,19 @@ namespace DoAnGame.Auth
                 Debug.LogError($"[PlayerData] ❌ Error clearing cache: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Ghi đè cache local bằng player data hiện tại.
+        /// Dùng cho trường hợp login thành công nhưng chưa kịp sync Firestore.
+        /// </summary>
+        public void SavePlayerDataLocal(PlayerData data)
+        {
+            if (data == null)
+                return;
+
+            cachedPlayerData = data;
+            CachePlayerDataLocal(data);
+        }
     }
 
     /// <summary>

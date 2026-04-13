@@ -139,6 +139,7 @@ public class AuthManager : MonoBehaviour
             if (cachedData != null)
             {
                 currentPlayerData = cachedData;
+                CacheCurrentPlayerDataLocal();
                 OnLoginDataLoaded?.Invoke(currentPlayerData);
                 Debug.Log($"[Auth] ✅ Auto-load từ session local/cache thành công: {cachedData.characterName}");
                 return true;
@@ -163,6 +164,7 @@ public class AuthManager : MonoBehaviour
             currentPlayerData = CreateDefaultPlayerData(uid, fallbackName);
         }
 
+        CacheCurrentPlayerDataLocal();
         OnLoginDataLoaded?.Invoke(currentPlayerData);
 
         if (sessionManager != null && !sessionManager.IsSessionValid())
@@ -209,6 +211,7 @@ public class AuthManager : MonoBehaviour
             {
                 Debug.LogWarning("[Auth] ⚠️ Register thành công nhưng CurrentUser chưa sẵn sàng. Dùng dữ liệu mặc định tạm thời.");
                 currentPlayerData = CreateDefaultPlayerData("unknown", characterName);
+                CacheCurrentPlayerDataLocal();
                 OnLoginDataLoaded?.Invoke(currentPlayerData);
                 NotifyCurrentUserChanged();
                 return true;
@@ -217,6 +220,7 @@ public class AuthManager : MonoBehaviour
             if (!firebaseManager.IsPlayerDataSyncEnabled())
             {
                 currentPlayerData = CreateDefaultPlayerData(uid, characterName);
+                CacheCurrentPlayerDataLocal();
                 OnLoginDataLoaded?.Invoke(currentPlayerData);
                 NotifyCurrentUserChanged();
                 return true;
@@ -229,6 +233,8 @@ public class AuthManager : MonoBehaviour
                 {
                     currentPlayerData = CreateDefaultPlayerData(uid, characterName);
                 }
+
+                CacheCurrentPlayerDataLocal();
                 OnLoginDataLoaded?.Invoke(currentPlayerData);
             }
 
@@ -277,6 +283,7 @@ public class AuthManager : MonoBehaviour
                 currentPlayerData = CreateDefaultPlayerData(
                     user.UserId,
                     string.IsNullOrWhiteSpace(user.DisplayName) ? "Player" : user.DisplayName);
+                CacheCurrentPlayerDataLocal();
                 OnLoginDataLoaded?.Invoke(currentPlayerData);
                 NotifyCurrentUserChanged();
 
@@ -299,6 +306,8 @@ public class AuthManager : MonoBehaviour
                         user.UserId,
                         string.IsNullOrWhiteSpace(user.DisplayName) ? "Player" : user.DisplayName);
                 }
+
+                CacheCurrentPlayerDataLocal();
                 OnLoginDataLoaded?.Invoke(currentPlayerData);
             }
             
@@ -356,6 +365,8 @@ public class AuthManager : MonoBehaviour
                 gamesWon = 0,
                 winRate = 0f
             };
+
+            CacheCurrentPlayerDataLocal();
             
             OnLoginDataLoaded?.Invoke(currentPlayerData);
             Debug.Log("[Auth] ✅ Quick play session created (anonymous)");
@@ -479,6 +490,17 @@ public class AuthManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    private void CacheCurrentPlayerDataLocal()
+    {
+        if (currentPlayerData == null)
+            return;
+
+        if (playerDataService == null)
+            return;
+
+        playerDataService.SavePlayerDataLocal(currentPlayerData);
     }
 
     private void ClearAllKnownLocalAuthKeys()

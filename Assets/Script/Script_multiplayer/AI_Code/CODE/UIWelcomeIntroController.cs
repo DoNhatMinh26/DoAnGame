@@ -155,7 +155,8 @@ namespace DoAnGame.UI
 
         private void NavigateToMainMenu()
         {
-            if (UIScreenRouter.TryShow(ref flowManager, UIFlowManager.Screen.MainMenu))
+            bool routed = UIScreenRouter.TryShow(ref flowManager, UIFlowManager.Screen.MainMenu);
+            if (routed && IsMainMenuVisible())
             {
                 return;
             }
@@ -165,8 +166,22 @@ namespace DoAnGame.UI
                 return;
             }
 
-            // Khi không có FlowManager trong scene intro thì chuyển scene và yêu cầu mở MainMenu.
+            // Tránh reload lặp đúng scene đích gây trạng thái trắng khi panel map chưa sẵn.
+            if (SceneManager.GetActiveScene().name == gameplaySceneName)
+            {
+                SetContinueStatus("Không tìm thấy MainMenu trong scene hiện tại");
+                EnsureStayOnWelcome();
+                return;
+            }
+
+            // Khi đang ở scene intro khác thì chuyển scene và yêu cầu mở MainMenu.
             LoadGameScene(UIFlowManager.Screen.MainMenu);
+        }
+
+        private bool IsMainMenuVisible()
+        {
+            Transform mainMenu = FindMainMenuTransform();
+            return mainMenu != null && mainMenu.gameObject.activeInHierarchy;
         }
 
         private bool TryShowMainMenuByName()
@@ -175,7 +190,7 @@ namespace DoAnGame.UI
             if (canvas == null)
                 return false;
 
-            Transform mainMenu = canvas.Find("MainMenuPanel");
+            Transform mainMenu = FindMainMenuTransform();
             if (mainMenu == null)
                 return false;
 
@@ -210,6 +225,20 @@ namespace DoAnGame.UI
             return true;
         }
 
+        private Transform FindMainMenuTransform()
+        {
+            Transform canvas = GameObject.Find("GameUICanvas")?.transform;
+            if (canvas == null)
+                return null;
+
+            Transform byName = canvas.Find("MainMenuPanel");
+            if (byName != null)
+                return byName;
+
+            var byController = canvas.GetComponentInChildren<UIMainMenuController>(true);
+            return byController != null ? byController.transform : null;
+        }
+
         private void SetContinueStatus(string message)
         {
             if (continueStatusText == null)
@@ -230,7 +259,23 @@ namespace DoAnGame.UI
             if (canvas == null)
                 return;
 
-            Transform mainMenu = canvas.Find("MainMenuPanel");
+            Transform welcomePanel = canvas.Find("WelcomePanel") ?? canvas.Find("WELCOMESCREEN");
+            if (welcomePanel != null)
+            {
+                var welcomeController = welcomePanel.GetComponent<BasePanelController>();
+                if (welcomeController != null)
+                {
+                    welcomeController.Show();
+                }
+                else
+                {
+                    welcomePanel.gameObject.SetActive(true);
+                }
+
+                welcomePanel.SetAsLastSibling();
+            }
+
+            Transform mainMenu = FindMainMenuTransform();
             if (mainMenu == null)
                 return;
 

@@ -22,6 +22,8 @@ namespace DoAnGame.UI
         private const string JoinCodeKey = "JoinCode";
         private const string StartedKey = "Started";
         private const string ModeKey = "Mode";
+        private const string CharacterNameKey = "characterName";
+        private const string HostNameKey = "HostName";
         private const int MaxPlayers = 2;
         private const string DefaultIdleStatus = "Mời tạo phòng để chơi.";
         private const string DefaultIdleCode = "Mã phòng: -----";
@@ -306,7 +308,7 @@ namespace DoAnGame.UI
                 displayName = lobbyPlayer.Profile.Name;
             }
 
-            if (string.IsNullOrWhiteSpace(displayName) && lobbyPlayer.Data != null && lobbyPlayer.Data.TryGetValue("characterName", out var nameData))
+            if (string.IsNullOrWhiteSpace(displayName) && lobbyPlayer.Data != null && lobbyPlayer.Data.TryGetValue(CharacterNameKey, out var nameData))
             {
                 displayName = nameData != null ? nameData.Value : null;
             }
@@ -390,7 +392,7 @@ namespace DoAnGame.UI
             {
                 var playerData = new Dictionary<string, PlayerDataObject>
                 {
-                    { "characterName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerName) }
+                    { CharacterNameKey, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, playerName) }
                 };
 
                 currentLobby = await LobbyService.Instance.UpdatePlayerAsync(
@@ -400,6 +402,17 @@ namespace DoAnGame.UI
                     {
                         Data = playerData
                     });
+
+                if (isHost)
+                {
+                    currentLobby = await LobbyService.Instance.UpdateLobbyAsync(currentLobby.Id, new UpdateLobbyOptions
+                    {
+                        Data = new Dictionary<string, DataObject>
+                        {
+                            { HostNameKey, new DataObject(DataObject.VisibilityOptions.Public, playerName) }
+                        }
+                    });
+                }
 
                 RefreshRoomRoster();
             }
@@ -533,8 +546,13 @@ namespace DoAnGame.UI
                     {
                         { JoinCodeKey, new DataObject(DataObject.VisibilityOptions.Public, relayJoinCode, DataObject.IndexOptions.S1) },
                         { StartedKey, new DataObject(DataObject.VisibilityOptions.Public, "0", DataObject.IndexOptions.S2) },
-                        { ModeKey, new DataObject(DataObject.VisibilityOptions.Public, "MathDuel") }
-                    }
+                        { ModeKey, new DataObject(DataObject.VisibilityOptions.Public, "MathDuel") },
+                        { HostNameKey, new DataObject(DataObject.VisibilityOptions.Public, GetCurrentPlayerDisplayName()) }
+                    },
+                    Player = new Player(AuthenticationService.Instance.PlayerId, null, new Dictionary<string, PlayerDataObject>
+                    {
+                        { CharacterNameKey, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public, GetCurrentPlayerDisplayName()) }
+                    })
                 };
 
                 currentLobby = await LobbyService.Instance.CreateLobbyAsync("Math Room", MaxPlayers, options);
@@ -649,13 +667,52 @@ namespace DoAnGame.UI
                 return false;
             }
 
-            if (!lobby.Data.TryGetValue(JoinCodeKey, out var joinCodeData) || string.IsNullOrEmpty(joinCodeData.Value))
+            if (AuthenticationService.Instance == null || !AuthenticationService.Instance.IsSignedIn)
+            {
+                SetStatus("Chưa đăng nhập dịch vụ multiplayer.");
+                return false;
+            }
+
+            string localPlayerId = AuthenticationService.Instance.PlayerId;
+            bool joinedLobbyFromApi = false;
+            Lobby joinedLobby = lobby;
+
+            bool isAlreadyMember = false;
+            if (!string.IsNullOrWhiteSpace(localPlayerId) && joinedLobby.Players != null)
+            {
+                for (int i = 0; i < joinedLobby.Players.Count; i++)
+                {
+                    var p = joinedLobby.Players[i];
+                    if (p != null && string.Equals(p.Id, localPlayerId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        isAlreadyMember = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!isAlreadyMember)
+            {
+                try
+                {
+                    joinedLobby = await LobbyService.Instance.JoinLobbyByIdAsync(lobby.Id);
+                    joinedLobbyFromApi = true;
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"[UIRoom] JoinLobbyById lỗi: {ex.Message}");
+                    SetStatus("Không vào được phòng lobby.");
+                    return false;
+                }
+            }
+
+            if (joinedLobby == null || joinedLobby.Data == null || !joinedLobby.Data.TryGetValue(JoinCodeKey, out var joinCodeData) || string.IsNullOrEmpty(joinCodeData.Value))
             {
                 SetStatus("Phòng không có relay join code.");
                 return false;
             }
 
-            if (currentLobby != null && !string.Equals(currentLobby.Id, lobby.Id, StringComparison.OrdinalIgnoreCase))
+            if (currentLobby != null && !string.Equals(currentLobby.Id, joinedLobby.Id, StringComparison.OrdinalIgnoreCase))
             {
                 await LeaveLobbySafe();
             }
@@ -663,17 +720,43 @@ namespace DoAnGame.UI
             bool joined = await RelayManager.Instance.TryJoinRelay(joinCodeData.Value);
             if (!joined)
             {
+                if (joinedLobbyFromApi)
+                {
+                    try
+                    {
+                        await LobbyService.Instance.RemovePlayerAsync(joinedLobby.Id, localPlayerId);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"[UIRoom] Rollback RemovePlayer lỗi sau khi join relay thất bại: {ex.Message}");
+                    }
+                }
+
                 SetStatus("Join relay thất bại.");
                 return false;
             }
 
-            currentLobby = lobby;
-            isHost = false;
+            currentLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
+            isHost = !string.IsNullOrWhiteSpace(currentLobby.HostId) && string.Equals(currentLobby.HostId, localPlayerId, StringComparison.OrdinalIgnoreCase);
             lobbyCodeText?.SetText($"Mã phòng: {currentLobby.LobbyCode}");
             SetStatus("Đã vào phòng. Chờ chủ phòng bắt đầu...");
             RefreshRoomRoster();
             await SyncLocalPlayerLobbyDataAsync();
-            startMatchButton?.gameObject.SetActive(false);
+
+            // Đọc lại lobby ngay sau khi join để host/client đều thấy roster mới nhất.
+            var refreshed = await RefreshLobbySafe();
+            if (refreshed != null)
+            {
+                currentLobby = refreshed;
+                RefreshRoomRoster();
+            }
+
+            if (startMatchButton != null)
+            {
+                startMatchButton.gameObject.SetActive(isHost);
+                startMatchButton.interactable = isHost && currentLobby.Players != null && currentLobby.Players.Count >= MaxPlayers;
+            }
+
             return true;
         }
 
@@ -817,11 +900,6 @@ namespace DoAnGame.UI
 
             currentLobby = refreshed;
             RefreshRoomRoster();
-
-            if (currentLobby.Players != null && currentLobby.Players.Count > 0)
-            {
-                _ = SyncLocalPlayerLobbyDataAsync();
-            }
 
             if (isHost && startMatchButton != null)
             {
