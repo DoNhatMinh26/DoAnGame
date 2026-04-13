@@ -43,7 +43,9 @@ namespace DoAnGame.UI
 
         [Header("Debug")]
         [LocalizedLabel("Bật log debug")]
-        [SerializeField] private bool enableDebugLogs = true;
+        [SerializeField] private bool enableDebugLogs;
+
+        private bool hasLoggedConfiguredRoot;
 
         private readonly List<(Button button, UnityAction action)> openButtonHandlers = new List<(Button, UnityAction)>();
         private readonly List<GameObject> previouslyActiveObjects = new List<GameObject>();
@@ -279,7 +281,12 @@ namespace DoAnGame.UI
                 }
             }
 
-            LogDebug($"GetEffectiveScreensRoot | use configured root {(screensRoot != null ? screensRoot.name : "null")}");
+            // Tránh spam log mỗi frame từ Update/TrackLastActiveScreen.
+            if (!hasLoggedConfiguredRoot)
+            {
+                LogDebug($"GetEffectiveScreensRoot | use configured root {(screensRoot != null ? screensRoot.name : "null")}");
+                hasLoggedConfiguredRoot = true;
+            }
 
             return screensRoot;
         }

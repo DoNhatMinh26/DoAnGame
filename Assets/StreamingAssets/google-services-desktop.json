@@ -2,6 +2,7 @@
   "project_info": {
     "project_number": "952390969854",
     "project_id": "multiplayer-studie",
+    "firebase_url": "https://multiplayer-studie-default-rtdb.firebaseio.com",
     "storage_bucket": "multiplayer-studie.firebasestorage.app"
   },
   "client": [

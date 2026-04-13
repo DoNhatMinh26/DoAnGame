@@ -1,0 +1,326 @@
+================================================================
+HƯỚNG DẪN GÁN COMPONENTS TRONG UNITY INSPECTOR
+Phần: Auth UI (Register + Login)
+================================================================
+
+GHI CHÚ QUAN TRỌNG:
+- Tất cả fields được đánh dấu [SerializeField] trong code cần gán vào Inspector
+- Nếu field bị để trống → script sẽ không hoạt động đúng
+- Hình ảnh minh họa: Xem scene GameUIPlay 1.unity
+
+================================================================
+ BƯỚC CHUẨN BỊ: Tạo GameObject chứa Services (1 lần duy nhất)
+================================================================
+
+Nếu chưa có, bạn cần tạo các Service singleton trước:
+
+1) Tạo "AuthServices" GameObject
+   - Right-click Hierarchy → Create Empty
+   - Đặt tên: "AuthServices"
+   - Add Component:
+     ├─ UserValidationService
+     ├─ SessionManager
+     ├─ PlayerDataService
+     └─ UILoadingIndicator (hoặc attach vào LoadingIndicator UI riêng)
+
+2) Tạo "LoadingIndicator" UI (nếu chưa có)
+   - Right-click Canvas → Create Empty
+   - Đặt tên: "LoadingIndicator"
+   - Add RectTransform (nếu chưa có)
+   - Structure trong LoadingIndicator:
+     ├─ Spinner (Image - hình nẩy, circle spinner)
+     │   └─ Scale: (0.1, 0.1, 1)
+     └─ LoadingText (TextMeshPro - chữ "Đang xử lý...")
+
+3) Gán UILoadingIndicator script vào LoadingIndicator GameObject
+   - Inspector → Add Component → UILoadingIndicator
+   - Điền:
+     ├─ Loading Root: LoadingIndicator (GameObject cha)
+     ├─ Spinner Image: Spinner (Image component)
+     └─ Loading Text: LoadingText (TextMeshPro component)
+
+================================================================
+ UI 4 – REGISTER PANEL GÁN CHI TIẾT
+================================================================
+
+Scene: GameUIPlay 1
+Path: Canvas/RegisterPanel
+
+>>> BƯỚC 1: Tìm RegisterPanel trong Hierarchy
+    Canvas → RegisterPanel ← chọn cái này
+
+>>> BƯỚC 2: Xem Inspector, tìm UIRegisterPanelController script
+
+>>> BƯỚC 3: Gán từng field tương ứng
+
+╔════════════════════════════════════════════════════════════╗
+║ INPUT FIELDS (TMP_InputField)                             ║
+╠════════════════════════════════════════════════════════════╣
+
+1) EMAIL INPUT
+   ├─ Code field: [SerializeField] private TMP_InputField emailInput;
+   ├─ Cách tìm: Trong RegisterPanel, tìm "EmailInputField" hoặc "Email Input"
+   ├─ Cách gán: Kéo từ Hierarchy vào ô "Email Input" trong Inspector
+   └─ Verify: Sau khi gán, ô sẽ hiển thị "EmailInputField"
+
+2) CHARACTER NAME INPUT  ← TÊN NHÂN VẬT
+   ├─ Code field: [SerializeField] private TMP_InputField characterNameInput;
+   ├─ Cách tìm: Trong RegisterPanel, tìm "UsernameInputField" (hoặc "CharacterNameField")
+   ├─ Cách gán: Kéo từ Hierarchy vào ô "Character Name Input"
+   ├─ Placeholder: "Tên nhân vật (3-20 ký tự)"
+   └─ Verify: Ô sẽ hiển thị object name
+
+3) PASSWORD INPUT
+   ├─ Code field: [SerializeField] private TMP_InputField passwordInput;
+   ├─ Cách tìm: Trong RegisterPanel, tìm "PasswordInputField"
+   ├─ Cách gán: Kéo vào ô "Password Input"
+   └─ Setting: Input Type = Password (để ấu dấu)
+
+4) CONFIRM PASSWORD INPUT
+   ├─ Code field: [SerializeField] private TMP_InputField confirmPasswordInput;
+   ├─ Cách tìm: Trong RegisterPanel, tìm "ConfirmPasswordInputField"
+   ├─ Cách gán: Kéo vào ô "Confirm Password Input"
+   └─ Setting: Input Type = Password
+
+╠════════════════════════════════════════════════════════════╣
+║ DROPDOWN + TOGGLE                                          ║
+╠════════════════════════════════════════════════════════════╣
+
+5) AGE DROPDOWN
+   ├─ Code field: [SerializeField] private TMP_Dropdown ageDropdown;
+   ├─ Cách tìm: Trong RegisterPanel, tìm "AgeDropdown"
+   ├─ Cách gán: Kéo vào ô "Age Dropdown"
+   ├─ Options: Phải có các tuổi (18, 19, 20, ..., 80)
+   └─ Verify: Ô sẽ hiển thị "AgeDropdown"
+
+6) TERMS TOGGLE
+   ├─ Code field: [SerializeField] private Toggle termsToggle;
+   ├─ Cách tìm: Trong RegisterPanel, tìm "TermsToggle" hoặc "TermsCheckbox"
+   ├─ Cách gán: Kéo vào ô "Terms Toggle"
+   ├─ Label: "Tôi chấp nhận điều khoản"
+   └─ Verify: Ô sẽ hiển thị object name
+
+╠════════════════════════════════════════════════════════════╣
+║ TEXT + BUTTONS                                             ║
+╠════════════════════════════════════════════════════════════╣
+
+7) MESSAGE TEXT  ← MERGE ERROR + SUCCESS
+   ├─ Code field: [SerializeField] private TMP_Text messageText;
+   ├─ Cách tìm: Trong RegisterPanel, tìm "MessageText" hoặc "ErrorText"
+   ├─ Cách gán: Kéo vào ô "Message Text"
+   ├─ Mục đích: Hiển thị lỗi (đỏ) hoặc thành công (xanh)
+   ├─ Font size: 24-30
+   └─ Verify: Ô sẽ hiển thị object name
+
+8) COMPLETE BUTTON
+   ├─ Code field: [SerializeField] private Button completeButton;
+   ├─ Cách tìm: Trong RegisterPanel, tìm nút "Hoàn tất" hoặc "CompleteButton"
+   ├─ Cách gán: Kéo vào ô "Complete Button"
+   ├─ Text: "HOÀN TẤT"
+   └─ Verify: Ô sẽ hiển thị object name
+
+╠════════════════════════════════════════════════════════════╣
+║ BUTTON NAVIGATION + LOADING                                ║
+╠════════════════════════════════════════════════════════════╣
+
+9) ⭐ COMPLETE BUTTON - GÁN UIButtonScreenNavigator
+   ├─ Script: UIButtonScreenNavigator.cs (gán trực tiếp vào button)
+   ├─ Cách gán:
+   │   ├─ Chọn CompleteButton trong Hierarchy
+   │   ├─ Inspector → Add Component → UIButtonScreenNavigator
+   │   ├─ Target Scene Name: (để trống)
+   │   ├─ Screens Root: Kéo Canvas hoặc ScreensRoot
+   │   ├─ Target Screen: Kéo LoginPanel
+   │   └─ Roots To Hide: Kéo RegisterPanel
+   └─ Kết quả: Click "Hoàn Tất" → Ẩn Register, Hiện Login
+
+10) LOADING INDICATOR
+    ├─ Code field: [SerializeField] private UILoadingIndicator loadingIndicator;
+    ├─ Cách tìm: Trong Hierarchy, tìm "LoadingIndicator"
+    ├─ Cách gán: Kéo vào ô "Loading Indicator" trong Inspector
+    └─ Verify: Ô sẽ hiển thị "LoadingIndicator"
+
+╚════════════════════════════════════════════════════════════╝
+
+✅ CHECKLIST REGISTER PANEL
+┌─────────────────────────────────────────────────┐
+│ [ ] Email Input                ← emailInput     │
+│ [ ] Character Name Input       ← characterNameInput
+│ [ ] Password Input             ← passwordInput  │
+│ [ ] Confirm Password Input     ← confirmPasswordInput
+│ [ ] Age Dropdown               ← ageDropdown   │
+│ [ ] Terms Toggle               ← termsToggle   │
+│ [ ] Message Text               ← messageText   │
+│ [ ] Complete Button            ← completeButton│
+│ [ ] Complete Button UIButtonScreenNavigator    │
+│     (Target: LoginPanel, Hide: RegisterPanel)  │
+│ [ ] Loading Indicator          ← loadingIndicator
+└─────────────────────────────────────────────────┘
+
+Nếu tất cả đều ✓ → Register Panel sẵn sàng! 🚀
+
+================================================================
+ UI 3 – LOGIN PANEL GÁN CHI TIẾT
+================================================================
+
+Scene: GameUIPlay 1
+Path: Canvas/LoginPanel
+
+>>> BƯỚC 1: Tìm LoginPanel trong Hierarchy
+    Canvas → LoginPanel ← chọn cái này
+
+>>> BƯỚC 2: Xem Inspector, tìm UILoginPanelController script
+
+>>> BƯỚC 3: Gán từng field tương ứng
+
+╔════════════════════════════════════════════════════════════╗
+║ INPUT FIELDS                                               ║
+╠════════════════════════════════════════════════════════════╣
+
+1) EMAIL INPUT
+   ├─ Code field: [SerializeField] private TMP_InputField emailInput;
+   ├─ Cách tìm: Trong LoginPanel, tìm "EmailInputField"
+   ├─ Cách gán: Kéo vào ô "Email Input"
+   └─ Verify: Ô sẽ hiển thị object name
+
+2) PASSWORD INPUT
+   ├─ Code field: [SerializeField] private TMP_InputField passwordInput;
+   ├─ Cách tìm: Trong LoginPanel, tìm "PasswordInputField"
+   ├─ Cách gán: Kéo vào ô "Password Input"
+   └─ Setting: Input Type = Password
+
+╠════════════════════════════════════════════════════════════╣
+║ TEXT + BUTTONS                                             ║
+╠════════════════════════════════════════════════════════════╣
+
+3) MESSAGE TEXT
+   ├─ Code field: [SerializeField] private TMP_Text messageText;
+   ├─ Cách tìm: Trong LoginPanel, tìm "ErrorText" hoặc "MessageText"
+   ├─ Cách gán: Kéo vào ô "Message Text"
+   ├─ Mục đích: Hiển thị lỗi (đỏ) hoặc thành công (xanh)
+   └─ Verify: Ô sẽ hiển thị object name
+
+4) LOGIN BUTTON
+   ├─ Code field: [SerializeField] private Button loginButton;
+   ├─ Cách tìm: Trong LoginPanel, tìm nút "Đăng nhập" hoặc "LoginButton"
+   ├─ Cách gán: Kéo vào ô "Login Button"
+   ├─ Text: "ĐĂNG NHẬP"
+   └─ Verify: Ô sẽ hiển thị object name
+
+5) FORGOT PASSWORD BUTTON
+   ├─ Code field: [SerializeField] private Button forgotPasswordButton;
+   ├─ Cách tìm: Trong LoginPanel, tìm nút "Quên mật khẩu?" hoặc "ForgotPasswordButton"
+   ├─ Cách gán: Kéo vào ô "Forgot Password Button"
+   ├─ Text: "Quên mật khẩu?"
+   └─ Verify: Ô sẽ hiển thị object name
+
+6) REGISTER REDIRECT BUTTON
+   ├─ Code field: [SerializeField] private Button registerRedirectButton;
+   ├─ Cách tìm: Trong LoginPanel, tìm nút "Đăng Ký" hoặc link "Chưa có tài khoản?"
+   ├─ Cách gán: Kéo vào ô "Register Redirect Button"
+   ├─ Text: "Đăng Ký" hoặc "Chưa có tài khoản? Đăng Ký"
+   └─ Verify: Ô sẽ hiển thị object name
+
+╠════════════════════════════════════════════════════════════╣
+║ BUTTON NAVIGATION + LOADING                                ║
+╠════════════════════════════════════════════════════════════╣
+
+7) ⭐ LOGIN BUTTON - GÁN UIButtonScreenNavigator
+   ├─ Script: UIButtonScreenNavigator.cs (gán trực tiếp vào button)
+   ├─ Cách gán:
+   │   ├─ Chọn LoginButton trong Hierarchy
+   │   ├─ Inspector → Add Component → UIButtonScreenNavigator
+   │   ├─ Target Scene Name: (để trống)
+   │   ├─ Screens Root: Kéo Canvas hoặc ScreensRoot
+   │   ├─ Target Screen: Kéo MainMenuPanel (khi login thành công)
+   │   └─ Roots To Hide: Kéo LoginPanel
+   └─ Kết quả: Click "Đăng Nhập" → Ẩn Login, Hiện MainMenu
+
+8) LOADING INDICATOR
+   ├─ Code field: [SerializeField] private UILoadingIndicator loadingIndicator;
+   ├─ Cách tìm: Trong Hierarchy, tìm "LoadingIndicator"
+   ├─ Cách gán: Kéo vào ô "Loading Indicator" trong Inspector
+   └─ Verify: Ô sẽ hiển thị "LoadingIndicator"
+
+╚════════════════════════════════════════════════════════════╝
+
+✅ CHECKLIST LOGIN PANEL
+┌─────────────────────────────────────────────────┐
+│ [ ] Email Input                ← emailInput     │
+│ [ ] Password Input             ← passwordInput  │
+│ [ ] Message Text               ← messageText   │
+│ [ ] Login Button               ← loginButton   │
+│ [ ] Login Button UIButtonScreenNavigator       │
+│     (Target: MainMenuPanel, Hide: LoginPanel)  │
+│ [ ] Forgot Password Button     ← forgotPasswordButton
+│ [ ] Register Redirect Button   ← registerRedirectButton
+│ [ ] Loading Indicator          ← loadingIndicator
+└─────────────────────────────────────────────────┘
+
+Nếu tất cả đều ✓ → Login Panel sẵn sàng! 🚀
+
+================================================================
+ TÓML TẮT GÁN (Quick Binding Reference)
+================================================================
+
+Services (1 lần duy nhất):
+✓ AuthServices/UserValidationService ← Add Component
+✓ AuthServices/SessionManager ← Add Component
+✓ AuthServices/PlayerDataService ← Add Component
+✓ LoadingIndicator/UILoadingIndicator ← Add Component
+
+Register Panel (9 fields + 1 button script):
+✓ Email Input → EmailInputField
+✓ Character Name Input → UsernameInputField
+✓ Password Input → PasswordInputField
+✓ Confirm Password Input → ConfirmPasswordInputField
+✓ Age Dropdown → AgeDropdown
+✓ Terms Toggle → TermsToggle
+✓ Message Text → ErrorText (hoặc MessageText)
+✓ Complete Button → CompleteButton
+  └─ Add UIButtonScreenNavigator (Target: LoginPanel)
+✓ Loading Indicator → LoadingIndicator
+
+Login Panel (7 fields + 1 button script):
+✓ Email Input → EmailInputField
+✓ Password Input → PasswordInputField
+✓ Message Text → ErrorText
+✓ Login Button → LoginButton
+  └─ Add UIButtonScreenNavigator (Target: MainMenuPanel)
+✓ Forgot Password Button → ForgotPasswordButton
+✓ Register Redirect Button → Link "Đăng Ký"
+✓ Loading Indicator → LoadingIndicator
+
+================================================================
+ KIỂM TRA CUỐI CÙNG: Play Scene
+================================================================
+
+1. Mở scene: GameUIPlay 1
+2. Nhấn Play
+3. Test Register:
+   ✓ Nhập email (hợp lệ)
+   ✓ Nhập character name (3-20 ký tự)
+   ✓ Nhập password (8+ ký tự, hoa-thường-số)
+   ✓ Xác nhận password
+   ✓ Chọn tuổi
+   ✓ Check terms
+   ✓ Bấm "Hoàn tất"
+   → Spinner hiển thị "Đang tạo tài khoản..."
+   → Success message xanh "Đăng ký thành công!"
+   → Auto-navigate sang Login Panel
+
+4. Test Login:
+   ✓ Nhập email (vừa tạo)
+   ✓ Nhập password
+   ✓ Bấm "Đăng nhập"
+   → Spinner hiển thị "Đang đăng nhập..."
+   → Success message xanh "Đăng nhập thành công!"
+   → Auto-navigate sang Main Menu
+
+5. Kiểm tra dữ liệu:
+   ✓ MainMenu | Header hiển thị tên nhân vật
+   ✓ Hiển thị Level (Lv1), Score (0)
+
+Nếu tất cả hoạt động → Implementation thành công! 🎉
+
+================================================================

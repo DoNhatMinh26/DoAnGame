@@ -212,6 +212,332 @@ SCENARIO 4️⃣: MULTIPLAYER GAME FLOW
   └─ Unlock sau khi hoàn thành level trước đó
 
 
+════════════════════════════════════════════════════════════════════
+                    🎯 BACKEND SERVICES (AUTHENTICATION SYSTEM)
+════════════════════════════════════════════════════════════════════
+
+Các dịch vụ backend hỗ trợ hệ thống xác thực & đồng bộ dữ liệu:
+
+📌 DANH SÁCH SERVICES:
+1. UserValidationService - Kiểm tra email, mật khẩu, tên nhân vật
+2. SessionManager - Quản lý token đăng nhập 24 giờ
+3. PlayerDataService - Tải & lưu trữ dữ liệu người chơi từ Firebase
+4. UILoadingIndicator - Biểu tượng tải dùng chung cho tất cả UI
+5. FirebaseManager - Xử lý giao tiếp Firebase (Auth + Database)
+6. AuthManager - Điều phối toàn bộ luồng xác thực
+
+
+1️⃣ UserValidationService (CLASS)
+────────────────────────────────────────
+📝 Mục đích: Kiểm tra tính hợp lệ của input từ người dùng
+
+📋 Các hàm chính:
+├─ ValidateEmail(email) 
+│  └─ Return: ValidationResult với errorCode ("email_empty", "invalid_email_format", ...)
+│
+├─ ValidatePassword(password)
+│  └─ Kiểm tra: 8+ ký tự, có chữ hoa, chữ thường, số
+│  └─ Return: ValidationResult với errorCode ("password_empty", "password_too_short", "weak_password")
+│
+├─ ValidateCharacterName(characterName) ← 🔴 QUAN TRỌNG: ASYNC METHOD
+│  └─ Kiểm tra: 3-20 ký tự, tên không trùng với DB
+│  └─ TRUY VẤN FIREBASE: /users → OrderByChild("characterName") EqualTo(input)
+│  └─ Return: Task<ValidationResult> 
+│  └─ ErrorCode: "character_name_too_short", "character_name_too_long", "character_name_taken"
+│
+├─ ValidateAge(age)
+│  └─ Kiểm tra: 5-100 tuổi
+│  └─ Return: ValidationResult với errorCode ("invalid_age")
+│
+└─ ValidatePasswordMatch(password, confirmPassword)
+   └─ Return: ValidationResult với errorCode ("passwords_not_match")
+
+🔌 Namespace: DoAnGame.Auth
+📦 Singleton: Tự động khởi tạo lần đầu
+
+
+2️⃣ SessionManager (CLASS)
+────────────────────────────────────────
+📝 Mục đích: Quản lý session đăng nhập 24 giờ (auto-login)
+
+📋 Các hàm chính:
+├─ SaveSession(uid, email)
+│  └─ Tạo token, lưu expiry = now + 24 hours
+│  └─ Lưu trữ: PlayerPrefs keys: "session_token", "session_expiry", "last_email"
+│
+├─ IsSessionValid()
+│  └─ Kiểm tra: Token tồn tại? Expiry > now?
+│  └─ Return: bool (true nếu session còn hiệu lực)
+│
+├─ GetSessionToken()
+│  └─ Return: Session token (string)
+│
+├─ GetLastEmail()
+│  └─ Return: Email cuối cùng đăng nhập (dùng cho auto-fill)
+│
+└─ ClearSession()
+   └─ Xóa tất cả session data khi đăng xuất
+
+⏱️ Duration: 24 hours (SESSION_EXPIRY_HOURS = 24)
+🔌 Namespace: DoAnGame.Auth
+📦 Singleton: Tự động khởi tạo lần đầu
+
+
+3️⃣ PlayerDataService (CLASS)
+────────────────────────────────────────
+📝 Mục đích: Tải & lưu trữ dữ liệu người chơi từ Firebase (cross-device sync)
+
+📋 Các hàm chính:
+├─ LoadPlayerDataAsync(uid)
+│  └─ 🌐 Truy vấn Firebase: /playerData/{uid}
+│  └─ Parse JSON → PlayerData object
+│  └─ Cache vào memory + PlayerPrefs
+│  └─ Phát sự kiện: PlayerDataLoadedEvent
+│  └─ Return: Task<PlayerData>
+│
+├─ GetCachedPlayerData()
+│  └─ Trả về dữ liệu cached (nếu có)
+│  └─ Nếu không có → load từ PlayerPrefs
+│  └─ Return: PlayerData hoặc null
+│
+├─ CachePlayerDataLocal(data)
+│  └─ Lưu PlayerData vào PlayerPrefs
+│  └─ JSON format + timestamp
+│
+├─ LoadPlayerDataLocal()
+│  └─ Tải dữ liệu từ PlayerPrefs
+│  └─ Return: PlayerData hoặc null
+│
+└─ ClearLocalCache()
+   └─ Xóa cache khi đăng xuất
+
+📊 Model: PlayerData
+   ├─ uid: string (Firebase UID)
+   ├─ characterName: string ← TÊN NHÂN VẬT (tên dùng cho multiplayer)
+   ├─ level: int (Cấp độ hiện tại)
+   ├─ totalXp: int (Tổng kinh nghiệm)
+   ├─ totalScore: int (Tổng điểm)
+   ├─ rank: string (Hạng)
+   ├─ gamesPlayed: int (Số trận đã chơi)
+   ├─ gamesWon: int (Số trận thắng)
+   ├─ winRate: float (Tỷ lệ thắng %)
+   └─ lastUpdated: long (Thời gian cập nhật cuối)
+
+💾 Cache Storage: PlayerPrefs keys: "cached_player_data", "cached_player_data_timestamp"
+📡 Event: PlayerDataLoadedEvent(PlayerData)
+🔌 Namespace: DoAnGame.Auth
+📦 Singleton: Tự động khởi tạo lần đầu
+
+
+4️⃣ UILoadingIndicator (CLASS - SINGLETON)
+────────────────────────────────────────
+📝 Mục đích: Hiển thị spinner loading dùng chung cho tất cả UI panels
+
+📋 Các hàm chính:
+├─ Show(message)
+│  └─ Kích hoạt loadingRoot (GameObject)
+│  └─ Hiển thị message text
+│  └─ Bắt đầu rotation spinner
+│  └─ Ví dụ: Show("Đang tạo tài khoản...")
+│
+└─ Hide()
+   └─ Ẩn loadingRoot
+   └─ Dừng rotation
+
+🎨 Components Cần:
+├─ loadingRoot: GameObject (cha chứa spinner + text)
+├─ spinnerImage: Image (biểu tượng spinner - vòng tròn)
+└─ loadingText: TextMeshPro (chữ "Đang xử lý...")
+
+⚙️ Animation:
+├─ SpinSpeedDegrees: 360 độ/giây (configurable)
+└─ Rotation: Tự động quay spinner
+
+🔌 Namespace: DoAnGame.UI
+📦 Singleton: Dùng chung cho tất cả panels
+
+
+5️⃣ FirebaseManager (UPDATED)
+────────────────────────────────────────
+📝 Mục đích: Gửi request Firebase Auth + Database
+
+🆕 Thay đổi quan trọng:
+├─ RegisterAsync(email, password, characterName, age)
+│  ├─ NOW: Nhận characterName thay vì username
+│  ├─ Validate tất cả fields trước gửi Firebase
+│  ├─ Trả về: Chi tiết error codes
+│  └─ ErrorCodes: "email_already_exists", "weak_password", "character_name_taken"
+│
+├─ LoginAsync(email, password)
+│  ├─ Cập nhật lastLogin timestamp
+│  ├─ Trả về: Detailed error codes
+│  └─ ErrorCodes: "user_not_found", "invalid_password", "network_error"
+│
+└─ UpdateLastLogin(uid)
+   └─ NEW: Cập nhật timestamps khi login
+
+📊 Models Updated:
+   UserData:
+   ├─ uid, email, password hash (Firebase)
+   ├─ characterName ← TÊN NHÂN VẬT (NEW)
+   ├─ emailVerified: bool
+   ├─ createdAt: long (milliseconds)
+   └─ lastLogin: long (milliseconds)
+   
+   PlayerData:
+   ├─ uid, characterName ← TÊN NHÂN VẬT (NEW)
+   ├─ level: int (was currentLevel - RENAMED)
+   ├─ totalXp, totalScore, rank, gamesPlayed, gamesWon, winRate
+   └─ lastUpdated: long (NEW)
+
+📡 Events: OnLoginFailedDetail, OnRegisterFailedDetail (error codes)
+
+
+6️⃣ AuthManager (UPDATED - ORCHESTRATOR)
+────────────────────────────────────────
+📝 Mục đích: Điều phối toàn bộ luồng xác thực
+
+🆕 Tính năng:
+├─ CheckAndAutoLoginAsync() ← NEW
+│  ├─ Kiểm tra SessionManager.IsSessionValid()
+│  ├─ Nếu valid: Tải player data + auto-navigate MainMenu
+│  ├─ Nếu invalid: Hiện Welcome Auth screen
+│  └─ Gọi lúc app startup
+│
+├─ Register(email, password, characterName, age)
+│  ├─ Gọi FirebaseManager.RegisterAsync()
+│  ├─ Lưu session: SessionManager.SaveSession(uid, email)
+│  ├─ Tải player data: await PlayerDataService.LoadPlayerDataAsync(uid)
+│  ├─ Phát event: OnRegisterSuccess
+│  └─ Navigate: → Login Panel
+│
+├─ Login(email, password)
+│  ├─ Gọi FirebaseManager.LoginAsync()
+│  ├─ Lưu session: SessionManager.SaveSession(uid, email)
+│  ├─ Tải player data: await PlayerDataService.LoadPlayerDataAsync(uid)
+│  ├─ Phát event: OnLoginSuccess + OnLoginDataLoaded(PlayerData)
+│  └─ Navigate: → Main Menu
+│
+├─ Logout()
+│  ├─ Xóa session: SessionManager.ClearSession()
+│  ├─ Xóa cache: PlayerDataService.ClearLocalCache()
+│  ├─ Phát event: OnLogoutSuccess
+│  └─ Navigate: → Welcome Auth
+│
+├─ GetCurrentPlayerData()
+│  └─ Return: CurrentPlayerData hoặc fallback từ PlayerDataService.GetCachedPlayerData()
+│
+└─ GetCharacterName()
+   └─ Return: Tên nhân vật từ player data
+
+📡 Events: 
+   ├─ OnLoginSuccess
+   ├─ OnLoginDataLoaded(PlayerData) ← Để UI lắng nghe & update
+   ├─ OnRegisterSuccess
+   ├─ OnLogoutSuccess
+   └─ OnErrorOccurred(string errorCode)
+
+
+════════════════════════════════════════════════════════════════════
+                    ⚡ FIREBASE DATABASE SCHEMA
+════════════════════════════════════════════════════════════════════
+
+Location: Realtime Database → /users/{uid}/
+   ├─ uid: string (Firebase UID)
+   ├─ email: string
+   ├─ characterName: string ← INDEXED để tìm kiếm nhanh
+   ├─ emailVerified: bool
+   ├─ createdAt: long (milliseconds)
+   └─ lastLogin: long (milliseconds)
+
+Location: Realtime Database → /playerData/{uid}/
+   ├─ uid: string
+   ├─ characterName: string (mirror để tiện)
+   ├─ level: int
+   ├─ totalXp: int
+   ├─ totalScore: int
+   ├─ rank: string
+   ├─ gamesPlayed: int
+   ├─ gamesWon: int
+   ├─ winRate: float
+   └─ lastUpdated: long
+
+Location: Realtime Database → /gameHistory/{uid}/games/{gameId}/
+   ├─ gameId: string (unique ID)
+   ├─ mode: string ("solo" hoặc "multiplayer")
+   ├─ difficulty: string ("easy", "normal", "hard")
+   ├─ score: int
+   ├─ level: int
+   ├─ opponentName: string (nếu multiplayer)
+   ├─ result: string ("win", "lose", "draw")
+   ├─ timestamp: long
+   ├─ correctAnswers: int
+   ├─ totalQuestions: int
+   └─ timeSpentSeconds: float
+
+
+════════════════════════════════════════════════════════════════════
+                    🔄 AUTH FLOW CHI TIẾT
+════════════════════════════════════════════════════════════════════
+
+LUỒNG ĐƠNUY TẠO TÀI KHOẢN (Register) 🔐
+1. User nhập email, tên nhân vật, mật khẩu, tuổi
+2. UIRegisterPanelController gọi UserValidationService:
+   ├─ ValidateEmail(email)
+   ├─ ValidateCharacterName(characterName) ← ASYNC (kiểm tra Firebase)
+   ├─ ValidatePassword(password)
+   ├─ ValidatePasswordMatch(password, confirm)
+   ├─ ValidateAge(age)
+   └─ ValidateTerms(accepted)
+3. Nếu lỗi → Hiện thông báo đỏ, user ở lại UI 4
+4. Nếu OK → Hiện spinner "Đang tạo tài khoản..."
+5. Gọi AuthManager.Register(email, password, characterName, age)
+6. AuthManager gọi FirebaseManager.RegisterAsync():
+   ├─ Tạo user Firebase Auth
+   ├─ Lưu UserData tới /users/{uid}/
+   ├─ Tạo PlayerData tới /playerData/{uid}/
+   └─ Return success hoặc error
+7. AuthManager:
+   ├─ Lưu session: SessionManager.SaveSession(uid, email)
+   ├─ Tải player data: await PlayerDataService.LoadPlayerDataAsync(uid)
+   └─ Phát event: OnRegisterSuccess
+8. UI hiển thị thông báo xanh "Đăng ký thành công!"
+9. Chuyển sang UI 3 (Login) với message "Đăng ký thành công"
+
+LUỒNG ĐƠNUY ĐĂNG NHẬP (Login) 🔓
+1. User nhập email, mật khẩu
+2. UILoginPanelController gọi UserValidationService:
+   ├─ ValidateEmail(email)
+   └─ ValidatePassword(password)
+3. Nếu lỗi → Hiện thông báo đỏ, user ở lại UI 3
+4. Nếu OK → Hiện spinner "Đang đăng nhập..."
+5. Gọi AuthManager.Login(email, password)
+6. AuthManager gọi FirebaseManager.LoginAsync():
+   ├─ Xác thực Firebase Auth
+   ├─ Cập nhật lastLogin timestamp
+   └─ Return uid hoặc error
+7. AuthManager:
+   ├─ Lưu session: SessionManager.SaveSession(uid, email) ← 24 giờ token
+   ├─ Tải player data: await PlayerDataService.LoadPlayerDataAsync(uid)
+   ├─ Phát event: OnLoginSuccess + OnLoginDataLoaded(PlayerData)
+   └─ Lưu currentPlayerData
+8. UI hiển thị thông báo xanh "Đăng nhập thành công!"
+9. Chuyển sang UI 5 (Main Menu)
+10. Main Menu Header hiển thị: "Lv {level}  Score: {totalScore}"
+
+AUTO-LOGIN (Khi app resume) 🚀
+1. App bắt đầu → UIWelcomeIntroController gọi AuthManager.CheckAndAutoLoginAsync()
+2. AuthManager kiểm tra:
+   ├─ SessionManager.IsSessionValid()? 
+   │  ├─ YES → Tải player data + Navigate UI 5 (Main Menu)
+   │  └─ NO  → Navigate UI 2 (Welcome Auth) → show "Vui lòng đăng nhập"
+   └─ Catch exception → Navigate UI 2
+3. Nếu auto-login thành công:
+   ├─ Lưu UID + characterName
+   ├─ Update Main Menu header
+   └─ Ready to play!
+
+
 ════════════════════════════════════════════
                          ✅ HOÀN TẤT PHẦ
 ════════════════════════════════════════════

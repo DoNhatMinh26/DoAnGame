@@ -44,6 +44,10 @@ namespace DoAnGame.UI
         [SerializeField] private TMP_Text statusText;
         [SerializeField] private TMP_Text playerCountText;
 
+        [Header("Room Roster Texts")]
+        [SerializeField] private TMP_Text rosterTitleText;
+        [SerializeField] private TMP_Text rosterListText;
+
         [Header("Callbacks")]
         [SerializeField] private UIButtonScreenNavigator startBattleNavigator;
         [SerializeField] private UIButtonScreenNavigator quitRoomNavigator;
@@ -69,14 +73,20 @@ namespace DoAnGame.UI
         private bool isQuitting;
         private float nextLobbyReadAt;
         private Coroutine delayedBattleFallbackRoutine;
+        private AuthManager authManager;
+        private string roomStatusMessage = DefaultIdleStatus;
+        private string authStatusMessage = "Chưa đăng nhập dịch vụ multiplayer";
 
         protected override void Awake()
         {
             base.Awake();
 
-            if (statusText != null && playerCountText != null && statusText == playerCountText)
+            authManager = AuthManager.Instance;
+            ResolveTextReferences();
+
+            if (rosterTitleText != null && rosterListText != null && rosterTitleText == rosterListText)
             {
-                Debug.LogWarning("[UIRoom] Status Text và Player Count Text đang trỏ cùng 1 TMP_Text. Nên tách ra để tránh ghi đè nội dung.");
+                Debug.LogWarning("[UIRoom] Roster title và roster list đang trỏ cùng 1 TMP_Text. Nên tách ra để tránh ghi đè nội dung.");
             }
 
             createRoomButton?.onClick.AddListener(() => _ = HandleCreateRoom());
@@ -99,6 +109,9 @@ namespace DoAnGame.UI
         protected override void OnShow()
         {
             base.OnShow();
+            ResolveTextReferences();
+            RefreshAuthState();
+            RefreshRoomRoster();
             EnsureInitialized();
             battleStartNotified = false;
 
@@ -115,6 +128,363 @@ namespace DoAnGame.UI
             battleStartNotified = false;
             ApplyIdleVisualState(DefaultIdleStatus);
             TryAutoResolveBattleFallback();
+        }
+
+        private void OnEnable()
+        {
+            if (authManager == null)
+            {
+                authManager = AuthManager.Instance;
+            }
+
+            if (authManager != null)
+            {
+                authManager.OnCurrentUserChanged += HandleAuthUserChanged;
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (authManager != null)
+            {
+                authManager.OnCurrentUserChanged -= HandleAuthUserChanged;
+            }
+        }
+
+        private void HandleAuthUserChanged(Firebase.Auth.FirebaseUser user)
+        {
+            RefreshAuthState();
+            if (currentLobby != null)
+            {
+                _ = SyncLocalPlayerLobbyDataAsync();
+            }
+        }
+
+        private void RefreshAuthState()
+        {
+            if (authManager == null)
+            {
+                authManager = AuthManager.Instance;
+            }
+
+            var user = authManager != null ? authManager.GetCurrentUser() : null;
+            if (user == null)
+            {
+                if (AuthenticationService.Instance != null && AuthenticationService.Instance.IsSignedIn)
+                {
+                    string lobbyName = TryResolveCurrentLobbyLocalPlayerName();
+                    if (!string.IsNullOrWhiteSpace(lobbyName))
+                    {
+                        authStatusMessage = $"Đã kết nối multiplayer: {lobbyName}";
+                    }
+                    else
+                    {
+                        authStatusMessage = "Đã kết nối dịch vụ multiplayer";
+                    }
+                }
+                else
+                {
+                    authStatusMessage = "Chưa đăng nhập dịch vụ multiplayer";
+                }
+            }
+            else
+            {
+                string displayName = authManager != null ? authManager.GetCharacterName() : null;
+                if (string.IsNullOrWhiteSpace(displayName) || displayName == "Unknown")
+                {
+                    displayName = !string.IsNullOrWhiteSpace(user.DisplayName) ? user.DisplayName : user.Email;
+                }
+
+                authStatusMessage = $"Đã đăng nhập: {displayName}";
+            }
+
+            RefreshStatusLabel();
+            RefreshRoomRoster();
+        }
+
+        private string TryResolveCurrentLobbyLocalPlayerName()
+        {
+            if (currentLobby == null || currentLobby.Players == null || currentLobby.Players.Count == 0)
+                return null;
+
+            if (AuthenticationService.Instance == null || !AuthenticationService.Instance.IsSignedIn)
+                return null;
+
+            string localPlayerId = AuthenticationService.Instance.PlayerId;
+            if (string.IsNullOrWhiteSpace(localPlayerId))
+                return null;
+
+            for (int i = 0; i < currentLobby.Players.Count; i++)
+            {
+                var player = currentLobby.Players[i];
+                if (player == null || string.IsNullOrWhiteSpace(player.Id))
+                    continue;
+
+                if (!string.Equals(player.Id, localPlayerId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                return ResolveLobbyPlayerName(player, i);
+            }
+
+            return null;
+        }
+
+        private void RefreshStatusLabel()
+        {
+            if (statusText == null)
+                return;
+
+            if (string.IsNullOrWhiteSpace(roomStatusMessage))
+            {
+                roomStatusMessage = DefaultIdleStatus;
+            }
+
+            statusText.SetText($"{authStatusMessage}\n{roomStatusMessage}");
+        }
+
+        private void RefreshRoomRoster()
+        {
+            string titleText = currentLobby == null
+                ? "Người chơi trong room"
+                : $"Người chơi trong room ({GetCurrentLobbyPlayerCount()}/{MaxPlayers})";
+
+            string rosterText = BuildRosterText();
+
+            if (rosterTitleText != null)
+            {
+                rosterTitleText.SetText(titleText);
+            }
+            else if (playerCountText != null)
+            {
+                playerCountText.SetText(titleText);
+            }
+
+            if (rosterListText != null)
+            {
+                rosterListText.SetText(rosterText);
+            }
+            else if (statusText != null)
+            {
+                statusText.SetText(rosterText);
+            }
+        }
+
+        private int GetCurrentLobbyPlayerCount()
+        {
+            return currentLobby?.Players != null ? currentLobby.Players.Count : 0;
+        }
+
+        private string BuildRosterText()
+        {
+            if (currentLobby == null || currentLobby.Players == null || currentLobby.Players.Count == 0)
+            {
+                return "Chưa có ai trong room.";
+            }
+
+            var lines = new List<string>(currentLobby.Players.Count);
+            for (int i = 0; i < currentLobby.Players.Count; i++)
+            {
+                var lobbyPlayer = currentLobby.Players[i];
+                string displayName = ResolveLobbyPlayerName(lobbyPlayer, i);
+                lines.Add($"{i + 1}. {displayName}");
+            }
+
+            return string.Join("\n", lines);
+        }
+
+        private string ResolveLobbyPlayerName(Player lobbyPlayer, int index)
+        {
+            if (lobbyPlayer == null)
+            {
+                return $"Người chơi {index + 1}";
+            }
+
+            string displayName = null;
+
+            if (lobbyPlayer.Profile != null)
+            {
+                displayName = lobbyPlayer.Profile.Name;
+            }
+
+            if (string.IsNullOrWhiteSpace(displayName) && lobbyPlayer.Data != null && lobbyPlayer.Data.TryGetValue("characterName", out var nameData))
+            {
+                displayName = nameData != null ? nameData.Value : null;
+            }
+
+            if (string.IsNullOrWhiteSpace(displayName) && authManager != null)
+            {
+                var currentUser = authManager.GetCurrentUser();
+                string localPlayerId = AuthenticationService.Instance != null ? AuthenticationService.Instance.PlayerId : null;
+                if (currentUser != null && !string.IsNullOrWhiteSpace(localPlayerId) && string.Equals(lobbyPlayer.Id, localPlayerId, StringComparison.OrdinalIgnoreCase))
+                {
+                    displayName = authManager.GetCharacterName();
+                    if (string.IsNullOrWhiteSpace(displayName) || displayName == "Unknown")
+                    {
+                        displayName = !string.IsNullOrWhiteSpace(currentUser.DisplayName) ? currentUser.DisplayName : currentUser.Email;
+                    }
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(displayName))
+            {
+                displayName = !string.IsNullOrWhiteSpace(lobbyPlayer.Id) ? lobbyPlayer.Id : $"Người chơi {index + 1}";
+            }
+
+            if (currentLobby != null && !string.IsNullOrWhiteSpace(currentLobby.HostId) && !string.IsNullOrWhiteSpace(lobbyPlayer.Id) && string.Equals(lobbyPlayer.Id, currentLobby.HostId, StringComparison.OrdinalIgnoreCase))
+            {
+                if (!displayName.EndsWith("(chủ phòng)", StringComparison.OrdinalIgnoreCase))
+                {
+                    displayName = $"{displayName} (chủ phòng)";
+                }
+            }
+
+            return displayName;
+        }
+
+        private string GetCurrentPlayerDisplayName()
+        {
+            if (authManager != null)
+            {
+                string characterName = authManager.GetCharacterName();
+                if (!string.IsNullOrWhiteSpace(characterName) && characterName != "Unknown")
+                {
+                    return characterName;
+                }
+
+                var currentUser = authManager.GetCurrentUser();
+                if (currentUser != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(currentUser.DisplayName))
+                    {
+                        return currentUser.DisplayName;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(currentUser.Email))
+                    {
+                        return currentUser.Email;
+                    }
+                }
+            }
+
+            if (AuthenticationService.Instance != null && AuthenticationService.Instance.IsSignedIn)
+            {
+                return AuthenticationService.Instance.PlayerId;
+            }
+
+            return "Player";
+        }
+
+        private async Task SyncLocalPlayerLobbyDataAsync()
+        {
+            if (currentLobby == null)
+                return;
+
+            if (AuthenticationService.Instance == null || !AuthenticationService.Instance.IsSignedIn)
+                return;
+
+            string playerName = GetCurrentPlayerDisplayName();
+            if (string.IsNullOrWhiteSpace(playerName))
+                return;
+
+            try
+            {
+                var playerData = new Dictionary<string, PlayerDataObject>
+                {
+                    { "characterName", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, playerName) }
+                };
+
+                currentLobby = await LobbyService.Instance.UpdatePlayerAsync(
+                    currentLobby.Id,
+                    AuthenticationService.Instance.PlayerId,
+                    new UpdatePlayerOptions
+                    {
+                        Data = playerData
+                    });
+
+                RefreshRoomRoster();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[UIRoom] Không đồng bộ được tên người chơi vào lobby: {ex.Message}");
+            }
+        }
+
+        private void ResolveTextReferences()
+        {
+            if (statusText != null && playerCountText != null && rosterTitleText != null && rosterListText != null && statusText != playerCountText && rosterTitleText != rosterListText)
+                return;
+
+            var texts = GetComponentsInChildren<TMP_Text>(true);
+            if (texts == null || texts.Length == 0)
+                return;
+
+            TMP_Text rosterTitleCandidate = null;
+            TMP_Text rosterListCandidate = null;
+            TMP_Text statusCandidate = null;
+            TMP_Text countCandidate = null;
+
+            for (int i = 0; i < texts.Length; i++)
+            {
+                var text = texts[i];
+                if (text == null)
+                    continue;
+
+                if (rosterTitleCandidate == null && text.gameObject.name == "DanhSachplayer")
+                {
+                    rosterTitleCandidate = text;
+                    continue;
+                }
+
+                if (rosterListCandidate == null && text.gameObject.name == "DanhSachTenHienThi")
+                {
+                    rosterListCandidate = text;
+                    continue;
+                }
+
+                if (statusCandidate == null && text.gameObject.name == "StatusText")
+                {
+                    statusCandidate = text;
+                    continue;
+                }
+
+                if (countCandidate == null && text.gameObject.name == "StatusText (1)")
+                {
+                    countCandidate = text;
+                }
+            }
+
+            if (rosterTitleText == null)
+            {
+                rosterTitleText = rosterTitleCandidate != null ? rosterTitleCandidate : statusCandidate;
+            }
+
+            if (rosterListText == null)
+            {
+                rosterListText = rosterListCandidate != null ? rosterListCandidate : countCandidate;
+            }
+
+            if (statusText == null)
+            {
+                statusText = statusCandidate != null ? statusCandidate : (rosterTitleText != null ? rosterTitleText : texts[0]);
+            }
+
+            if (playerCountText == null || playerCountText == statusText)
+            {
+                playerCountText = countCandidate != null && countCandidate != statusText
+                    ? countCandidate
+                    : FindFirstDifferentText(texts, statusText, rosterTitleText);
+            }
+        }
+
+        private TMP_Text FindFirstDifferentText(TMP_Text[] texts, TMP_Text excluded, TMP_Text secondaryExcluded = null)
+        {
+            for (int i = 0; i < texts.Length; i++)
+            {
+                if (texts[i] != null && texts[i] != excluded && texts[i] != secondaryExcluded)
+                    return texts[i];
+            }
+
+            return excluded;
         }
 
         protected override void OnHide()
@@ -169,10 +539,11 @@ namespace DoAnGame.UI
 
                 currentLobby = await LobbyService.Instance.CreateLobbyAsync("Math Room", MaxPlayers, options);
                 isHost = true;
+                await SyncLocalPlayerLobbyDataAsync();
 
                 lobbyCodeText?.SetText($"Mã phòng: {currentLobby.LobbyCode}");
                 SetStatus("Đã tạo phòng. Chờ người chơi thứ 2...");
-                SetPlayerCount($"Người chơi: {currentLobby.Players.Count}/{MaxPlayers}");
+                RefreshRoomRoster();
                 startMatchButton?.gameObject.SetActive(true);
                 startMatchButton.interactable = currentLobby.Players.Count >= MaxPlayers;
 
@@ -189,7 +560,6 @@ namespace DoAnGame.UI
                 SetActionButtonsInteractable(true);
             }
         }
-
         private async Task HandleQuickJoin()
         {
             if (isBusy)
@@ -213,7 +583,7 @@ namespace DoAnGame.UI
                     }
                 });
 
-                await JoinLobbyAndRelay(lobby);
+                await JoinLobbyAndRelayAsync(lobby);
             }
             catch (LobbyServiceException ex)
             {
@@ -251,7 +621,7 @@ namespace DoAnGame.UI
             try
             {
                 var lobby = await LobbyService.Instance.JoinLobbyByCodeAsync(lobbyCode);
-                await JoinLobbyAndRelay(lobby);
+                await JoinLobbyAndRelayAsync(lobby);
             }
             catch (Exception ex)
             {
@@ -266,33 +636,45 @@ namespace DoAnGame.UI
             }
         }
 
-        private async Task JoinLobbyAndRelay(Lobby lobby)
+        public async Task<bool> JoinLobbyFromBrowserAsync(Lobby lobby)
+        {
+            return await JoinLobbyAndRelayAsync(lobby);
+        }
+
+        public async Task<bool> JoinLobbyAndRelayAsync(Lobby lobby)
         {
             if (lobby == null)
             {
                 SetStatus("Lobby không hợp lệ.");
-                return;
+                return false;
             }
 
             if (!lobby.Data.TryGetValue(JoinCodeKey, out var joinCodeData) || string.IsNullOrEmpty(joinCodeData.Value))
             {
                 SetStatus("Phòng không có relay join code.");
-                return;
+                return false;
+            }
+
+            if (currentLobby != null && !string.Equals(currentLobby.Id, lobby.Id, StringComparison.OrdinalIgnoreCase))
+            {
+                await LeaveLobbySafe();
             }
 
             bool joined = await RelayManager.Instance.TryJoinRelay(joinCodeData.Value);
             if (!joined)
             {
                 SetStatus("Join relay thất bại.");
-                return;
+                return false;
             }
 
             currentLobby = lobby;
             isHost = false;
             lobbyCodeText?.SetText($"Mã phòng: {currentLobby.LobbyCode}");
             SetStatus("Đã vào phòng. Chờ chủ phòng bắt đầu...");
-            SetPlayerCount($"Người chơi: {currentLobby.Players.Count}/{MaxPlayers}");
+            RefreshRoomRoster();
+            await SyncLocalPlayerLobbyDataAsync();
             startMatchButton?.gameObject.SetActive(false);
+            return true;
         }
 
         private async Task HandleStartMatch()
@@ -434,7 +816,12 @@ namespace DoAnGame.UI
             if (refreshed == null) return;
 
             currentLobby = refreshed;
-            SetPlayerCount($"Người chơi: {currentLobby.Players.Count}/{MaxPlayers}");
+            RefreshRoomRoster();
+
+            if (currentLobby.Players != null && currentLobby.Players.Count > 0)
+            {
+                _ = SyncLocalPlayerLobbyDataAsync();
+            }
 
             if (isHost && startMatchButton != null)
             {
@@ -640,6 +1027,7 @@ namespace DoAnGame.UI
             if (Time.unscaledTime < nextLobbyReadAt)
                 return currentLobby;
 
+            RefreshRoomRoster();
             try
             {
                 return await LobbyService.Instance.GetLobbyAsync(currentLobby.Id);
@@ -647,6 +1035,7 @@ namespace DoAnGame.UI
             catch (LobbyServiceException ex) when (IsRateLimitException(ex))
             {
                 nextLobbyReadAt = Time.unscaledTime + Mathf.Max(1f, rateLimitBackoffSeconds);
+            RefreshRoomRoster();
                 Debug.LogWarning($"[UIRoom] Refresh lobby bị rate limit, tạm dừng đọc đến t={nextLobbyReadAt:F1}. {ex.Reason} - {ex.Message}");
                 return currentLobby;
             }
@@ -748,7 +1137,8 @@ namespace DoAnGame.UI
 
         private void SetStatus(string text)
         {
-            statusText?.SetText(text);
+            roomStatusMessage = text;
+            RefreshStatusLabel();
             Debug.Log($"[UIRoom] {text}");
         }
 
@@ -774,7 +1164,7 @@ namespace DoAnGame.UI
 
         private void SetPlayerCount(string text)
         {
-            playerCountText?.SetText(text);
+            RefreshRoomRoster();
         }
 
         private void SetActionButtonsInteractable(bool interactable)

@@ -51,9 +51,16 @@ namespace DoAnGame.UI
             cachedButton = GetComponent<Button>();
             cachedButton.onClick.AddListener(HandleClick);
 
+            EnsureRootTransformIsUsable();
+
             if (initializeStartStateOnAwake)
             {
-                if (startScreen == null)
+                bool canInitializeFromHere = screensRoot != null && transform.parent == screensRoot;
+                if (!canInitializeFromHere)
+                {
+                    Log("Skip start-state init because navigator is not on a top-level screen object.");
+                }
+                else if (startScreen == null)
                 {
                     Debug.LogWarning($"[{nameof(UIButtonScreenNavigator)}] startScreen chua duoc gan tren {name}.");
                 }
@@ -71,6 +78,28 @@ namespace DoAnGame.UI
 
         private void HandleClick()
         {
+            if (!isActiveAndEnabled)
+            {
+                Log("Click ignored because navigator is disabled.");
+                return;
+            }
+
+            ExecuteNavigation();
+        }
+
+        /// <summary>
+        /// Cho phép script khác gọi điều hướng bằng code.
+        /// Dùng cho case host bắt đầu trận và muốn cả 2 client chuyển màn đồng bộ.
+        /// </summary>
+        public void NavigateNow()
+        {
+            ExecuteNavigation();
+        }
+
+        private void ExecuteNavigation()
+        {
+            Debug.Log($"[{nameof(UIButtonScreenNavigator)}:{name}] Click detected. targetSceneName='{targetSceneName}', targetScreen='{(targetScreen != null ? targetScreen.name : "null")}'");
+
             // 1. Kiểm tra nếu có nhập tên Scene -> Ưu tiên chuyển Scene
             if (!string.IsNullOrEmpty(targetSceneName))
             {
@@ -86,16 +115,8 @@ namespace DoAnGame.UI
             }
 
             // 2. Xử lý chuyển UI nếu không chuyển Scene
+            Debug.Log($"[{nameof(UIButtonScreenNavigator)}:{name}] Switching UI to '{(targetScreen != null ? targetScreen.name : "rootsToShow")}'");
             SwitchTo(targetScreen);
-        }
-
-        /// <summary>
-        /// Cho phép script khác gọi điều hướng bằng code.
-        /// Dùng cho case host bắt đầu trận và muốn cả 2 client chuyển màn đồng bộ.
-        /// </summary>
-        public void NavigateNow()
-        {
-            HandleClick();
         }
 
         private void SwitchTo(GameObject screenToShow)
@@ -105,6 +126,8 @@ namespace DoAnGame.UI
                 Debug.LogWarning($"[{nameof(UIButtonScreenNavigator)}:{name}] Không có targetScreen và rootsToShow trống. Không thực hiện ẩn/hiện để tránh blank UI.");
                 return;
             }
+
+            EnsureRootTransformIsUsable();
 
             // A. Tắt toàn bộ anh em trong root (nếu dùng chung 1 Menu/Canvas)
             if (screensRoot != null)
@@ -146,12 +169,67 @@ namespace DoAnGame.UI
             // D. Cuối cùng, bật màn hình đích (Target Screen)
             if (screenToShow != null)
             {
+                EnsureScreenTransformIsVisible(screenToShow);
                 screenToShow.SetActive(true);
+                screenToShow.transform.SetAsLastSibling();
                 Log($"SwitchTo -> {screenToShow.name}");
             }
             else
             {
                 Log("SwitchTo -> targetScreen null, dùng rootsToShow");
+            }
+        }
+
+        private void EnsureRootTransformIsUsable()
+        {
+            if (screensRoot == null)
+                return;
+
+            var rootRect = screensRoot as RectTransform;
+            if (rootRect == null)
+                return;
+
+            // Scene merge có thể làm root scale hỏng; ép về (1,1,1) để UI luôn nhìn thấy.
+            if (rootRect.localScale != Vector3.one)
+            {
+                rootRect.localScale = Vector3.one;
+                Debug.LogWarning($"[{nameof(UIButtonScreenNavigator)}:{name}] Auto-fix screensRoot scale to (1,1,1).");
+            }
+        }
+
+        private void EnsureScreenTransformIsVisible(GameObject screen)
+        {
+            if (screen == null)
+                return;
+
+            EnsureParentsActive(screen.transform);
+
+            var rect = screen.transform as RectTransform;
+            if (rect == null)
+                return;
+
+            // Luôn normalize panel đích về full-screen để tránh lệch toạ độ sau merge scene.
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.localScale = Vector3.one;
+            rect.anchoredPosition = Vector2.zero;
+
+            Debug.LogWarning($"[{nameof(UIButtonScreenNavigator)}:{name}] Auto-normalized panel '{screen.name}' to full-screen.");
+        }
+
+        private void EnsureParentsActive(Transform node)
+        {
+            var current = node;
+            while (current != null)
+            {
+                if (!current.gameObject.activeSelf)
+                {
+                    current.gameObject.SetActive(true);
+                }
+                current = current.parent;
             }
         }
 

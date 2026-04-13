@@ -8,6 +8,11 @@ Tài liệu này phản ánh **các scene hiện có**:
 - Scene **GameUIPlay** → UI 2–UI 6 (Auth, Login, Register, Main Menu, Mode)
   Mọi script nằm trong `Assets/Script/Script_multiplayer/AI_Code/CODE`.
 
+Lưu ý dữ liệu:
+- Tài khoản, user profile và player data lưu trên **Firebase**.
+- Local chỉ dùng cho **session/cache** tạm thời bằng `PlayerPrefs`.
+- Không lưu tài khoản game vào `Assets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db`.
+
 Khi tạo các UI mới (6 → 14) hãy mở rộng file theo đúng khung này.
 
 ----------------------------------------------------------------
@@ -68,6 +73,8 @@ UI16 Multiplayer Battle ─┬─ Player 1 (local)
 ║ Panel đang dùng: `WelcomePanel`, `LoginPanel`, `RegisterPanel`,║
 ║ `MainMenuPanel`, `ModSelectionPanel`.                        ║
 ║ Quản lý: `UIFlowManagerRoot` (chứa `UIFlowManager`).         ║
+║ Dữ liệu auth/player: Firebase Auth + Realtime Database.      ║
+║ Local cache/session: `PlayerPrefs` (không phải database game).║
 ╚══════════════════════════════════════════════════════════════╝
 
 ----------------------------------------------------------------
@@ -140,12 +147,14 @@ UI16 Multiplayer Battle ─┬─ Player 1 (local)
 ║ • passwordInput → `UsernameInputField (1)`                  ║
 ║ • errorText → `ErrorText`                                   ║
 ║ • backButton → nút Back trong panel                         ║
-║ • loginButton → `DangNhapBtn`                               ║
-║ • registerRedirectButton → `DangKyBtn`                      ║
+║ • loginButton → `DangNhapBtn` (submit đăng nhập, KHÔNG gán  ║
+║   OnClick thủ công trong Inspector nếu script đã xử lý)      ║
+║ • registerRedirectButton → `DangKyBtn` (chuyển sang UI4)    ║
 ║ • forgotPasswordButton → `QuenMatKhauBtn`                   ║
 ║ • flowManager → `UIFlowManagerRoot`                         ║
 ╠════════ Navigation ════════════════════════════════════════╣
-║ Back → UI2 | Đăng nhập thành công → UI5 | Đăng ký → UI4     ║
+║ Back → UI2 | Đăng nhập thành công → UI5                     ║
+║ Đăng ký ở đây chỉ là nút chuyển sang UI4, không submit login.║
 ╚══════════════════════════════════════════════════════════════╝
 
 ╔══════════════════════════════════════════════════════════════╗
@@ -169,10 +178,12 @@ UI16 Multiplayer Battle ─┬─ Player 1 (local)
 ║ • termsToggle → toggle điều khoản                          ║
 ║ • errorText / successText → label thông báo               ║
 ║ • backButton → Back trong panel                            ║
-║ • completeButton → nút Hoàn tất                            ║
+║ • completeButton → nút Hoàn tất (submit đăng ký, sau khi    ║
+║   validate + lưu Firebase thành công mới chuyển UI3)       ║
 ║ • flowManager → `UIFlowManagerRoot`                         ║
 ╠════════ Navigation ════════════════════════════════════════╣
 ║ Back → UI2 | Hoàn tất thành công → UI3                     ║
+║ Nếu thiếu thông tin thì phải hiện Error Text, không chuyển UI.║
 ╚══════════════════════════════════════════════════════════════╝
 
 ╔══════════════════════════════════════════════════════════════╗
@@ -191,9 +202,27 @@ UI16 Multiplayer Battle ─┬─ Player 1 (local)
 ║   / logoutButton                                             ║
 ║ • levelText, scoreText                                      ║
 ║ • flowManager → `UIFlowManagerRoot`                         ║
+║ • Dữ liệu hiển thị lấy từ Firebase/local cache sau login.   ║
 ╠════════ Navigation ════════════════════════════════════════╣
 ║ Chơi → UI6 | BXH/Hồ sơ/Settings → panel tương ứng | Logout → UI2║
 ╚══════════════════════════════════════════════════════════════╝
+
+----------------------------------------------------------------
+ LƯU DỮ LIỆU ĐÚNG CÁCH
+----------------------------------------------------------------
+1. Khi đăng ký thành công:
+  - Firebase Auth tạo user.
+  - Realtime Database lưu `/users/{uid}` và `/playerData/{uid}`.
+  - Player mới mặc định: `level=1`, `totalScore=0`, `totalXp=0`, `gamesPlayed=0`, `gamesWon=0`.
+2. Khi đăng nhập thành công:
+  - Firebase Auth xác thực user.
+  - Load player data từ Firebase.
+  - Cache local để dùng nhanh / offline bằng `PlayerPrefs`.
+3. Khi logout:
+  - Clear session local.
+  - Clear local cache.
+4. Không dùng `UnitOptions.db` để lưu tài khoản game.
+  - File đó là của Unity Visual Scripting, không phải database người chơi.
 
 ╔══════════════════════════════════════════════════════════════╗
 ║ UI 6 – Mode Selection (Scene: GameUIPlay)                   ║

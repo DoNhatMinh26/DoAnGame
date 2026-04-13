@@ -95,11 +95,12 @@ public class UIManager : NetworkBehaviour
         authManager = AuthManager.Instance;
         relayManager = RelayManager.Instance;
 
-        // Thiết lập Panel ban đầu (an toàn khi đổi scene)
-        ShowUI(0); // Hiện Welcome Screen
-
         // Bind buttons
         BindButtons();
+
+        // Thiết lập Panel ban đầu: luôn về Welcome Screen.
+        // Auto-load session chỉ được chạy từ nút Chơi Tiếp ở Welcome.
+        ShowUI(0);
 
         // Network
         isGameStarted.OnValueChanged += (oldVal, newVal) =>
@@ -223,7 +224,7 @@ public class UIManager : NetworkBehaviour
             case 4:
                 SetPanelActiveSafe(mainMenuPanel, true, nameof(mainMenuPanel));
                 if (welcomeText != null)
-                    welcomeText.text = $"Chào {authManager.GetCurrentPlayerData()?.username ?? "Khách"}! 👋";
+                    welcomeText.text = $"Chào {authManager.GetCurrentPlayerData()?.characterName ?? "Khách"}! 👋";
                 Debug.Log("[UIManager] 📱 UI 4: Main Menu");
                 break;
             case 5:

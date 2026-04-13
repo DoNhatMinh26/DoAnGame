@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using DoAnGame.Auth;
 
 namespace DoAnGame.UI
 {
@@ -61,7 +62,7 @@ namespace DoAnGame.UI
             foreach (var data in mockData)
             {
                 var widget = Instantiate(entryPrefab, content);
-                widget.SetData(rank, data.username, data.totalScore);
+                widget.SetData(rank, data.characterName, data.totalScore);
                 entries.Add(widget);
                 rank++;
             }
@@ -74,7 +75,7 @@ namespace DoAnGame.UI
             {
                 list.Add(new PlayerData
                 {
-                    username = $"Player{i + 1}",
+                    characterName = $"Player{i + 1}",
                     totalScore = Random.Range(5000, 15000)
                 });
             }

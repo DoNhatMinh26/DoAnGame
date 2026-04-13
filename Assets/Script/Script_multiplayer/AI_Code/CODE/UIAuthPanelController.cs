@@ -30,6 +30,11 @@ namespace DoAnGame.UI
             settingsButton?.onClick.AddListener(() => flowManager.ShowSettings(UIFlowManager.Screen.WelcomeAuth));
         }
 
+        protected override void OnShow()
+        {
+            base.OnShow();
+        }
+
         private void OnDestroy()
         {
             loginButton?.onClick.RemoveAllListeners();

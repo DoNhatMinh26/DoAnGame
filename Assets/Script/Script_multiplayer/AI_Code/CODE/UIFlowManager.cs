@@ -108,13 +108,21 @@ namespace DoAnGame.UI
 
         public void ShowScreen(Screen targetScreen, bool pushHistory = true)
         {
+            TryShowScreen(targetScreen, pushHistory);
+        }
+
+        public bool TryShowScreen(Screen targetScreen, bool pushHistory = true)
+        {
             if (!panelLookup.TryGetValue(targetScreen, out var nextPanel))
             {
                 Debug.LogError($"[UIFlow] Không tìm thấy panel cho screen {targetScreen}");
-                return;
+                return false;
             }
 
-            if (CurrentScreen.Equals(targetScreen) && nextPanel.IsVisible) return;
+            if (CurrentScreen.Equals(targetScreen) && nextPanel.IsVisible)
+            {
+                return true;
+            }
 
             if (pushHistory && CurrentScreen != 0)
             {
@@ -128,6 +136,7 @@ namespace DoAnGame.UI
 
             nextPanel.Show();
             CurrentScreen = targetScreen;
+            return true;
         }
 
         public void Back()

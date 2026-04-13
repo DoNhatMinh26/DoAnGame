@@ -52,8 +52,8 @@ namespace DoAnGame.UI
                 return;
             }
 
-            usernameText?.SetText(data.username);
-            levelText?.SetText($"Level {data.currentLevel}");
+            usernameText?.SetText(data.characterName);
+            levelText?.SetText($"Level {data.level}");
             var xpForNext = 100;
             float progress = (data.totalXp % xpForNext) / (float)xpForNext;
             expText?.SetText($"XP: {data.totalXp % xpForNext}/{xpForNext}");
