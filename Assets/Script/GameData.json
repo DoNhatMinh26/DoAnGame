@@ -1,0 +1,596 @@
+﻿{
+  "grades": [
+    {
+      "gradeID": 1,
+      "gameModes": [
+        {
+          "modeName": "ChonDA",
+          "levels": [
+            {
+              "levelID": 1,
+              "minVal": 1,
+              "maxVal": 10,
+              "allowOps": [ "+" ]
+            },
+            {
+              "levelID": 2,
+              "minVal": 1,
+              "maxVal": 10,
+              "allowOps": [ "-" ]
+            },
+            {
+              "levelID": 3,
+              "minVal": 1,
+              "maxVal": 15,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 4,
+              "minVal": 1,
+              "maxVal": 10,
+              "allowOps": [ "find_x" ]
+            },
+            {
+              "levelID": 5,
+              "minVal": 5,
+              "maxVal": 20,
+              "allowOps": [ "+" ]
+            },
+            {
+              "levelID": 6,
+              "minVal": 1,
+              "maxVal": 20,
+              "allowOps": [ "find_x", "-" ]
+            },
+            {
+              "levelID": 7,
+              "minVal": 10,
+              "maxVal": 30,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 8,
+              "minVal": 1,
+              "maxVal": 15,
+              "allowOps": [ "2" ]
+            },
+            {
+              "levelID": 9,
+              "minVal": 10,
+              "maxVal": 40,
+              "allowOps": [ "find_x" ]
+            },
+            {
+              "levelID": 10,
+              "minVal": 5,
+              "maxVal": 50,
+              "allowOps": [ "2", "find_x" ]
+            }
+          ]
+        },
+        {
+          "modeName": "KeoThaDA",
+          "levels": [
+            {
+              "levelID": 1,
+              "minVal": 1,
+              "maxVal": 5,
+              "allowOps": [ "+" ]
+            },
+            {
+              "levelID": 2,
+              "minVal": 1,
+              "maxVal": 8,
+              "allowOps": [ "-" ]
+            },
+            {
+              "levelID": 3,
+              "minVal": 1,
+              "maxVal": 10,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 4,       
+              "minVal": 1,
+              "maxVal": 10,
+              "allowOps": [ "find_x" ]
+            },
+            {
+              "levelID": 5,              
+              "minVal": 5,
+              "maxVal": 15,
+              "allowOps": [ "+" ]
+            },
+            {
+              "levelID": 6,              
+              "minVal": 5,
+              "maxVal": 15,
+              "allowOps": [ "-" ]
+            },
+            {
+              "levelID": 7,
+              "levelID": 7,
+              "minVal": 10,
+              "maxVal": 20,
+              "allowOps": [ "find_x" ]
+            },
+            {
+              "levelID": 8,              
+              "minVal": 1,
+              "maxVal": 10,
+              "allowOps": [ "2" ]
+            },
+            {
+              "levelID": 9,              
+              "minVal": 10,
+              "maxVal": 25,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 10,     
+              "minVal": 5,
+              "maxVal": 30,
+              "allowOps": [ "2", "find_x" ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "gradeID": 2,
+      "gameModes": [
+        {
+          "modeName": "ChonDA",
+          "levels": [
+            {
+              "levelID": 1,
+              "minVal": 10,
+              "maxVal": 50,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 2,
+              "minVal": 2,
+              "maxVal": 5,
+              "allowOps": [ "x" ]
+            },
+            {
+              "levelID": 3,
+              "minVal": 1,
+              "maxVal": 10,
+              "allowOps": [ ":" ]
+            },
+            {
+              "levelID": 4,
+              "minVal": 20,
+              "maxVal": 60,
+              "allowOps": [ "find_x" ]
+            },
+            {
+              "levelID": 5,
+              "minVal": 5,
+              "maxVal": 10,
+              "allowOps": [ "x", ":" ]
+            },
+            {
+              "levelID": 6,
+              "minVal": 2,
+              "maxVal": 9,
+              "allowOps": [ "x", "find_x" ]
+            },
+            {
+              "levelID": 7,
+              "minVal": 1,
+              "maxVal": 10,
+              "allowOps": [ "bracket" ]
+            },
+            {
+              "levelID": 8,
+              "minVal": 30,
+              "maxVal": 80,
+              "allowOps": [ "2" ]
+            },
+            {
+              "levelID": 9,
+              "minVal": 50,
+              "maxVal": 100,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 10,
+              "minVal": 10,
+              "maxVal": 50,
+              "allowOps": [ "bracket", "find_x" ]
+            }
+          ]
+        },
+        {
+          "modeName": "KeoThaDA",
+          "levels": [
+            {
+              "levelID": 1,
+              "minVal": 10,
+              "maxVal": 30,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 2,
+              "minVal": 2,
+              "maxVal": 5,
+              "allowOps": [ "x" ]
+            },
+            {
+              "levelID": 3,
+              "minVal": 1,
+              "maxVal": 10,
+              "allowOps": [ ":" ]
+            },
+            {
+              "levelID": 4,
+              "minVal": 10,
+              "maxVal": 40,
+              "allowOps": [ "find_x" ]
+            },
+            {
+              "levelID": 5,
+              "minVal": 2,
+              "maxVal": 8,
+              "allowOps": [ "x", ":" ]
+            },
+            {
+              "levelID": 6,
+              "minVal": 2,
+              "maxVal": 6,
+              "allowOps": [ "x", "find_x" ]
+            },
+            {
+              "levelID": 7,
+              "minVal": 1,
+              "maxVal": 8,
+              "allowOps": [ "bracket" ]
+            },
+            {
+              "levelID": 8,
+              "minVal": 10,
+              "maxVal": 50,
+              "allowOps": [ "2" ]
+            },
+            {
+              "levelID": 9,
+              "minVal": 30,
+              "maxVal": 70,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 10,
+              "minVal": 10,
+              "maxVal": 40,
+              "allowOps": [ "bracket", "find_x" ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "gradeID": 3,
+      "gameModes": [
+        {
+          "modeName": "ChonDA",
+          "levels": [
+            {
+              "levelID": 1,
+              "minVal": 20,
+              "maxVal": 100,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 2,
+              "minVal": 5,
+              "maxVal": 12,
+              "allowOps": [ "x" ]
+            },
+            {
+              "levelID": 3,
+              "minVal": 2,
+              "maxVal": 10,
+              "allowOps": [ ":" ]
+            },
+            {
+              "levelID": 4,
+              "minVal": 10,
+              "maxVal": 50,
+              "allowOps": [ "bracket" ]
+            },
+            {
+              "levelID": 5,
+              "minVal": 50,
+              "maxVal": 150,
+              "allowOps": [ "find_x" ]
+            },
+            {
+              "levelID": 6,
+              "minVal": 5,
+              "maxVal": 15,
+              "allowOps": [ "x", "find_x" ]
+            },
+            {
+              "levelID": 7,
+              "minVal": 10,
+              "maxVal": 30,
+              "allowOps": [ "bracket", "+" ]
+            },
+            {
+              "levelID": 8,
+              "minVal": 50,
+              "maxVal": 200,
+              "allowOps": [ "2" ]
+            },
+            {
+              "levelID": 9,
+              "minVal": 10,
+              "maxVal": 20,
+              "allowOps": [ "x", ":" ]
+            },
+            {
+              "levelID": 10,
+              "minVal": 20,
+              "maxVal": 150,
+              "allowOps": [ "bracket", "2", "find_x" ]
+            }
+          ]
+        },
+        {
+          "modeName": "KeoThaDA",
+          "levels": [
+            {
+              "levelID": 1,
+              "minVal": 20,
+              "maxVal": 80,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 2,
+              "minVal": 2,
+              "maxVal": 10,
+              "allowOps": [ "x" ]
+            },
+            {
+              "levelID": 3,
+              "minVal": 2,
+              "maxVal": 10,
+              "allowOps": [ ":" ]
+            },
+            {
+              "levelID": 4,
+              "minVal": 5,
+              "maxVal": 30,
+              "allowOps": [ "bracket" ]
+            },
+            {
+              "levelID": 5,
+              "minVal": 30,
+              "maxVal": 100,
+              "allowOps": [ "find_x" ]
+            },
+            {
+              "levelID": 6,
+              "minVal": 2,
+              "maxVal": 12,
+              "allowOps": [ "x", "find_x" ]
+            },
+            {
+              "levelID": 7,
+              "minVal": 5,
+              "maxVal": 25,
+              "allowOps": [ "bracket" ]
+            },
+            {
+              "levelID": 8,
+              "minVal": 20,
+              "maxVal": 100,
+              "allowOps": [ "2" ]
+            },
+            {
+              "levelID": 9,
+              "minVal": 5,
+              "maxVal": 15,
+              "allowOps": [ "x", ":" ]
+            },
+            {
+              "levelID": 10,
+              "minVal": 10,
+              "maxVal": 100,
+              "allowOps": [ "bracket", "2", "find_x" ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "gradeID": 4,
+      "gameModes": [
+        {
+          "modeName": "ChonDA",
+          "levels": [
+            {
+              "levelID": 1,
+              "minVal": 100,
+              "maxVal": 300,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 2,
+              "minVal": 10,
+              "maxVal": 25,
+              "allowOps": [ "x" ]
+            },
+            {
+              "levelID": 3,
+              "minVal": 5,
+              "maxVal": 15,
+              "allowOps": [ ":" ]
+            },
+            {
+              "levelID": 4,
+              "minVal": 100,
+              "maxVal": 400,
+              "allowOps": [ "find_x" ]
+            },
+            {
+              "levelID": 5,
+              "minVal": 20,
+              "maxVal": 50,
+              "allowOps": [ "bracket" ]
+            },
+            {
+              "levelID": 6,
+              "minVal": 10,
+              "maxVal": 30,
+              "allowOps": [ "x", "bracket" ]
+            },
+            {
+              "levelID": 7,
+              "minVal": 200,
+              "maxVal": 500,
+              "allowOps": [ "2" ]
+            },
+            {
+              "levelID": 8,
+              "minVal": 10,
+              "maxVal": 50,
+              "allowOps": [ "find_x", "bracket" ]
+            },
+            {
+              "levelID": 9,
+              "minVal": 20,
+              "maxVal": 40,
+              "allowOps": [ "x", ":", "find_x" ]
+            },
+            {
+              "levelID": 10,
+              "minVal": 50,
+              "maxVal": 500,
+              "allowOps": [ "2", "bracket", "find_x" ]
+            }
+          ]
+        },
+        {
+          "modeName": "KeoThaDA",
+          "levels": [
+            {
+              "levelID": 1,
+              "minVal": 50,
+              "maxVal": 200,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 5,
+              "minVal": 10,
+              "maxVal": 30,
+              "allowOps": [ "x", "bracket" ]
+            },
+            {
+              "levelID": 10,
+              "minVal": 20,
+              "maxVal": 300,
+              "allowOps": [ "2", "bracket", "find_x" ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "gradeID": 5,
+      "gameModes": [
+        {
+          "modeName": "ChonDA",
+          "levels": [
+            {
+              "levelID": 1,
+              "minVal": 200,
+              "maxVal": 600,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 2,
+              "minVal": 20,
+              "maxVal": 50,
+              "allowOps": [ "x" ]
+            },
+            {
+              "levelID": 3,
+              "minVal": 10,
+              "maxVal": 30,
+              "allowOps": [ ":" ]
+            },
+            {
+              "levelID": 4,
+              "minVal": 300,
+              "maxVal": 800,
+              "allowOps": [ "find_x" ]
+            },
+            {
+              "levelID": 5,
+              "minVal": 50,
+              "maxVal": 100,
+              "allowOps": [ "bracket" ]
+            },
+            {
+              "levelID": 6,
+              "minVal": 20,
+              "maxVal": 60,
+              "allowOps": [ "x", "bracket" ]
+            },
+            {
+              "levelID": 7,
+              "minVal": 500,
+              "maxVal": 1000,
+              "allowOps": [ "2" ]
+            },
+            {
+              "levelID": 8,
+              "minVal": 100,
+              "maxVal": 500,
+              "allowOps": [ "find_x", "bracket" ]
+            },
+            {
+              "levelID": 9,
+              "minVal": 50,
+              "maxVal": 100,
+              "allowOps": [ "x", ":", "find_x" ]
+            },
+            {
+              "levelID": 10,
+              "minVal": 100,
+              "maxVal": 1000,
+              "allowOps": [ "2", "bracket", "find_x", "x", ":" ]
+            }
+          ]
+        },
+        {
+          "modeName": "KeoThaDA",
+          "levels": [
+            {
+              "levelID": 1,
+              "minVal": 100,
+              "maxVal": 500,
+              "allowOps": [ "+", "-" ]
+            },
+            {
+              "levelID": 5,
+              "minVal": 20,
+              "maxVal": 80,
+              "allowOps": [ "x", "bracket" ]
+            },
+            {
+              "levelID": 10,
+              "minVal": 50,
+              "maxVal": 800,
+              "allowOps": [ "2", "bracket", "find_x" ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

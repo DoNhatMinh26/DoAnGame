@@ -1,49 +1,43 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
+using UnityEngine.SceneManagement; // Thêm thư viện này để chuyển Scene
 
 public class LevelManager : MonoBehaviour
 {
-    [Header("Giao diện chính")]
-    [SerializeField] private GameObject chonMan;
+    [Header("UI Màn Chơi")]
+    public GameObject panelChonMan;
+    public GameObject panelGameplay;
 
-    [Header("Danh sách các màn chơi")]
-    // Bạn chỉ cần kéo tất cả Canvas màn chơi vào danh sách này trong Inspector
-    public GameObject[] levelCanvases;
+    public static int CurrentLevel = 1;
 
-    private void Start()
+    void Start()
     {
-        // Khi bắt đầu, quay về Menu chính
-        QuayLaiChonMan();
+        panelChonMan.SetActive(true);
+        panelGameplay.SetActive(false);
     }
 
-    /// <summary>
-    /// Hàm mở một màn chơi theo số thứ tự (Index)
-    /// </summary>
-    /// <param name="levelIndex">Số thứ tự màn chơi (bắt đầu từ 0)</param>
-    public void OpenLevel(int levelIndex)
+    public void BatDauChoiMan(int levelIndex)
     {
-        // 1. Ẩn menu chính
-        chonMan.SetActive(false);
+        CurrentLevel = levelIndex;
+        panelChonMan.SetActive(false);
+        panelGameplay.SetActive(true);
 
-        // 2. Duyệt qua mảng để bật màn được chọn và tắt các màn còn lại
-        for (int i = 0; i < levelCanvases.Length; i++)
-        {
-            // Nếu i bằng index truyền vào thì bật, ngược lại thì tắt
-            levelCanvases[i].SetActive(i == levelIndex);
-        }
+        MathManager math = FindObjectOfType<MathManager>();
+        if (math != null) math.UpdateDifficultyFromJSON();
+
+        DragQuizManager drag = FindObjectOfType<DragQuizManager>();
+        if (drag != null) drag.UpdateDifficultyFromJSON();
     }
 
-    /// <summary>
-    /// Hàm quay lại Menu chính
-    /// </summary>
     public void QuayLaiChonMan()
     {
-        chonMan.SetActive(true);
+        panelChonMan.SetActive(true);
+        panelGameplay.SetActive(false);
+    }
 
-        // Tắt tất cả các màn chơi đang có trong danh sách
-        foreach (GameObject level in levelCanvases)
-        {
-            level.SetActive(false);
-        }
+    // PHƯƠNG THỨC MỚI: Quay về Scene Menu và mở bảng Chọn cách chơi
+    public void QuayVeMenuChonCachChoi()
+    {
+        MenuManager.QuayLaiTuGame = true; // Đánh dấu trạng thái quay về
+        SceneManager.LoadScene("Menu"); // Đảm bảo tên Scene Menu của bạn chính xác là "Menu"
     }
 }
