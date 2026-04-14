@@ -237,7 +237,7 @@ namespace DoAnGame.UI
 
             if (string.IsNullOrWhiteSpace(hostName))
             {
-                hostName = !string.IsNullOrWhiteSpace(lobby.HostId) ? lobby.HostId : "Không rõ";
+                hostName = "Chủ phòng";
             }
 
             return $"Chủ phòng: {CompactIdentity(hostName, maxHostNameLength)}";
@@ -358,7 +358,7 @@ namespace DoAnGame.UI
 
             if (string.IsNullOrWhiteSpace(displayName))
             {
-                displayName = !string.IsNullOrWhiteSpace(lobbyPlayer.Id) ? lobbyPlayer.Id : $"Người chơi {index + 1}";
+                displayName = $"Người chơi {index + 1}";
             }
 
             if (!string.IsNullOrWhiteSpace(lobbyPlayer.Id) && authManager != null && AuthenticationService.Instance != null && string.Equals(lobbyPlayer.Id, AuthenticationService.Instance.PlayerId, StringComparison.OrdinalIgnoreCase))
@@ -452,6 +452,7 @@ namespace DoAnGame.UI
                 if (joined)
                 {
                     SetStatus("Đã vào phòng.");
+                    roomController.NotifyEnteredFromBrowser();
                     if (roomNavigator != null)
                     {
                         roomNavigator.NavigateNow();

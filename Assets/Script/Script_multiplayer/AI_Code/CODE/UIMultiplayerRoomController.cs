@@ -143,6 +143,10 @@ namespace DoAnGame.UI
             {
                 authManager.OnCurrentUserChanged += HandleAuthUserChanged;
             }
+
+            // Trong một số flow dùng UIButtonScreenNavigator, OnShow có thể không được gọi.
+            // Chủ động đảm bảo polling/heartbeat khi panel được kích hoạt lại.
+            EnsureLobbyRuntimeRoutines();
         }
 
         private void OnDisable()
@@ -329,7 +333,7 @@ namespace DoAnGame.UI
 
             if (string.IsNullOrWhiteSpace(displayName))
             {
-                displayName = !string.IsNullOrWhiteSpace(lobbyPlayer.Id) ? lobbyPlayer.Id : $"Người chơi {index + 1}";
+                displayName = $"Người chơi {index + 1}";
             }
 
             if (currentLobby != null && !string.IsNullOrWhiteSpace(currentLobby.HostId) && !string.IsNullOrWhiteSpace(lobbyPlayer.Id) && string.Equals(lobbyPlayer.Id, currentLobby.HostId, StringComparison.OrdinalIgnoreCase))
@@ -739,7 +743,8 @@ namespace DoAnGame.UI
             currentLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
             isHost = !string.IsNullOrWhiteSpace(currentLobby.HostId) && string.Equals(currentLobby.HostId, localPlayerId, StringComparison.OrdinalIgnoreCase);
             lobbyCodeText?.SetText($"Mã phòng: {currentLobby.LobbyCode}");
-            SetStatus("Đã vào phòng. Chờ chủ phòng bắt đầu...");
+            int localCount = currentLobby.Players != null ? currentLobby.Players.Count : 0;
+            SetStatus($"Đã vào phòng ({localCount}/{MaxPlayers}). Chờ chủ phòng bắt đầu...");
             RefreshRoomRoster();
             await SyncLocalPlayerLobbyDataAsync();
 
@@ -757,7 +762,18 @@ namespace DoAnGame.UI
                 startMatchButton.interactable = isHost && currentLobby.Players != null && currentLobby.Players.Count >= MaxPlayers;
             }
 
+            RefreshAuthState();
+            EnsureLobbyRuntimeRoutines();
+
             return true;
+        }
+
+        public void NotifyEnteredFromBrowser()
+        {
+            ResolveTextReferences();
+            RefreshAuthState();
+            RefreshRoomRoster();
+            EnsureLobbyRuntimeRoutines();
         }
 
         private async Task HandleStartMatch()
@@ -1210,6 +1226,22 @@ namespace DoAnGame.UI
             {
                 StopCoroutine(delayedBattleFallbackRoutine);
                 delayedBattleFallbackRoutine = null;
+            }
+        }
+
+        private void EnsureLobbyRuntimeRoutines()
+        {
+            if (!gameObject.activeInHierarchy)
+                return;
+
+            if (pollingRoutine == null)
+            {
+                pollingRoutine = StartCoroutine(PollLobbyRoutine());
+            }
+
+            if (isHost && currentLobby != null && heartbeatRoutine == null)
+            {
+                heartbeatRoutine = StartCoroutine(HeartbeatRoutine());
             }
         }
 

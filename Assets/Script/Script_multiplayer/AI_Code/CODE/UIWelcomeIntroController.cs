@@ -27,7 +27,7 @@ namespace DoAnGame.UI
         protected override void Awake()
         {
             base.Awake();
-            authManager = AuthManager.Instance;
+            authManager = EnsureAuthManagerReady();
 
             if (continueButton == null)
             {
@@ -43,6 +43,7 @@ namespace DoAnGame.UI
 
         private void OnEnable()
         {
+            authManager = EnsureAuthManagerReady();
             SetupContinueButtonStrict();
         }
 
@@ -113,10 +114,7 @@ namespace DoAnGame.UI
             if (isContinueBusy)
                 return;
 
-            if (authManager == null)
-            {
-                authManager = AuthManager.Instance;
-            }
+            authManager = EnsureAuthManagerReady();
 
             if (authManager == null)
             {
@@ -136,10 +134,10 @@ namespace DoAnGame.UI
                 {
                     if (showFailureMessage)
                     {
-                        SetContinueStatus("Chưa có phiên lưu, vui lòng đăng nhập");
+                        SetContinueStatus("Không còn phiên lưu. Mời đăng ký, đăng nhập hoặc chơi nhanh.");
                     }
 
-                    EnsureStayOnWelcome();
+                    EnsureStayOnCurrentWelcomePanel();
                     return;
                 }
 
@@ -170,7 +168,7 @@ namespace DoAnGame.UI
             if (SceneManager.GetActiveScene().name == gameplaySceneName)
             {
                 SetContinueStatus("Không tìm thấy MainMenu trong scene hiện tại");
-                EnsureStayOnWelcome();
+                EnsureStayOnCurrentWelcomePanel();
                 return;
             }
 
@@ -247,32 +245,35 @@ namespace DoAnGame.UI
             continueStatusText.text = message;
         }
 
-        private void EnsureStayOnWelcome()
+        private void EnsureStayOnCurrentWelcomePanel()
         {
-            if (flowManager != null)
+            if (!gameObject.activeSelf)
             {
-                flowManager.ShowScreen(UIFlowManager.Screen.WelcomeIntro, false);
-                return;
+                gameObject.SetActive(true);
             }
+
+            transform.SetAsLastSibling();
 
             Transform canvas = GameObject.Find("GameUICanvas")?.transform;
             if (canvas == null)
                 return;
 
-            Transform welcomePanel = canvas.Find("WelcomePanel") ?? canvas.Find("WELCOMESCREEN");
-            if (welcomePanel != null)
+            // Không mở thêm root mới; chỉ giữ panel hiện tại và tắt panel legacy nếu đang lộ.
+            Transform legacyWelcome = canvas.Find("WELCOMESCREEN");
+            if (legacyWelcome != null)
             {
-                var welcomeController = welcomePanel.GetComponent<BasePanelController>();
-                if (welcomeController != null)
+                if (legacyWelcome != transform)
                 {
-                    welcomeController.Show();
+                    var legacyPanel = legacyWelcome.GetComponent<BasePanelController>();
+                    if (legacyPanel != null)
+                    {
+                        legacyPanel.Hide();
+                    }
+                    else
+                    {
+                        legacyWelcome.gameObject.SetActive(false);
+                    }
                 }
-                else
-                {
-                    welcomePanel.gameObject.SetActive(true);
-                }
-
-                welcomePanel.SetAsLastSibling();
             }
 
             Transform mainMenu = FindMainMenuTransform();
@@ -288,6 +289,24 @@ namespace DoAnGame.UI
             {
                 mainMenu.gameObject.SetActive(false);
             }
+        }
+
+        private AuthManager EnsureAuthManagerReady()
+        {
+            if (authManager != null)
+                return authManager;
+
+            authManager = AuthManager.Instance;
+            if (authManager != null)
+                return authManager;
+
+            authManager = FindObjectOfType<AuthManager>(true);
+            if (authManager != null)
+                return authManager;
+
+            var authManagerObj = new GameObject("AuthManager");
+            authManager = authManagerObj.AddComponent<AuthManager>();
+            return authManager;
         }
     }
 }
