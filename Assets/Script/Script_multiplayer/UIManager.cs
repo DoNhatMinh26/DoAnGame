@@ -29,6 +29,7 @@ public class UIManager : NetworkBehaviour
 
     [Header("════ UI 1: WELCOME SCREEN ════")]
     public Button playButton;
+    public TMP_Dropdown birthYearDropdown;
 
     [Header("════ UI 2: AUTH CHOICE ════")]
     public Button registrationBtn;
@@ -77,6 +78,9 @@ public class UIManager : NetworkBehaviour
     private AuthManager authManager;
     private RelayManager relayManager;
 
+    private bool isBirthYearSelected = false;
+    private string selectedBirthYear = string.Empty;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -98,6 +102,9 @@ public class UIManager : NetworkBehaviour
 
         // Bind buttons
         BindButtons();
+
+        // Initialize birth year choices and Play button state
+        InitializeBirthYearDropdown();
 
         // Thiết lập Panel ban đầu: luôn về Welcome Screen.
         // Auto-load session chỉ được chạy từ nút Chơi Tiếp ở Welcome.
@@ -149,6 +156,9 @@ public class UIManager : NetworkBehaviour
         // UI 1 - Welcome Screen
         if (playButton != null)
             playButton.onClick.AddListener(() => ShowUI(1));
+
+        if (birthYearDropdown != null)
+            birthYearDropdown.onValueChanged.AddListener(OnBirthYearSelectionChanged);
 
         // UI 2 - Auth Choice
         if (registrationBtn != null)
@@ -208,6 +218,7 @@ public class UIManager : NetworkBehaviour
         {
             case 0:
                 SetPanelActiveSafe(welcomeScreenPanel, true, nameof(welcomeScreenPanel));
+                UpdatePlayButtonState();
                 Debug.Log("[UIManager] 📱 UI 0: Welcome Screen");
                 break;
             case 1:
@@ -233,6 +244,55 @@ public class UIManager : NetworkBehaviour
                 Debug.Log("[UIManager] 📱 UI 5: Multiplayer Lobby");
                 break;
         }
+    }
+
+    private void InitializeBirthYearDropdown()
+    {
+        if (birthYearDropdown == null)
+            return;
+
+        birthYearDropdown.ClearOptions();
+        var options = new System.Collections.Generic.List<string>
+        {
+            "Chọn năm sinh",
+            "2019 - Mẫu giáo",
+            "2018 - Lớp 1",
+            "2017 - Lớp 2",
+            "2016 - Lớp 3",
+            "2015 - Lớp 4",
+            "2014 - Lớp 5"
+        };
+
+        birthYearDropdown.AddOptions(options);
+        birthYearDropdown.value = 0;
+        birthYearDropdown.RefreshShownValue();
+        isBirthYearSelected = false;
+        selectedBirthYear = string.Empty;
+        UpdatePlayButtonState();
+    }
+
+    private void OnBirthYearSelectionChanged(int index)
+    {
+        if (birthYearDropdown == null)
+            return;
+
+        isBirthYearSelected = index > 0;
+        selectedBirthYear = isBirthYearSelected ? birthYearDropdown.options[index].text : string.Empty;
+        UpdatePlayButtonState();
+    }
+
+    private void UpdatePlayButtonState()
+    {
+        if (playButton == null)
+            return;
+
+        if (birthYearDropdown == null)
+        {
+            playButton.interactable = true;
+            return;
+        }
+
+        playButton.interactable = isBirthYearSelected;
     }
 
     /// <summary>
