@@ -590,7 +590,8 @@ namespace DoAnGame.UI
                 startMatchButton?.gameObject.SetActive(true);
                 startMatchButton.interactable = currentLobby.Players.Count >= MaxPlayers;
 
-                heartbeatRoutine = StartCoroutine(HeartbeatRoutine());
+                // Start polling/heartbeat only when this panel is active to avoid StartCoroutine on inactive object.
+                EnsureLobbyRuntimeRoutines();
             }
             catch (Exception ex)
             {
@@ -975,7 +976,7 @@ namespace DoAnGame.UI
 
             var refreshed = await RefreshLobbySafe();
             
-            // FIX 1: Handle deleted lobby (host quit and deleted)
+            // Only treat null as fatal when lobby is confirmed deleted/not found.
             if (refreshed == null) 
             {
                 Debug.LogWarning("[UIRoom] Lobby bị xóa (chủ phòng đã rời hoặc hết hạn)");
@@ -1028,13 +1029,11 @@ namespace DoAnGame.UI
             if (battleStartNotified && IsBattleScreenVisible())
                 return;
 
-            // FIX 3: Validate Relay health before transitioning to battle
+            // Do not hard-block UI transition when relay state is transient.
+            // Client can still be routed by lobby StartedKey and scene fallback.
             if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening)
             {
-                SetStatus("⚠️ Lỗi kết nối Relay. Vui lòng thử lại.");
-                Log("NotifyBattleStarted: NetworkManager not listening, aborting battle start");
-                battleStartNotified = false;  // Allow retry on next polling
-                return;
+                Log("NotifyBattleStarted: NetworkManager not listening, continue with UI fallback routing");
             }
 
             battleStartNotified = true;
@@ -1270,11 +1269,28 @@ namespace DoAnGame.UI
                 Debug.LogWarning($"[UIRoom] Refresh lobby bị rate limit, tạm dừng đọc đến t={nextLobbyReadAt:F1}. {ex.Reason} - {ex.Message}");
                 return currentLobby;
             }
+            catch (LobbyServiceException ex) when (!IsLobbyNotFoundException(ex))
+            {
+                Debug.LogWarning($"[UIRoom] Refresh lobby lỗi tạm thời, giữ state hiện tại: {ex.Reason} - {ex.Message}");
+                return currentLobby;
+            }
             catch (Exception ex)
             {
-                Debug.LogWarning($"[UIRoom] Refresh lobby lỗi: {ex.Message}");
-                return null;
+                Debug.LogWarning($"[UIRoom] Refresh lobby lỗi tạm thời: {ex.Message}");
+                return currentLobby;
             }
+        }
+
+        private bool IsLobbyNotFoundException(LobbyServiceException ex)
+        {
+            if (ex == null)
+                return false;
+
+            string msg = ex.Message ?? string.Empty;
+            string reason = ex.Reason.ToString();
+            return msg.IndexOf("not found", StringComparison.OrdinalIgnoreCase) >= 0
+                   || reason.IndexOf("NotFound", StringComparison.OrdinalIgnoreCase) >= 0
+                   || reason.IndexOf("LobbyNotFound", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private bool IsRateLimitException(LobbyServiceException ex)

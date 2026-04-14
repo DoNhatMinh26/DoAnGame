@@ -165,6 +165,36 @@ namespace DoAnGame.UI
 
                         return welcome;
                     }
+                case UIFlowManager.Screen.MultiplayerRoom:
+                    {
+                        Transform room = FindByController<UIMultiplayerRoomController>(screensRoot);
+                        if (room == null)
+                        {
+                            room = FindByName(screensRoot, "LobbyPanel");
+                        }
+
+                        if (room == null)
+                        {
+                            room = FindByName(screensRoot, "MultiplayerRoomPanel");
+                        }
+
+                        return room;
+                    }
+                case UIFlowManager.Screen.MultiplayerBattle:
+                    {
+                        Transform battle = FindByController<UIMultiplayerBattleController>(screensRoot);
+                        if (battle == null)
+                        {
+                            battle = FindByName(screensRoot, "GameplayPanel");
+                        }
+
+                        if (battle == null)
+                        {
+                            battle = FindByName(screensRoot, "MultiplayerBattlePanel");
+                        }
+
+                        return battle;
+                    }
                 default:
                     return FindByName(screensRoot, GetLegacyFallbackPanelName(screen));
             }
@@ -190,7 +220,22 @@ namespace DoAnGame.UI
             if (string.IsNullOrEmpty(panelName))
                 return null;
 
-            return root.Find(panelName);
+            Transform direct = root.Find(panelName);
+            if (direct != null)
+                return direct;
+
+            var allChildren = root.GetComponentsInChildren<Transform>(true);
+            for (int i = 0; i < allChildren.Length; i++)
+            {
+                Transform child = allChildren[i];
+                if (child == null)
+                    continue;
+
+                if (string.Equals(child.name, panelName, System.StringComparison.OrdinalIgnoreCase))
+                    return child;
+            }
+
+            return null;
         }
 
         private static Transform FindScreensRoot()
@@ -219,6 +264,10 @@ namespace DoAnGame.UI
                     return "MainMenuPanel";
                 case UIFlowManager.Screen.ModeSelection:
                     return "ModSelectionPanel";
+                case UIFlowManager.Screen.MultiplayerRoom:
+                    return "LobbyPanel";
+                case UIFlowManager.Screen.MultiplayerBattle:
+                    return "GameplayPanel";
                 default:
                     return null;
             }
