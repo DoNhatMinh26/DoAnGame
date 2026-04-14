@@ -731,6 +731,9 @@ namespace DoAnGame.UI
             if (currentLobby != null && !string.Equals(currentLobby.Id, joinedLobby.Id, StringComparison.OrdinalIgnoreCase))
             {
                 await LeaveLobbySafe();
+                // Disconnect Relay cũ trước join Relay mới để tránh race condition
+                RelayManager.Instance.Disconnect();
+                await Task.Delay(500); // Đợi Relay cũ disconnect hoàn toàn
             }
 
             bool joined = await RelayManager.Instance.TryJoinRelay(joinCodeData.Value);

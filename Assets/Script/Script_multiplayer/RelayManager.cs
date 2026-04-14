@@ -134,6 +134,15 @@ public class RelayManager : MonoBehaviour
         }
     }
 
+    public void Disconnect()
+    {
+        if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+        {
+            Debug.Log("[Relay] Đang ngắt kết nối Relay...");
+            NetworkManager.Singleton.Shutdown();
+        }
+    }
+
     private bool ConfigureRelayTransport(RelayServerData relayServerData)
     {
         var networkManager = NetworkManager.Singleton;
