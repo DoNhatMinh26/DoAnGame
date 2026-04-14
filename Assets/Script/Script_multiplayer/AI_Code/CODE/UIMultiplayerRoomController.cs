@@ -266,7 +266,9 @@ namespace DoAnGame.UI
                 ? "Người chơi trong room"
                 : $"Người chơi trong room ({GetCurrentLobbyPlayerCount()}/{MaxPlayers})";
 
-            string rosterText = BuildRosterText();
+            string playerCountDisplayText = currentLobby == null
+                ? "Người chơi: 0/2"
+                : $"Người chơi: {GetCurrentLobbyPlayerCount()}/{MaxPlayers}";
 
             if (rosterTitleText != null)
             {
@@ -274,16 +276,23 @@ namespace DoAnGame.UI
             }
             else if (playerCountText != null)
             {
+                // Fallback: nếu không có rosterTitleText, dùng playerCountText
                 playerCountText.SetText(titleText);
+            }
+
+            // Nếu có playerCountText riêng biệt, update nó với format "Người chơi: X/2"
+            if (playerCountText != null && rosterTitleText != null)
+            {
+                playerCountText.SetText(playerCountDisplayText);
             }
 
             if (rosterListText != null)
             {
-                rosterListText.SetText(rosterText);
+                rosterListText.SetText(BuildRosterText());
             }
             else if (statusText != null)
             {
-                statusText.SetText(rosterText);
+                statusText.SetText(BuildRosterText());
             }
         }
 
@@ -876,12 +885,41 @@ namespace DoAnGame.UI
             SetStatus("Đang rời phòng...");
 
             StopRoutines();
-            await LeaveLobbySafe();
-
-            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
+            
+            // FIX 2: Don't delete lobby immediately - mark as abandoned for 30s grace period
+            // This allows clients to rejoin if host disconnects momentarily
+            if (isHost && currentLobby != null)
             {
-                NetworkManager.Singleton.Shutdown();
+                try
+                {
+                    // Mark as abandoned instead of deleting
+                    await LobbyService.Instance.UpdateLobbyAsync(currentLobby.Id,
+                        new UpdateLobbyOptions
+                        {
+                            IsPrivate = true,  // Lock from new joins
+                            Data = new Dictionary<string, DataObject>
+                            {
+                                { "IsAbandoned", new DataObject(DataObject.VisibilityOptions.Public, "1") },
+                                { "AbandonedTime", new DataObject(DataObject.VisibilityOptions.Public, System.DateTime.UtcNow.Ticks.ToString()) }
+                            }
+                        });
+                    Debug.Log($"[UIRoom] Marked lobby {currentLobby.Id} as abandoned (grace period 30s)");
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"[UIRoom] Failed to mark abandoned: {ex.Message}, fallback to delete");
+                    // Fallback to delete if mark fails
+                    _ = LeaveLobbySafe();
+                }
             }
+            else
+            {
+                // Client: just remove self from lobby
+                await LeaveLobbySafe();
+            }
+
+            // Disconnect Relay
+            RelayManager.Instance.Disconnect();
 
             ResetRoomSessionState(DefaultIdleStatus);
 
@@ -936,10 +974,38 @@ namespace DoAnGame.UI
                 return;
 
             var refreshed = await RefreshLobbySafe();
-            if (refreshed == null) return;
+            
+            // FIX 1: Handle deleted lobby (host quit and deleted)
+            if (refreshed == null) 
+            {
+                Debug.LogWarning("[UIRoom] Lobby bị xóa (chủ phòng đã rời hoặc hết hạn)");
+                SetStatus("Phòng bị chủ phòng đóng lại. Quay lại menu...");
+                await Task.Delay(1500);
+                
+                // Force quit back to menu
+                if (!isBusy && !isQuitting)
+                {
+                    isBusy = true;
+                    isQuitting = true;
+                    SetActionButtonsInteractable(false);
+                    
+                    StopRoutines();
+                    RelayManager.Instance.Disconnect();
+                    ResetRoomSessionState(DefaultIdleStatus);
+                    
+                    onQuitRoom?.Invoke();
+                    if (quitRoomNavigator != null)
+                    {
+                        quitRoomNavigator.NavigateNow();
+                    }
+                }
+                return;
+            }
 
             currentLobby = refreshed;
-            RefreshRoomRoster();
+            
+            // Refresh toàn bộ UI: player count, roster, auth status (RefreshAuthState gọi RefreshRoomRoster() cuối)
+            RefreshAuthState();
 
             if (isHost && startMatchButton != null)
             {
@@ -961,6 +1027,15 @@ namespace DoAnGame.UI
             // Nếu đã notify trước đó nhưng UI16 vẫn chưa visible, cho phép retry.
             if (battleStartNotified && IsBattleScreenVisible())
                 return;
+
+            // FIX 3: Validate Relay health before transitioning to battle
+            if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsListening)
+            {
+                SetStatus("⚠️ Lỗi kết nối Relay. Vui lòng thử lại.");
+                Log("NotifyBattleStarted: NetworkManager not listening, aborting battle start");
+                battleStartNotified = false;  // Allow retry on next polling
+                return;
+            }
 
             battleStartNotified = true;
             LogState("NotifyBattleStarted: begin");
