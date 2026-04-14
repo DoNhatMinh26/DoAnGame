@@ -296,8 +296,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "hi\u1EC3n th\u1ECB c\xE2u h\u1ECFi"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
+  m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1832,8 +1832,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "T\u1EA0O PH\xD2NG M\u1EDAI"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
+  m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -7090,8 +7090,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "Xem DS Room Hi\u1EC7n C\xF3"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
+  m_sharedMaterial: {fileID: 2164040, guid: 5302535af1044152a457ed104f1f4b91, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -7992,30 +7992,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8522aca8aa48cfe49b5b21b24e045caf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameDataJson: {fileID: 0}
   cauHoiText: {fileID: 23245302}
+  manHienTaiText: {fileID: 0}
   answerTexts:
   - {fileID: 1251836640}
   - {fileID: 1860891000}
   - {fileID: 19405456}
-  phepCong: 1
-  CTu: 11
-  CDen: 30
-  phepTru: 0
-  TTu: 1
-  TDen: 10
-  phepNhan: 0
-  NTu: 0
-  NDen: 0
-  phepChia: 0
-  CCTu: 0
-  CCDen: 0
-  haiPhepTinh: 0
-  congHaiPhep: 1
-  truHaiPhep: 1
-  Tu: 1
-  Den: 10
-  SaiTu: -10
-  SaiDen: 10
 --- !u!1 &2030509825
 GameObject:
   m_ObjectHideFlags: 0
