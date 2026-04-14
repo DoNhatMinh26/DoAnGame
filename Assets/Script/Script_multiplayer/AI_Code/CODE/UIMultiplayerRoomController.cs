@@ -1165,6 +1165,7 @@ namespace DoAnGame.UI
             if (!await RelayManager.Instance.EnsureServicesReady())
             {
                 SetStatus("Không kết nối được dịch vụ multiplayer.");
+                RefreshAuthState();
                 isBusy = false;
                 SetActionButtonsInteractable(true);
                 return false;
@@ -1173,10 +1174,14 @@ namespace DoAnGame.UI
             if (!AuthenticationService.Instance.IsSignedIn)
             {
                 SetStatus("Chưa đăng nhập dịch vụ multiplayer.");
+                RefreshAuthState();
                 isBusy = false;
                 SetActionButtonsInteractable(true);
                 return false;
             }
+
+            // Services đã sẵn sàng và UGS đã signed-in, cập nhật auth status ngay.
+            RefreshAuthState();
 
             return true;
         }

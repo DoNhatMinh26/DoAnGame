@@ -81,7 +81,8 @@ public class UIManager : NetworkBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Debug.LogWarning("[UIManager] Duplicate UIManager detected, disabling duplicate component.");
+            enabled = false;
             return;
         }
         Instance = this;

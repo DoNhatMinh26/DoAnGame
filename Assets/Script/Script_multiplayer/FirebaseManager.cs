@@ -40,7 +40,8 @@ public class FirebaseManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Debug.LogWarning("[Firebase] Duplicate FirebaseManager detected, disabling duplicate component.");
+            enabled = false;
             return;
         }
         Instance = this;

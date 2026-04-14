@@ -25,7 +25,8 @@ public class AuthManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Debug.LogWarning("[Auth] Duplicate AuthManager detected, disabling duplicate component.");
+            enabled = false;
             return;
         }
         Instance = this;

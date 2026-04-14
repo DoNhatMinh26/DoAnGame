@@ -26,7 +26,8 @@ namespace DoAnGame.UI
         {
             if (Instance != null && Instance != this)
             {
-                Destroy(gameObject);
+                Debug.LogWarning("[UILoading] Duplicate UILoadingIndicator detected, disabling duplicate component.");
+                enabled = false;
                 return;
             }
             Instance = this;

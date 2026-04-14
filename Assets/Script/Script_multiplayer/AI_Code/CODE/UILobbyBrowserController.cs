@@ -240,7 +240,7 @@ namespace DoAnGame.UI
                 hostName = "Chủ phòng";
             }
 
-            return $"Chủ phòng: {CompactIdentity(hostName, maxHostNameLength)}";
+            return $"Chủ phòng: {hostName}";
         }
 
         private string BuildPlayerCount(Lobby lobby)
@@ -369,7 +369,7 @@ namespace DoAnGame.UI
                 }
             }
 
-            return CompactIdentity(displayName, maxHostNameLength);
+            return displayName;
         }
 
         private void ApplyCompactListLayout()
