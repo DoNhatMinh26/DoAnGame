@@ -86,6 +86,7 @@ namespace DoAnGame.UI
         protected override void Awake()
         {
             base.Awake();
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "Awake");
 
             authManager = AuthManager.Instance;
             if (flowManager == null)
@@ -687,15 +688,18 @@ namespace DoAnGame.UI
 
         public async Task<bool> JoinLobbyAndRelayAsync(Lobby lobby)
         {
+            MultiplayerDetailedLogger.Trace("UI_ROOM", $"JoinLobbyAndRelayAsync begin: lobbyId={(lobby != null ? lobby.Id : "null")}");
             if (lobby == null)
             {
                 SetStatus("Lobby không hợp lệ.");
+                MultiplayerDetailedLogger.TraceWarning("UI_ROOM", "JoinLobbyAndRelayAsync aborted: lobby null");
                 return false;
             }
 
             if (AuthenticationService.Instance == null || !AuthenticationService.Instance.IsSignedIn)
             {
                 SetStatus("Chưa đăng nhập dịch vụ multiplayer.");
+                MultiplayerDetailedLogger.TraceWarning("UI_ROOM", "JoinLobbyAndRelayAsync aborted: multiplayer not signed in");
                 return false;
             }
 
@@ -728,6 +732,7 @@ namespace DoAnGame.UI
                 {
                     Debug.LogWarning($"[UIRoom] JoinLobbyById lỗi: {ex.Message}");
                     SetStatus("Không vào được phòng lobby.");
+                    MultiplayerDetailedLogger.TraceException("UI_ROOM", ex, "JoinLobbyByIdAsync failed");
                     return false;
                 }
             }
@@ -735,6 +740,7 @@ namespace DoAnGame.UI
             if (joinedLobby == null || joinedLobby.Data == null || !joinedLobby.Data.TryGetValue(JoinCodeKey, out var joinCodeData) || string.IsNullOrEmpty(joinCodeData.Value))
             {
                 SetStatus("Phòng không có relay join code.");
+                MultiplayerDetailedLogger.TraceWarning("UI_ROOM", "JoinLobbyAndRelayAsync aborted: missing relay join code");
                 return false;
             }
 
@@ -762,6 +768,7 @@ namespace DoAnGame.UI
                 }
 
                 SetStatus("Join relay thất bại.");
+                MultiplayerDetailedLogger.TraceWarning("UI_ROOM", $"JoinLobbyAndRelayAsync aborted: TryJoinRelay failed, joinCode={joinCodeData.Value}");
                 return false;
             }
 
@@ -789,6 +796,7 @@ namespace DoAnGame.UI
 
             RefreshAuthState();
             EnsureLobbyRuntimeRoutines();
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", $"JoinLobbyAndRelayAsync success: lobbyId={currentLobby.Id}, isHost={isHost}, players={(currentLobby.Players != null ? currentLobby.Players.Count : 0)}");
 
             return true;
         }
@@ -803,6 +811,7 @@ namespace DoAnGame.UI
 
         private async Task HandleStartMatch()
         {
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "HandleStartMatch invoked");
             if (isBusy || isQuitting)
                 return;
 
@@ -812,6 +821,7 @@ namespace DoAnGame.UI
             if (!isHost || currentLobby == null)
             {
                 SetStatus("Chỉ chủ phòng mới được bắt đầu.");
+                MultiplayerDetailedLogger.TraceWarning("UI_ROOM", "HandleStartMatch denied: local user is not host or lobby null");
                 isBusy = false;
                 SetActionButtonsInteractable(true);
                 return;
@@ -835,6 +845,7 @@ namespace DoAnGame.UI
             if (lobby.Players.Count < MaxPlayers)
             {
                 SetStatus("Chưa đủ 2 người chơi.");
+                MultiplayerDetailedLogger.TraceWarning("UI_ROOM", $"HandleStartMatch blocked: players={(lobby != null && lobby.Players != null ? lobby.Players.Count : 0)}/{MaxPlayers}");
                 startMatchButton.interactable = false;
                 isBusy = false;
                 SetActionButtonsInteractable(true);
@@ -856,10 +867,12 @@ namespace DoAnGame.UI
                 if (uiManager != null && uiManager.RequestNetworkGameStart())
                 {
                     Log("StartMatch -> Network game start requested");
+                    MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", $"HandleStartMatch set StartedKey=1, lobbyId={currentLobby.Id}");
                 }
                 else
                 {
                     Log("StartMatch -> UIManager NULL hoặc không set được network game start");
+                    MultiplayerDetailedLogger.TraceWarning("UI_ROOM", "HandleStartMatch: UIManager null or RequestNetworkGameStart failed");
                 }
                 NotifyBattleStarted();
             }
@@ -867,6 +880,7 @@ namespace DoAnGame.UI
             {
                 SetStatus("Không thể bắt đầu trận.");
                 Debug.LogError($"[UIRoom] StartMatch lỗi: {ex.Message}");
+                MultiplayerDetailedLogger.TraceException("UI_ROOM", ex, "HandleStartMatch failed");
             }
             finally
             {
@@ -877,6 +891,7 @@ namespace DoAnGame.UI
 
         private async Task HandleQuitRoom()
         {
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "HandleQuitRoom invoked");
             if (isBusy)
                 return;
 
@@ -905,12 +920,14 @@ namespace DoAnGame.UI
                             }
                         });
                     Debug.Log($"[UIRoom] Marked lobby {currentLobby.Id} as abandoned (grace period 30s)");
+                    MultiplayerDetailedLogger.Trace("UI_ROOM", $"HandleQuitRoom host marked lobby abandoned: lobbyId={currentLobby.Id}");
                 }
                 catch (Exception ex)
                 {
                     Debug.LogWarning($"[UIRoom] Failed to mark abandoned: {ex.Message}, fallback to delete");
                     // Fallback to delete if mark fails
                     _ = LeaveLobbySafe();
+                    MultiplayerDetailedLogger.TraceException("UI_ROOM", ex, "HandleQuitRoom mark-abandoned failed, fallback LeaveLobbySafe");
                 }
             }
             else
@@ -933,6 +950,7 @@ namespace DoAnGame.UI
             isBusy = false;
             isQuitting = false;
             SetActionButtonsInteractable(true);
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "HandleQuitRoom completed");
         }
 
         private void ResetRoomSessionState(string status)
@@ -1016,12 +1034,14 @@ namespace DoAnGame.UI
             if (currentLobby.Data.TryGetValue(StartedKey, out var startedData) && startedData.Value == "1")
             {
                 SetStatus("Trận đấu bắt đầu.");
+                MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", $"Poll detected StartedKey=1 in lobbyId={currentLobby.Id}");
                 NotifyBattleStarted();
             }
         }
 
         private void NotifyBattleStarted()
         {
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "NotifyBattleStarted invoked");
             if (isQuitting)
                 return;
 
@@ -1408,10 +1428,12 @@ namespace DoAnGame.UI
             roomStatusMessage = text;
             RefreshStatusLabel();
             Debug.Log($"[UIRoom] {text}");
+            MultiplayerDetailedLogger.Trace("UI_ROOM_STATUS", text);
         }
 
         private void Log(string message)
         {
+            MultiplayerDetailedLogger.Trace("UI_ROOM_LOG", message);
             if (!enableDetailedLogs)
                 return;
 

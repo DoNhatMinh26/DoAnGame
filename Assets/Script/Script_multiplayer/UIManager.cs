@@ -96,6 +96,7 @@ public class UIManager : NetworkBehaviour
     async void Start()
     {
         Debug.Log("[UIManager] ✅ Starting...");
+        MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_MANAGER", "Start called");
 
         authManager = AuthManager.Instance;
         relayManager = RelayManager.Instance;
@@ -113,6 +114,7 @@ public class UIManager : NetworkBehaviour
         // Network
         isGameStarted.OnValueChanged += (oldVal, newVal) =>
         {
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_MANAGER", $"isGameStarted changed: {oldVal} -> {newVal}");
             if (newVal) SwitchToGameplay();
         };
 
@@ -438,20 +440,24 @@ public class UIManager : NetworkBehaviour
     /// </summary>
     public bool RequestNetworkGameStart()
     {
+        MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_MANAGER", "RequestNetworkGameStart invoked");
         if (NetworkManager.Singleton == null)
         {
             Debug.LogWarning("[UIManager] ⚠️ Không có NetworkManager.Singleton để start game.");
+            MultiplayerDetailedLogger.TraceWarning("UI_MANAGER", "RequestNetworkGameStart aborted: NetworkManager.Singleton null");
             return false;
         }
 
         if (!IsServer)
         {
             Debug.LogWarning("[UIManager] ⚠️ Chỉ host/server mới được set start game.");
+            MultiplayerDetailedLogger.TraceWarning("UI_MANAGER", "RequestNetworkGameStart aborted: not server");
             return false;
         }
 
         isGameStarted.Value = true;
         Debug.Log("[UIManager] ✅ Network game start requested");
+        MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_MANAGER", "RequestNetworkGameStart success: isGameStarted=true");
         return true;
     }
 
@@ -463,5 +469,6 @@ public class UIManager : NetworkBehaviour
         SetPanelActiveSafe(lobbyPanel, false, nameof(lobbyPanel));
         SetPanelActiveSafe(gameplayPanel, true, nameof(gameplayPanel));
         Debug.Log("[UIManager] 🎮 Chuyển sang Gameplay!");
+        MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_MANAGER", "SwitchToGameplay executed");
     }
 }

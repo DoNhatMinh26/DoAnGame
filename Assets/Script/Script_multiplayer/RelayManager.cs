@@ -18,11 +18,14 @@ public class RelayManager : MonoBehaviour
     private void Awake() {
         if (Instance != null && Instance != this) {
             Debug.LogWarning("[Relay] Duplicate RelayManager detected, disabling duplicate component.");
+            MultiplayerDetailedLogger.TraceWarning("RELAY", "Duplicate RelayManager detected, disabling duplicate component");
             enabled = false;
             return;
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        MultiplayerDetailedLogger.Initialize();
+        MultiplayerDetailedLogger.TraceNetworkSnapshot("RELAY", "RelayManager Awake");
     }
 
     async void Start() {
@@ -35,6 +38,7 @@ public class RelayManager : MonoBehaviour
             return true;
 
         try {
+            MultiplayerDetailedLogger.Trace("RELAY", "EnsureServicesReady begin");
             var initOptions = new InitializationOptions();
             string profile = BuildProfileName();
             initOptions.SetProfile(profile);
@@ -49,9 +53,11 @@ public class RelayManager : MonoBehaviour
                 Debug.Log($"[Relay] Đang dùng phiên đăng nhập sẵn. Profile={profile}, PlayerId={AuthenticationService.Instance.PlayerId}");
             }
             servicesReady = true;
+            MultiplayerDetailedLogger.Trace("RELAY", $"EnsureServicesReady done, profile={profile}, playerId={AuthenticationService.Instance.PlayerId}");
             return true;
         } catch (System.Exception e) {
             Debug.LogError("[Relay] Lỗi khởi tạo: " + e.Message);
+            MultiplayerDetailedLogger.TraceException("RELAY", e, "EnsureServicesReady failed");
             return false;
         }
     }
@@ -89,6 +95,7 @@ public class RelayManager : MonoBehaviour
             return null;
 
         try {
+            MultiplayerDetailedLogger.Trace("RELAY", $"CreateRelay begin, maxPlayers={maxPlayers}");
             Debug.Log("[Relay] Đang tạo Allocation...");
             Allocation allocation = await RelayService.Instance.CreateAllocationAsync(maxPlayers);
             string joinCode = await RelayService.Instance.GetJoinCodeAsync(allocation.AllocationId);
@@ -100,9 +107,11 @@ public class RelayManager : MonoBehaviour
 
             NetworkManager.Singleton.StartHost();
             Debug.Log("[Relay] Host đã chạy. Mã: " + joinCode);
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("RELAY", $"CreateRelay success, joinCode={joinCode}");
             return joinCode;
         } catch (System.Exception e) {
             Debug.LogError("[Relay] Lỗi CreateRelay: " + e.Message);
+            MultiplayerDetailedLogger.TraceException("RELAY", e, "CreateRelay failed");
             return null;
         }
     }
@@ -117,6 +126,7 @@ public class RelayManager : MonoBehaviour
             return false;
 
         try {
+            MultiplayerDetailedLogger.Trace("RELAY", $"TryJoinRelay begin, joinCode={joinCode}");
             Debug.Log("[Relay] Đang tham gia phòng...");
             JoinAllocation joinAllocation = await RelayService.Instance.JoinAllocationAsync(joinCode);
 
@@ -127,19 +137,23 @@ public class RelayManager : MonoBehaviour
 
             NetworkManager.Singleton.StartClient();
             Debug.Log("[Relay] Client đang kết nối...");
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("RELAY", $"TryJoinRelay success, joinCode={joinCode}");
             return true;
         } catch (System.Exception e) {
             Debug.LogError("[Relay] Lỗi JoinRelay: " + e.Message);
+            MultiplayerDetailedLogger.TraceException("RELAY", e, $"TryJoinRelay failed, joinCode={joinCode}");
             return false;
         }
     }
 
     public void Disconnect()
     {
+        MultiplayerDetailedLogger.TraceNetworkSnapshot("RELAY", "Disconnect requested");
         if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsListening)
         {
             Debug.Log("[Relay] Đang ngắt kết nối Relay...");
             NetworkManager.Singleton.Shutdown();
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("RELAY", "Disconnect completed via NetworkManager.Shutdown");
         }
     }
 

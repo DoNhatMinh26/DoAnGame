@@ -108,6 +108,7 @@ namespace DoAnGame.UI
 
             isBusy = true;
             SetStatus("Đang tải danh sách phòng...");
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_LOBBY_BROWSER", "RefreshLobbyListAsync begin");
 
             try
             {
@@ -121,11 +122,13 @@ namespace DoAnGame.UI
                 });
 
                 RenderLobbyList(response != null ? response.Results : null);
+                MultiplayerDetailedLogger.Trace("UI_LOBBY_BROWSER", $"RefreshLobbyListAsync success, results={(response != null && response.Results != null ? response.Results.Count : 0)}");
             }
             catch (Exception ex)
             {
                 Debug.LogWarning($"[LobbyBrowser] Không tải được danh sách phòng: {ex.Message}");
                 SetStatus("Không tải được danh sách phòng.");
+                MultiplayerDetailedLogger.TraceException("UI_LOBBY_BROWSER", ex, "RefreshLobbyListAsync failed");
             }
             finally
             {
@@ -513,6 +516,7 @@ namespace DoAnGame.UI
             }
 
             Debug.Log($"[LobbyBrowser] {message}");
+            MultiplayerDetailedLogger.Trace("UI_LOBBY_BROWSER_STATUS", message);
         }
     }
 }

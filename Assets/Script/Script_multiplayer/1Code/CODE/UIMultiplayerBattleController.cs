@@ -55,6 +55,7 @@ namespace DoAnGame.UI
 
         private void HandlePanelActivated()
         {
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_BATTLE", "HandlePanelActivated begin");
             hadTwoPlayersInSession = false;
             sessionEndedHandled = false;
             nextSessionCheckAt = 0f;
@@ -74,6 +75,7 @@ namespace DoAnGame.UI
             }
             BindRoles();
             RegisterNetCallbacks();
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_BATTLE", "HandlePanelActivated done");
         }
 
         private void Update()
@@ -134,10 +136,12 @@ namespace DoAnGame.UI
 
                 battleStatusText?.SetText(hasOpponent ? "Đang đấu 1v1" : "Đang chờ đối thủ...");
                 roomInfoText?.SetText($"Connected: {count}/2");
+                MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_BATTLE", $"BindRoles success, hasOpponent={hasOpponent}, connected={count}");
             }
             catch (System.Exception ex)
             {
                 Debug.LogWarning($"[UIBattle] BindRoles error: {ex.Message}");
+                MultiplayerDetailedLogger.TraceException("UI_BATTLE", ex, "BindRoles failed");
                 // Safe fallback display
                 SetBottom(localPlayerLabel);
                 SetTop("Player 1 - đối thủ");
@@ -183,6 +187,7 @@ namespace DoAnGame.UI
 
             BindRoles();
             Log($"Client connected: {clientId} | count={count}");
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_BATTLE", $"HandleClientConnected clientId={clientId}, count={count}");
         }
 
         private void HandleClientDisconnect(ulong clientId)
@@ -192,6 +197,7 @@ namespace DoAnGame.UI
 
             BindRoles();
             Log($"Client disconnected: {clientId} | count={count}");
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_BATTLE", $"HandleClientDisconnect clientId={clientId}, count={count}");
 
             if (!autoNavigateOnSessionEnded || sessionEndedHandled)
                 return;
