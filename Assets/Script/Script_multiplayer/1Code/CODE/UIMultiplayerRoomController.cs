@@ -66,7 +66,7 @@ namespace DoAnGame.UI
         [SerializeField] private bool enableDetailedLogs = true;
 
         [Header("Lobby Read Tuning")]
-        [SerializeField] private float pollIntervalSeconds = DefaultPollIntervalSeconds;
+        [SerializeField] private float pollIntervalSeconds = 1.5f;  // Faster polling (was 3.5s) to detect StartedKey quicker on client
         [SerializeField] private float rateLimitBackoffSeconds = DefaultRateLimitBackoffSeconds;
 
         private Lobby currentLobby;

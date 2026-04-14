@@ -58,7 +58,16 @@ namespace DoAnGame.UI
             hadTwoPlayersInSession = false;
             sessionEndedHandled = false;
             nextSessionCheckAt = 0f;
-            DisableRaycastOnRuntimePlayerClones();
+            
+            try
+            {
+                DisableRaycastOnRuntimePlayerClones();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[UIBattle] DisableRaycast error (safe to ignore): {ex.Message}");
+            }
+            
             if (autoResolveSessionEndedNavigator)
             {
                 TryResolveSessionEndedNavigator();
@@ -92,37 +101,48 @@ namespace DoAnGame.UI
 
         private void BindRoles()
         {
-            var net = NetworkManager.Singleton;
-            if (net == null || (!net.IsClient && !net.IsServer))
+            try
             {
-                // Trường hợp test UI offline: vẫn hiển thị đúng bố cục player dưới - đối thủ trên.
+                var net = NetworkManager.Singleton;
+                if (net == null || (!net.IsClient && !net.IsServer))
+                {
+                    // Trường hợp test UI offline: vẫn hiển thị đúng bố cục player dưới - đối thủ trên.
+                    SetBottom(localPlayerLabel);
+                    SetTop(aiEnemyLabel);
+                    battleStatusText?.SetText("Chế độ test offline");
+                    roomInfoText?.SetText("Room: Local Test");
+                    return;
+                }
+
+                int count = net.ConnectedClientsIds.Count;
+                bool hasOpponent = count >= 2;
+                if (hasOpponent)
+                {
+                    hadTwoPlayersInSession = true;
+                }
+
+                if (net.IsHost)
+                {
+                    SetBottom("Player 1 - chủ phòng");
+                    SetTop(hasOpponent ? "Player 2 - người chơi" : aiEnemyLabel);
+                }
+                else
+                {
+                    SetBottom("Player 2 - bạn");
+                    SetTop("Player 1 - chủ phòng");
+                }
+
+                battleStatusText?.SetText(hasOpponent ? "Đang đấu 1v1" : "Đang chờ đối thủ...");
+                roomInfoText?.SetText($"Connected: {count}/2");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[UIBattle] BindRoles error: {ex.Message}");
+                // Safe fallback display
                 SetBottom(localPlayerLabel);
-                SetTop(aiEnemyLabel);
-                battleStatusText?.SetText("Chế độ test offline");
-                roomInfoText?.SetText("Room: Local Test");
-                return;
+                SetTop("Player 1 - đối thủ");
+                battleStatusText?.SetText("Kết nối đang thiết lập...");
             }
-
-            int count = net.ConnectedClientsIds.Count;
-            bool hasOpponent = count >= 2;
-            if (hasOpponent)
-            {
-                hadTwoPlayersInSession = true;
-            }
-
-            if (net.IsHost)
-            {
-                SetBottom("Player 1 - chủ phòng");
-                SetTop(hasOpponent ? "Player 2 - người chơi" : aiEnemyLabel);
-            }
-            else
-            {
-                SetBottom("Player 2 - bạn");
-                SetTop("Player 1 - chủ phòng");
-            }
-
-            battleStatusText?.SetText(hasOpponent ? "Đang đấu 1v1" : "Đang chờ đối thủ...");
-            roomInfoText?.SetText($"Connected: {count}/2");
         }
 
         private void RegisterNetCallbacks()
