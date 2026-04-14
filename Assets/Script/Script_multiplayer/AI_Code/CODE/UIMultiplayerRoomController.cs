@@ -827,6 +827,15 @@ namespace DoAnGame.UI
                 });
 
                 SetStatus("Bắt đầu trận đấu...");
+                var uiManager = UIManager.Instance;
+                if (uiManager != null && uiManager.RequestNetworkGameStart())
+                {
+                    Log("StartMatch -> Network game start requested");
+                }
+                else
+                {
+                    Log("StartMatch -> UIManager NULL hoặc không set được network game start");
+                }
                 NotifyBattleStarted();
             }
             catch (Exception ex)

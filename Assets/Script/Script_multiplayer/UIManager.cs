@@ -429,10 +429,30 @@ public class UIManager : NetworkBehaviour
     private void OnGameStart()
     {
         Debug.Log("[UIManager] 🚀 Start game!");
-        if (IsServer)
+        RequestNetworkGameStart();
+    }
+
+    /// <summary>
+    /// Yêu cầu bắt đầu game qua network variable.
+    /// Dùng cho host sau khi đủ điều kiện bắt đầu phòng.
+    /// </summary>
+    public bool RequestNetworkGameStart()
+    {
+        if (NetworkManager.Singleton == null)
         {
-            isGameStarted.Value = true;
+            Debug.LogWarning("[UIManager] ⚠️ Không có NetworkManager.Singleton để start game.");
+            return false;
         }
+
+        if (!IsServer)
+        {
+            Debug.LogWarning("[UIManager] ⚠️ Chỉ host/server mới được set start game.");
+            return false;
+        }
+
+        isGameStarted.Value = true;
+        Debug.Log("[UIManager] ✅ Network game start requested");
+        return true;
     }
 
     /// <summary>
