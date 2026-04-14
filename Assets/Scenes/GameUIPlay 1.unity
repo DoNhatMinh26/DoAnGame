@@ -9195,8 +9195,8 @@ GameObject:
   - component: {fileID: 1311831124}
   - component: {fileID: 1311831123}
   - component: {fileID: 1311831122}
-  - component: {fileID: 1311831126}
   - component: {fileID: 1311831125}
+  - component: {fileID: 1311831126}
   m_Layer: 5
   m_Name: ChonTuoi
   m_TagString: Untagged
@@ -9223,8 +9223,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 407, y: 80}
-  m_SizeDelta: {x: 120, y: 30}
+  m_AnchoredPosition: {x: 470, y: 80}
+  m_SizeDelta: {x: 150, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1311831122
 MonoBehaviour:
@@ -9372,8 +9372,8 @@ MonoBehaviour:
   mainMenuPanel: {fileID: 0}
   lobbyPanel: {fileID: 0}
   gameplayPanel: {fileID: 0}
-  playButton: {fileID: 0}
-  birthYearDropdown: {fileID: 0}
+  playButton: {fileID: 956880356}
+  birthYearDropdown: {fileID: 1311831122}
   registrationBtn: {fileID: 0}
   loginBtn: {fileID: 0}
   quickPlayBtn: {fileID: 0}
