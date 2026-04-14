@@ -8,6 +8,7 @@ using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
 using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -51,6 +52,7 @@ namespace DoAnGame.UI
         [SerializeField] private TMP_Text rosterListText;
 
         [Header("Callbacks")]
+        [SerializeField] private UIFlowManager flowManager;
         [SerializeField] private UIButtonScreenNavigator startBattleNavigator;
         [SerializeField] private UIButtonScreenNavigator quitRoomNavigator;
         [SerializeField] private UnityEvent onBattleStarted;
@@ -59,6 +61,8 @@ namespace DoAnGame.UI
         [Header("Battle Fallback UI")]
         [SerializeField] private Transform screensRootForBattleFallback;
         [SerializeField] private GameObject battleScreenFallback;
+        [SerializeField] private string battleSceneName = "GameUIPlay";
+        [SerializeField] private LoadSceneMode battleSceneLoadMode = LoadSceneMode.Single;
         [SerializeField] private bool enableDetailedLogs = true;
 
         [Header("Lobby Read Tuning")]
@@ -84,6 +88,14 @@ namespace DoAnGame.UI
             base.Awake();
 
             authManager = AuthManager.Instance;
+            if (flowManager == null)
+            {
+                flowManager = GetComponentInParent<UIFlowManager>();
+            }
+            if (flowManager == null)
+            {
+                flowManager = FindObjectOfType<UIFlowManager>(true);
+            }
             ResolveTextReferences();
 
             if (rosterTitleText != null && rosterListText != null && rosterTitleText == rosterListText)
@@ -950,6 +962,14 @@ namespace DoAnGame.UI
             battleStartNotified = true;
             LogState("NotifyBattleStarted: begin");
 
+            bool routedToBattle = TryShowBattlePanel();
+            Log($"NotifyBattleStarted: direct battle route => {routedToBattle}");
+
+            if (!IsBattleScreenVisible())
+            {
+                LoadBattleSceneFallback();
+            }
+
             if (startBattleNavigator != null)
             {
                 Log($"NotifyBattleStarted: navigator={startBattleNavigator.name}");
@@ -978,6 +998,36 @@ namespace DoAnGame.UI
 
             onBattleStarted?.Invoke();
             LogState("NotifyBattleStarted: end");
+        }
+
+        private bool TryShowBattlePanel()
+        {
+            if (UIScreenRouter.TryShow(ref flowManager, UIFlowManager.Screen.MultiplayerBattle))
+            {
+                return true;
+            }
+
+            if (battleScreenFallback != null)
+            {
+                battleScreenFallback.SetActive(true);
+                return true;
+            }
+
+            return false;
+        }
+
+        private void LoadBattleSceneFallback()
+        {
+            if (string.IsNullOrWhiteSpace(battleSceneName))
+            {
+                Log("LoadBattleSceneFallback: battleSceneName empty, skip scene load");
+                return;
+            }
+
+            // Request multiplayer battle screen for next scene, then load the battle scene.
+            SceneFlowBridge.RequestScreen(UIFlowManager.Screen.MultiplayerBattle);
+            Log($"LoadBattleSceneFallback: loading scene '{battleSceneName}' mode={battleSceneLoadMode}");
+            SceneManager.LoadScene(battleSceneName, battleSceneLoadMode);
         }
 
         private bool IsBattleScreenVisible()
