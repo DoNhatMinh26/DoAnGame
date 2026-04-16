@@ -5,6 +5,7 @@ using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public static class MultiplayerDetailedLogger
 {
@@ -13,6 +14,8 @@ public static class MultiplayerDetailedLogger
     private static bool shuttingDown;
     private static string logFilePath;
     private static StreamWriter writer;
+    private static int actionSequence;
+    private static string lastAction = "none";
 
     public static string CurrentLogFilePath => logFilePath;
 
@@ -99,9 +102,28 @@ public static class MultiplayerDetailedLogger
         Trace(category, message);
     }
 
+    public static void TraceUserAction(string source, string action, string detail = null)
+    {
+        if (!initialized)
+            Initialize();
+
+        int seq;
+        string record;
+        lock (SyncRoot)
+        {
+            actionSequence++;
+            seq = actionSequence;
+            record = $"#{seq} source={source}, action={action}, detail={(string.IsNullOrWhiteSpace(detail) ? "-" : detail)}, ui={BuildActiveUiSnapshot()}";
+            lastAction = record;
+        }
+
+        Trace("ACTION", record);
+    }
+
     private static string BuildPreferredLogPath()
     {
-        string root = Path.Combine(Application.dataPath, "Script", "Script_multiplayer", "1Code", "CODE", "log lỗi chi tiết");
+        // Never write runtime logs under Assets to avoid Unity re-import loops.
+        string root = Path.Combine(Application.persistentDataPath, "log_loi_chi_tiet");
         Directory.CreateDirectory(root);
 
         string fileName = $"mp_log_{DateTime.Now:yyyyMMdd_HHmmss}_{Mathf.Abs(Application.dataPath.GetHashCode())}.log";
@@ -110,7 +132,7 @@ public static class MultiplayerDetailedLogger
 
     private static string BuildFallbackLogPath()
     {
-        string root = Path.Combine(Application.persistentDataPath, "log_loi_chi_tiet");
+        string root = Path.Combine(Path.GetTempPath(), "DoAnGame_log_loi_chi_tiet");
         Directory.CreateDirectory(root);
 
         string fileName = $"mp_log_{DateTime.Now:yyyyMMdd_HHmmss}_{Mathf.Abs(Application.dataPath.GetHashCode())}.log";
@@ -138,6 +160,11 @@ public static class MultiplayerDetailedLogger
 
         string level = type.ToString().ToUpperInvariant();
         string msg = condition ?? string.Empty;
+
+        if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert || type == LogType.Warning)
+        {
+            msg += " | lastAction=" + lastAction;
+        }
 
         if (!string.IsNullOrWhiteSpace(stackTrace) && (type == LogType.Error || type == LogType.Exception || type == LogType.Assert))
         {
@@ -230,6 +257,42 @@ public static class MultiplayerDetailedLogger
         }
 
         return $"scene={scene} | {auth} | {net}";
+    }
+
+    private static string BuildActiveUiSnapshot()
+    {
+        try
+        {
+            var root = GameObject.Find("GameUICanvas");
+            if (root == null)
+            {
+                var anyCanvas = UnityEngine.Object.FindObjectOfType<Canvas>(true);
+                root = anyCanvas != null ? anyCanvas.gameObject : null;
+            }
+
+            if (root == null)
+                return "uiRoot=none";
+
+            var active = new StringBuilder();
+            Transform t = root.transform;
+            for (int i = 0; i < t.childCount; i++)
+            {
+                var child = t.GetChild(i);
+                if (child == null || !child.gameObject.activeInHierarchy)
+                    continue;
+
+                if (active.Length > 0)
+                    active.Append(",");
+
+                active.Append(child.gameObject.name);
+            }
+
+            return active.Length == 0 ? $"uiRoot={root.name},active=none" : $"uiRoot={root.name},active={active}";
+        }
+        catch
+        {
+            return "uiSnapshot=error";
+        }
     }
 
     private static void WriteRawLine(string line)

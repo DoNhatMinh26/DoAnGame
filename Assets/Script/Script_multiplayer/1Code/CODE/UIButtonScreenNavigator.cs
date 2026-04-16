@@ -78,6 +78,7 @@ namespace DoAnGame.UI
 
         private void HandleClick()
         {
+            MultiplayerDetailedLogger.TraceUserAction($"UIButtonScreenNavigator:{name}", "ButtonClick", $"targetScene={targetSceneName},targetScreen={(targetScreen != null ? targetScreen.name : "null")}");
             if (!isActiveAndEnabled)
             {
                 Log("Click ignored because navigator is disabled.");
@@ -99,11 +100,13 @@ namespace DoAnGame.UI
         private void ExecuteNavigation()
         {
             Debug.Log($"[{nameof(UIButtonScreenNavigator)}:{name}] Click detected. targetSceneName='{targetSceneName}', targetScreen='{(targetScreen != null ? targetScreen.name : "null")}'");
+            MultiplayerDetailedLogger.Trace("UI_NAV", $"ExecuteNavigation name={name}, targetScene={targetSceneName}, targetScreen={(targetScreen != null ? targetScreen.name : "null")}");
 
             // 1. Kiểm tra nếu có nhập tên Scene -> Ưu tiên chuyển Scene
             if (!string.IsNullOrEmpty(targetSceneName))
             {
                 Log($"LoadScene -> {targetSceneName}");
+                MultiplayerDetailedLogger.Trace("UI_NAV", $"LoadScene requested: {targetSceneName}");
                 SceneManager.LoadScene(targetSceneName);
                 return; // Dừng, không tiếp tục xử lý UI nữa
             }
@@ -116,6 +119,7 @@ namespace DoAnGame.UI
 
             // 2. Xử lý chuyển UI nếu không chuyển Scene
             Debug.Log($"[{nameof(UIButtonScreenNavigator)}:{name}] Switching UI to '{(targetScreen != null ? targetScreen.name : "rootsToShow")}'");
+            MultiplayerDetailedLogger.Trace("UI_NAV", $"SwitchUI requested: {(targetScreen != null ? targetScreen.name : "rootsToShow")}");
             SwitchTo(targetScreen);
         }
 
@@ -173,10 +177,12 @@ namespace DoAnGame.UI
                 screenToShow.SetActive(true);
                 screenToShow.transform.SetAsLastSibling();
                 Log($"SwitchTo -> {screenToShow.name}");
+                MultiplayerDetailedLogger.Trace("UI_NAV", $"SwitchTo success: {screenToShow.name}");
             }
             else
             {
                 Log("SwitchTo -> targetScreen null, dùng rootsToShow");
+                MultiplayerDetailedLogger.Trace("UI_NAV", "SwitchTo success via rootsToShow");
             }
         }
 

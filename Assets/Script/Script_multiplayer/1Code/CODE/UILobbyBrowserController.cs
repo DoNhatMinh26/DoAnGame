@@ -84,6 +84,7 @@ namespace DoAnGame.UI
 
         private void HandleBackClicked()
         {
+            MultiplayerDetailedLogger.TraceUserAction("UILobbyBrowser", "HandleBackClicked", "backButton");
             if (backNavigator != null)
             {
                 backNavigator.NavigateNow();
@@ -103,6 +104,7 @@ namespace DoAnGame.UI
 
         private async Task RefreshLobbyListAsync()
         {
+            MultiplayerDetailedLogger.TraceUserAction("UILobbyBrowser", "RefreshLobbyListAsync", "refreshButton/autoRefresh");
             if (isBusy)
                 return;
 
@@ -436,6 +438,7 @@ namespace DoAnGame.UI
 
         private async Task JoinLobbyAsync(Lobby lobby)
         {
+            MultiplayerDetailedLogger.TraceUserAction("UILobbyBrowser", "JoinLobbyAsync", lobby != null ? $"lobbyId={lobby.Id}" : "lobby=null");
             if (lobby == null || isBusy)
                 return;
 

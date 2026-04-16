@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.Collections;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Lobbies;
@@ -23,9 +24,11 @@ namespace DoAnGame.UI
         private const string JoinCodeKey = "JoinCode";
         private const string StartedKey = "Started";
         private const string ModeKey = "Mode";
+        private const string IsAbandonedKey = "IsAbandoned";
         private const string CharacterNameKey = "characterName";
         private const string HostNameKey = "HostName";
         private const int MaxPlayers = 2;
+        private const int QuickJoinQueryMaxResults = 20;
         private const string DefaultIdleStatus = "Mời tạo phòng để chơi.";
         private const string DefaultIdleCode = "Mã phòng: -----";
         private const string DefaultIdlePlayerCount = "Người chơi: 1/2";
@@ -77,11 +80,14 @@ namespace DoAnGame.UI
         private bool initialized;
         private bool isBusy;
         private bool isQuitting;
+        private bool suppressAutoBattleStart;
         private float nextLobbyReadAt;
         private Coroutine delayedBattleFallbackRoutine;
         private AuthManager authManager;
         private string roomStatusMessage = DefaultIdleStatus;
         private string authStatusMessage = "Chưa đăng nhập dịch vụ multiplayer";
+        private const string StartMatchMessageName = "ui_room_start_match";
+        private bool startMatchMessageHandlerRegistered;
 
         protected override void Awake()
         {
@@ -109,6 +115,7 @@ namespace DoAnGame.UI
             joinByCodeButton?.onClick.AddListener(() => _ = HandleJoinByCode());
             quitRoomButton?.onClick.AddListener(() => _ = HandleQuitRoom());
             startMatchButton?.onClick.AddListener(() => _ = HandleStartMatch());
+            EnsureStartMatchMessageHandlerRegistered();
         }
 
         private void Start()
@@ -160,6 +167,7 @@ namespace DoAnGame.UI
             // Trong một số flow dùng UIButtonScreenNavigator, OnShow có thể không được gọi.
             // Chủ động đảm bảo polling/heartbeat khi panel được kích hoạt lại.
             EnsureLobbyRuntimeRoutines();
+            EnsureStartMatchMessageHandlerRegistered();
         }
 
         private void OnDisable()
@@ -540,14 +548,17 @@ namespace DoAnGame.UI
             joinByCodeButton?.onClick.RemoveAllListeners();
             quitRoomButton?.onClick.RemoveAllListeners();
             startMatchButton?.onClick.RemoveAllListeners();
+            UnregisterStartMatchMessageHandler();
             _ = LeaveLobbySafe();
         }
 
         private async Task HandleCreateRoom()
         {
+            MultiplayerDetailedLogger.TraceUserAction("UIRoom", "HandleCreateRoom", "createRoomButton");
             if (isBusy)
                 return;
 
+            suppressAutoBattleStart = false;
             isBusy = true;
             SetActionButtonsInteractable(false);
 
@@ -588,8 +599,7 @@ namespace DoAnGame.UI
                 lobbyCodeText?.SetText($"Mã phòng: {currentLobby.LobbyCode}");
                 SetStatus("Đã tạo phòng. Chờ người chơi thứ 2...");
                 RefreshRoomRoster();
-                startMatchButton?.gameObject.SetActive(true);
-                startMatchButton.interactable = currentLobby.Players.Count >= MaxPlayers;
+                UpdateStartMatchButtonState(true);
 
                 // Start polling/heartbeat only when this panel is active to avoid StartCoroutine on inactive object.
                 EnsureLobbyRuntimeRoutines();
@@ -607,9 +617,11 @@ namespace DoAnGame.UI
         }
         private async Task HandleQuickJoin()
         {
+            MultiplayerDetailedLogger.TraceUserAction("UIRoom", "HandleQuickJoin", "quickJoinButton");
             if (isBusy)
                 return;
 
+            suppressAutoBattleStart = false;
             isBusy = true;
             SetActionButtonsInteractable(false);
 
@@ -619,16 +631,44 @@ namespace DoAnGame.UI
 
             try
             {
-                var lobby = await LobbyService.Instance.QuickJoinLobbyAsync(new QuickJoinLobbyOptions
+                // Prefer newest, healthy lobbies and skip stale/abandoned entries.
+                var response = await LobbyService.Instance.QueryLobbiesAsync(new QueryLobbiesOptions
                 {
-                    Filter = new List<QueryFilter>
+                    Count = Mathf.Clamp(QuickJoinQueryMaxResults, 1, 25),
+                    Filters = new List<QueryFilter>
                     {
                         new QueryFilter(QueryFilter.FieldOptions.AvailableSlots, "0", QueryFilter.OpOptions.GT),
                         new QueryFilter(QueryFilter.FieldOptions.S2, "0", QueryFilter.OpOptions.EQ)
+                    },
+                    Order = new List<QueryOrder>
+                    {
+                        new QueryOrder(false, QueryOrder.FieldOptions.Created)
                     }
                 });
 
-                await JoinLobbyAndRelayAsync(lobby);
+                Lobby joinedLobby = null;
+                var candidates = response != null ? response.Results : null;
+                if (candidates != null)
+                {
+                    for (int i = 0; i < candidates.Count; i++)
+                    {
+                        var candidate = candidates[i];
+                        if (!IsQuickJoinCandidateUsable(candidate))
+                            continue;
+
+                        if (await JoinLobbyAndRelayAsync(candidate))
+                        {
+                            joinedLobby = candidate;
+                            break;
+                        }
+                    }
+                }
+
+                if (joinedLobby == null)
+                {
+                    SetStatus("Không có phòng phù hợp để vào nhanh.");
+                    MultiplayerDetailedLogger.TraceWarning("UI_ROOM", "QuickJoin failed: no usable lobby candidate");
+                }
             }
             catch (LobbyServiceException ex)
             {
@@ -644,9 +684,11 @@ namespace DoAnGame.UI
 
         private async Task HandleJoinByCode()
         {
+            MultiplayerDetailedLogger.TraceUserAction("UIRoom", "HandleJoinByCode", "joinByCodeButton");
             if (isBusy)
                 return;
 
+            suppressAutoBattleStart = false;
             isBusy = true;
             SetActionButtonsInteractable(false);
 
@@ -790,12 +832,12 @@ namespace DoAnGame.UI
 
             if (startMatchButton != null)
             {
-                startMatchButton.gameObject.SetActive(isHost);
-                startMatchButton.interactable = isHost && currentLobby.Players != null && currentLobby.Players.Count >= MaxPlayers;
+                UpdateStartMatchButtonState(true);
             }
 
             RefreshAuthState();
             EnsureLobbyRuntimeRoutines();
+            suppressAutoBattleStart = false;
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", $"JoinLobbyAndRelayAsync success: lobbyId={currentLobby.Id}, isHost={isHost}, players={(currentLobby.Players != null ? currentLobby.Players.Count : 0)}");
 
             return true;
@@ -811,6 +853,7 @@ namespace DoAnGame.UI
 
         private async Task HandleStartMatch()
         {
+            MultiplayerDetailedLogger.TraceUserAction("UIRoom", "HandleStartMatch", "startMatchButton");
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "HandleStartMatch invoked");
             if (isBusy || isQuitting)
                 return;
@@ -852,6 +895,19 @@ namespace DoAnGame.UI
                 return;
             }
 
+            if (!IsRelayReadyForMatchHost())
+            {
+                SetStatus("Lobby đã đủ 2/2 nhưng Relay chưa kết nối đủ. Đợi vài giây rồi thử lại.");
+                MultiplayerDetailedLogger.TraceWarning("UI_ROOM", "HandleStartMatch blocked: relay not ready (connected clients < 2)");
+                if (startMatchButton != null)
+                {
+                    startMatchButton.interactable = false;
+                }
+                isBusy = false;
+                SetActionButtonsInteractable(true);
+                return;
+            }
+
             try
             {
                 currentLobby = await LobbyService.Instance.UpdateLobbyAsync(lobby.Id, new UpdateLobbyOptions
@@ -874,6 +930,9 @@ namespace DoAnGame.UI
                     Log("StartMatch -> UIManager NULL hoặc không set được network game start");
                     MultiplayerDetailedLogger.TraceWarning("UI_ROOM", "HandleStartMatch: UIManager null or RequestNetworkGameStart failed");
                 }
+
+                // Reliable sync path: push start signal directly to connected clients.
+                SendStartMatchSignalToClients();
                 NotifyBattleStarted();
             }
             catch (Exception ex)
@@ -891,12 +950,14 @@ namespace DoAnGame.UI
 
         private async Task HandleQuitRoom()
         {
+            MultiplayerDetailedLogger.TraceUserAction("UIRoom", "HandleQuitRoom", "quitRoomButton");
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "HandleQuitRoom invoked");
             if (isBusy)
                 return;
 
             isBusy = true;
             isQuitting = true;
+            suppressAutoBattleStart = true;
             SetActionButtonsInteractable(false);
             SetStatus("Đang rời phòng...");
 
@@ -1017,6 +1078,12 @@ namespace DoAnGame.UI
                     {
                         quitRoomNavigator.NavigateNow();
                     }
+
+                    // Always unlock local UI state after forced quit path.
+                    // If navigator keeps this panel visible, buttons must not stay stuck disabled.
+                    isBusy = false;
+                    isQuitting = false;
+                    SetActionButtonsInteractable(true);
                 }
                 return;
             }
@@ -1028,11 +1095,17 @@ namespace DoAnGame.UI
 
             if (isHost && startMatchButton != null)
             {
-                startMatchButton.interactable = currentLobby.Players.Count >= MaxPlayers;
+                UpdateStartMatchButtonState(true);
             }
 
             if (currentLobby.Data.TryGetValue(StartedKey, out var startedData) && startedData.Value == "1")
             {
+                if (suppressAutoBattleStart)
+                {
+                    MultiplayerDetailedLogger.Trace("UI_ROOM", "Poll detected StartedKey=1 but auto-start is suppressed by local quit/back state");
+                    return;
+                }
+
                 SetStatus("Trận đấu bắt đầu.");
                 MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", $"Poll detected StartedKey=1 in lobbyId={currentLobby.Id}");
                 NotifyBattleStarted();
@@ -1042,8 +1115,11 @@ namespace DoAnGame.UI
         private void NotifyBattleStarted()
         {
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "NotifyBattleStarted invoked");
-            if (isQuitting)
+            if (isQuitting || suppressAutoBattleStart)
+            {
+                MultiplayerDetailedLogger.Trace("UI_ROOM", "NotifyBattleStarted ignored due to local quit/back suppression");
                 return;
+            }
 
             // Nếu đã notify trước đó nhưng UI16 vẫn chưa visible, cho phép retry.
             if (battleStartNotified && IsBattleScreenVisible())
@@ -1062,7 +1138,8 @@ namespace DoAnGame.UI
             bool routedToBattle = TryShowBattlePanel();
             Log($"NotifyBattleStarted: direct battle route => {routedToBattle}");
 
-            if (!IsBattleScreenVisible())
+            // Scene fallback chỉ chạy khi route UI thất bại hoàn toàn.
+            if (!routedToBattle && !IsBattleScreenVisible())
             {
                 LoadBattleSceneFallback();
             }
@@ -1118,6 +1195,12 @@ namespace DoAnGame.UI
             if (string.IsNullOrWhiteSpace(battleSceneName))
             {
                 Log("LoadBattleSceneFallback: battleSceneName empty, skip scene load");
+                return;
+            }
+
+            if (!Application.CanStreamedLevelBeLoaded(battleSceneName))
+            {
+                Log($"LoadBattleSceneFallback: scene '{battleSceneName}' is not in Build Settings, skip load");
                 return;
             }
 
@@ -1289,6 +1372,11 @@ namespace DoAnGame.UI
                 Debug.LogWarning($"[UIRoom] Refresh lobby bị rate limit, tạm dừng đọc đến t={nextLobbyReadAt:F1}. {ex.Reason} - {ex.Message}");
                 return currentLobby;
             }
+            catch (LobbyServiceException ex) when (IsLobbyNotFoundException(ex))
+            {
+                Debug.LogWarning($"[UIRoom] Refresh lobby báo not found: {ex.Reason} - {ex.Message}");
+                return null;
+            }
             catch (LobbyServiceException ex) when (!IsLobbyNotFoundException(ex))
             {
                 Debug.LogWarning($"[UIRoom] Refresh lobby lỗi tạm thời, giữ state hiện tại: {ex.Reason} - {ex.Message}");
@@ -1412,6 +1500,8 @@ namespace DoAnGame.UI
             if (!gameObject.activeInHierarchy)
                 return;
 
+            EnsureStartMatchMessageHandlerRegistered();
+
             if (pollingRoutine == null)
             {
                 pollingRoutine = StartCoroutine(PollLobbyRoutine());
@@ -1421,6 +1511,127 @@ namespace DoAnGame.UI
             {
                 heartbeatRoutine = StartCoroutine(HeartbeatRoutine());
             }
+        }
+
+        private void EnsureStartMatchMessageHandlerRegistered()
+        {
+            var nm = NetworkManager.Singleton;
+            if (nm == null || nm.CustomMessagingManager == null || !nm.IsListening)
+                return;
+
+            // Sau khi Shutdown -> StartClient/StartHost, named handlers có thể mất.
+            // Luôn rebind khi network đang listening để tránh trạng thái stale.
+            if (startMatchMessageHandlerRegistered)
+            {
+                nm.CustomMessagingManager.UnregisterNamedMessageHandler(StartMatchMessageName);
+                startMatchMessageHandlerRegistered = false;
+            }
+
+            nm.CustomMessagingManager.RegisterNamedMessageHandler(StartMatchMessageName, HandleStartMatchMessageReceived);
+            startMatchMessageHandlerRegistered = true;
+            MultiplayerDetailedLogger.Trace("UI_ROOM", "Registered start-match named message handler");
+        }
+
+        private void UnregisterStartMatchMessageHandler()
+        {
+            if (!startMatchMessageHandlerRegistered)
+                return;
+
+            var nm = NetworkManager.Singleton;
+            if (nm != null && nm.CustomMessagingManager != null)
+            {
+                nm.CustomMessagingManager.UnregisterNamedMessageHandler(StartMatchMessageName);
+            }
+
+            startMatchMessageHandlerRegistered = false;
+            MultiplayerDetailedLogger.Trace("UI_ROOM", "Unregistered start-match named message handler");
+        }
+
+        private void SendStartMatchSignalToClients()
+        {
+            var nm = NetworkManager.Singleton;
+            if (nm == null || !nm.IsServer || nm.CustomMessagingManager == null)
+            {
+                MultiplayerDetailedLogger.TraceWarning("UI_ROOM", "SendStartMatchSignalToClients skipped: network/server not ready");
+                return;
+            }
+
+            using (var writer = new FastBufferWriter(sizeof(int), Allocator.Temp))
+            {
+                writer.WriteValueSafe(1);
+                foreach (var clientId in nm.ConnectedClientsIds)
+                {
+                    if (clientId == nm.LocalClientId)
+                        continue;
+
+                    nm.CustomMessagingManager.SendNamedMessage(StartMatchMessageName, clientId, writer);
+                    MultiplayerDetailedLogger.Trace("UI_ROOM", $"Sent start-match signal to clientId={clientId}");
+                }
+            }
+        }
+
+        private void HandleStartMatchMessageReceived(ulong senderClientId, FastBufferReader reader)
+        {
+            int signal = 0;
+            reader.ReadValueSafe(out signal);
+            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", $"Received start-match signal={signal} from sender={senderClientId}");
+
+            if (signal == 1)
+            {
+                if (suppressAutoBattleStart)
+                {
+                    MultiplayerDetailedLogger.Trace("UI_ROOM", "Ignored start-match signal because local quit/back suppression is active");
+                    return;
+                }
+
+                SetStatus("Nhận tín hiệu bắt đầu từ host...");
+                NotifyBattleStarted();
+            }
+        }
+
+        private bool IsRelayReadyForMatchHost()
+        {
+            var nm = NetworkManager.Singleton;
+            if (nm == null || !nm.IsServer || !nm.IsListening)
+                return false;
+
+            return nm.ConnectedClientsIds != null && nm.ConnectedClientsIds.Count >= MaxPlayers;
+        }
+
+        private bool IsQuickJoinCandidateUsable(Lobby lobby)
+        {
+            if (lobby == null)
+                return false;
+
+            if (lobby.Data == null || !lobby.Data.TryGetValue(JoinCodeKey, out var joinCodeData) || string.IsNullOrWhiteSpace(joinCodeData.Value))
+                return false;
+
+            if (lobby.Data.TryGetValue(StartedKey, out var startedData) && startedData != null && startedData.Value == "1")
+                return false;
+
+            int currentPlayers = lobby.Players != null ? lobby.Players.Count : 0;
+            if (currentPlayers >= lobby.MaxPlayers)
+                return false;
+
+            if (lobby.Data.TryGetValue(IsAbandonedKey, out var abandonedData) && abandonedData != null && abandonedData.Value == "1")
+                return false;
+
+            return true;
+        }
+
+        private void UpdateStartMatchButtonState(bool interactable)
+        {
+            if (startMatchButton == null)
+                return;
+
+            bool isInLobbySession = currentLobby != null;
+            int playerCount = currentLobby != null && currentLobby.Players != null ? currentLobby.Players.Count : 0;
+            bool hasEnoughPlayers = playerCount >= MaxPlayers;
+
+            // Only show start when lobby is full to avoid misleading host UI in 1/2 state.
+            bool visible = isHost && isInLobbySession && hasEnoughPlayers;
+            startMatchButton.gameObject.SetActive(visible);
+            startMatchButton.interactable = visible && interactable && IsRelayReadyForMatchHost();
         }
 
         private void SetStatus(string text)
@@ -1459,16 +1670,22 @@ namespace DoAnGame.UI
 
         private void SetActionButtonsInteractable(bool interactable)
         {
-            if (createRoomButton != null) createRoomButton.interactable = interactable;
-            if (quickJoinButton != null) quickJoinButton.interactable = interactable;
-            if (joinByCodeButton != null) joinByCodeButton.interactable = interactable;
-            if (quitRoomButton != null) quitRoomButton.interactable = interactable;
+            bool isInLobbySession = currentLobby != null;
+
+            // Khi đã ở trong room thì khóa các hành động Create/Join để tránh lệch trạng thái giữa 2 client.
+            if (createRoomButton != null) createRoomButton.interactable = interactable && !isInLobbySession;
+            if (quickJoinButton != null) quickJoinButton.interactable = interactable && !isInLobbySession;
+            if (joinByCodeButton != null) joinByCodeButton.interactable = interactable && !isInLobbySession;
+
+            // Chỉ cho quit khi đang ở trong room.
+            if (quitRoomButton != null) quitRoomButton.interactable = interactable && isInLobbySession;
 
             if (startMatchButton != null)
             {
-                // Start chỉ có ý nghĩa với host, trạng thái đủ người sẽ được cập nhật trong poll/create.
-                startMatchButton.interactable = interactable && isHost;
+                UpdateStartMatchButtonState(interactable);
             }
+
+            MultiplayerDetailedLogger.Trace("UI_ROOM", $"SetActionButtonsInteractable: interactable={interactable}, inLobbySession={isInLobbySession}, isHost={isHost}");
         }
     }
 }
