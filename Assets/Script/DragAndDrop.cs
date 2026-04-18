@@ -60,9 +60,11 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         // Kiểm tra nếu thả trúng ô đích
         if (droppedOn != null && droppedOn.CompareTag("Slot"))
         {
-            int correctAnswer = qm.GetCurrentCorrectAnswer();
+            // SỬA LỖI: Chuyển sang float để nhận dữ liệu từ qm.GetCurrentCorrectAnswer()
+            float correctAnswer = qm.GetCurrentCorrectAnswer();
 
-            if (int.TryParse(myText.text, out int myValue) && myValue == correctAnswer)
+            // SỬA LỖI: Dùng float.TryParse và Mathf.Abs để so sánh số thực (tránh sai số float)
+            if (float.TryParse(myText.text, out float myValue) && Mathf.Abs(myValue - correctAnswer) < 0.01f)
             {
                 // ĐÚNG
                 image.color = colorCorrect;
@@ -110,6 +112,8 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         yield return new WaitForSeconds(1.0f);
         image.color = originalColor;
         rectTransform.anchoredPosition = startPosition;
-        qm.SetRandomQuestion();
+
+        // Cập nhật câu hỏi mới dựa trên cấu hình độ khó hiện tại
+        qm.UpdateDifficulty();
     }
 }

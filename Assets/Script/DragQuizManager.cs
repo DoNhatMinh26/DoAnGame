@@ -6,39 +6,42 @@ using System.Collections.Generic;
 public class DragQuizManager : MonoBehaviour
 {
     [Header("Data Source")]
-    [SerializeField] private TextAsset gameDataJson;
-    private GameDataContainer gameData;
+    [SerializeField] private LevelGenerate levelData;
 
     [Header("UI References")]
     public TextMeshProUGUI cauHoiText;
-    public TextMeshProUGUI manHienTaiText; // Hiển thị số màn chơi
-    public TextMeshProUGUI[] answerTexts; // Mảng các text trên các vật kéo thả
+    public TextMeshProUGUI manHienTaiText;
+    public TextMeshProUGUI[] answerTexts;
 
-    private int min, max, dapAnDung;
+    private int min, max;
+    private float dapAnDung; // Đổi sang float để dùng chung cho cả số nguyên và thập phân
+    private bool isDecimalMode = false;
     private List<string> activeOps = new List<string>();
 
-    void Awake()
+    public void UpdateDifficulty()
     {
-        if (gameDataJson != null)
-            gameData = JsonUtility.FromJson<GameDataContainer>(gameDataJson.text);
-    }
+        if (levelData == null) return;
 
-    public void UpdateDifficultyFromJSON()
-    {
-        if (gameData == null) return;
-
-        var grade = gameData.grades.Find(g => g.gradeID == MenuManager.SelectedGrade);
-        var mode = grade?.gameModes.Find(m => m.modeName == MenuManager.SelectedMode);
-        var config = mode?.levels.Find(l => l.levelID == LevelManager.CurrentLevel);
+        var config = levelData.GetConfigForLevel(UIManager.SelectedGrade, LevelManager.CurrentLevel);
 
         if (config != null)
         {
-            // Cập nhật text số màn chơi
-            if (manHienTaiText != null) manHienTaiText.text = "Màn " + config.levelID;
+            if (manHienTaiText != null) manHienTaiText.text = "Màn " + config.LevelIndex;
 
-            min = config.minVal;
-            max = config.maxVal;
-            activeOps = new List<string>(config.allowOps);
+            min = config.MinNumber;
+            max = config.MaxNumber;
+
+            activeOps.Clear();
+            foreach (byte op in config.AllowedOperators)
+            {
+                if (op == 0) activeOps.Add("+");
+                if (op == 1) activeOps.Add("-");
+                if (op == 2) activeOps.Add("x");
+                if (op == 3) activeOps.Add(":");
+                if (op == 4) activeOps.Add("find_+-");
+                if (op == 5) activeOps.Add("find_x:");
+                if (op == 6) activeOps.Add("decimal_+-");
+            }
 
             SetRandomQuestion();
         }
@@ -46,49 +49,84 @@ public class DragQuizManager : MonoBehaviour
 
     public void SetRandomQuestion()
     {
+        isDecimalMode = false;
         if (activeOps.Count == 0) activeOps.Add("+");
         string op = activeOps[Random.Range(0, activeOps.Count)];
 
-        int n1, n2, n3;
+        int n1, n2;
 
         switch (op)
         {
             case "+":
-                n1 = Random.Range(min, max); n2 = Random.Range(min, max);
+                n1 = Random.Range(min, max + 1); n2 = Random.Range(min, max + 1);
                 dapAnDung = n1 + n2; cauHoiText.text = $"{n1} + {n2} = ?"; break;
-
             case "-":
-                n1 = Random.Range(min, max); n2 = Random.Range(min, max);
+                n1 = Random.Range(min, max + 1); n2 = Random.Range(min, max + 1);
                 if (n1 < n2) { int t = n1; n1 = n2; n2 = t; }
                 dapAnDung = n1 - n2; cauHoiText.text = $"{n1} - {n2} = ?"; break;
-
             case "x":
-                // Giới hạn số nhân để không quá khó khi kéo thả
-                n1 = Random.Range(min, Mathf.Max(min + 1, max / 2));
-                n2 = Random.Range(2, 10);
+                n1 = Random.Range(min, max + 1); n2 = Random.Range(2, 10);
                 dapAnDung = n1 * n2; cauHoiText.text = $"{n1} x {n2} = ?"; break;
-
             case ":":
-                int kq = Random.Range(min, max);
-                int sc = Random.Range(2, 10);
+                int kq = Random.Range(min, max + 1); int sc = Random.Range(2, 10);
                 dapAnDung = kq; cauHoiText.text = $"{sc * kq} : {sc} = ?"; break;
 
-            case "2": // Phép tính hỗn hợp
-                n1 = Random.Range(min, max); n2 = Random.Range(min, max); n3 = Random.Range(min, max);
-                dapAnDung = n1 + n2 - n3; cauHoiText.text = $"{n1} + {n2} - {n3} = ?"; break;
+            case "find_+-":
+                int x = Random.Range(min, max + 1); int b = Random.Range(min, max + 1);
+                if (Random.Range(0, 2) == 0)
+                { // Cộng
+                    int tong = x + b; dapAnDung = x;
+                    cauHoiText.text = (Random.value > 0.5f) ? $"? + {b} = {tong}" : $"{b} + ? = {tong}";
+                }
+                else
+                { // Trừ
+                    dapAnDung = x;
+                    if (Random.value > 0.5f)
+                    {
+                        int hieu = x - b; if (x < b) { x = b; b = x - hieu; }
+                        cauHoiText.text = $"? - {b} = {hieu}";
+                    }
+                    else
+                    {
+                        int a = x + b; cauHoiText.text = $"{a} - ? = {b}";
+                    }
+                }
+                break;
 
-            case "find_x": // Tìm X
-                int x = Random.Range(min, max);
-                int v2 = Random.Range(min, max);
-                int tong = x + v2;
-                dapAnDung = x; cauHoiText.text = $"? + {v2} = {tong}"; break;
+            case "find_x:":
+                int vX = Random.Range(min, max + 1); int vB = Random.Range(min, max + 1);
+                if (Random.Range(0, 2) == 0)
+                { // Nhân
+                    int tich = vX * vB; dapAnDung = vX;
+                    cauHoiText.text = (Random.value > 0.5f) ? $"? x {vB} = {tich}" : $"{vB} x ? = {tich}";
+                }
+                else
+                { // Chia
+                    if (vB == 0) vB = 1; int sbc = vX * vB;
+                    if (Random.value > 0.5f) { dapAnDung = sbc; cauHoiText.text = $"? : {vB} = {vX}"; }
+                    else { dapAnDung = vB; cauHoiText.text = $"{sbc} : ? = {vX}"; }
+                }
+                break;
 
-            case "bracket": // Biểu thức ngoặc
-                n1 = Random.Range(min, max); n2 = Random.Range(min, max); n3 = Random.Range(2, 6);
-                dapAnDung = (n1 + n2) * n3; cauHoiText.text = $"({n1} + {n2}) x {n3} = ?"; break;
+            case "decimal_+-":
+                isDecimalMode = true;
+                float d1 = Random.Range(min, max + 1) / 10f;
+                float d2 = Random.Range(min, max + 1) / 10f;
+                if (Random.Range(0, 2) == 0)
+                {
+                    dapAnDung = (float)System.Math.Round(d1 + d2, 1);
+                    cauHoiText.text = $"{d1:F1} + {d2:F1} = ?";
+                }
+                else
+                {
+                    if (d1 < d2) { float t = d1; d1 = d2; d2 = t; }
+                    dapAnDung = (float)System.Math.Round(d1 - d2, 1);
+                    cauHoiText.text = $"{d1:F1} - {d2:F1} = ?";
+                }
+                break;
 
             default:
-                n1 = Random.Range(min, max); n2 = Random.Range(min, max);
+                n1 = Random.Range(min, max + 1); n2 = Random.Range(min, max + 1);
                 dapAnDung = n1 + n2; cauHoiText.text = $"{n1} + {n2} = ?"; break;
         }
 
@@ -97,35 +135,39 @@ public class DragQuizManager : MonoBehaviour
 
     private void GenerateChoices()
     {
-        List<int> choices = new List<int> { dapAnDung };
-
+        List<float> choices = new List<float> { dapAnDung };
         int safety = 0;
+        float step = isDecimalMode ? 0.1f : 1f;
+
         while (choices.Count < answerTexts.Length && safety < 100)
         {
             safety++;
-            int offset = Random.Range(-5, 6);
-            if (offset == 0) offset = 1;
-            int wrong = Mathf.Abs(dapAnDung + offset);
+            float offset = Random.Range(-5, 6) * step;
+            if (Mathf.Abs(offset) < 0.01f) offset = step;
 
+            float wrong = (float)System.Math.Round(Mathf.Abs(dapAnDung + offset), 1);
             if (!choices.Contains(wrong)) choices.Add(wrong);
         }
 
-        // Trộn danh sách đáp án
+        // Shuffle
         for (int i = 0; i < choices.Count; i++)
         {
-            int temp = choices[i];
+            float temp = choices[i];
             int r = Random.Range(i, choices.Count);
             choices[i] = choices[r];
             choices[r] = temp;
         }
 
-        // Gán vào UI
         for (int i = 0; i < answerTexts.Length; i++)
         {
             if (i < choices.Count)
-                answerTexts[i].text = choices[i].ToString();
+            {
+                // Nếu là số thập phân thì hiện 1 chữ số sau dấu phẩy, ngược lại hiện số nguyên
+                answerTexts[i].text = isDecimalMode ? choices[i].ToString("F1") : choices[i].ToString("0");
+            }
         }
     }
 
-    public int GetCurrentCorrectAnswer() => dapAnDung;
+    // Trả về float để Script xử lý kéo thả so sánh chính xác hơn
+    public float GetCurrentCorrectAnswer() => dapAnDung;
 }

@@ -1,10 +1,12 @@
-using Unity.Netcode;
-using UnityEngine;
-using UnityEngine.UI;
-using System.Threading.Tasks;
-using TMPro;
 using System;
 using System.Collections;
+using System.Net.Sockets;
+using System.Threading.Tasks;
+using TMPro;
+using Unity.Netcode;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 /// <summary>
 /// UIManager: Quản lý tất cả UI từ Welcome → GamePlay
@@ -16,6 +18,8 @@ using System.Collections;
 /// </summary>
 public class UIManager : NetworkBehaviour
 {
+    public static int SelectedGrade = 1;
+
     public static UIManager Instance { get; private set; }
 
     [Header("════ UI PANELS ════")]
@@ -279,7 +283,19 @@ public class UIManager : NetworkBehaviour
             return;
 
         isBirthYearSelected = index > 0;
+
+        // --- LOGIC MỚI: Cập nhật SelectedGrade dựa trên Index ---
+        // Index 1: Mẫu giáo -> Lớp 1 (Grade 1)
+        // Index 2: Lớp 1 -> Lớp 1 (Grade 1)
+        // Index 3: Lớp 2 -> Lớp 2 (Grade 2)...
+        if (index == 1 || index == 2) SelectedGrade = 1;
+        else if (index > 2) SelectedGrade = index - 1;
+        else SelectedGrade = 1; // Mặc định là lớp 1 nếu chưa chọn
+
         selectedBirthYear = isBirthYearSelected ? birthYearDropdown.options[index].text : string.Empty;
+
+        Debug.Log($"[UIManager] Năm sinh: {selectedBirthYear} -> GradeIndex đã lưu: {SelectedGrade}");
+
         UpdatePlayButtonState();
     }
 
@@ -471,4 +487,5 @@ public class UIManager : NetworkBehaviour
         Debug.Log("[UIManager] 🎮 Chuyển sang Gameplay!");
         MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_MANAGER", "SwitchToGameplay executed");
     }
+    
 }

@@ -21,6 +21,6 @@ EditorBuildSettings:
     path: Assets/Scenes/KeoThaDA.unity
     guid: 3fcbf278a1c15574184c84a862cf2c89
   - enabled: 1
-    path: Assets/Scenes/HungDA.unity
+    path: Assets/Scenes/PhiThuyen.unity
     guid: 05daec240806f40498353927ada83ba8
   m_configObjects: {}
