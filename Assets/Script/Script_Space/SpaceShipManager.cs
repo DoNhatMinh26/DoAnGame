@@ -12,34 +12,35 @@ public class SpaceShipManager : MonoBehaviour
 
     [Header("UI Elements")]
     [SerializeField] private TextMeshProUGUI manHienTaiText;
+    [SerializeField] private TextMeshProUGUI cauHoiDungYenText;
 
-    [Header("Prefabs & Player")]
-    public GameObject canvasPrefab;
-    public Transform player;
+    [Header("Hiệu ứng chữ")]
+    [SerializeField] private float typingSpeed = 0.05f;
 
     [Header("Settings - World Movement")]
+    public GameObject canvasPrefab;
     public float worldSpeed = 8f;
     public float distanceBetween = 40f;
     public int activeCount = 3;
 
     private Queue<GameObject> pool = new Queue<GameObject>();
     private float nextSpawnX = 15f;
+    private Coroutine typingCoroutine;
+
+    [HideInInspector] public string currentCorrectAnswer;
 
     void Awake() => Instance = this;
 
-    // SỬA TẠI ĐÂY: Dùng OnEnable thay cho Start để cập nhật mỗi khi vào màn
     void OnEnable()
     {
-        // 1. Cập nhật chữ hiển thị màn chơi
         if (manHienTaiText != null)
             manHienTaiText.text = "Màn " + LevelManager.CurrentLevel;
 
-        // 2. Dọn dẹp câu hỏi cũ (nếu có) để tránh chồng chéo màn cũ-mới
         ClearExistingZones();
-
-        // 3. Khởi tạo các trạm câu hỏi mới cho màn này
         nextSpawnX = 15f;
         for (int i = 0; i < activeCount; i++) SpawnNewZone();
+
+        UpdateStaticQuestionUI();
     }
 
     void ClearExistingZones()
@@ -74,38 +75,72 @@ public class SpaceShipManager : MonoBehaviour
     void RecycleZone()
     {
         if (pool.Count == 0) return;
-
-        // 1. Lấy Canvas cũ nhất ra khỏi hàng đợi
         GameObject oldZone = pool.Dequeue();
 
-        // 2. Tìm vị trí X xa nhất hiện tại trong các Canvas còn lại
         float maxCurrentX = -1000f;
         foreach (GameObject zone in pool)
         {
             if (zone.transform.position.x > maxCurrentX)
-            {
                 maxCurrentX = zone.transform.position.x;
-            }
         }
 
-        // 3. Đặt Canvas cũ vào vị trí mới nối đuôi chính xác
-        // Nếu đây là lần đầu hoặc không tìm thấy, dùng giá trị mặc định
         float newX = (maxCurrentX == -1000f) ? nextSpawnX : maxCurrentX + distanceBetween;
-
         oldZone.transform.position = new Vector3(newX, 0, 0);
 
-        // Kích hoạt lại các cổng đã bị ẩn khi va chạm
-        foreach (Transform child in oldZone.transform) child.gameObject.SetActive(true);
+        // RESET COLLIDER & MOVEMENT: Bật lại va chạm cho các cổng khi trạm quay trở lại
+        foreach (Collider2D c in oldZone.GetComponentsInChildren<Collider2D>()) c.enabled = true;
 
         SetupDataForZone(oldZone);
         pool.Enqueue(oldZone);
+
+        UpdateStaticQuestionUI();
+    }
+
+    public void UpdateStaticQuestionUI()
+    {
+        if (pool.Count > 0 && cauHoiDungYenText != null)
+        {
+            // MỞ KHÓA DI CHUYỂN cho phi thuyền khi chuẩn bị trạm mới
+            SpaceShipPhysics playerScript = FindObjectOfType<SpaceShipPhysics>();
+            if (playerScript != null) playerScript.ResetMovement();
+
+            QuestionZone nextZone = pool.Peek().GetComponent<QuestionZone>();
+            if (nextZone != null)
+            {
+                currentCorrectAnswer = nextZone.dapAnDung;
+                cauHoiDungYenText.color = Color.white;
+
+                if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+                typingCoroutine = StartCoroutine(TypeText(nextZone.cauHoiLuuTru));
+            }
+        }
+    }
+
+    IEnumerator TypeText(string textToType)
+    {
+        cauHoiDungYenText.text = "";
+        foreach (char letter in textToType.ToCharArray())
+        {
+            cauHoiDungYenText.text += letter;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+    }
+
+    public string GetCauHoiDungYenText() => cauHoiDungYenText != null ? cauHoiDungYenText.text : "";
+
+    public void SetCauHoiDungYenResult(string phepTinh, string dapAn)
+    {
+        if (cauHoiDungYenText != null)
+        {
+            // Hiển thị kết quả đúng với số màu xanh trên UI đứng yên
+            cauHoiDungYenText.text = $"{phepTinh} <color=green>{dapAn}</color>";
+        }
     }
 
     public void UpdateWorldSpeed(float amount) => worldSpeed = Mathf.Clamp(worldSpeed + amount, 4f, 25f);
 
     void SetupDataForZone(GameObject zoneObj)
     {
-        // Sử dụng LevelManager.CurrentLevel để lấy đúng độ khó
         var config = levelData.GetConfigForLevel(UIManager.SelectedGrade, LevelManager.CurrentLevel);
         if (config == null) return;
 
@@ -125,82 +160,121 @@ public class SpaceShipManager : MonoBehaviour
         }
 
         if (activeOps.Count == 0) activeOps.Add("+");
-        string phepToan = activeOps[Random.Range(0, activeOps.Count)];
-        string cauHoiText = "";
-        string dapAnDung = "";
-        bool isDecimal = (phepToan == "decimal_+-");
+        string phepToanHienTai = activeOps[Random.Range(0, activeOps.Count)];
 
-        // Logic sinh câu hỏi (Giữ nguyên từ MathManager của bạn)
+        string cauHoiText = "";
+        string dapAnDungStr = "";
+        bool isDecimalMode = (phepToanHienTai == "decimal_+-");
+
         int n1, n2;
-        switch (phepToan)
+
+        switch (phepToanHienTai)
         {
             case "+":
                 n1 = Random.Range(minVal, maxVal + 1);
                 n2 = Random.Range(minVal, maxVal + 1);
                 cauHoiText = $"{n1} + {n2} = ?";
-                dapAnDung = (n1 + n2).ToString(); break;
+                dapAnDungStr = (n1 + n2).ToString();
+                break;
+
             case "-":
-                n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(minVal, maxVal + 1);
+                n1 = Random.Range(minVal, maxVal + 1);
+                n2 = Random.Range(minVal, maxVal + 1);
                 if (n1 < n2) { int t = n1; n1 = n2; n2 = t; }
                 cauHoiText = $"{n1} - {n2} = ?";
-                dapAnDung = (n1 - n2).ToString(); break;
+                dapAnDungStr = (n1 - n2).ToString();
+                break;
+
             case "x":
-                n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(2, 10);
+                n1 = Random.Range(minVal, maxVal + 1);
+                n2 = Random.Range(2, 10);
                 cauHoiText = $"{n1} x {n2} = ?";
-                dapAnDung = (n1 * n2).ToString(); break;
+                dapAnDungStr = (n1 * n2).ToString();
+                break;
+
             case ":":
-                int kq = Random.Range(minVal, maxVal + 1); int sc = Random.Range(2, 10);
+                int kq = Random.Range(minVal, maxVal + 1);
+                int sc = Random.Range(2, 10);
                 cauHoiText = $"{sc * kq} : {sc} = ?";
-                dapAnDung = kq.ToString(); break;
+                dapAnDungStr = kq.ToString();
+                break;
+
             case "find_+-":
-                int x = Random.Range(minVal, maxVal + 1); int b = Random.Range(minVal, maxVal + 1);
+                int x = Random.Range(minVal, maxVal + 1);
+                int b = Random.Range(minVal, maxVal + 1);
                 if (Random.value > 0.5f)
                 {
-                    int tong = x + b; cauHoiText = (Random.value > 0.5f) ? $"? + {b} = {tong}" : $"{b} + ? = {tong}";
+                    int tong = x + b;
+                    cauHoiText = (Random.value > 0.5f) ? $"? + {b} = {tong}" : $"{b} + ? = {tong}";
                 }
                 else
                 {
-                    int a = x + b; cauHoiText = $"{a} - ? = {b}";
+                    int a = x + b;
+                    cauHoiText = $"{a} - ? = {b}";
                 }
-                dapAnDung = x.ToString(); break;
+                dapAnDungStr = x.ToString();
+                break;
+
             case "find_x:":
-                int vx = Random.Range(minVal, maxVal + 1); int vb = Random.Range(2, 10);
+                int valX = Random.Range(minVal, maxVal + 1);
+                int valB = Random.Range(minVal, maxVal + 1);
                 if (Random.value > 0.5f)
                 {
-                    int tich = vx * vb; cauHoiText = $"? x {vb} = {tich}"; dapAnDung = vx.ToString();
+                    int tich = valX * valB;
+                    cauHoiText = (Random.value > 0.5f) ? $"? x {valB} = {tich}" : $"{valB} x ? = {tich}";
+                    dapAnDungStr = valX.ToString();
                 }
                 else
                 {
-                    int sbc = vx * vb; cauHoiText = $"{sbc} : ? = {vb}"; dapAnDung = vx.ToString();
+                    if (valB == 0) valB = 1;
+                    int soBiChia = valX * valB;
+                    if (Random.value > 0.5f) { cauHoiText = $"? : {valB} = {valX}"; dapAnDungStr = soBiChia.ToString(); }
+                    else { cauHoiText = $"{soBiChia} : ? = {valX}"; dapAnDungStr = valB.ToString(); }
                 }
                 break;
+
             case "decimal_+-":
-                float d1 = Random.Range(minVal, maxVal + 1) / 10f; float d2 = Random.Range(minVal, maxVal + 1) / 10f;
+                float d1 = Random.Range(minVal, maxVal + 1) / 10f;
+                float d2 = Random.Range(minVal, maxVal + 1) / 10f;
                 if (Random.value > 0.5f)
                 {
+                    float res = (float)System.Math.Round(d1 + d2, 1);
                     cauHoiText = $"{d1:F1} + {d2:F1} = ?";
-                    dapAnDung = System.Math.Round(d1 + d2, 1).ToString("F1");
+                    dapAnDungStr = res.ToString("F1");
                 }
                 else
                 {
                     if (d1 < d2) { float t = d1; d1 = d2; d2 = t; }
+                    float res = (float)System.Math.Round(d1 - d2, 1);
                     cauHoiText = $"{d1:F1} - {d2:F1} = ?";
-                    dapAnDung = System.Math.Round(d1 - d2, 1).ToString("F1");
+                    dapAnDungStr = res.ToString("F1");
                 }
                 break;
         }
 
-        List<string> choices = new List<string> { dapAnDung };
+        List<string> choices = new List<string> { dapAnDungStr };
         while (choices.Count < 3)
         {
             string wrong;
-            if (isDecimal) wrong = (float.Parse(dapAnDung) + (Random.Range(-5, 6) / 10f)).ToString("F1");
-            else wrong = (int.Parse(dapAnDung) + Random.Range(-5, 6)).ToString();
+            if (isDecimalMode)
+            {
+                float trueVal = float.Parse(dapAnDungStr);
+                float offset = Random.Range(-5, 6) / 10f;
+                if (Mathf.Abs(offset) < 0.1f) offset = 0.1f;
+                wrong = Mathf.Abs((float)System.Math.Round(trueVal + offset, 1)).ToString("F1");
+            }
+            else
+            {
+                int trueVal = int.Parse(dapAnDungStr);
+                int offset = Random.Range(-5, 6);
+                if (offset == 0) offset = 1;
+                wrong = Mathf.Abs(trueVal + offset).ToString();
+            }
+
             if (!choices.Contains(wrong) && wrong != "0") choices.Add(wrong);
         }
 
-        // Đảm bảo không bị MissingComponentException
         QuestionZone qZone = zoneObj.GetComponent<QuestionZone>();
-        if (qZone != null) qZone.Setup(cauHoiText, choices, dapAnDung);
+        if (qZone != null) qZone.Setup(cauHoiText, choices, dapAnDungStr);
     }
 }

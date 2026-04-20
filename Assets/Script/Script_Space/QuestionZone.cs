@@ -4,18 +4,17 @@ using System.Collections.Generic;
 
 public class QuestionZone : MonoBehaviour
 {
-    public TextMeshProUGUI cauHoiText;
+    [Header("UI nội bộ (Chỉ còn các cổng)")]
     public TextMeshProUGUI[] gateTexts;
 
-    // Lưu đáp án đúng dưới dạng chuỗi để so sánh chính xác mọi loại số
+    [HideInInspector] public string cauHoiLuuTru;
     [HideInInspector] public string dapAnDung;
 
     public void Setup(string cauHoi, List<string> choices, string correct)
     {
-        cauHoiText.text = cauHoi;
-        dapAnDung = correct;
+        this.cauHoiLuuTru = cauHoi;
+        this.dapAnDung = correct;
 
-        // Trộn ngẫu nhiên vị trí các đáp án
         for (int i = 0; i < choices.Count; i++)
         {
             string temp = choices[i];
@@ -24,12 +23,12 @@ public class QuestionZone : MonoBehaviour
             choices[r] = temp;
         }
 
-        // Đổ dữ liệu chữ vào các cổng
         for (int i = 0; i < gateTexts.Length; i++)
         {
             if (i < gateTexts.Length && i < choices.Count)
             {
                 gateTexts[i].text = choices[i];
+                gateTexts[i].color = Color.black;
             }
         }
     }
