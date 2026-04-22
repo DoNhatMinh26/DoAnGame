@@ -13,8 +13,8 @@ public class DragQuizManager : MonoBehaviour
     public TextMeshProUGUI manHienTaiText;
     public TextMeshProUGUI[] answerTexts;
 
-    private int min, max;
-    private float dapAnDung; // Đổi sang float để dùng chung cho cả số nguyên và thập phân
+    private int minVal, maxVal;
+    private float dapAnDung;
     private bool isDecimalMode = false;
     private List<string> activeOps = new List<string>();
 
@@ -28,10 +28,11 @@ public class DragQuizManager : MonoBehaviour
         {
             if (manHienTaiText != null) manHienTaiText.text = "Màn " + config.LevelIndex;
 
-            min = config.MinNumber;
-            max = config.MaxNumber;
+            minVal = config.MinNumber;
+            maxVal = config.MaxNumber;
 
             activeOps.Clear();
+            // Đồng bộ 8 dạng toán theo ảnh image_1dd911.png
             foreach (byte op in config.AllowedOperators)
             {
                 if (op == 0) activeOps.Add("+");
@@ -39,8 +40,10 @@ public class DragQuizManager : MonoBehaviour
                 if (op == 2) activeOps.Add("x");
                 if (op == 3) activeOps.Add(":");
                 if (op == 4) activeOps.Add("find_+-");
-                if (op == 5) activeOps.Add("find_x:");
-                if (op == 6) activeOps.Add("decimal_+-");
+                if (op == 5) activeOps.Add("find x");
+                if (op == 6) activeOps.Add("find :");
+                if (op == 7) activeOps.Add("hai phép tính +-");
+                // Lưu ý: decimal_+- (op 8) có thể thêm nếu cần đồng bộ hoàn toàn với MathManager case 6 cũ
             }
 
             SetRandomQuestion();
@@ -58,75 +61,98 @@ public class DragQuizManager : MonoBehaviour
         switch (op)
         {
             case "+":
-                n1 = Random.Range(min, max + 1); n2 = Random.Range(min, max + 1);
+                n1 = Random.Range(minVal, maxVal + 1);
+                n2 = Random.Range(minVal, maxVal + 1);
                 dapAnDung = n1 + n2; cauHoiText.text = $"{n1} + {n2} = ?"; break;
+
             case "-":
-                n1 = Random.Range(min, max + 1); n2 = Random.Range(min, max + 1);
+                n1 = Random.Range(minVal, maxVal + 1);
+                n2 = Random.Range(minVal, maxVal + 1);
                 if (n1 < n2) { int t = n1; n1 = n2; n2 = t; }
                 dapAnDung = n1 - n2; cauHoiText.text = $"{n1} - {n2} = ?"; break;
-            case "x":
-                n1 = Random.Range(min, max + 1); n2 = Random.Range(2, 10);
-                dapAnDung = n1 * n2; cauHoiText.text = $"{n1} x {n2} = ?"; break;
-            case ":":
-                int kq = Random.Range(min, max + 1); int sc = Random.Range(2, 10);
-                dapAnDung = kq; cauHoiText.text = $"{sc * kq} : {sc} = ?"; break;
 
-            case "find_+-":
-                int x = Random.Range(min, max + 1); int b = Random.Range(min, max + 1);
-                if (Random.Range(0, 2) == 0)
-                { // Cộng
-                    int tong = x + b; dapAnDung = x;
-                    cauHoiText.text = (Random.value > 0.5f) ? $"? + {b} = {tong}" : $"{b} + ? = {tong}";
+            case "x":
+                if (UIManager.SelectedGrade >= 4)
+                {
+                    n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(minVal, maxVal + 1);
                 }
                 else
-                { // Trừ
-                    dapAnDung = x;
+                {
+                    n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(2, 10);
+                }
+                dapAnDung = n1 * n2; cauHoiText.text = $"{n1} x {n2} = ?"; break;
+
+            case ":":
+                int sc, kq;
+                if (UIManager.SelectedGrade >= 4)
+                {
+                    sc = Random.Range(minVal, maxVal + 1); kq = Random.Range(minVal, maxVal + 1);
+                    if (sc == 0) sc = 1;
+                }
+                else
+                {
+                    kq = Random.Range(2, 10); sc = Random.Range(minVal, maxVal + 1);
+                }
+                int sbc = sc * kq;
+                dapAnDung = kq; cauHoiText.text = $"{sbc} : {sc} = ?"; break;
+
+            case "find_+-": // Dạng 4
+                int xVal = Random.Range(minVal, maxVal + 1);
+                int bVal = Random.Range(minVal, maxVal + 1);
+                if (Random.value > 0.5f)
+                {
+                    int tong = xVal + bVal; dapAnDung = xVal;
+                    cauHoiText.text = (Random.value > 0.5f) ? $"? + {bVal} = {tong}" : $"{bVal} + ? = {tong}";
+                }
+                else
+                {
+                    dapAnDung = xVal;
                     if (Random.value > 0.5f)
                     {
-                        int hieu = x - b; if (x < b) { x = b; b = x - hieu; }
-                        cauHoiText.text = $"? - {b} = {hieu}";
+                        int hieu = xVal - bVal; if (xVal < bVal) { xVal = bVal; bVal = xVal - hieu; }
+                        cauHoiText.text = $"? - {bVal} = {hieu}";
                     }
                     else
                     {
-                        int a = x + b; cauHoiText.text = $"{a} - ? = {b}";
+                        int a = xVal + bVal; cauHoiText.text = $"{a} - ? = {bVal}";
                     }
                 }
                 break;
 
-            case "find_x:":
-                int vX = Random.Range(min, max + 1); int vB = Random.Range(min, max + 1);
-                if (Random.Range(0, 2) == 0)
-                { // Nhân
-                    int tich = vX * vB; dapAnDung = vX;
-                    cauHoiText.text = (Random.value > 0.5f) ? $"? x {vB} = {tich}" : $"{vB} x ? = {tich}";
-                }
-                else
-                { // Chia
-                    if (vB == 0) vB = 1; int sbc = vX * vB;
-                    if (Random.value > 0.5f) { dapAnDung = sbc; cauHoiText.text = $"? : {vB} = {vX}"; }
-                    else { dapAnDung = vB; cauHoiText.text = $"{sbc} : ? = {vX}"; }
-                }
+            case "find x": // Dạng 5: Tìm x trong phép nhân
+                int vX = (UIManager.SelectedGrade >= 4) ? Random.Range(minVal, maxVal + 1) : Random.Range(2, 10);
+                int vB = Random.Range(minVal, maxVal + 1);
+                int tich = vX * vB; dapAnDung = vX;
+                cauHoiText.text = (Random.value > 0.5f) ? $"? x {vB} = {tich}" : $"{vB} x ? = {tich}";
                 break;
 
-            case "decimal_+-":
-                isDecimalMode = true;
-                float d1 = Random.Range(min, max + 1) / 10f;
-                float d2 = Random.Range(min, max + 1) / 10f;
-                if (Random.Range(0, 2) == 0)
+            case "find :": // Dạng 6: Tìm x trong phép chia
+                int vX_c = (UIManager.SelectedGrade >= 4) ? Random.Range(minVal, maxVal + 1) : Random.Range(2, 10);
+                int vB_c = Random.Range(minVal, maxVal + 1);
+                if (vB_c == 0) vB_c = 1;
+                int sobc = vX_c * vB_c;
+                if (Random.value > 0.5f) { dapAnDung = sobc; cauHoiText.text = $"? : {vB_c} = {vX_c}"; }
+                else { dapAnDung = vB_c; cauHoiText.text = $"{sobc} : ? = {vX_c}"; }
+                break;
+
+            case "hai phép tính +-": // Dạng 7
+                int a1 = Random.Range(minVal, maxVal + 1);
+                int a2 = Random.Range(minVal, maxVal + 1);
+                int a3 = Random.Range(minVal, maxVal + 1);
+                if (Random.value > 0.5f)
                 {
-                    dapAnDung = (float)System.Math.Round(d1 + d2, 1);
-                    cauHoiText.text = $"{d1:F1} + {d2:F1} = ?";
+                    dapAnDung = a1 + a2 - a3; cauHoiText.text = $"{a1} + {a2} - {a3} = ?";
                 }
                 else
                 {
-                    if (d1 < d2) { float t = d1; d1 = d2; d2 = t; }
-                    dapAnDung = (float)System.Math.Round(d1 - d2, 1);
-                    cauHoiText.text = $"{d1:F1} - {d2:F1} = ?";
+                    dapAnDung = a1 - a2 + a3;
+                    if (a1 < a2) a1 = a2 + Random.Range(1, 10);
+                    cauHoiText.text = $"{a1} - {a2} + {a3} = ?";
                 }
                 break;
 
             default:
-                n1 = Random.Range(min, max + 1); n2 = Random.Range(min, max + 1);
+                n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(minVal, maxVal + 1);
                 dapAnDung = n1 + n2; cauHoiText.text = $"{n1} + {n2} = ?"; break;
         }
 
@@ -135,17 +161,20 @@ public class DragQuizManager : MonoBehaviour
 
     private void GenerateChoices()
     {
-        List<float> choices = new List<float> { dapAnDung };
-        int safety = 0;
-        float step = isDecimalMode ? 0.1f : 1f;
+        List<float> choices = new List<float> { (float)dapAnDung };
 
+        // Đồng bộ sai số biến động theo khối lớp
+        int gradeFactor = UIManager.SelectedGrade;
+        float maxOffset = gradeFactor * 5f;
+
+        int safety = 0;
         while (choices.Count < answerTexts.Length && safety < 100)
         {
             safety++;
-            float offset = Random.Range(-5, 6) * step;
-            if (Mathf.Abs(offset) < 0.01f) offset = step;
+            float offset = Random.Range(-maxOffset, maxOffset + 1);
+            if (Mathf.Abs(offset) < 0.5f) offset = Random.value > 0.5f ? 1 : -1;
 
-            float wrong = (float)System.Math.Round(Mathf.Abs(dapAnDung + offset), 1);
+            float wrong = Mathf.Abs(dapAnDung + (int)offset);
             if (!choices.Contains(wrong)) choices.Add(wrong);
         }
 
@@ -160,14 +189,9 @@ public class DragQuizManager : MonoBehaviour
 
         for (int i = 0; i < answerTexts.Length; i++)
         {
-            if (i < choices.Count)
-            {
-                // Nếu là số thập phân thì hiện 1 chữ số sau dấu phẩy, ngược lại hiện số nguyên
-                answerTexts[i].text = isDecimalMode ? choices[i].ToString("F1") : choices[i].ToString("0");
-            }
+            if (i < choices.Count) answerTexts[i].text = choices[i].ToString("0");
         }
     }
 
-    // Trả về float để Script xử lý kéo thả so sánh chính xác hơn
     public float GetCurrentCorrectAnswer() => dapAnDung;
 }

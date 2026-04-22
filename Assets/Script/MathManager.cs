@@ -15,28 +15,24 @@ public class MathManager : MonoBehaviour
     [SerializeField] private Button[] dapAnBnt;
 
     private int minVal, maxVal, dapAnDung;
-    private float dapAnDungDecimal; // Thêm biến để lưu đáp án thập phân
-    private bool isDecimalMode = false; // Kiểm tra xem có đang chơi số thập phân không
     private List<string> activeOps = new List<string>();
 
     public void UpdateDifficulty()
     {
         if (levelData == null) return;
 
-        // LẤY DỮ LIỆU TỪ UIManager.SelectedGrade
-        // gradeIndex: 1-5, levelIndex: 1-100
+        // Lấy dữ liệu dựa trên Lớp và Màn hiện tại
         var config = levelData.GetConfigForLevel(UIManager.SelectedGrade, LevelManager.CurrentLevel);
 
         if (config != null)
         {
-            if (manHienTaiText != null)
-                manHienTaiText.text = "Màn " + config.LevelIndex;
+            if (manHienTaiText != null) manHienTaiText.text = "Màn " + config.LevelIndex;
 
-            // Tự động lấy Min/Max từ AnimationCurve của đúng Lớp đã chọn
             minVal = config.MinNumber;
             maxVal = config.MaxNumber;
 
             activeOps.Clear();
+            // Đồng bộ 8 dạng toán theo ảnh image_1dd911.png
             foreach (byte op in config.AllowedOperators)
             {
                 if (op == 0) activeOps.Add("+");
@@ -44,8 +40,9 @@ public class MathManager : MonoBehaviour
                 if (op == 2) activeOps.Add("x");
                 if (op == 3) activeOps.Add(":");
                 if (op == 4) activeOps.Add("find_+-");
-                if (op == 5) activeOps.Add("find_x:");
-                if (op == 6) activeOps.Add("decimal_+-");
+                if (op == 5) activeOps.Add("find x");
+                if (op == 6) activeOps.Add("find :");
+                if (op == 7) activeOps.Add("hai phép tính +-");
             }
 
             TaoCauHoi();
@@ -57,14 +54,13 @@ public class MathManager : MonoBehaviour
         StopAllCoroutines();
         SetButtonsInteractable(true);
         ResetColorButtons();
-        isDecimalMode = false;
 
         if (activeOps.Count == 0) activeOps.Add("+");
-        string phepToanHienTai = activeOps[Random.Range(0, activeOps.Count)];
+        string phepToan = activeOps[Random.Range(0, activeOps.Count)];
 
-        int n1, n2;
+        int n1, n2, n3;
 
-        switch (phepToanHienTai)
+        switch (phepToan)
         {
             case "+":
                 n1 = Random.Range(minVal, maxVal + 1);
@@ -78,93 +74,109 @@ public class MathManager : MonoBehaviour
                 dapAnDung = n1 - n2; cauHoiText.text = $"{n1} - {n2} = ?"; break;
 
             case "x":
-                n1 = Random.Range(minVal, maxVal + 1);
-                n2 = Random.Range(2, 10);
+                if (UIManager.SelectedGrade >= 4)
+                {
+                    n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(minVal, maxVal + 1);
+                }
+                else
+                {
+                    n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(2, 10);
+                }
                 dapAnDung = n1 * n2; cauHoiText.text = $"{n1} x {n2} = ?"; break;
 
             case ":":
-                int kq = Random.Range(minVal, maxVal + 1);
-                int sc = Random.Range(2, 10);
+                int sc, kq;
+                if (UIManager.SelectedGrade >= 4)
+                {
+                    sc = Random.Range(minVal, maxVal + 1); kq = Random.Range(minVal, maxVal + 1);
+                    if (sc == 0) sc = 1;
+                }
+                else
+                {
+                    kq = Random.Range(2, 10); sc = Random.Range(minVal, maxVal + 1);
+                }
                 dapAnDung = kq; cauHoiText.text = $"{sc * kq} : {sc} = ?"; break;
 
             case "find_+-":
                 int x = Random.Range(minVal, maxVal + 1);
                 int b = Random.Range(minVal, maxVal + 1);
-                int findXType = Random.Range(0, 2);
-                if (findXType == 0)
-                {
+                if (Random.value > 0.5f)
+                { // Cộng
                     int tong = x + b; dapAnDung = x;
                     cauHoiText.text = (Random.value > 0.5f) ? $"? + {b} = {tong}" : $"{b} + ? = {tong}";
                 }
                 else
-                {
+                { // Trừ
                     dapAnDung = x;
                     if (Random.value > 0.5f)
                     {
-                        int hieu = x - b;
-                        if (x < b) { int t = x; x = b; b = t; hieu = x - b; dapAnDung = x; }
+                        int hieu = x - b; if (x < b) { x = b; b = x - hieu; }
                         cauHoiText.text = $"? - {b} = {hieu}";
                     }
                     else
                     {
-                        int a = x + b; dapAnDung = x; cauHoiText.text = $"{a} - ? = {b}";
+                        int a = x + b; cauHoiText.text = $"{a} - ? = {b}";
                     }
                 }
                 break;
 
-            case "find_x:":
-                int valX = Random.Range(minVal, maxVal + 1);
-                int valB = Random.Range(minVal, maxVal + 1);
-                int findXMode = Random.Range(0, 2);
-                if (findXMode == 0)
+            case "find x": // Tìm x trong phép nhân
+                int vX = (UIManager.SelectedGrade >= 4) ? Random.Range(minVal, maxVal + 1) : Random.Range(2, 10);
+                int vB = Random.Range(minVal, maxVal + 1);
+                int tich = vX * vB; dapAnDung = vX;
+                cauHoiText.text = (Random.value > 0.5f) ? $"? x {vB} = {tich}" : $"{vB} x ? = {tich}";
+                break;
+
+            case "find :": // Tìm x trong phép chia
+                int vXc = (UIManager.SelectedGrade >= 4) ? Random.Range(minVal, maxVal + 1) : Random.Range(2, 10);
+                int vBc = Random.Range(minVal, maxVal + 1);
+                if (vBc == 0) vBc = 1;
+                int sbc = vXc * vBc;
+                if (Random.value > 0.5f) { dapAnDung = sbc; cauHoiText.text = $"? : {vBc} = {vXc}"; }
+                else { dapAnDung = vBc; cauHoiText.text = $"{sbc} : ? = {vXc}"; }
+                break;
+
+            case "hai phép tính +-": // Dạng tính 3 số
+                n1 = Random.Range(minVal, maxVal + 1);
+                n2 = Random.Range(minVal, maxVal + 1);
+                n3 = Random.Range(minVal, maxVal + 1);
+                if (Random.value > 0.5f)
                 {
-                    int tich = valX * valB; dapAnDung = valX;
-                    cauHoiText.text = (Random.value > 0.5f) ? $"? x {valB} = {tich}" : $"{valB} x ? = {tich}";
+                    dapAnDung = n1 + n2 - n3; cauHoiText.text = $"{n1} + {n2} - {n3} = ?";
+                    if (dapAnDung < 0) { dapAnDung = n1 + n2 + n3; cauHoiText.text = $"{n1} + {n2} + {n3} = ?"; }
                 }
                 else
                 {
-                    if (valB == 0) valB = 1;
-                    int soBiChia = valX * valB;
-                    if (Random.value > 0.5f) { dapAnDung = soBiChia; cauHoiText.text = $"? : {valB} = {valX}"; }
-                    else { dapAnDung = valB; cauHoiText.text = $"{soBiChia} : ? = {valX}"; }
+                    if (n1 < n2) n1 = n2 + Random.Range(1, 10);
+                    dapAnDung = n1 - n2 + n3; cauHoiText.text = $"{n1} - {n2} + {n3} = ?";
                 }
                 break;
 
-            case "decimal_+-":
-                isDecimalMode = true;
-                // Lấy số nguyên từ đồ thị và chia 10 để ra số thập phân (Ví dụ 15 -> 1.5)
-                float d1 = Random.Range(minVal, maxVal + 1) / 10f;
-                float d2 = Random.Range(minVal, maxVal + 1) / 10f;
-                int decType = Random.Range(0, 2);
-
-                if (decType == 0)
-                {
-                    dapAnDungDecimal = (float)System.Math.Round(d1 + d2, 1);
-                    cauHoiText.text = $"{d1:F1} + {d2:F1} = ?";
-                }
-                else
-                {
-                    if (d1 < d2) { float t = d1; d1 = d2; d2 = t; }
-                    dapAnDungDecimal = (float)System.Math.Round(d1 - d2, 1);
-                    cauHoiText.text = $"{d1:F1} - {d2:F1} = ?";
-                }
-                break;
+            default:
+                n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(minVal, maxVal + 1);
+                dapAnDung = n1 + n2; cauHoiText.text = $"{n1} + {n2} = ?"; break;
         }
 
-        if (isDecimalMode) GenerateDecimalChoices();
-        else GenerateChoices();
+        GenerateChoices();
     }
 
     private void GenerateChoices()
     {
         List<int> choices = new List<int> { dapAnDung };
+
+        // Đồng bộ sai số biến động theo khối lớp
+        int gradeFactor = UIManager.SelectedGrade;
+        int maxOffset = gradeFactor * 5;
+
         while (choices.Count < dapAnBnt.Length)
         {
-            int offset = Random.Range(-5, 6);
-            if (offset == 0) offset = 1;
+            int offset = Random.Range(-maxOffset, maxOffset + 1);
+            if (offset == 0) offset = Random.value > 0.5f ? 1 : -1;
+
             int wrong = Mathf.Abs(dapAnDung + offset);
             if (!choices.Contains(wrong)) choices.Add(wrong);
         }
+
         ShuffleList(choices);
         for (int i = 0; i < dapAnBnt.Length; i++)
         {
@@ -175,43 +187,19 @@ public class MathManager : MonoBehaviour
         }
     }
 
-    private void GenerateDecimalChoices()
-    {
-        List<float> choices = new List<float> { dapAnDungDecimal };
-        while (choices.Count < dapAnBnt.Length)
-        {
-            float offset = Random.Range(-5, 6) / 10f;
-            if (Mathf.Abs(offset) < 0.1f) offset = 0.1f;
-            float wrong = (float)System.Math.Round(Mathf.Abs(dapAnDungDecimal + offset), 1);
-            if (!choices.Contains(wrong)) choices.Add(wrong);
-        }
-        // Trộn danh sách float
-        for (int i = 0; i < choices.Count; i++)
-        {
-            float t = choices[i]; int r = Random.Range(i, choices.Count);
-            choices[i] = choices[r]; choices[r] = t;
-        }
-        for (int i = 0; i < dapAnBnt.Length; i++)
-        {
-            dapAnBnt[i].GetComponentInChildren<TextMeshProUGUI>().text = choices[i].ToString("F1");
-            dapAnBnt[i].onClick.RemoveAllListeners();
-            float val = choices[i];
-            dapAnBnt[i].onClick.AddListener(() => CheckDapAnDecimal(val));
-        }
-    }
-
     private void CheckDapAn(int val)
     {
         SetButtonsInteractable(false);
-        if (val == dapAnDung) { HighlightButton(val.ToString(), Color.green); StartCoroutine(ActionAfterDelay(1f, true)); }
-        else { HighlightButton(val.ToString(), Color.red); StartCoroutine(ActionAfterDelay(0.5f, false)); }
-    }
-
-    private void CheckDapAnDecimal(float val)
-    {
-        SetButtonsInteractable(false);
-        if (Mathf.Abs(val - dapAnDungDecimal) < 0.01f) { HighlightButton(val.ToString("F1"), Color.green); StartCoroutine(ActionAfterDelay(1f, true)); }
-        else { HighlightButton(val.ToString("F1"), Color.red); StartCoroutine(ActionAfterDelay(0.5f, false)); }
+        if (val == dapAnDung)
+        {
+            HighlightButton(val.ToString(), Color.green);
+            StartCoroutine(ActionAfterDelay(1f, true));
+        }
+        else
+        {
+            HighlightButton(val.ToString(), Color.red);
+            StartCoroutine(ActionAfterDelay(0.5f, false));
+        }
     }
 
     IEnumerator ActionAfterDelay(float d, bool win)

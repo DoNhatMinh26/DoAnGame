@@ -5,16 +5,16 @@ public class SpaceShipPhysics : MonoBehaviour
 {
     [Header("Cài đặt di chuyển bằng Chuột")]
     public float followSpeed = 25f;
-    public float minY = -6f, maxY = 3f; // Khớp với Inspector của bạn
+    public float minY = -6f, maxY = 3f;
 
     [Header("Cấu hình Hút Tuyệt Đối")]
-    public float magnetDistance = 4f;   // Tăng thêm phạm vi quét
-    public float magnetStrength = 20f;  // Tăng vọt lực hút để không thể lọt khe
-    public float lockThresholdX = 6f;   // Khoảng cách X bắt đầu "khóa" chuột
+    public float magnetDistance = 4f;
+    public float magnetStrength = 20f;
+    public float lockThresholdX = 6f;
     public string gateTag = "Gate";
 
     private bool canMove = true;
-    private bool isLockedByMagnet = false; // Trạng thái cưỡng bức hút
+    private bool isLockedByMagnet = false;
 
     void Update()
     {
@@ -43,7 +43,6 @@ public class SpaceShipPhysics : MonoBehaviour
             float distY = Mathf.Abs(transform.position.y - gate.transform.position.y);
             float distX = gate.transform.position.x - transform.position.x;
 
-            // Nếu sắp chạm cổng (trong khoảng lockThresholdX)
             if (distX > -0.5f && distX < lockThresholdX)
             {
                 foundGateInRange = true;
@@ -55,13 +54,11 @@ public class SpaceShipPhysics : MonoBehaviour
             }
         }
 
-        // Nếu ở rất gần cổng theo trục X, khóa điều khiển chuột để tránh lọt khe
         isLockedByMagnet = foundGateInRange;
 
         if (closestGate != null)
         {
             float targetY = closestGate.transform.position.y;
-            // Ép phi thuyền vào tâm cổng ngay lập tức
             float newY = Mathf.Lerp(transform.position.y, targetY, magnetStrength * Time.deltaTime);
             transform.position = new Vector3(transform.position.x, newY, 0);
         }
@@ -72,18 +69,23 @@ public class SpaceShipPhysics : MonoBehaviour
         if (other.CompareTag(gateTag))
         {
             canMove = false;
-            isLockedByMagnet = false; // Giải phóng khóa để hiện kết quả
+            isLockedByMagnet = false;
 
             TextMeshProUGUI gateText = other.GetComponentInChildren<TextMeshProUGUI>();
 
             if (gateText != null && SpaceShipManager.Instance != null)
             {
-                string selectedVal = gateText.text;
+                // Đồng bộ: Lấy đáp án đúng đã được lưu trong Manager
                 string correctAnswer = SpaceShipManager.Instance.currentCorrectAnswer;
-                bool isCorrect = (selectedVal == correctAnswer);
+                bool isCorrect = (gateText.text == correctAnswer);
 
-                string questionPart = SpaceShipManager.Instance.GetCauHoiDungYenText().Replace("?", "").Trim();
-                SpaceShipManager.Instance.SetCauHoiDungYenResult(questionPart, correctAnswer);
+                // Lấy phần câu hỏi từ UI (loại bỏ dấu ? để ghép với đáp án đúng)
+                // Manager mới sử dụng hàm UpdateStaticQuestionUI để quản lý text này
+                SpaceShipPhysics playerScript = FindObjectOfType<SpaceShipPhysics>();
+
+                // Gọi hàm hiển thị kết quả cuối cùng lên UI
+                // Lưu ý: Chúng ta lấy text hiện tại từ Manager thay vì gọi hàm không tồn tại
+                SpaceShipManager.Instance.SetCauHoiDungYenResult("Kết quả:", correctAnswer);
 
                 gateText.color = isCorrect ? Color.green : Color.red;
             }
