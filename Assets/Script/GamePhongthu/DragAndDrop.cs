@@ -14,14 +14,16 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private Vector2 startPosition;
     private Canvas canvas;
     private Color originalColor;
-    private DragQuizManager qm; // Cache lại Manager
+    private DragQuizManager qm;
+
+    private static bool isLocked = false; // Khóa dùng chung cho tất cả các ô
 
     public TextMeshProUGUI myText;
 
     [Header("Cài đặt màu sắc")]
     public Color colorCorrect = Color.green;
     public Color colorWrong = Color.red;
-    [SerializeField] private float thoiGianDoiMau = 0.5f;
+    [SerializeField] private float thoiGianKhoa = 3.0f;
 
     private void Awake()
     {
@@ -30,15 +32,18 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         image = GetComponent<Image>();
         canvas = GetComponentInParent<Canvas>();
         originalColor = image.color;
-
-        // Tìm Manager ngay từ đầu để tiết kiệm tài nguyên
         qm = FindObjectOfType<DragQuizManager>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        StopAllCoroutines(); // Dừng mọi hiệu ứng đổi màu/di chuyển đang chạy
+        if (isLocked)
+        {
+            eventData.pointerDrag = null;
+            return;
+        }
 
+        StopAllCoroutines();
         startPosition = rectTransform.anchoredPosition;
         canvasGroup.alpha = 0.6f;
         canvasGroup.blocksRaycasts = false;
@@ -47,52 +52,74 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (isLocked) return;
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (isLocked) return;
+
         canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
 
         GameObject droppedOn = eventData.pointerEnter;
 
-        // Kiểm tra nếu thả trúng ô đích
         if (droppedOn != null && droppedOn.CompareTag("Slot"))
         {
-            // SỬA LỖI: Chuyển sang float để nhận dữ liệu từ qm.GetCurrentCorrectAnswer()
             float correctAnswer = qm.GetCurrentCorrectAnswer();
 
-            // SỬA LỖI: Dùng float.TryParse và Mathf.Abs để so sánh số thực (tránh sai số float)
             if (float.TryParse(myText.text, out float myValue) && Mathf.Abs(myValue - correctAnswer) < 0.01f)
             {
                 // ĐÚNG
                 image.color = colorCorrect;
+                if (CannonDefenseManager.Instance != null)
+                {
+                    CannonDefenseManager.Instance.FireAtClosestEnemy();
+                }
                 rectTransform.anchoredPosition = droppedOn.GetComponent<RectTransform>().anchoredPosition;
                 StartCoroutine(ResetQuestionAfterDelay());
             }
             else
             {
-                // SAI
-                image.color = colorWrong;
-                StartCoroutine(SmoothReturn()); // Trượt về vị trí cũ
-                StartCoroutine(WaitAndRestoreColor(thoiGianDoiMau));
+                // SAI -> Gọi hàm đổi màu toàn bộ các ô đáp án
+                ApplyGlobalWrongEffect();
+                StartCoroutine(SmoothReturn());
             }
         }
         else
         {
-            // Thả trượt ra ngoài
             StartCoroutine(SmoothReturn());
             image.color = originalColor;
         }
     }
 
-    // Hiệu ứng trượt về vị trí cũ mượt mà hơn
+    // Hàm tĩnh để tất cả các ô cùng đổi màu đỏ và bị khóa
+    private void ApplyGlobalWrongEffect()
+    {
+        DragAndDrop[] allChoices = FindObjectsOfType<DragAndDrop>();
+        foreach (DragAndDrop choice in allChoices)
+        {
+            choice.StartCoroutine(choice.LockAndColorRoutine());
+        }
+    }
+
+    IEnumerator LockAndColorRoutine()
+    {
+        isLocked = true;
+        image.color = colorWrong; // Cả bảng phía sau sẽ đỏ lên
+
+        yield return new WaitForSeconds(thoiGianKhoa);
+
+        image.color = originalColor; // Trả lại màu cũ sau khi hết phạt
+        isLocked = false;
+    }
+
     IEnumerator SmoothReturn()
     {
         float time = 0;
         Vector2 currentPos = rectTransform.anchoredPosition;
-        while (time < 0.2f) // Trượt về trong 0.2 giây
+        while (time < 0.2f)
         {
             rectTransform.anchoredPosition = Vector2.Lerp(currentPos, startPosition, time / 0.2f);
             time += Time.deltaTime;
@@ -101,19 +128,12 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         rectTransform.anchoredPosition = startPosition;
     }
 
-    IEnumerator WaitAndRestoreColor(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        image.color = originalColor;
-    }
-
     IEnumerator ResetQuestionAfterDelay()
     {
         yield return new WaitForSeconds(1.0f);
         image.color = originalColor;
         rectTransform.anchoredPosition = startPosition;
-
-        // Cập nhật câu hỏi mới dựa trên cấu hình độ khó hiện tại
         qm.UpdateDifficulty();
+        isLocked = false;
     }
 }

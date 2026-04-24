@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Slot
   - Gate
+  - Dan
+  - Enemy
+  - Tuong
   layers:
   - Default
   - TransparentFX
