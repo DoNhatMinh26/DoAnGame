@@ -56,4 +56,9 @@ public class EnemySpawner : MonoBehaviour
         maxEnemiesInLevel = settings.count;
         currentSpeed = settings.speed;
     }
+    public bool IsAllEnemiesSpawned()
+    {
+        // Kiểm tra xem số lượng đã sinh đã chạm mốc giới hạn của màn chơi chưa
+        return spawnedCount >= maxEnemiesInLevel;
+    }
 }

@@ -22,6 +22,7 @@ public class GameUIManager : MonoBehaviour
     [Header("Quản lý Panel Kết Thúc")]
     public GameObject panelWin;   // Kéo Panel chiến thắng vào đây
     public GameObject panelLose;  // Kéo Panel thất bại vào đây
+    private bool isGameOver = false;
 
     private void Awake()
     {
@@ -38,7 +39,8 @@ public class GameUIManager : MonoBehaviour
 
     private void Start()
     {
-        Time.timeScale = 1f;
+        // Chỉ kiểm tra khi đang trong màn chơi và chưa kết thúc game
+        
         GenerateLevelButtons();
 
         // Đảm bảo các panel kết thúc ẩn lúc đầu
@@ -47,6 +49,13 @@ public class GameUIManager : MonoBehaviour
         if (panelSetting != null) panelSetting.SetActive(false);
 
         ShowHome();
+    }
+    private void Update()
+    {
+        if (panelGameplay.activeSelf && !isGameOver)
+        {
+            CheckWinCondition();
+        }
     }
 
     #region CÁC HÀM ĐIỀU HƯỚNG
@@ -60,7 +69,8 @@ public class GameUIManager : MonoBehaviour
     public void Click_BackToHome()
     {
         Time.timeScale = 1f;
-        ClearEnemies(); // Dọn dẹp quái khi thoát
+        ClearAllGameplayObjects();
+        DragAndDrop.ReleaseAllLocks();// Dọn dẹp quái khi thoát
 
         EnemySpawner spawner = FindObjectOfType<EnemySpawner>();
         if (spawner != null) spawner.enabled = false;
@@ -100,6 +110,7 @@ public class GameUIManager : MonoBehaviour
         {
             panelWin.SetActive(true);
             Time.timeScale = 0f; // Tạm dừng game khi thắng
+            DragAndDrop.SetGlobalLock(true); // KHÓA kéo thả khi thắng
         }
     }
 
@@ -109,24 +120,33 @@ public class GameUIManager : MonoBehaviour
         {
             panelLose.SetActive(true);
             Time.timeScale = 0f; // Tạm dừng game khi thua
+            DragAndDrop.SetGlobalLock(true); // KHÓA kéo thả khi thắng
         }
+
     }
 
     public void Click_Retry()
     {
-        // 1. Chạy lại thời gian
+        // 1. Phải chạy lại thời gian (TimeScale = 1) để các Coroutine hoạt động lại
         Time.timeScale = 1f;
 
-        // 2. Reset lại lượng máu của tường thành về đầy cây
-        if (WallHealth.Instance != null)
+        // 2. Giải phóng biến 'isLocked' dùng chung cho tất cả các nút
+        DragAndDrop.ReleaseAllLocks();
+
+        
+        
+
+        // 4. Tìm tất cả các nút đáp án trên màn hình và đưa chúng về vị trí cũ
+        DragAndDrop[] allAnswers = FindObjectsOfType<DragAndDrop>();
+        foreach (DragAndDrop btn in allAnswers)
         {
-            WallHealth.Instance.ResetHealth();
+            btn.ForceResetPosition(); // Hàm này sẽ reset màu sắc và vị trí
         }
 
-        // 3. Gọi lại hàm bắt đầu chơi màn hiện tại
+        // 5. Bắt đầu lại màn chơi hiện tại (sinh quái mới, câu hỏi mới)
         BatDauChoiMan(LevelManager.CurrentLevel);
 
-        // 4. Ẩn các Panel thông báo (nếu có)
+        // 6. Ẩn bảng Thua/Thắng
         if (panelWin != null) panelWin.SetActive(false);
         if (panelLose != null) panelLose.SetActive(false);
     }
@@ -145,6 +165,7 @@ public class GameUIManager : MonoBehaviour
         {
             panelSetting.SetActive(true);
             Time.timeScale = 0f;
+            DragAndDrop.SetGlobalLock(true); // KHÓA kéo thả khi thắng
         }
     }
 
@@ -156,13 +177,20 @@ public class GameUIManager : MonoBehaviour
             // Chỉ chạy lại thời gian nếu không ở bảng kết thúc
             if (!panelWin.activeSelf && !panelLose.activeSelf)
                 Time.timeScale = 1f;
+            DragAndDrop.SetGlobalLock(false); // KHÓA kéo thả khi thắng
         }
     }
 
-    private void ClearEnemies()
+    private void ClearAllGameplayObjects()
     {
+        // 1. Tìm và xóa sạch kẻ địch (Tag: Enemy)
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         foreach (GameObject e in enemies) Destroy(e);
+
+        // 2. Tìm và xóa sạch các viên đạn đang bay (Tag: Dan)
+        // Đảm bảo bạn đã đặt Tag cho Prefab viên đạn là "Dan" trong Inspector
+        GameObject[] bullets = GameObject.FindGameObjectsWithTag("Dan");
+        foreach (GameObject b in bullets) Destroy(b);
     }
     #endregion
 
@@ -192,7 +220,9 @@ public class GameUIManager : MonoBehaviour
 
     public void BatDauChoiMan(int levelIndex)
     {
-        ClearEnemies(); // Xóa địch cũ khi sang màn mới
+        DragAndDrop.ReleaseAllLocks();
+        isGameOver = false;
+        ClearAllGameplayObjects(); // Xóa địch cũ khi sang màn mới
         LevelManager.CurrentLevel = levelIndex;
         ShowGameplay();
 
@@ -202,9 +232,32 @@ public class GameUIManager : MonoBehaviour
             spawner.enabled = true;
             spawner.ResetSpawner();
         }
+        // 3. Reset máu cho tường thành
+        if (WallHealth.Instance != null)
+        {
+            WallHealth.Instance.ResetHealth();
+        }
 
         DragQuizManager qm = FindObjectOfType<DragQuizManager>();
         if (qm != null) qm.UpdateDifficulty();
     }
+    void CheckWinCondition()
+    {
+        EnemySpawner spawner = FindObjectOfType<EnemySpawner>();
+
+        // 1. Kiểm tra Spawner đã sinh hết quái theo cấu hình chưa
+        if (spawner != null && spawner.enabled && spawner.IsAllEnemiesSpawned())
+        {
+            // 2. Đếm số lượng Enemy còn sống trên màn hình
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+            if (enemies.Length == 0)
+            {
+                isGameOver = true;
+                ShowWin(); // Gọi hàm hiện bảng thắng đã viết ở turn trước
+            }
+        }
+    }
+    
     #endregion
 }

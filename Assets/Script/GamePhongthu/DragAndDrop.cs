@@ -11,12 +11,14 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private RectTransform rectTransform;
     private CanvasGroup canvasGroup;
     private Image image;
-    private Vector2 startPosition;
     private Canvas canvas;
     private Color originalColor;
     private DragQuizManager qm;
 
-    private static bool isLocked = false; // Khóa dùng chung cho tất cả các ô
+    // QUAN TRỌNG: Dùng biến này để lưu vị trí chuẩn lúc thiết kế
+    private Vector2 originalPosition;
+
+    private static bool isLocked = false;
 
     public TextMeshProUGUI myText;
 
@@ -33,6 +35,16 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         canvas = GetComponentInParent<Canvas>();
         originalColor = image.color;
         qm = FindObjectOfType<DragQuizManager>();
+
+        // Lưu vị trí gốc ngay khi vừa khởi động để tránh lỗi reset về trung tâm
+        originalPosition = rectTransform.anchoredPosition;
+    }
+
+    // Tự động mở khóa khi màn hình Gameplay được kích hoạt lại
+    private void OnEnable()
+    {
+        isLocked = false;
+        if (image != null) image.color = originalColor;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -44,7 +56,6 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         }
 
         StopAllCoroutines();
-        startPosition = rectTransform.anchoredPosition;
         canvasGroup.alpha = 0.6f;
         canvasGroup.blocksRaycasts = false;
         image.color = originalColor;
@@ -82,7 +93,6 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             }
             else
             {
-                // SAI -> Gọi hàm đổi màu toàn bộ các ô đáp án
                 ApplyGlobalWrongEffect();
                 StartCoroutine(SmoothReturn());
             }
@@ -94,7 +104,6 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         }
     }
 
-    // Hàm tĩnh để tất cả các ô cùng đổi màu đỏ và bị khóa
     private void ApplyGlobalWrongEffect()
     {
         DragAndDrop[] allChoices = FindObjectsOfType<DragAndDrop>();
@@ -107,11 +116,11 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     IEnumerator LockAndColorRoutine()
     {
         isLocked = true;
-        image.color = colorWrong; // Cả bảng phía sau sẽ đỏ lên
+        image.color = colorWrong;
 
         yield return new WaitForSeconds(thoiGianKhoa);
 
-        image.color = originalColor; // Trả lại màu cũ sau khi hết phạt
+        image.color = originalColor;
         isLocked = false;
     }
 
@@ -121,19 +130,44 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         Vector2 currentPos = rectTransform.anchoredPosition;
         while (time < 0.2f)
         {
-            rectTransform.anchoredPosition = Vector2.Lerp(currentPos, startPosition, time / 0.2f);
+            // Trả về vị trí original chuẩn xác
+            rectTransform.anchoredPosition = Vector2.Lerp(currentPos, originalPosition, time / 0.2f);
             time += Time.deltaTime;
             yield return null;
         }
-        rectTransform.anchoredPosition = startPosition;
+        rectTransform.anchoredPosition = originalPosition;
     }
 
     IEnumerator ResetQuestionAfterDelay()
     {
         yield return new WaitForSeconds(1.0f);
         image.color = originalColor;
-        rectTransform.anchoredPosition = startPosition;
+        rectTransform.anchoredPosition = originalPosition;
         qm.UpdateDifficulty();
         isLocked = false;
+    }
+
+    public static void ReleaseAllLocks()
+    {
+        isLocked = false;
+    }
+
+    public void ForceResetPosition()
+    {
+        StopAllCoroutines();
+        isLocked = false;
+        if (image != null) image.color = originalColor;
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 1f;
+            canvasGroup.blocksRaycasts = true;
+        }
+
+        // Luôn trả về vị trí original dù có chuyện gì xảy ra
+        rectTransform.anchoredPosition = originalPosition;
+    }
+    public static void SetGlobalLock(bool locked)
+    {
+        isLocked = locked;
     }
 }
