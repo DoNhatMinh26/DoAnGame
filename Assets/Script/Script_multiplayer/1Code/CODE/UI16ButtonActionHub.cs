@@ -15,7 +15,7 @@ namespace DoAnGame.UI
     {
         [Header("Controllers")]
         [SerializeField] private UIMultiplayerRoomController roomController;
-        [SerializeField] private UISettingsPopupController settingsPopupController;
+        [SerializeField] private SettingsPopupController settingsPopupController;
 
         [Header("Navigation")]
         [SerializeField] private UIButtonScreenNavigator backToRoomNavigator;
@@ -180,10 +180,10 @@ namespace DoAnGame.UI
         [ContextMenu("Resolve Settings Popup")]
         public void TryResolveSettingsPopup()
         {
-            var all = Resources.FindObjectsOfTypeAll<UISettingsPopupController>();
+            var all = Resources.FindObjectsOfTypeAll<SettingsPopupController>();
             if (all == null || all.Length == 0)
             {
-                Log("ResolveSettingsPopup | no UISettingsPopupController found");
+                Log("ResolveSettingsPopup | no SettingsPopupController found");
                 return;
             }
 

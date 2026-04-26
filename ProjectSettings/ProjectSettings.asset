@@ -164,6 +164,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.DefaultCompany.DoAnGame
+    Standalone: com.DefaultCompany.DoAnGame
   buildNumber:
     Standalone: 0
     VisionOS: 0

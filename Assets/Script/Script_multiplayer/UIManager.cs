@@ -111,9 +111,9 @@ public class UIManager : NetworkBehaviour
         // Initialize birth year choices and Play button state
         InitializeBirthYearDropdown();
 
-        // Thiết lập Panel ban đầu: luôn về Welcome Screen.
-        // Auto-load session chỉ được chạy từ nút Chơi Tiếp ở Welcome.
-        ShowUI(0);
+        // DISABLED: UIStartupController handles initial panel display
+        // ShowUI(0);
+        Debug.Log("[UIManager] Initial panel display handled by UIStartupController");
 
         // Network
         isGameStarted.OnValueChanged += (oldVal, newVal) =>
@@ -293,6 +293,12 @@ public class UIManager : NetworkBehaviour
         else SelectedGrade = 1; // Mặc định là lớp 1 nếu chưa chọn
 
         selectedBirthYear = isBirthYearSelected ? birthYearDropdown.options[index].text : string.Empty;
+
+        // Lưu grade đã chọn vào PlayerPrefs (cho auto-skip)
+        if (isBirthYearSelected)
+        {
+            DoAnGame.UI.UIQuickPlayNameController.SaveSelectedGrade(SelectedGrade);
+        }
 
         Debug.Log($"[UIManager] Năm sinh: {selectedBirthYear} -> GradeIndex đã lưu: {SelectedGrade}");
 

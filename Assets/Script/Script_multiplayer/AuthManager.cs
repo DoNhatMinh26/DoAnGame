@@ -64,8 +64,23 @@ public class AuthManager : MonoBehaviour
         if (existing != null)
             return existing;
 
+        // Tự động tạo FirebaseManager nếu chưa có
+        Debug.Log("[Auth] 🔧 Tự động tạo FirebaseManager...");
+        
+        // Tìm AuthServices GameObject để gắn vào (nếu có)
+        GameObject authServicesObj = GameObject.Find("AuthServices");
+        if (authServicesObj != null)
+        {
+            var fm = authServicesObj.AddComponent<FirebaseManager>();
+            Debug.Log("[Auth] ✅ Đã thêm FirebaseManager vào AuthServices");
+            return fm;
+        }
+        
+        // Nếu không có AuthServices, tạo GameObject mới
         var go = new GameObject("FirebaseManager");
-        return go.AddComponent<FirebaseManager>();
+        var firebaseManager = go.AddComponent<FirebaseManager>();
+        Debug.Log("[Auth] ✅ Đã tạo FirebaseManager GameObject mới");
+        return firebaseManager;
     }
 
     private T ResolveOrCreate<T>(string gameObjectName) where T : MonoBehaviour

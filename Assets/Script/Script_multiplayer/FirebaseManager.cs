@@ -15,7 +15,7 @@ public class FirebaseManager : MonoBehaviour
 {
     public static FirebaseManager Instance { get; private set; }
 
-    [SerializeField] private bool enablePlayerDataSync = false;
+    [SerializeField] private bool enablePlayerDataSync = true;  // ← Mặc định BẬT để tự động tạo database
     
     private FirebaseAuth auth;
     private FirebaseUser currentUser;
@@ -271,6 +271,9 @@ public class FirebaseManager : MonoBehaviour
                     lastUpdated = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
                 };
                 await SavePlayerToDatabase(playerData);
+
+                // Tạo 15 gameModeProgress records (3 chế độ x 5 lớp)
+                await CreateInitialGameModeProgress(newUser.UserId);
             }
 
             currentUser = newUser;
@@ -486,6 +489,57 @@ public class FirebaseManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Tạo 15 gameModeProgress records ban đầu (3 chế độ x 5 lớp)
+    /// </summary>
+    private async Task CreateInitialGameModeProgress(string uid)
+    {
+        try
+        {
+            if (firestore == null)
+            {
+                Debug.LogWarning("[Firebase] ⚠️ Firestore chưa sẵn sàng để tạo gameModeProgress.");
+                return;
+            }
+
+            long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            string[] gameModes = { "chonda", "keothada", "phithuyen" };
+            int[] grades = { 1, 2, 3, 4, 5 };
+
+            Debug.Log("[Firebase] 🔄 Đang tạo 15 gameModeProgress records...");
+
+            // Tạo 15 records (3 chế độ x 5 lớp)
+            foreach (string gameMode in gameModes)
+            {
+                foreach (int grade in grades)
+                {
+                    string progressId = $"{uid}_{gameMode}_{grade}";
+                    
+                    var progressData = new Dictionary<string, object>
+                    {
+                        { "progressId", progressId },
+                        { "uid", uid },
+                        { "gameMode", gameMode },
+                        { "grade", grade },
+                        { "currentLevel", 1 },
+                        { "maxLevelUnlocked", 1 },
+                        { "totalScore", 0 },
+                        { "bestScore", 0 },
+                        { "lastPlayed", null }  // NULL = chưa chơi
+                    };
+
+                    await firestore.Collection("gameModeProgress").Document(progressId).SetAsync(progressData);
+                }
+            }
+
+            Debug.Log("[Firebase] ✅ Đã tạo 15 gameModeProgress records thành công!");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Firebase] ❌ Lỗi tạo gameModeProgress: {ex.Message}");
+        }
+    }
+
+    /// <summary>
     /// Lưu user vào Firestore
     /// </summary>
     private async Task SaveUserToDatabase(UserData userData)
@@ -573,6 +627,244 @@ public class FirebaseManager : MonoBehaviour
         {
             Debug.LogError($"[Firebase] ❌ Lỗi tải player data: {ex.Message}");
             return null;
+        }
+    }
+
+    /// <summary>
+    /// Cập nhật tiến độ sau khi chơi level
+    /// </summary>
+    public async Task UpdateLevelProgressAsync(string uid, string gameMode, int grade, int levelNumber, int score)
+    {
+        try
+        {
+            if (firestore == null)
+            {
+                Debug.LogWarning("[Firebase] ⚠️ Firestore chưa sẵn sàng để cập nhật level progress.");
+                return;
+            }
+
+            long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            string levelProgressId = $"{uid}_{gameMode}_{grade}_{levelNumber}";
+
+            // 1. Cập nhật/Tạo levelProgress
+            var levelProgressRef = firestore.Collection("levelProgress").Document(levelProgressId);
+            var levelSnapshot = await levelProgressRef.GetSnapshotAsync();
+
+            if (levelSnapshot.Exists)
+            {
+                // Level đã chơi rồi → Cập nhật nếu điểm cao hơn
+                var data = levelSnapshot.ToDictionary();
+                int currentBestScore = GetInt(data, "bestScore", 0);
+                int currentAttempts = GetInt(data, "attempts", 0);
+
+                var updateData = new Dictionary<string, object>
+                {
+                    { "attempts", currentAttempts + 1 }
+                };
+
+                if (score > currentBestScore)
+                {
+                    updateData["bestScore"] = score;
+                    Debug.Log($"[Firebase] 🎉 Điểm mới cao hơn! {currentBestScore} → {score}");
+                }
+
+                await levelProgressRef.UpdateAsync(updateData);
+            }
+            else
+            {
+                // Lần đầu chơi level này → Tạo mới
+                var newLevelProgress = new Dictionary<string, object>
+                {
+                    { "progressId", levelProgressId },
+                    { "uid", uid },
+                    { "gameMode", gameMode },
+                    { "grade", grade },
+                    { "levelNumber", levelNumber },
+                    { "bestScore", score },
+                    { "attempts", 1 }
+                };
+
+                await levelProgressRef.SetAsync(newLevelProgress);
+                Debug.Log($"[Firebase] ✅ Tạo levelProgress mới: {levelProgressId}");
+            }
+
+            // 2. Cập nhật gameModeProgress
+            string progressId = $"{uid}_{gameMode}_{grade}";
+            var progressRef = firestore.Collection("gameModeProgress").Document(progressId);
+            var progressSnapshot = await progressRef.GetSnapshotAsync();
+
+            if (progressSnapshot.Exists)
+            {
+                var progressData = progressSnapshot.ToDictionary();
+                int currentMaxUnlocked = GetInt(progressData, "maxLevelUnlocked", 1);
+                int currentTotalScore = GetInt(progressData, "totalScore", 0);
+                int currentBestScore = GetInt(progressData, "bestScore", 0);
+
+                var updateProgress = new Dictionary<string, object>
+                {
+                    { "currentLevel", levelNumber },
+                    { "totalScore", currentTotalScore + score },
+                    { "lastPlayed", now }
+                };
+
+                // Mở khóa level tiếp theo nếu hoàn thành level hiện tại
+                if (levelNumber >= currentMaxUnlocked && levelNumber < 100)
+                {
+                    updateProgress["maxLevelUnlocked"] = levelNumber + 1;
+                    Debug.Log($"[Firebase] 🔓 Mở khóa level {levelNumber + 1}");
+                }
+
+                // Cập nhật bestScore nếu cao hơn
+                if (score > currentBestScore)
+                {
+                    updateProgress["bestScore"] = score;
+                }
+
+                await progressRef.UpdateAsync(updateProgress);
+                Debug.Log($"[Firebase] ✅ Cập nhật gameModeProgress: {progressId}");
+            }
+
+            // 3. Cập nhật playerData (tổng điểm)
+            await UpdatePlayerStatsAsync(uid, score, score / 10); // XP = score / 10
+
+            Debug.Log($"[Firebase] ✅ Hoàn thành cập nhật tiến độ level {levelNumber}");
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Firebase] ❌ Lỗi cập nhật level progress: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Kiểm tra level có được mở khóa không
+    /// </summary>
+    public async Task<bool> IsLevelUnlockedAsync(string uid, string gameMode, int grade, int levelNumber)
+    {
+        try
+        {
+            if (firestore == null)
+            {
+                Debug.LogWarning("[Firebase] ⚠️ Firestore chưa sẵn sàng.");
+                return false;
+            }
+
+            string progressId = $"{uid}_{gameMode}_{grade}";
+            var snapshot = await firestore.Collection("gameModeProgress").Document(progressId).GetSnapshotAsync();
+
+            if (!snapshot.Exists)
+            {
+                Debug.LogWarning($"[Firebase] ⚠️ Không tìm thấy gameModeProgress: {progressId}");
+                return false;
+            }
+
+            var data = snapshot.ToDictionary();
+            int maxLevelUnlocked = GetInt(data, "maxLevelUnlocked", 1);
+
+            bool isUnlocked = levelNumber <= maxLevelUnlocked;
+            Debug.Log($"[Firebase] 🔍 Level {levelNumber} unlocked: {isUnlocked} (max: {maxLevelUnlocked})");
+            
+            return isUnlocked;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Firebase] ❌ Lỗi kiểm tra level unlock: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Load tiến độ chế độ game (để hiển thị màn hình chọn level)
+    /// </summary>
+    public async Task<GameModeProgressData> LoadGameModeProgressAsync(string uid, string gameMode, int grade)
+    {
+        try
+        {
+            if (firestore == null)
+            {
+                Debug.LogWarning("[Firebase] ⚠️ Firestore chưa sẵn sàng.");
+                return null;
+            }
+
+            string progressId = $"{uid}_{gameMode}_{grade}";
+            var snapshot = await firestore.Collection("gameModeProgress").Document(progressId).GetSnapshotAsync();
+
+            if (!snapshot.Exists)
+            {
+                Debug.LogWarning($"[Firebase] ⚠️ Không tìm thấy gameModeProgress: {progressId}");
+                return null;
+            }
+
+            var data = snapshot.ToDictionary();
+            var progressData = new GameModeProgressData
+            {
+                progressId = progressId,
+                uid = uid,
+                gameMode = gameMode,
+                grade = grade,
+                currentLevel = GetInt(data, "currentLevel", 1),
+                maxLevelUnlocked = GetInt(data, "maxLevelUnlocked", 1),
+                totalScore = GetInt(data, "totalScore", 0),
+                bestScore = GetInt(data, "bestScore", 0),
+                lastPlayed = GetLong(data, "lastPlayed", 0)
+            };
+
+            Debug.Log($"[Firebase] ✅ Load gameModeProgress: {progressId} (maxUnlocked: {progressData.maxLevelUnlocked})");
+            return progressData;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Firebase] ❌ Lỗi load gameModeProgress: {ex.Message}");
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Load điểm từng level (để hiển thị trên màn hình chọn level)
+    /// </summary>
+    public async Task<Dictionary<int, LevelProgressData>> LoadLevelScoresAsync(string uid, string gameMode, int grade)
+    {
+        try
+        {
+            if (firestore == null)
+            {
+                Debug.LogWarning("[Firebase] ⚠️ Firestore chưa sẵn sàng.");
+                return new Dictionary<int, LevelProgressData>();
+            }
+
+            var query = firestore.Collection("levelProgress")
+                .WhereEqualTo("uid", uid)
+                .WhereEqualTo("gameMode", gameMode)
+                .WhereEqualTo("grade", grade);
+
+            var snapshot = await query.GetSnapshotAsync();
+            var levelScores = new Dictionary<int, LevelProgressData>();
+
+            foreach (var doc in snapshot.Documents)
+            {
+                var data = doc.ToDictionary();
+                int levelNumber = GetInt(data, "levelNumber", 0);
+                
+                var levelData = new LevelProgressData
+                {
+                    progressId = doc.Id,
+                    uid = uid,
+                    gameMode = gameMode,
+                    grade = grade,
+                    levelNumber = levelNumber,
+                    bestScore = GetInt(data, "bestScore", 0),
+                    attempts = GetInt(data, "attempts", 0)
+                };
+
+                levelScores[levelNumber] = levelData;
+            }
+
+            Debug.Log($"[Firebase] ✅ Load {levelScores.Count} level scores cho {gameMode} lớp {grade}");
+            return levelScores;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Firebase] ❌ Lỗi load level scores: {ex.Message}");
+            return new Dictionary<int, LevelProgressData>();
         }
     }
 
@@ -750,4 +1042,36 @@ public class GameSession
     public long startTime;
     public long endTime;
     public string difficulty;
+}
+
+/// <summary>
+/// Dữ liệu tiến độ chế độ game (gameModeProgress)
+/// </summary>
+[System.Serializable]
+public class GameModeProgressData
+{
+    public string progressId;
+    public string uid;
+    public string gameMode;         // chonda, keothada, phithuyen
+    public int grade;               // 1-5
+    public int currentLevel;        // Level đang chơi
+    public int maxLevelUnlocked;    // Level đã mở khóa
+    public int totalScore;          // Tổng điểm chế độ này
+    public int bestScore;           // Điểm cao nhất 1 level
+    public long lastPlayed;         // Timestamp chơi gần nhất (0 = chưa chơi)
+}
+
+/// <summary>
+/// Dữ liệu điểm từng level (levelProgress)
+/// </summary>
+[System.Serializable]
+public class LevelProgressData
+{
+    public string progressId;
+    public string uid;
+    public string gameMode;         // chonda, keothada, phithuyen
+    public int grade;               // 1-5
+    public int levelNumber;         // 1-100
+    public int bestScore;           // Điểm cao nhất
+    public int attempts;            // Số lần chơi
 }

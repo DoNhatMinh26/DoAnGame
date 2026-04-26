@@ -87,7 +87,45 @@ namespace DoAnGame.UI
             {
                 authManager = AuthManager.Instance;
             }
-            UpdatePlayerInfo();
+            
+            // Force load player data if logged in
+            if (!UIQuickPlayNameController.IsGuestMode())
+            {
+                Debug.Log("[MainMenu] Logged-in user detected, loading player data...");
+                LoadPlayerDataAsync();
+            }
+            else
+            {
+                UpdatePlayerInfo();
+            }
+        }
+        
+        private async void LoadPlayerDataAsync()
+        {
+            try
+            {
+                if (authManager != null)
+                {
+                    // Wait for AuthManager to load data
+                    await System.Threading.Tasks.Task.Delay(100); // Small delay to let Firebase sync
+                    
+                    // Try to get Firebase user
+                    var firebaseUser = Firebase.Auth.FirebaseAuth.DefaultInstance?.CurrentUser;
+                    if (firebaseUser != null)
+                    {
+                        Debug.Log($"[MainMenu] Firebase user: {firebaseUser.Email}, DisplayName: {firebaseUser.DisplayName}");
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[MainMenu] Error loading player data: {e.Message}");
+            }
+            finally
+            {
+                // Update UI regardless of success/failure
+                UpdatePlayerInfo();
+            }
         }
 
         protected override void OnDestroy()
@@ -98,6 +136,19 @@ namespace DoAnGame.UI
 
         private void UpdatePlayerInfo()
         {
+            // Kiểm tra nếu đang ở chế độ khách
+            if (UIQuickPlayNameController.IsGuestMode())
+            {
+                string guestName = UIQuickPlayNameController.GetGuestName();
+                characterNameText?.SetText($"Khách: {guestName}");
+                levelText?.SetText("Lv: 1");
+                scoreText?.SetText("Score: 0");
+                
+                Debug.Log($"[MainMenu] Guest mode: {guestName}");
+                return;
+            }
+
+            // Người chơi đã đăng nhập
             var data = authManager?.GetCurrentPlayerData();
 
             string characterName = data?.characterName;
@@ -117,18 +168,40 @@ namespace DoAnGame.UI
                     }
                     else if (!string.IsNullOrWhiteSpace(firebaseUser.Email))
                     {
-                        characterName = firebaseUser.Email;
+                        // Fallback: Use email as name
+                        characterName = firebaseUser.Email.Split('@')[0]; // Get part before @
                     }
+                }
+            }
+            
+            // Last fallback: Try Firebase Auth directly
+            if (string.IsNullOrWhiteSpace(characterName) || characterName == "Unknown")
+            {
+                var currentUser = Firebase.Auth.FirebaseAuth.DefaultInstance?.CurrentUser;
+                if (currentUser != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(currentUser.DisplayName))
+                    {
+                        characterName = currentUser.DisplayName;
+                    }
+                    else if (!string.IsNullOrWhiteSpace(currentUser.Email))
+                    {
+                        characterName = currentUser.Email.Split('@')[0];
+                    }
+                    
+                    Debug.Log($"[MainMenu] Using Firebase Auth user: {characterName}");
                 }
             }
 
             if (!string.IsNullOrWhiteSpace(characterName) && characterName != "Unknown")
             {
                 characterNameText?.SetText($"Tên Nhân Vật: {characterName}");
+                Debug.Log($"[MainMenu] Displaying character name: {characterName}");
             }
             else
             {
                 characterNameText?.SetText("Tên Nhân Vật: -----");
+                Debug.LogWarning("[MainMenu] Could not load character name!");
             }
 
             if (data == null)
@@ -142,17 +215,32 @@ namespace DoAnGame.UI
             scoreText?.SetText($"Score: {data.totalScore}");
         }
 
-        private void HandleLogout()
+        private async void HandleLogout()
         {
+            Debug.Log("[MainMenu] Logout button clicked");
+            
+            // Clear session tokens FIRST
+            PlayerPrefs.DeleteKey("SessionToken");
+            PlayerPrefs.DeleteKey("SessionExpiry");
+            PlayerPrefs.Save();
+            Debug.Log("[MainMenu] Cleared session tokens from PlayerPrefs");
+            
+            // Then logout from AuthManager
             authManager?.Logout();
-
-            if (welcomeScreenRoot != null)
-            {
-                UIScreenRouter.TryShowRoot(welcomeScreenRoot);
-                return;
-            }
-
-            UIScreenRouter.TryShowWelcome(ref flowManager);
+            
+            // Xóa dữ liệu khách nếu có
+            UIQuickPlayNameController.ClearGuestData();
+            
+            Debug.Log("[MainMenu] Cleared all session data");
+            
+            // Wait for Firebase to clear
+            await System.Threading.Tasks.Task.Delay(100);
+            
+            // Reload scene to reset all states
+            Debug.Log("[MainMenu] Reloading scene...");
+            UnityEngine.SceneManagement.SceneManager.LoadScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene().name
+            );
         }
     }
 }

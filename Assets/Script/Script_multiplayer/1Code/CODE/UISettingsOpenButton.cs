@@ -12,7 +12,7 @@ namespace DoAnGame.UI
     {
         [Header("Liên kết Popup")]
         [LocalizedLabel("Controller popup Settings")]
-        [SerializeField] private UISettingsPopupController popupController;
+        [SerializeField] private SettingsPopupController popupController;
 
         [LocalizedLabel("Dùng chế độ bật/tắt")]
         [SerializeField] private bool useToggle;
