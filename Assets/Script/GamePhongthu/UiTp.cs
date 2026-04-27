@@ -68,10 +68,21 @@ public class GameUIManager : MonoBehaviour
 
     public void Click_BackToHome()
     {
+        DragAndDrop[] allAnswers = FindObjectsOfType<DragAndDrop>();
+        foreach (DragAndDrop btn in allAnswers)
+        {
+            btn.ForceResetPosition();
+        }
         Time.timeScale = 1f;
-        ClearAllGameplayObjects();
-        DragAndDrop.ReleaseAllLocks();// Dọn dẹp quái khi thoát
 
+        // 1. Dọn dẹp quái và đạn
+        ClearAllGameplayObjects();
+
+        // 2. GIẢI QUYẾT LỖI: Giải phóng hoàn toàn các biến khóa static
+        DragAndDrop.ReleaseAllLocks();
+        DragAndDrop.SetGlobalLock(false);
+
+        // 3. Ngừng Spawner
         EnemySpawner spawner = FindObjectOfType<EnemySpawner>();
         if (spawner != null) spawner.enabled = false;
 
@@ -109,8 +120,22 @@ public class GameUIManager : MonoBehaviour
         if (panelWin != null)
         {
             panelWin.SetActive(true);
-            Time.timeScale = 0f; // Tạm dừng game khi thắng
-            DragAndDrop.SetGlobalLock(true); // KHÓA kéo thả khi thắng
+            Time.timeScale = 0f;
+            DragAndDrop.SetGlobalLock(true);
+
+            // LƯU DỮ LIỆU MỞ KHÓA MÀN TIẾP THEO
+            int currentHighest = PlayerPrefs.GetInt("HighestLevelReached", 1);
+            int wonLevel = LevelManager.CurrentLevel;
+
+            // Nếu thắng màn hiện tại là màn cao nhất, mở màn tiếp theo
+            if (wonLevel == currentHighest && wonLevel < 100)
+            {
+                PlayerPrefs.SetInt("HighestLevelReached", wonLevel + 1);
+                PlayerPrefs.Save(); // Đảm bảo dữ liệu được ghi xuống bộ nhớ
+
+                // Cập nhật lại danh sách nút để hiển thị màn mới vừa mở
+                GenerateLevelButtons();
+            }
         }
     }
 
@@ -127,26 +152,9 @@ public class GameUIManager : MonoBehaviour
 
     public void Click_Retry()
     {
-        // 1. Phải chạy lại thời gian (TimeScale = 1) để các Coroutine hoạt động lại
         Time.timeScale = 1f;
-
-        // 2. Giải phóng biến 'isLocked' dùng chung cho tất cả các nút
         DragAndDrop.ReleaseAllLocks();
-
-        
-        
-
-        // 4. Tìm tất cả các nút đáp án trên màn hình và đưa chúng về vị trí cũ
-        DragAndDrop[] allAnswers = FindObjectsOfType<DragAndDrop>();
-        foreach (DragAndDrop btn in allAnswers)
-        {
-            btn.ForceResetPosition(); // Hàm này sẽ reset màu sắc và vị trí
-        }
-
-        // 5. Bắt đầu lại màn chơi hiện tại (sinh quái mới, câu hỏi mới)
         BatDauChoiMan(LevelManager.CurrentLevel);
-
-        // 6. Ẩn bảng Thua/Thắng
         if (panelWin != null) panelWin.SetActive(false);
         if (panelLose != null) panelLose.SetActive(false);
     }
@@ -155,17 +163,18 @@ public class GameUIManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         int nextLevel = LevelManager.CurrentLevel + 1;
-        if (nextLevel > 100) nextLevel = 100; // Giới hạn 100 màn
-        BatDauChoiMan(nextLevel);
-    }
+        if (nextLevel > 100) nextLevel = 100;
 
+        BatDauChoiMan(nextLevel); // Tự động reset nút bên trong hàm này
+        if (panelWin != null) panelWin.SetActive(false);
+    }
     public void Click_OpenSetting()
     {
         if (panelSetting != null)
         {
             panelSetting.SetActive(true);
-            Time.timeScale = 0f;
-            DragAndDrop.SetGlobalLock(true); // KHÓA kéo thả khi thắng
+            Time.timeScale = 0f; // Tự động làm bộ đếm bên DragAndDrop dừng lại
+            DragAndDrop.SetGlobalLock(true);
         }
     }
 
@@ -174,10 +183,36 @@ public class GameUIManager : MonoBehaviour
         if (panelSetting != null)
         {
             panelSetting.SetActive(false);
-            // Chỉ chạy lại thời gian nếu không ở bảng kết thúc
+
             if (!panelWin.activeSelf && !panelLose.activeSelf)
-                Time.timeScale = 1f;
-            DragAndDrop.SetGlobalLock(false); // KHÓA kéo thả khi thắng
+            {
+                Time.timeScale = 1f; // Tự động làm bộ đếm chạy tiếp từ giây cũ
+
+                // Hàm này cực kỳ quan trọng để kiểm tra xem có ai đang bị phạt không
+                CheckPunishmentStatus();
+            }
+        }
+    }
+
+    private void CheckPunishmentStatus()
+    {
+        DragAndDrop[] allChoices = FindObjectsOfType<DragAndDrop>();
+        bool isAnyoneRed = false;
+
+        foreach (var choice in allChoices)
+        {
+            // Nếu vẫn còn nút màu đỏ, nghĩa là nó vẫn đang trong thời gian phạt (Coroutine chưa xong)
+            if (choice.GetComponent<Image>().color == choice.colorWrong)
+            {
+                isAnyoneRed = true;
+                break;
+            }
+        }
+
+        // Nếu không ai bị đỏ thì mới mở khóa kéo thả
+        if (!isAnyoneRed)
+        {
+            DragAndDrop.SetGlobalLock(false);
         }
     }
 
@@ -200,11 +235,16 @@ public class GameUIManager : MonoBehaviour
         if (levelButtonPrefab == null || contentParent == null) return;
         foreach (Transform child in contentParent) Destroy(child.gameObject);
 
+        // Lấy màn cao nhất đã mở khóa (Mặc định là màn 1)
+        int highestLevelReached = PlayerPrefs.GetInt("HighestLevelReached", 1);
+
         for (int i = 1; i <= 100; i++)
         {
             GameObject btnObj = Instantiate(levelButtonPrefab, contentParent);
             RectTransform btnRect = btnObj.GetComponent<RectTransform>();
+            Button btn = btnObj.GetComponent<Button>();
 
+            // Tính toán vị trí nút (giữ nguyên logic của bạn)
             float posX = (i - 1) * buttonSpacing;
             float posY = Mathf.Sin(i * waveFrequency) * waveAmplitude;
             btnRect.anchoredPosition = new Vector2(posX + (buttonSpacing / 2f), posY);
@@ -213,26 +253,52 @@ public class GameUIManager : MonoBehaviour
             if (txt != null) txt.text = i.ToString();
 
             int levelIndex = i;
-            btnObj.GetComponent<Button>().onClick.AddListener(() => BatDauChoiMan(levelIndex));
+
+            // KIỂM TRA MỞ KHÓA
+            if (i <= highestLevelReached)
+            {
+                // Màn đã mở: Cho phép bấm và để màu bình thường
+                btn.interactable = true;
+                btn.image.color = Color.white;
+                btn.onClick.AddListener(() => BatDauChoiMan(levelIndex));
+            }
+            else
+            {
+                // Màn bị khóa: Không cho bấm và làm mờ nút
+                btn.interactable = false;
+                btn.image.color = new Color(0.5f, 0.5f, 0.5f, 0.8f); // Màu xám mờ
+            }
         }
         contentParent.sizeDelta = new Vector2(100 * buttonSpacing, contentParent.sizeDelta.y);
     }
 
     public void BatDauChoiMan(int levelIndex)
     {
+        // Luôn ưu tiên mở khóa và chạy lại thời gian đầu tiên
+        Time.timeScale = 1f;
         DragAndDrop.ReleaseAllLocks();
+        DragAndDrop.SetGlobalLock(false);
+
+        // Reset vị trí các nút (đã thêm ở bước trước)
+        DragAndDrop[] allAnswers = FindObjectsOfType<DragAndDrop>();
+        foreach (DragAndDrop btn in allAnswers)
+        {
+            btn.ForceResetPosition();
+        }
+
         isGameOver = false;
-        ClearAllGameplayObjects(); // Xóa địch cũ khi sang màn mới
+        ClearAllGameplayObjects();
         LevelManager.CurrentLevel = levelIndex;
         ShowGameplay();
 
+        // Reset Spawner và Máu tường
         EnemySpawner spawner = FindObjectOfType<EnemySpawner>();
         if (spawner != null)
         {
             spawner.enabled = true;
             spawner.ResetSpawner();
         }
-        // 3. Reset máu cho tường thành
+
         if (WallHealth.Instance != null)
         {
             WallHealth.Instance.ResetHealth();

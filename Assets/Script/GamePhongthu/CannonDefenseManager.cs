@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CannonDefenseManager : MonoBehaviour
 {
@@ -25,10 +25,19 @@ public class CannonDefenseManager : MonoBehaviour
             }
         }
 
+        // THAY ĐỔI: Luôn tạo đạn khi chọn đúng, bất kể có quái hay chưa
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        DanVaCham scriptDan = bullet.GetComponent<DanVaCham>();
+
         if (closest != null)
         {
-            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
-            bullet.GetComponent<DanVaCham>().SetTarget(closest.transform);
+            // Có quái thì bắn ngay
+            scriptDan.SetTarget(closest.transform);
+        }
+        else
+        {
+            // Chưa có quái thì truyền null để viên đạn vào trạng thái chờ (isWaitingForTarget)
+            scriptDan.SetTarget(null);
         }
     }
 }

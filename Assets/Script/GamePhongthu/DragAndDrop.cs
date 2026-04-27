@@ -20,6 +20,8 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     private static bool isLocked = false;
 
+    private Coroutine punishmentCoroutine;
+
     public TextMeshProUGUI myText;
 
     [Header("Cài đặt màu sắc")]
@@ -109,7 +111,9 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         DragAndDrop[] allChoices = FindObjectsOfType<DragAndDrop>();
         foreach (DragAndDrop choice in allChoices)
         {
-            choice.StartCoroutine(choice.LockAndColorRoutine());
+            // Nếu đang có hình phạt cũ thì dừng lại để bắt đầu cái mới
+            if (choice.punishmentCoroutine != null) choice.StopCoroutine(choice.punishmentCoroutine);
+            choice.punishmentCoroutine = choice.StartCoroutine(choice.LockAndColorRoutine());
         }
     }
 
@@ -118,10 +122,24 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         isLocked = true;
         image.color = colorWrong;
 
-        yield return new WaitForSeconds(thoiGianKhoa);
+        float elapsed = 0f;
+        // Vòng lặp này sẽ tự "đứng im" khi Time.timeScale = 0 (do DeltaTime = 0)
+        while (elapsed < thoiGianKhoa)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
 
         image.color = originalColor;
-        isLocked = false;
+
+        // Chỉ mở khóa khi thực sự không còn menu nào che khuất
+        if (GameUIManager.Instance != null &&
+            !GameUIManager.Instance.panelSetting.activeSelf &&
+            !GameUIManager.Instance.panelWin.activeSelf &&
+            !GameUIManager.Instance.panelLose.activeSelf)
+        {
+            isLocked = false;
+        }
     }
 
     IEnumerator SmoothReturn()
