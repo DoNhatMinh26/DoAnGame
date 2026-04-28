@@ -87,6 +87,11 @@ public class DanVaCham : MonoBehaviour
     {
         if (target != null)
         {
+            // Xác nhận quái bị tiêu diệt bởi người chơi trước khi Destroy
+            if (target.TryGetComponent(out EnemyMovement enemy))
+            {
+                enemy.biTieuDietBoiNguoiChoi = true;
+            }
             Destroy(target.gameObject);
         }
         Destroy(gameObject);

@@ -5,7 +5,10 @@ public class EnemyMovement : MonoBehaviour
     public float speed = 2.0f;
     public float damage = 10f; // Sát thương của con chuột
     private bool isAttacking = false;
+    public bool biTieuDietBoiNguoiChoi = false;
 
+    [Header("Cài đặt rơi tiền")]
+    public GameObject coinPrefab;
     void Update()
     {
         if (!isAttacking)
@@ -43,7 +46,21 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnDestroy()
     {
-        // Quan trọng: Phải hủy lệnh lặp khi kẻ địch bị tiêu diệt
         CancelInvoke("GaySatThuong");
+
+        // CHỈ sinh đồng xu nếu game không tắt VÀ quái chết do bị bắn (không phải thoát màn)
+        if (!AppQuitting.isQuitting && biTieuDietBoiNguoiChoi && coinPrefab != null)
+        {
+            SpawnCoins();
+        }
+    }
+
+    void SpawnCoins()
+    {
+        // CHỈNH SỬA: Loại bỏ Random.Range, chỉ gọi Instantiate đúng 1 lần
+        if (coinPrefab != null)
+        {
+            Instantiate(coinPrefab, transform.position, Quaternion.identity);
+        }
     }
 }

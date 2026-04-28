@@ -24,6 +24,23 @@ public class GameUIManager : MonoBehaviour
     public GameObject panelLose;  // Kéo Panel thất bại vào đây
     private bool isGameOver = false;
 
+    [Header("Quản lý Tiền")]
+    public TextMeshProUGUI totalCoinTxt; // Text hiển thị ở Shop/Menu
+    public TextMeshProUGUI levelCoinTxt; // Text hiển thị trong trận đấu (Gameplay)
+    public Transform coinTarget;
+
+    [Header("Quản lý Skin")]
+    public SpriteRenderer catRenderer;
+    public SpriteRenderer gameplayCatRenderer;// Kéo SpriteRenderer của con mèo vào đây
+    public CatSkin[] allSkins; // Danh sách các Skin bạn tạo ra
+    [Header("Giao diện Shop")]
+    public Image[] skinButtonImages;
+    public TextMeshProUGUI[] skinPriceTexts;
+    private int pendingSkinIndex = -1;
+
+    private int totalCoins = 0;
+    private int levelCoins = 0;
+
     private void Awake()
     {
         if (Instance == null)
@@ -39,11 +56,16 @@ public class GameUIManager : MonoBehaviour
 
     private void Start()
     {
-        // Chỉ kiểm tra khi đang trong màn chơi và chưa kết thúc game
+        // Tải tiền tổng từ máy
+        totalCoins = PlayerPrefs.GetInt("TotalCoins", 0);
+
+        // Tải và mặc skin đã lưu
+        LoadCurrentSkin();
+        UpdateShopUI();
+        UpdateCoinUI();
         
         GenerateLevelButtons();
 
-        // Đảm bảo các panel kết thúc ẩn lúc đầu
         if (panelWin != null) panelWin.SetActive(false);
         if (panelLose != null) panelLose.SetActive(false);
         if (panelSetting != null) panelSetting.SetActive(false);
@@ -57,6 +79,147 @@ public class GameUIManager : MonoBehaviour
             CheckWinCondition();
         }
     }
+    void UpdateCoinUI()
+    {
+        if (totalCoinTxt != null) totalCoinTxt.text = totalCoins.ToString();
+        if (levelCoinTxt != null) levelCoinTxt.text = levelCoins.ToString();
+    }
+    public void UpdateCoinsFromShop(int newTotal)
+    {
+        totalCoins = newTotal;
+        UpdateCoinUI();
+    }
+    public void AddCoins(int amount)
+    {
+        levelCoins += amount;
+        totalCoins += amount;
+        PlayerPrefs.SetInt("TotalCoins", totalCoins);
+        PlayerPrefs.Save();
+        UpdateCoinUI();
+    }
+    public void LoadCurrentSkin()
+    {
+        int currentSkinID = PlayerPrefs.GetInt("SelectedSkinID", 0);
+
+        if (allSkins != null && currentSkinID < allSkins.Length && allSkins[currentSkinID] != null)
+        {
+            Sprite skinSprite = allSkins[currentSkinID].skinSprite;
+
+            // Gắn cho mèo ở Menu
+            if (catRenderer != null) catRenderer.sprite = skinSprite;
+
+            // Gắn cho mèo trong trận đấu
+            if (gameplayCatRenderer != null) gameplayCatRenderer.sprite = skinSprite;
+
+            Debug.Log("Đã cập nhật skin cho cả Menu và Gameplay.");
+        }
+    }
+    public bool IsSkinUnlocked(int index)
+    {
+        // Skin 0 luôn mở
+        if (index == 0) return true;
+
+        // Kiểm tra PlayerPrefs, trả về 0 nếu chưa từng lưu (mặc định là khóa)
+        return PlayerPrefs.GetInt("SkinUnlocked_" + index, 0) == 1;
+    }
+
+
+
+    public void UpdateShopUI()
+    {
+        if (allSkins == null || skinButtonImages == null) return;
+
+        for (int i = 0; i < allSkins.Length; i++)
+        {
+            if (i >= skinButtonImages.Length || skinButtonImages[i] == null) continue;
+
+            bool isUnlocked = IsSkinUnlocked(i);
+
+            // 1. Cập nhật màu sắc (sáng/tối)
+            if (isUnlocked)
+            {
+                skinButtonImages[i].color = Color.white;
+
+                // 2. Cập nhật chữ hiển thị thành "Đã sở hữu" nếu mảng Text tồn tại
+                if (i < skinPriceTexts.Length && skinPriceTexts[i] != null)
+                {
+                    skinPriceTexts[i].text = "Đã sở hữu";
+                }
+            }
+            else
+            {
+                skinButtonImages[i].color = new Color(0.3f, 0.3f, 0.3f, 1f);
+
+                // Hiện lại giá gốc từ ScriptableObject nếu chưa mua
+                if (i < skinPriceTexts.Length && skinPriceTexts[i] != null)
+                {
+                    skinPriceTexts[i].text = allSkins[i].price.ToString();
+                }
+            }
+        }
+    }
+    public void SelectSkinToPreview(int index)
+    {
+        // Đảm bảo index nằm trong mảng hợp lệ
+        if (allSkins == null || index < 0 || index >= allSkins.Length) return;
+
+        pendingSkinIndex = index; // Ghi nhớ skin đang chọn
+
+        // Đổi hình ảnh mèo để người chơi xem thử
+        CatSkin skin = allSkins[index];
+        catRenderer.sprite = skin.skinSprite;
+
+        Debug.Log("Đang chọn xem thử Skin Index: " + index);
+    }
+
+    public void Click_ConfirmPurchase()
+    {
+        // Nếu chưa chọn skin nào để xem thì không làm gì cả
+        if (pendingSkinIndex == -1) return;
+
+        // Nếu skin đã mở khóa rồi thì không cần mua nữa
+        if (IsSkinUnlocked(pendingSkinIndex)) return;
+
+        CatSkin skin = allSkins[pendingSkinIndex];
+
+        if (totalCoins >= skin.price)
+        {
+            // 1. Trừ tiền
+            totalCoins -= skin.price;
+            PlayerPrefs.SetInt("TotalCoins", totalCoins);
+            // 2. Mở khóa skin
+            PlayerPrefs.SetInt("SkinUnlocked_" + pendingSkinIndex, 1);
+            // 3. Mặc luôn skin vừa mua
+            PlayerPrefs.SetInt("SelectedSkinID", pendingSkinIndex);
+            PlayerPrefs.Save();
+            // 4. Cập nhật giao diện
+            UpdateCoinUI();
+            UpdateShopUI(); // Làm sáng nút skin trong shop
+
+            Debug.Log("Mua thành công: " + skin.skinName);
+        }
+        else
+        {
+            Debug.Log("Không đủ tiền mua skin này!");
+        }
+    }
+    public void BuyAndApplySkin(int index)
+    {
+        if (allSkins == null || index < 0 || index >= allSkins.Length) return;
+
+        pendingSkinIndex = index;
+        CatSkin skin = allSkins[index];
+
+        // Cho xem thử trên cả hai renderer
+        if (catRenderer != null) catRenderer.sprite = skin.skinSprite;
+        if (gameplayCatRenderer != null) gameplayCatRenderer.sprite = skin.skinSprite;
+
+        if (IsSkinUnlocked(index))
+        {
+            PlayerPrefs.SetInt("SelectedSkinID", index);
+            PlayerPrefs.Save();
+        }
+    }
 
     #region CÁC HÀM ĐIỀU HƯỚNG
     public void Click_OpenChonMan()
@@ -68,6 +231,7 @@ public class GameUIManager : MonoBehaviour
 
     public void Click_BackToHome()
     {
+        UpdateShopUI();
         DragAndDrop[] allAnswers = FindObjectsOfType<DragAndDrop>();
         foreach (DragAndDrop btn in allAnswers)
         {
@@ -227,6 +391,49 @@ public class GameUIManager : MonoBehaviour
         GameObject[] bullets = GameObject.FindGameObjectsWithTag("Dan");
         foreach (GameObject b in bullets) Destroy(b);
     }
+    public void ResetAllGameData()
+    {
+        // Xóa tiền
+        PlayerPrefs.DeleteKey("TotalCoins");
+        totalCoins = 0;
+        UpdateCoinUI();
+
+        // Xóa skin (gọi hàm vừa tạo ở trên)
+        ResetSkins();
+
+        // Xóa tiến trình màn chơi
+        PlayerPrefs.DeleteKey("HighestLevelReached");
+
+        PlayerPrefs.Save();
+
+        // Tải lại danh sách nút chọn màn để khóa các màn đã mở
+        GenerateLevelButtons();
+
+        Debug.Log("Dữ liệu game đã được xóa sạch hoàn toàn!");
+    }
+    // Thêm hàm này vào class GameUIManager trong file UiTp.cs
+    public void ResetSkins()
+    {
+        // 1. Reset ID skin đang mặc về 0 (Mặc định)
+        PlayerPrefs.SetInt("SelectedSkinID", 0);
+
+        // 2. Khóa lại tất cả các skin (trừ skin index 0)
+        // Giả sử bạn có 3 skin (0, 1, 2), vòng lặp sẽ chạy từ 1 trở đi
+        for (int i = 1; i < allSkins.Length; i++)
+        {
+            PlayerPrefs.DeleteKey("SkinUnlocked_" + i);
+        }
+
+        PlayerPrefs.Save();
+
+        // 3. Cập nhật lại hình ảnh con mèo ngay lập tức
+        LoadCurrentSkin();
+
+        // 4. Cập nhật lại giao diện Shop (làm tối các skin vừa bị khóa)
+        UpdateShopUI();
+
+        Debug.Log("Đã reset toàn bộ Skin về trạng thái ban đầu!");
+    }
     #endregion
 
     #region LOGIC SINH NÚT MÀN CHƠI
@@ -274,6 +481,9 @@ public class GameUIManager : MonoBehaviour
 
     public void BatDauChoiMan(int levelIndex)
     {
+        LoadCurrentSkin();
+        levelCoins = 0;
+        UpdateCoinUI();
         // Luôn ưu tiên mở khóa và chạy lại thời gian đầu tiên
         Time.timeScale = 1f;
         DragAndDrop.ReleaseAllLocks();
