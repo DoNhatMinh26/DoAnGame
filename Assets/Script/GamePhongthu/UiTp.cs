@@ -40,7 +40,18 @@ public class GameUIManager : MonoBehaviour
 
     private int totalCoins = 0;
     private int levelCoins = 0;
+    private int lastSelectedType = 0;
 
+    [Header("Quản lý Pháo")]
+    public SpriteRenderer phaoRenderer;
+    public SpriteRenderer shopPhaoRenderer;// Kéo Renderer khẩu pháo ở Gameplay vào đây
+    public PhaoSkin[] allPhaoSkins;     // Danh sách các loại Pháo
+    public Image[] phaoButtonImages;   // Các ảnh Pháo trong Shop để làm tối/sáng
+    public TextMeshProUGUI[] phaoPriceTexts;
+    private int pendingPhaoIndex = -1;
+    [Header("Thông báo Shop")]
+    public TextMeshProUGUI shopNotificationTxt;
+    public CanvasGroup notificationCanvasGroup;
     private void Awake()
     {
         if (Instance == null)
@@ -63,7 +74,9 @@ public class GameUIManager : MonoBehaviour
         LoadCurrentSkin();
         UpdateShopUI();
         UpdateCoinUI();
-        
+        LoadCurrentPhao();
+        UpdatePhaoShopUI();
+
         GenerateLevelButtons();
 
         if (panelWin != null) panelWin.SetActive(false);
@@ -97,6 +110,42 @@ public class GameUIManager : MonoBehaviour
         PlayerPrefs.Save();
         UpdateCoinUI();
     }
+    public void ShowShopNotification(string message)
+    {
+        if (shopNotificationTxt != null && notificationCanvasGroup != null)
+        {
+            // Dừng các hiệu ứng đang chạy dở để tránh xung đột
+            StopAllCoroutines();
+
+            shopNotificationTxt.text = message;
+            StartCoroutine(FadeNotificationRoutine());
+        }
+    }
+
+    private System.Collections.IEnumerator FadeNotificationRoutine()
+    {
+        // 1. Hiện thông báo ngay lập tức
+        notificationCanvasGroup.alpha = 1f;
+        notificationCanvasGroup.gameObject.SetActive(true);
+
+        // 2. Giữ nguyên trong 1.5 giây để người dùng kịp đọc
+        yield return new WaitForSecondsRealtime(1.5f);
+
+        // 3. Hiệu ứng mờ dần trong 1 giây
+        float duration = 1f;
+        float currentTime = 0f;
+        while (currentTime < duration)
+        {
+            currentTime += Time.unscaledDeltaTime;
+            notificationCanvasGroup.alpha = Mathf.Lerp(1f, 0f, currentTime / duration);
+            yield return null;
+        }
+
+        // 4. Ẩn hẳn đối tượng khi đã mờ hết
+        notificationCanvasGroup.alpha = 0f;
+        notificationCanvasGroup.gameObject.SetActive(false);
+    }
+    #region LOGIC skin Meo
     public void LoadCurrentSkin()
     {
         int currentSkinID = PlayerPrefs.GetInt("SelectedSkinID", 0);
@@ -153,53 +202,82 @@ public class GameUIManager : MonoBehaviour
                 // Hiện lại giá gốc từ ScriptableObject nếu chưa mua
                 if (i < skinPriceTexts.Length && skinPriceTexts[i] != null)
                 {
-                    skinPriceTexts[i].text = allSkins[i].price.ToString();
+                    skinPriceTexts[i].text = allSkins[i].price.ToString() + "$";
                 }
             }
         }
     }
     public void SelectSkinToPreview(int index)
     {
-        // Đảm bảo index nằm trong mảng hợp lệ
         if (allSkins == null || index < 0 || index >= allSkins.Length) return;
 
-        pendingSkinIndex = index; // Ghi nhớ skin đang chọn
+        pendingSkinIndex = index;
+        lastSelectedType = 1; // Ưu tiên chọn Mèo
 
-        // Đổi hình ảnh mèo để người chơi xem thử
-        CatSkin skin = allSkins[index];
-        catRenderer.sprite = skin.skinSprite;
+        // Hiển thị hình ảnh lên các Renderer để xem thử
+        if (catRenderer != null) catRenderer.sprite = allSkins[index].skinSprite;
+        if (gameplayCatRenderer != null) gameplayCatRenderer.sprite = allSkins[index].skinSprite;
 
-        Debug.Log("Đang chọn xem thử Skin Index: " + index);
+        // KIỂM TRA TRẠNG THÁI SỞ HỮU
+        if (IsSkinUnlocked(index))
+        {
+            // Nếu đã có rồi thì tự động lưu và báo "Đã mặc"
+            PlayerPrefs.SetInt("SelectedSkinID", index);
+            PlayerPrefs.Save();
+            ShowShopNotification("Đã mặc: " + allSkins[index].skinName);
+        }
+        else
+        {
+            // Nếu chưa có thì báo "Chưa sở hữu"
+            ShowShopNotification("Chưa sở hữu nhân vật này!");
+        }
     }
 
     public void Click_ConfirmPurchase()
     {
-        // Nếu chưa chọn skin nào để xem thì không làm gì cả
-        if (pendingSkinIndex == -1) return;
-
-        // Nếu skin đã mở khóa rồi thì không cần mua nữa
-        if (IsSkinUnlocked(pendingSkinIndex)) return;
-
-        CatSkin skin = allSkins[pendingSkinIndex];
-
-        if (totalCoins >= skin.price)
+        // 1. Kiểm tra nếu chưa chọn skin nào để xem
+        if (pendingSkinIndex == -1)
         {
-            // 1. Trừ tiền
-            totalCoins -= skin.price;
-            PlayerPrefs.SetInt("TotalCoins", totalCoins);
-            // 2. Mở khóa skin
-            PlayerPrefs.SetInt("SkinUnlocked_" + pendingSkinIndex, 1);
-            // 3. Mặc luôn skin vừa mua
+            ShowShopNotification("Vui lòng chọn một nhân vật!");
+            return;
+        }
+
+        // Lấy thông tin skin đang chọn
+        CatSkin skin = allSkins[pendingSkinIndex];
+        bool isUnlocked = IsSkinUnlocked(pendingSkinIndex);
+
+        // 2. Logic xử lý Mua hoặc Mặc
+        if (isUnlocked || totalCoins >= skin.price)
+        {
+            if (!isUnlocked)
+            {
+                // Thực hiện trừ tiền nếu chưa mua
+                totalCoins -= skin.price;
+                PlayerPrefs.SetInt("TotalCoins", totalCoins);
+                PlayerPrefs.SetInt("SkinUnlocked_" + pendingSkinIndex, 1);
+
+                ShowShopNotification("Mua thành công: " + skin.skinName + "!");
+            }
+            else
+            {
+                // Thông báo khi nhấn vào món đã sở hữu
+                ShowShopNotification("Đã Sở Hữu: " + skin.skinName);
+            }
+
+            // 3. Lưu và mặc skin vừa chọn
             PlayerPrefs.SetInt("SelectedSkinID", pendingSkinIndex);
             PlayerPrefs.Save();
-            // 4. Cập nhật giao diện
-            UpdateCoinUI();
-            UpdateShopUI(); // Làm sáng nút skin trong shop
 
-            Debug.Log("Mua thành công: " + skin.skinName);
+            // 4. Cập nhật giao diện đồng nhất với Shop
+            UpdateCoinUI(); // Hiển thị số tiền mới (kèm dấu $ nếu bạn đã sửa)
+            UpdateShopUI(); // Làm sáng nút skin và đổi chữ thành "Đã sở hữu"
+            LoadCurrentSkin(); // Cập nhật hình ảnh mèo cho cả Menu và Gameplay
         }
         else
         {
+            // Thông báo chi tiết số tiền còn thiếu tương tự như Pháo
+            int thieu = skin.price - totalCoins;
+            ShowShopNotification("Bạn còn thiếu " + thieu + "$ để mua skin này!");
             Debug.Log("Không đủ tiền mua skin này!");
         }
     }
@@ -220,8 +298,137 @@ public class GameUIManager : MonoBehaviour
             PlayerPrefs.Save();
         }
     }
+    #endregion
+    #region LOGIC skin Pháo
+    public void LoadCurrentPhao()
+    {
+        int id = PlayerPrefs.GetInt("SelectedPhaoID", 0);
+        if (allPhaoSkins != null && id < allPhaoSkins.Length)
+        {
+            Sprite currentPhaoSprite = allPhaoSkins[id].phaoSprite;
 
+            // Cập nhật pháo trong trận đấu
+            if (phaoRenderer != null)
+            {
+                phaoRenderer.sprite = currentPhaoSprite;
+            }
+
+            // Cập nhật luôn pháo ở Shop/Menu nếu cần đồng bộ
+            if (shopPhaoRenderer != null)
+            {
+                shopPhaoRenderer.sprite = currentPhaoSprite;
+            }
+        }
+    }
+
+    public void SelectPhaoToPreview(int index)
+    {
+        if (allPhaoSkins == null || index < 0 || index >= allPhaoSkins.Length) return;
+
+        pendingPhaoIndex = index;
+        lastSelectedType = 2; // Ưu tiên chọn Pháo
+
+        Sprite previewSprite = allPhaoSkins[index].phaoSprite;
+        if (shopPhaoRenderer != null) shopPhaoRenderer.sprite = previewSprite;
+        if (phaoRenderer != null) phaoRenderer.sprite = previewSprite;
+
+        // KIỂM TRA TRẠNG THÁI SỞ HỮU
+        bool isUnlocked = (index == 0 || PlayerPrefs.GetInt("PhaoUnlocked_" + index, 0) == 1);
+
+        if (isUnlocked)
+        {
+            // Nếu đã có rồi thì tự động lưu và báo "Đã trang bị"
+            PlayerPrefs.SetInt("SelectedPhaoID", index);
+            PlayerPrefs.Save();
+            ShowShopNotification("Đã trang bị pháo!");
+        }
+        else
+        {
+            // Nếu chưa có thì báo "Chưa sở hữu"
+            ShowShopNotification("Chưa sở hữu khẩu pháo này!");
+        }
+    }
+
+    public void Click_ConfirmPurchasePhao()
+    {
+        // 1. Kiểm tra nếu chưa chọn pháo nào để xem
+        if (pendingPhaoIndex == -1)
+        {
+            ShowShopNotification("Vui lòng chọn một khẩu pháo!");
+            return;
+        }
+
+        PhaoSkin skin = allPhaoSkins[pendingPhaoIndex];
+        // Kiểm tra trạng thái mở khóa
+        bool isUnlocked = pendingPhaoIndex == 0 || PlayerPrefs.GetInt("PhaoUnlocked_" + pendingPhaoIndex, 0) == 1;
+
+        // 2. Logic xử lý Mua hoặc Mặc
+        if (isUnlocked || totalCoins >= skin.price)
+        {
+            if (!isUnlocked)
+            {
+                // Thực hiện trừ tiền nếu chưa mua
+                totalCoins -= skin.price;
+                PlayerPrefs.SetInt("TotalCoins", totalCoins);
+                PlayerPrefs.SetInt("PhaoUnlocked_" + pendingPhaoIndex, 1);
+
+                ShowShopNotification("Đã mua thành công: " + skin.phaoName + "!");
+            }
+            else
+            {
+                ShowShopNotification("Đã sở hữu: " + skin.phaoName);
+            }
+
+            // Lưu lựa chọn vào máy
+            PlayerPrefs.SetInt("SelectedPhaoID", pendingPhaoIndex);
+            PlayerPrefs.Save();
+
+            // 3. Cập nhật giao diện và hình ảnh
+            UpdateCoinUI();      // Sẽ hiện tiền kèm dấu $ nếu bạn đã sửa hàm này
+            UpdatePhaoShopUI();  // Sẽ hiện chữ "Đã sở hữu" hoặc giá kèm dấu $
+            LoadCurrentPhao();   // Đồng bộ hình ảnh cho cả Shop và Gameplay
+        }
+        else
+        {
+            // Thông báo khi không đủ tiền
+            int thieu = skin.price - totalCoins;
+            ShowShopNotification("Bạn còn thiếu " + thieu + "$ để mua pháo này!");
+        }
+    }
+    public void UpdatePhaoShopUI()
+    {
+        for (int i = 0; i < allPhaoSkins.Length; i++)
+        {
+            bool unlocked = i == 0 || PlayerPrefs.GetInt("PhaoUnlocked_" + i, 0) == 1;
+            if (i < phaoButtonImages.Length)
+            {
+                phaoButtonImages[i].color = unlocked ? Color.white : new Color(0.3f, 0.3f, 0.3f, 1f);
+            }
+            if (i < phaoPriceTexts.Length)
+            {
+                phaoPriceTexts[i].text = unlocked ? "Đã sở hữu" : allPhaoSkins[i].price.ToString() + "$";
+            }
+        }
+    }
+    #endregion
     #region CÁC HÀM ĐIỀU HƯỚNG
+    public void Click_GlobalConfirmPurchase()
+    {
+        // Ưu tiên mua Mèo nếu chọn Mèo cuối cùng
+        if (lastSelectedType == 1 && pendingSkinIndex != -1)
+        {
+            Click_ConfirmPurchase(); // Gọi hàm mua mèo hiện tại của bạn
+        }
+        // Ưu tiên mua Pháo nếu chọn Pháo cuối cùng
+        else if (lastSelectedType == 2 && pendingPhaoIndex != -1)
+        {
+            Click_ConfirmPurchasePhao(); // Gọi hàm mua pháo hiện tại của bạn
+        }
+        else
+        {
+            Debug.Log("Vui lòng chọn một sản phẩm trước khi mua!");
+        }
+    }
     public void Click_OpenChonMan()
     {
         DeactivateAll();
@@ -302,7 +509,15 @@ public class GameUIManager : MonoBehaviour
             }
         }
     }
+    // Hàm đợi 3 giây trước khi hiện bảng thắng để tiền kịp nạp vào
+    private System.Collections.IEnumerator WaitAndShowWin()
+    {
+        // Đợi 3 giây thực tế (không bị ảnh hưởng bởi Time.timeScale nếu bạn muốn)
+        yield return new WaitForSecondsRealtime(2f);
 
+        // Gọi hàm hiện bảng thắng gốc của bạn
+        ShowWin();
+    }
     public void ShowLose()
     {
         if (panelLose != null)
@@ -357,6 +572,7 @@ public class GameUIManager : MonoBehaviour
             }
         }
     }
+
 
     private void CheckPunishmentStatus()
     {
@@ -414,25 +630,61 @@ public class GameUIManager : MonoBehaviour
     // Thêm hàm này vào class GameUIManager trong file UiTp.cs
     public void ResetSkins()
     {
-        // 1. Reset ID skin đang mặc về 0 (Mặc định)
+        // --- RESET SKIN MÈO ---
+        // 1. Reset ID skin mèo về mặc định (0)
         PlayerPrefs.SetInt("SelectedSkinID", 0);
 
-        // 2. Khóa lại tất cả các skin (trừ skin index 0)
-        // Giả sử bạn có 3 skin (0, 1, 2), vòng lặp sẽ chạy từ 1 trở đi
-        for (int i = 1; i < allSkins.Length; i++)
+        // 2. Khóa lại tất cả skin mèo (trừ cái đầu tiên)
+        if (allSkins != null)
         {
-            PlayerPrefs.DeleteKey("SkinUnlocked_" + i);
+            for (int i = 1; i < allSkins.Length; i++)
+            {
+                PlayerPrefs.DeleteKey("SkinUnlocked_" + i);
+            }
         }
 
+        // --- RESET SKIN PHÁO ---
+        // 3. Reset ID pháo về mặc định (0)
+        PlayerPrefs.SetInt("SelectedPhaoID", 0);
+
+        // 4. Khóa lại tất cả skin pháo (trừ cái đầu tiên)
+        if (allPhaoSkins != null)
+        {
+            for (int i = 1; i < allPhaoSkins.Length; i++)
+            {
+                PlayerPrefs.DeleteKey("PhaoUnlocked_" + i);
+            }
+        }
+
+        // 5. Lưu thay đổi
         PlayerPrefs.Save();
 
-        // 3. Cập nhật lại hình ảnh con mèo ngay lập tức
-        LoadCurrentSkin();
+        // 6. Cập nhật lại hình ảnh ngay lập tức trên tất cả Renderer
+        LoadCurrentSkin();  // Cập nhật mèo (Menu & Gameplay)
+        LoadCurrentPhao();  // Cập nhật pháo (Shop & Gameplay)
 
-        // 4. Cập nhật lại giao diện Shop (làm tối các skin vừa bị khóa)
-        UpdateShopUI();
+        // 7. Cập nhật lại giao diện Shop để làm tối các ô vừa bị khóa
+        UpdateShopUI();     // Shop Mèo
+        UpdatePhaoShopUI(); // Shop Pháo
 
-        Debug.Log("Đã reset toàn bộ Skin về trạng thái ban đầu!");
+        Debug.Log("Đã reset toàn bộ Skin Mèo và Pháo về trạng thái mặc định!");
+    }
+    void CheckWinCondition()
+    {
+        EnemySpawner spawner = FindObjectOfType<EnemySpawner>();
+
+        // 1. Kiểm tra Spawner đã sinh hết quái theo cấu hình chưa
+        if (spawner != null && spawner.enabled && spawner.IsAllEnemiesSpawned())
+        {
+            // 2. Đếm số lượng Enemy còn sống trên màn hình
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+            if (enemies.Length == 0)
+            {
+                isGameOver = true;
+                StartCoroutine(WaitAndShowWin()); // Gọi hàm hiện bảng thắng đã viết ở turn trước
+            }
+        }
     }
     #endregion
 
@@ -481,6 +733,7 @@ public class GameUIManager : MonoBehaviour
 
     public void BatDauChoiMan(int levelIndex)
     {
+        LoadCurrentPhao();
         LoadCurrentSkin();
         levelCoins = 0;
         UpdateCoinUI();
@@ -516,23 +769,6 @@ public class GameUIManager : MonoBehaviour
 
         DragQuizManager qm = FindObjectOfType<DragQuizManager>();
         if (qm != null) qm.UpdateDifficulty();
-    }
-    void CheckWinCondition()
-    {
-        EnemySpawner spawner = FindObjectOfType<EnemySpawner>();
-
-        // 1. Kiểm tra Spawner đã sinh hết quái theo cấu hình chưa
-        if (spawner != null && spawner.enabled && spawner.IsAllEnemiesSpawned())
-        {
-            // 2. Đếm số lượng Enemy còn sống trên màn hình
-            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-
-            if (enemies.Length == 0)
-            {
-                isGameOver = true;
-                ShowWin(); // Gọi hàm hiện bảng thắng đã viết ở turn trước
-            }
-        }
     }
     
     #endregion

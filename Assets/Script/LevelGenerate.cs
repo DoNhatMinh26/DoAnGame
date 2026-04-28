@@ -254,7 +254,7 @@ public class LevelGenerate : ScriptableObject
             allowedOperators = new byte[] { 0,1,7 },
             unlockCurve = Always(),
             minNumberCurve = Lin(10, 100),
-            maxNumberCurve = Lin(100, 500)
+            maxNumberCurve = Lin(30, 500)
         },
 
         // TypeC: Tìm x trong phép chia (Mở khóa từ màn 60)
@@ -318,7 +318,7 @@ public class LevelGenerate : ScriptableObject
             allowedOperators = new byte[] { 0, 1 },
             unlockCurve = Always(),
             minNumberCurve = Lin(10, 500),
-            maxNumberCurve = Lin(100, 2000)
+            maxNumberCurve = Lin(30, 2000)
         }
     };
     private static GradeRule BuildGrade5() => new()
@@ -331,8 +331,8 @@ public class LevelGenerate : ScriptableObject
             mathTypeName = "Nhân/Chia/Tìm x",
             allowedOperators = new byte[] { 2, 3, 5, 6 },
             unlockCurve = StartAt(0.1f),
-            minNumberCurve = Lin(10, 50),
-            maxNumberCurve = Lin(30, 100)
+            minNumberCurve = Lin(2, 50),
+            maxNumberCurve = Lin(10, 100)
         },
 
         // TypeB: Biểu thức 3 số phức tạp (Mở khóa từ màn 40)
@@ -352,7 +352,7 @@ public class LevelGenerate : ScriptableObject
             allowedOperators = new byte[] { 0, 1 },
             unlockCurve = Always(),
             minNumberCurve = Lin(10, 1000),
-            maxNumberCurve = Lin(100, 5000)
+            maxNumberCurve = Lin(30, 5000)
         },
 
         // TypeD: Tìm x Cộng/Trừ số lớn (Mở khóa từ màn 70)
@@ -362,7 +362,7 @@ public class LevelGenerate : ScriptableObject
             allowedOperators = new byte[] { 4 },
             unlockCurve = StartAt(0.5f),
             minNumberCurve = Lin(10, 500),
-            maxNumberCurve = Lin(100, 1000)
+            maxNumberCurve = Lin(30, 1000)
         }
     };
     private static AnimationCurve StartAt(float startTime)
