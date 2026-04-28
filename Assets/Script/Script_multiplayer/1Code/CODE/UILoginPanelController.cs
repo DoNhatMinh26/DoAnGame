@@ -261,7 +261,40 @@ namespace DoAnGame.UI
 
         private void HandleForgotPassword()
         {
-            SetErrorMessage("Tính năng quên mật khẩu sẽ được cập nhật sau.");
+            Debug.Log("[UILoginPanel] Forgot password button clicked");
+
+            // Tìm ForgotPasswordPanel
+            Transform canvas = transform.parent;
+            if (canvas == null)
+            {
+                Debug.LogError("[UILoginPanel] Cannot find parent canvas!");
+                SetErrorMessage("Không tìm thấy panel quên mật khẩu");
+                return;
+            }
+
+            Transform forgotPasswordPanel = canvas.Find("ForgotPasswordPanel");
+            if (forgotPasswordPanel == null)
+            {
+                Debug.LogError("[UILoginPanel] Cannot find ForgotPasswordPanel!");
+                SetErrorMessage("Tính năng quên mật khẩu chưa được cài đặt");
+                return;
+            }
+
+            // Ẩn LoginPanel
+            Hide();
+
+            // Hiển thị ForgotPasswordPanel
+            var flowPanel = forgotPasswordPanel.GetComponent<FlowPanelController>();
+            if (flowPanel != null)
+            {
+                flowPanel.Show();
+            }
+            else
+            {
+                forgotPasswordPanel.gameObject.SetActive(true);
+            }
+
+            Debug.Log("[UILoginPanel] Navigated to ForgotPasswordPanel");
         }
 
         private void HandleRegisterRedirect()

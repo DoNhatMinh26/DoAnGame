@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ==========================================
+    // COLLECTION: users
+    // ==========================================
+    // Lưu thông tin user: email, characterName, age, avatar
+    // - READ: Cho phép tất cả (cần cho forgot password & character name validation)
+    // - WRITE: Chỉ user tự update data của mình
+    match /users/{userId} {
+      allow read: if true;  // ✅ Cho phép đọc (cần cho forgot password)
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // ==========================================
+    // COLLECTION: playerData
+    // ==========================================
+    // Lưu stats: level, totalXp, totalScore, rank, gamesPlayed, gamesWon, winRate
+    // - READ: Cho phép tất cả (cần cho LEADERBOARD)
+    // - WRITE: Chỉ user tự update data của mình
+    match /playerData/{userId} {
+      allow read: if true;  // ✅ Cho phép đọc (cần cho leaderboard)
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // ==========================================
+    // COLLECTION: gameModeProgress
+    // ==========================================
+    // Lưu tiến độ chế độ game: currentLevel, maxLevelUnlocked, totalScore, bestScore
+    // - READ: Chỉ user đã đăng nhập
+    // - WRITE: Chỉ user tự update data của mình
+    match /gameModeProgress/{progressId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && progressId.matches('^' + request.auth.uid + '_.*');
+      allow update, delete: if request.auth != null && progressId.matches('^' + request.auth.uid + '_.*');
+    }
+    
+    // ==========================================
+    // COLLECTION: levelProgress
+    // ==========================================
+    // Lưu điểm từng level: bestScore, attempts
+    // - READ: Chỉ user đã đăng nhập
+    // - WRITE: Chỉ user tự update data của mình
+    match /levelProgress/{progressId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && progressId.matches('^' + request.auth.uid + '_.*');
+      allow update, delete: if request.auth != null && progressId.matches('^' + request.auth.uid + '_.*');
+    }
+    
+    // ==========================================
+    // MẶC ĐỊNH: CHẶN TẤT CẢ
+    // ==========================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

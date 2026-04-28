@@ -190,7 +190,7 @@ namespace DoAnGame.UI
                     CreateEntry(i + 1, players[i]);
                 }
 
-                UpdateStatusText($"✅ Hiển thị top {players.Count} người chơi");
+                UpdateStatusText($"Danh Sách Top {maxEntries}:");
                 Debug.Log($"[Leaderboard] ✅ Displayed {players.Count} entries");
             }
             catch (System.Exception ex)
