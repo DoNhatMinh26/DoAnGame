@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
-
+using System.Collections;
 public class SpaceShipPhysics : MonoBehaviour
 {
     [Header("Cài đặt di chuyển bằng Chuột")]
@@ -18,7 +18,10 @@ public class SpaceShipPhysics : MonoBehaviour
 
     void Update()
     {
-        ApplyMagnetEffect();
+        if (canMove)
+        {
+            ApplyMagnetEffect();
+        }
 
         if (canMove && !isLockedByMagnet)
         {
@@ -66,30 +69,68 @@ public class SpaceShipPhysics : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag(gateTag))
+        
+        // Chỉ xử lý nếu đang được phép di chuyển (không bị khóa)
+        if (canMove && other.CompareTag(gateTag))
         {
-            canMove = false;
+            canMove = false; // KHÓA NGAY LẬP TỨC
             isLockedByMagnet = false;
 
             TextMeshProUGUI gateText = other.GetComponentInChildren<TextMeshProUGUI>();
 
             if (gateText != null && SpaceShipManager.Instance != null)
             {
-                // Đồng bộ: Lấy đáp án đúng đã được lưu trong Manager
                 string correctAnswer = SpaceShipManager.Instance.currentCorrectAnswer;
                 bool isCorrect = (gateText.text == correctAnswer);
 
-                // Lấy phần câu hỏi từ UI (loại bỏ dấu ? để ghép với đáp án đúng)
-                // Manager mới sử dụng hàm UpdateStaticQuestionUI để quản lý text này
-                SpaceShipPhysics playerScript = FindObjectOfType<SpaceShipPhysics>();
-
-                // Gọi hàm hiển thị kết quả cuối cùng lên UI
-                // Lưu ý: Chúng ta lấy text hiện tại từ Manager thay vì gọi hàm không tồn tại
                 SpaceShipManager.Instance.SetCauHoiDungYenResult("Kết quả:", correctAnswer);
 
-                gateText.color = isCorrect ? Color.green : Color.red;
+                if (isCorrect)
+                {
+                    gateText.color = Color.green;
+                }
+                else
+                {
+                    gateText.color = Color.red;
+                    if (Enemy.Instance != null) Enemy.Instance.MoveCloser();
+                }
+
+                SpaceShipManager.Instance.CountGatePassed();
+
+                // Sử dụng Coroutine để đợi 2 giây trước khi mở khóa
+                if (SpaceShipManager.Instance.gatesPassed < SpaceShipManager.Instance.totalGatesToWin)
+                {
+                    StartCoroutine(UpdateNextQuestionRoutine());
+                }
             }
+            QuestionZone zone = other.GetComponentInParent<QuestionZone>();
+            if (zone != null)
+            {
+                // Làm mờ cổng trong vòng 1.5 giây
+                zone.FadeOut(1.5f);
+            }
+            // Vô hiệu hóa cổng vừa chạm để tránh va chạm lặp
             other.enabled = false;
+        }
+    }
+
+    private IEnumerator UpdateNextQuestionRoutine()
+    {
+        // Đợi đúng 2 giây theo yêu cầu của bạn
+        yield return new WaitForSeconds(2f);
+
+        // Mở khóa cho phép di chuyển và chọn đáp án tiếp theo
+        ResetMovement();
+
+        // Cập nhật câu hỏi cho cổng tiếp theo
+        if (SpaceShipManager.Instance != null)
+        {
+            QuestionZone nextQ = SpaceShipManager.Instance.GetNextQuestionZone();
+            if (nextQ != null)
+            {
+                SpaceShipManager.Instance.currentCorrectAnswer = nextQ.dapAnDung;
+                SpaceShipManager.Instance.UpdateStaticQuestionUI(nextQ.cauHoiLuuTru);
+            }
         }
     }
 
