@@ -1,0 +1,172 @@
+═══════════════════════════════════════════════════════════
+🎯 SETUP MULTIPLAYER DRAG-DROP SYSTEM
+═══════════════════════════════════════════════════════════
+
+QUAN TRỌNG:
+-----------
+Multiplayer dùng script RIÊNG, KHÔNG sửa code single-player!
+
+- Single-player: DragAndDrop.cs (giữ nguyên)
+- Multiplayer: MultiplayerDragAndDrop.cs (script mới)
+
+
+FILES MỚI:
+----------
+✅ MultiplayerDragAndDrop.cs - Drag-drop component cho multiplayer
+✅ DragDropDebugger.cs - Tool debug (support cả 2 mode)
+
+
+CÁCH SETUP:
+===========
+
+BƯỚC 1: Thay thế DragAndDrop bằng MultiplayerDragAndDrop
+---------------------------------------------------------
+1. Mở scene Test_FireBase_multi.unity
+
+2. Trong Hierarchy, tìm: GameplayPanel → Cauhoi → Answer_0
+   - Chọn Answer_0
+   - Trong Inspector, tìm component "DragAndDrop"
+   - Click vào ⚙️ (gear icon) → Remove Component
+   - Click "Add Component" → Tìm "MultiplayerDragAndDrop"
+   - Kéo "Text (TMP)" child vào field "My Text"
+
+3. Lặp lại cho Answer_1, Answer_2, Answer_3
+
+4. Kiểm tra Slot:
+   - Chọn Slot trong Hierarchy
+   - Đảm bảo Tag = "Slot" ✅
+   - KHÔNG cần MultiplayerDragDropAdapter nữa (có thể xóa nếu có)
+
+5. Save scene (Ctrl+S)
+
+
+BƯỚC 2: Thêm DragDropDebugger
+------------------------------
+1. Chọn BattleManager trong Hierarchy
+2. Add Component → DragDropDebugger
+3. Save scene
+
+
+BƯỚC 3: Test
+------------
+1. Chạy Host
+2. Bấm F5 để xem debug report
+3. Kiểm tra:
+   - "Multiplayer (MultiplayerDragAndDrop): 4" ✅
+   - "Single-player (DragAndDrop): 0" ✅
+4. Thử kéo thả đáp án
+5. Quan sát console log:
+   - "[MultiplayerDragAndDrop] Begin drag: 14"
+   - "[MultiplayerDragAndDrop] End drag: 14, dropped on: Slot"
+   - "[MultiplayerDragAndDrop] Player dropped answer: 14"
+   - "[MultiplayerDragAndDrop] Answer submitted: 14"
+
+
+KIỂM TRA TIMER FILL:
+=====================
+
+BƯỚC 1: Kiểm tra MultiplayerHealthUI references
+------------------------------------------------
+1. Trong Hierarchy, tìm: GameplayPanel → HealthBarContainer
+2. Chọn HealthBarContainer
+3. Trong Inspector, kiểm tra MultiplayerHealthUI component:
+
+   [=== TIMER ===]
+   - Timer Text: → TimerPanel/TimerText ✅
+   - Timer Fill Image: → TimerPanel/TimerBG/TimerFill ✅ QUAN TRỌNG!
+
+4. Nếu thiếu, kéo thả GameObject tương ứng vào field
+
+
+BƯỚC 2: Kiểm tra TimerFill Image settings
+------------------------------------------
+1. Trong Hierarchy, tìm: 
+   GameplayPanel → HealthBarContainer → TimerPanel → TimerBG → TimerFill
+
+2. Chọn TimerFill
+
+3. Trong Inspector, kiểm tra Image component:
+   - Image Type: Filled ✅
+   - Fill Method: Horizontal (hoặc Radial360)
+   - Fill Origin: Left (hoặc Bottom)
+   - Fill Amount: 1.0
+
+4. Nếu sai, sửa lại:
+   - Click vào "Image Type" dropdown → Chọn "Filled"
+   - "Fill Method" → Chọn "Horizontal"
+   - "Fill Origin" → Chọn "Left"
+
+
+BƯỚC 3: Test timer
+-------------------
+1. Chạy Host
+2. Start battle
+3. Quan sát thanh timer:
+   - Màu xanh khi > 5s
+   - Màu vàng khi 3-5s
+   - Màu đỏ khi < 3s
+   - Fill amount giảm dần từ 1.0 → 0.0
+
+
+SO SÁNH 2 MODE:
+===============
+
+SINGLE-PLAYER (DragAndDrop.cs):
+- Dùng DragQuizManager
+- Check đáp án local
+- Có animation phạt khi sai
+- Tự động sinh câu mới
+
+MULTIPLAYER (MultiplayerDragAndDrop.cs):
+- Dùng UIMultiplayerBattleController
+- Submit đáp án lên server
+- Server check và broadcast kết quả
+- Có visual feedback (xanh/đỏ/vàng)
+- Tự động reset sau mỗi câu
+
+
+TROUBLESHOOTING:
+================
+
+VẤN ĐỀ 1: Vẫn không kéo được
+----------------------------
+- Bấm F5 → Kiểm tra "Global Lock"
+- Nếu locked → Bấm "Unlock Drag-Drop" button
+- Kiểm tra EventSystem có active không
+- Kiểm tra Canvas có GraphicRaycaster không
+
+VẤN ĐỀ 2: Kéo được nhưng không submit
+--------------------------------------
+- Check console log có "[MultiplayerDragAndDrop] Answer submitted" không
+- Kiểm tra Slot có tag "Slot" không
+- Kiểm tra BattleController có gán đúng không
+
+VẤN ĐỀ 3: Timer không chạy
+---------------------------
+- Kiểm tra TimerFillImage có gán đúng không
+- Kiểm tra Image Type = "Filled"
+- Export scene detailed và gửi cho tôi kiểm tra
+
+VẤN ĐỀ 4: Đáp án không reset
+-----------------------------
+- Kiểm tra console có "[MultiplayerDragAndDrop] Reset all" không
+- Gọi MultiplayerDragAndDrop.ResetAll() trong code
+
+
+DEBUG COMMANDS:
+===============
+- F5: Check drag-drop setup (DragDropDebugger)
+- F1: Print battle system info (MultiplayerBattleDebugger)
+- F3: Validate all references (MultiplayerBattleDebugger)
+- F4: Export full debug report (MultiplayerBattleDebugger)
+
+
+EXPORT SCENE DETAILED:
+======================
+Menu: Tools → Export Current Scene (Detailed) to TXT
+File: Assets/Editor/Test_FireBase_multi_Export_Detailed.txt
+
+Gửi file này để tôi kiểm tra references!
+
+
+═══════════════════════════════════════════════════════════

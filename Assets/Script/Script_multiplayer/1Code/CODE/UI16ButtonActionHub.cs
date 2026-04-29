@@ -437,6 +437,10 @@ namespace DoAnGame.UI
                 if (underButton)
                     continue;
 
+                // ✅ FIX: Skip Answer objects (MultiplayerDragAndDrop)
+                if (g.GetComponent<DoAnGame.Multiplayer.MultiplayerDragAndDrop>() != null)
+                    continue;
+
                 if (g.raycastTarget)
                 {
                     g.raycastTarget = false;
@@ -535,6 +539,10 @@ namespace DoAnGame.UI
             {
                 var g = childGraphics[i];
                 if (g == null)
+                    continue;
+
+                // ✅ FIX: Skip Answer objects (MultiplayerDragAndDrop)
+                if (g.GetComponent<DoAnGame.Multiplayer.MultiplayerDragAndDrop>() != null)
                     continue;
 
                 g.raycastTarget = false;

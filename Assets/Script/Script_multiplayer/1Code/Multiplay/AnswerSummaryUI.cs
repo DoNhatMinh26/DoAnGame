@@ -1,0 +1,335 @@
+using UnityEngine;
+using TMPro;
+using System.Collections;
+using DoAnGame.Multiplayer;
+
+namespace DoAnGame.UI
+{
+    /// <summary>
+    /// Quản lý UI tổng kết đáp án giữa các câu hỏi
+    /// 
+    /// LOGIC:
+    /// 1. Question Time (10s): TextTrangThaiDapAn1/2 HIDDEN (không hiển thị)
+    /// 2. Summary Time (3s): TextTrangThaiDapAn1/2 VISIBLE + kết quả + response time (ms)
+    /// 
+    /// So sánh theo miligiây (ms):
+    /// - Cả 2 đúng → So sánh ms (ai nhanh hơn thắng)
+    /// - 1 đúng 1 sai → Người đúng thắng
+    /// - Cả 2 sai → Cả 2 mất máu
+    /// - 1 timeout → Người còn lại thắng
+    /// </summary>
+    public class AnswerSummaryUI : MonoBehaviour
+    {
+        [Header("=== ANSWER DISPLAY ===")]
+        [SerializeField] private TextMeshProUGUI textTrangThaiDapAn1; // Player 1 answer (HIDDEN during question time)
+        [SerializeField] private TextMeshProUGUI textTrangThaiDapAn2; // Player 2 answer (HIDDEN during question time)
+        
+        [Header("=== STATUS & TIMER (SHARED) ===")]
+        [SerializeField] private TextMeshProUGUI timerText; // Dùng chung từ TimerPanel
+        [SerializeField] private TextMeshProUGUI trangThaiText; // Text hiển thị trạng thái
+        
+        [Header("=== RESULT DISPLAY ===")]
+        [SerializeField] private TextMeshProUGUI resultText; // Text hiển thị kết quả (optional)
+        
+        [Header("=== SETTINGS ===")]
+        [SerializeField] private float summaryDurationMin = 1f;
+        [SerializeField] private float summaryDurationMax = 10f;
+        [SerializeField] private float defaultSummaryDuration = 3f;
+
+        private NetworkedMathBattleManager battleManager;
+        private Coroutine summaryCoroutine;
+        private bool isSummaryActive = false;
+        private string originalTimerText = ""; // Lưu text gốc của timer
+        private string originalTrangThaiText = ""; // Lưu text gốc của trạng thái
+
+        // Enum để quản lý trạng thái
+        public enum TimerState
+        {
+            QuestionTime,      // Thời gian trả lời câu hỏi
+            SummaryTime        // Thời gian thống kê đáp án
+        }
+
+        private TimerState currentState = TimerState.QuestionTime;
+
+        private void Start()
+        {
+            battleManager = NetworkedMathBattleManager.Instance;
+            
+            if (battleManager == null)
+            {
+                Debug.LogError("[AnswerSummaryUI] BattleManager not found!");
+                return;
+            }
+
+            // Subscribe to answer result event
+            battleManager.OnAnswerResultReceived += HandleAnswerResult;
+            
+            // Set trạng thái ban đầu
+            SetTrangThaiQuestionTime();
+            
+            // Đảm bảo TextTrangThaiDapAn1/2 bị ẩn lúc đầu
+            HideAnswerTexts();
+            
+            Debug.Log("[AnswerSummaryUI] ✅ Initialized");
+        }
+
+        private void OnDestroy()
+        {
+            if (battleManager != null)
+            {
+                battleManager.OnAnswerResultReceived -= HandleAnswerResult;
+            }
+        }
+
+        /// <summary>
+        /// Set trạng thái: Thời gian trả lời câu hỏi
+        /// </summary>
+        private void SetTrangThaiQuestionTime()
+        {
+            currentState = TimerState.QuestionTime;
+            if (trangThaiText != null)
+            {
+                trangThaiText.text = "Thời gian trả lời câu hỏi";
+            }
+            Debug.Log("[AnswerSummaryUI] State: Question Time");
+        }
+
+        /// <summary>
+        /// Set trạng thái: Thời gian thống kê đáp án
+        /// </summary>
+        private void SetTrangThaiSummaryTime()
+        {
+            currentState = TimerState.SummaryTime;
+            if (trangThaiText != null)
+            {
+                trangThaiText.text = "Thời gian thống kê đáp án";
+            }
+            Debug.Log("[AnswerSummaryUI] State: Summary Time");
+        }
+
+        /// <summary>
+        /// Ẩn TextTrangThaiDapAn1 và 2 (dùng trong Question Time)
+        /// </summary>
+        private void HideAnswerTexts()
+        {
+            if (textTrangThaiDapAn1 != null)
+            {
+                textTrangThaiDapAn1.gameObject.SetActive(false);
+            }
+            
+            if (textTrangThaiDapAn2 != null)
+            {
+                textTrangThaiDapAn2.gameObject.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị TextTrangThaiDapAn1 và 2 (dùng trong Summary Time)
+        /// </summary>
+        private void ShowAnswerTexts()
+        {
+            if (textTrangThaiDapAn1 != null)
+            {
+                textTrangThaiDapAn1.gameObject.SetActive(true);
+            }
+            
+            if (textTrangThaiDapAn2 != null)
+            {
+                textTrangThaiDapAn2.gameObject.SetActive(true);
+            }
+        }
+
+        /// <summary>
+        /// Gọi khi có kết quả đáp án
+        /// </summary>
+        private void HandleAnswerResult(int winnerId, bool correct, long player1ResponseTimeMs, long player2ResponseTimeMs, int player1Answer, int player2Answer)
+        {
+            Debug.Log($"[AnswerSummaryUI] Answer result: Winner={winnerId}, Correct={correct}, P1Time={player1ResponseTimeMs}ms, P2Time={player2ResponseTimeMs}ms, P1Answer={player1Answer}, P2Answer={player2Answer}");
+
+            // Dừng coroutine cũ nếu có
+            if (summaryCoroutine != null)
+            {
+                StopCoroutine(summaryCoroutine);
+            }
+
+            // Bắt đầu giai đoạn tổng kết
+            summaryCoroutine = StartCoroutine(ShowSummaryRoutine(winnerId, correct, player1ResponseTimeMs, player2ResponseTimeMs, player1Answer, player2Answer));
+        }
+
+        /// <summary>
+        /// Hiển thị tổng kết đáp án
+        /// </summary>
+        private IEnumerator ShowSummaryRoutine(int winnerId, bool correct, long player1ResponseTimeMs, long player2ResponseTimeMs, int player1Answer, int player2Answer)
+        {
+            isSummaryActive = true;
+            
+            // Lưu text gốc
+            if (timerText != null)
+            {
+                originalTimerText = timerText.text;
+            }
+            if (trangThaiText != null)
+            {
+                originalTrangThaiText = trangThaiText.text;
+            }
+            
+            // Thay đổi trạng thái sang Summary Time
+            SetTrangThaiSummaryTime();
+            
+            // Hiển thị đáp án người chơi chọn (giờ đã có thể hiển thị vì hết thời gian trả lời)
+            ShowAnswerTexts();
+            DisplayAnswers(player1Answer, player2Answer, player1ResponseTimeMs, player2ResponseTimeMs);
+            
+            // Hiển thị kết quả (bao gồm cả response time)
+            DisplayResult(winnerId, correct, player1ResponseTimeMs, player2ResponseTimeMs, player1Answer, player2Answer);
+            
+            // Đếm ngược timer
+            float duration = defaultSummaryDuration;
+            float elapsed = 0f;
+            
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float remaining = Mathf.Max(0, duration - elapsed);
+                
+                if (timerText != null)
+                {
+                    timerText.text = $"{Mathf.CeilToInt(remaining)}s";
+                }
+                
+                yield return null;
+            }
+            
+            // Kết thúc tổng kết
+            isSummaryActive = false;
+            ClearSummary();
+            
+            Debug.Log("[AnswerSummaryUI] Summary ended, ready for next question");
+        }
+
+        /// <summary>
+        /// Hiển thị đáp án người chơi chọn + thời gian trả lời (trong Summary Time)
+        /// Format: "Đáp án người chơi 1 chọn là: 5 (3.2450s)"
+        /// </summary>
+        private void DisplayAnswers(int player1Answer, int player2Answer, long player1ResponseTimeMs, long player2ResponseTimeMs)
+        {
+            // Convert milliseconds to seconds with 4 decimal places
+            float player1ResponseTimeSec = player1ResponseTimeMs / 1000f;
+            float player2ResponseTimeSec = player2ResponseTimeMs / 1000f;
+            
+            if (textTrangThaiDapAn1 != null)
+            {
+                string p1Text = player1Answer == -1 ? "(Không trả lời)" : player1Answer.ToString();
+                string p1TimeText = player1Answer == -1 ? "" : $" ({player1ResponseTimeSec:F4}s)";
+                textTrangThaiDapAn1.text = $"Đáp án người chơi 1 chọn là: <color=yellow>{p1Text}</color>{p1TimeText}";
+                Debug.Log($"[AnswerSummaryUI] P1 answer: {p1Text}{p1TimeText}");
+            }
+            
+            if (textTrangThaiDapAn2 != null)
+            {
+                string p2Text = player2Answer == -1 ? "(Không trả lời)" : player2Answer.ToString();
+                string p2TimeText = player2Answer == -1 ? "" : $" ({player2ResponseTimeSec:F4}s)";
+                textTrangThaiDapAn2.text = $"Đáp án người chơi 2 chọn là: <color=yellow>{p2Text}</color>{p2TimeText}";
+                Debug.Log($"[AnswerSummaryUI] P2 answer: {p2Text}{p2TimeText}");
+            }
+        }
+
+        /// <summary>
+        /// Hiển thị kết quả đúng/sai cho cả 2 người chơi
+        /// (Thời gian đã hiển thị trong TextTrangThaiDapAn1/2)
+        /// 
+        /// Logic so sánh theo miligiây:
+        /// - winnerId = 0: Player 1 thắng
+        /// - winnerId = 1: Player 2 thắng
+        /// - winnerId = -1: Cả 2 sai
+        /// - winnerId = -2: Hòa (cùng thời gian)
+        /// </summary>
+        private void DisplayResult(int winnerId, bool correct, long player1ResponseTimeMs, long player2ResponseTimeMs, int player1Answer, int player2Answer)
+        {
+            string resultText = "";
+            
+            if (winnerId == -2)
+            {
+                // Hòa - cả 2 đúng cùng thời gian
+                resultText = "<color=cyan>Hòa! Cả 2 trả lời cùng lúc!</color>";
+            }
+            else if (winnerId == 0)
+            {
+                // Player 1 thắng
+                resultText = "<color=green>Người chơi 1 đúng!</color>\n<color=red>Người chơi 2 sai!</color>";
+            }
+            else if (winnerId == 1)
+            {
+                // Player 2 thắng
+                resultText = "<color=red>Người chơi 1 sai!</color>\n<color=green>Người chơi 2 đúng!</color>";
+            }
+            else if (winnerId == -1)
+            {
+                // Cả 2 sai
+                resultText = "<color=red>Cả 2 đều sai!</color>";
+            }
+            
+            Debug.Log($"[AnswerSummaryUI] Result: {resultText}");
+            
+            // Hiển thị kết quả nếu có resultText component
+            if (this.resultText != null)
+            {
+                this.resultText.text = resultText;
+            }
+        }
+
+        /// <summary>
+        /// Xóa tổng kết và khôi phục trạng thái
+        /// </summary>
+        private void ClearSummary()
+        {
+            // Ẩn đáp án
+            HideAnswerTexts();
+            
+            // Xóa text đáp án
+            if (textTrangThaiDapAn1 != null)
+            {
+                textTrangThaiDapAn1.text = "";
+            }
+            
+            if (textTrangThaiDapAn2 != null)
+            {
+                textTrangThaiDapAn2.text = "";
+            }
+            
+            // Xóa kết quả
+            if (resultText != null)
+            {
+                resultText.text = "";
+            }
+            
+            // Khôi phục text gốc của timer
+            if (timerText != null)
+            {
+                timerText.text = originalTimerText;
+            }
+            
+            // Khôi phục trạng thái Question Time
+            SetTrangThaiQuestionTime();
+        }
+
+        /// <summary>
+        /// Kiểm tra xem tổng kết có đang chạy không
+        /// </summary>
+        public bool IsSummaryActive => isSummaryActive;
+
+        /// <summary>
+        /// Lấy trạng thái hiện tại
+        /// </summary>
+        public TimerState GetCurrentState => currentState;
+
+        /// <summary>
+        /// Set thời gian tổng kết (admin có thể tuỳ chỉnh)
+        /// </summary>
+        public void SetSummaryDuration(float duration)
+        {
+            defaultSummaryDuration = Mathf.Clamp(duration, summaryDurationMin, summaryDurationMax);
+            Debug.Log($"[AnswerSummaryUI] Summary duration set to {defaultSummaryDuration}s");
+        }
+    }
+}

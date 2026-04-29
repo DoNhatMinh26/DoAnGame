@@ -1,0 +1,107 @@
+🔧 ĐÃ SỬA: VẤN ĐỀ GAMEPLAYPANEL INACTIVE LÚC START
+
+=== VẤN ĐỀ ===
+GameplayPanel bị ẩn (inactive) lúc game start
+→ MultiplayerDragAndDrop.Awake() chạy khi panel inactive
+→ originalPosition được lưu SAI hoặc = (0, 0)
+→ Khi kéo thả Answer, nó return về vị trí sai!
+
+=== ĐÃ SỬA GÌ ===
+
+Sửa MultiplayerDragAndDrop.cs:
+
+1. AWAKE: Không lưu originalPosition nữa
+2. START: Lưu originalPosition SAU KHI panel active
+3. ONENABLE: Lưu originalPosition khi panel được active
+4. FORCERESETPOSITION: Check và lưu nếu chưa có
+
+→ Đảm bảo originalPosition LUÔN được lưu ĐÚNG
+
+=== BÂY GIỜ LÀM GÌ ===
+
+1. SAVE SCENE (Ctrl+S)
+2. RUN GAME
+3. Vào battle scene (GameplayPanel sẽ show)
+4. Check Console logs:
+   - Phải thấy: "[MultiplayerDragAndDrop] Saved original position for ANSWER_0: (x, y)"
+5. THỬ KÉO ANSWER
+   - Kéo Answer ra
+   - Thả ra ngoài (không vào Slot)
+   - Answer phải TRỞ VỀ vị trí ban đầu
+
+=== NẾU VẪN KHÔNG KÉO ĐƯỢC ===
+
+Check thêm:
+
+1. CANVAS CÓ GRAPHICRAYCASTER?
+   - Chọn Canvas
+   - Inspector → Check có "Graphic Raycaster" component
+   - Nếu không → Add Component → Graphic Raycaster
+
+2. SCENE CÓ EVENTSYSTEM?
+   - Hierarchy → Search "EventSystem"
+   - Nếu không có → GameObject → UI → Event System
+
+3. IMAGE CÓ SPRITE?
+   - Chọn Answer
+   - Inspector → Image → Source Image
+   - Phải có sprite (không phải None)
+
+4. CÓ OBJECT NÀO CHẶN KHÔNG?
+   - Tools → Find Blocking UI Elements
+   - Tools → Disable Raycast on Non-Interactive UI
+
+5. ANSWER OBJECTS ACTIVE?
+   - Hierarchy → Check Answer objects màu trắng (không phải xám)
+
+=== DEBUG ===
+
+Khi run game, check Console logs:
+
+✅ ĐÚNG:
+[MultiplayerDragAndDrop] Saved original position for ANSWER_0: (68.866, -227)
+[MultiplayerDragAndDrop] Begin drag: 13
+[MultiplayerDragAndDrop] End drag: 13, dropped on: Slot
+
+❌ SAI:
+Không có log "Saved original position" → originalPosition = (0,0)
+Không có log "Begin drag" → Không nhận drag event
+
+=== TEST FLOW ===
+
+1. Run game
+2. Create room / Join room
+3. Start battle
+4. Đợi GameplayPanel show
+5. Đợi câu hỏi hiển thị
+6. Thử kéo Answer:
+   - Click và giữ Answer
+   - Di chuyển chuột
+   - Thả vào Slot
+7. Check Console:
+   - "Begin drag"
+   - "End drag"
+   - "Player dropped answer: X"
+   - "Answer submitted: X"
+
+=== LƯU Ý ===
+
+Vấn đề này XẢY RA với:
+- Panel inactive lúc Awake()
+- Panel được show sau khi game start
+- UI navigation system (show/hide panels)
+
+Giải pháp:
+- Lưu originalPosition trong OnEnable (khi panel active)
+- Hoặc lưu trong Start (sau Awake)
+- Hoặc lưu lần đầu khi BeginDrag
+
+=== NẾU VẪN KHÔNG WORK ===
+
+Thử cách này:
+1. Hierarchy → Chọn GameplayPanel
+2. Inspector → Tick để ACTIVE panel
+3. Run game từ scene này (không qua menu)
+4. Test drag-drop
+5. Nếu work → Vấn đề là panel inactive
+6. Nếu vẫn không work → Vấn đề khác (Canvas/EventSystem/Blocker)

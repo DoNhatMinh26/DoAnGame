@@ -27,6 +27,7 @@ namespace DoAnGame.UI
         private const string IsAbandonedKey = "IsAbandoned";
         private const string CharacterNameKey = "characterName";
         private const string HostNameKey = "HostName";
+        private const string GradeKey = "Grade";
         private const int MaxPlayers = 2;
         private const int QuickJoinQueryMaxResults = 20;
         private const string DefaultIdleStatus = "Mời tạo phòng để chơi.";
@@ -49,6 +50,9 @@ namespace DoAnGame.UI
         [SerializeField] private TMP_Text lobbyCodeText;
         [SerializeField] private TMP_Text statusText;
         [SerializeField] private TMP_Text playerCountText;
+
+        [Header("Grade Selection")]
+        [SerializeField] private TMP_Dropdown gradeDropdown;
 
         [Header("Room Roster Texts")]
         [SerializeField] private TMP_Text rosterTitleText;
@@ -410,6 +414,60 @@ namespace DoAnGame.UI
             return "Player";
         }
 
+        /// <summary>
+        /// Lấy grade đã chọn từ Dropdown (1-5)
+        /// Mặc định = 1 nếu dropdown null hoặc không chọn
+        /// </summary>
+        private int GetSelectedGrade()
+        {
+            if (gradeDropdown == null)
+            {
+                Debug.LogWarning("[UIRoom] Grade dropdown chưa gán, dùng mặc định Lớp 1");
+                return 1;
+            }
+
+            // Dropdown value: 0→Lớp 1, 1→Lớp 2, ..., 4→Lớp 5
+            int grade = gradeDropdown.value + 1;
+            
+            // Clamp để đảm bảo trong khoảng 1-5
+            grade = Mathf.Clamp(grade, 1, 5);
+            
+            Debug.Log($"[UIRoom] Grade đã chọn: Lớp {grade}");
+            return grade;
+        }
+
+        /// <summary>
+        /// Đọc grade từ Lobby metadata
+        /// Trả về 1 nếu không tìm thấy (mặc định)
+        /// </summary>
+        private int GetLobbyGrade(Lobby lobby)
+        {
+            if (lobby == null || lobby.Data == null)
+            {
+                return 1;  // Mặc định Lớp 1
+            }
+
+            if (!lobby.Data.TryGetValue(GradeKey, out var gradeData) || gradeData == null)
+            {
+                return 1;  // Mặc định Lớp 1
+            }
+
+            if (int.TryParse(gradeData.Value, out int grade))
+            {
+                return Mathf.Clamp(grade, 1, 5);  // Đảm bảo 1-5
+            }
+
+            return 1;  // Fallback
+        }
+
+        /// <summary>
+        /// Lấy grade của lobby hiện tại (public để các controller khác đọc)
+        /// </summary>
+        public int GetCurrentLobbyGrade()
+        {
+            return GetLobbyGrade(currentLobby);
+        }
+
         private async Task SyncLocalPlayerLobbyDataAsync()
         {
             if (currentLobby == null)
@@ -576,6 +634,8 @@ namespace DoAnGame.UI
 
             try
             {
+                int selectedGrade = GetSelectedGrade();  // ← Lấy grade từ dropdown
+
                 var options = new CreateLobbyOptions
                 {
                     IsPrivate = false,
@@ -584,7 +644,8 @@ namespace DoAnGame.UI
                         { JoinCodeKey, new DataObject(DataObject.VisibilityOptions.Public, relayJoinCode, DataObject.IndexOptions.S1) },
                         { StartedKey, new DataObject(DataObject.VisibilityOptions.Public, "0", DataObject.IndexOptions.S2) },
                         { ModeKey, new DataObject(DataObject.VisibilityOptions.Public, "MathDuel") },
-                        { HostNameKey, new DataObject(DataObject.VisibilityOptions.Public, GetCurrentPlayerDisplayName()) }
+                        { HostNameKey, new DataObject(DataObject.VisibilityOptions.Public, GetCurrentPlayerDisplayName()) },
+                        { GradeKey, new DataObject(DataObject.VisibilityOptions.Public, selectedGrade.ToString()) }
                     },
                     Player = new Player(AuthenticationService.Instance.PlayerId, null, new Dictionary<string, PlayerDataObject>
                     {
@@ -597,7 +658,7 @@ namespace DoAnGame.UI
                 await SyncLocalPlayerLobbyDataAsync();
 
                 lobbyCodeText?.SetText($"Mã phòng: {currentLobby.LobbyCode}");
-                SetStatus("Đã tạo phòng. Chờ người chơi thứ 2...");
+                SetStatus($"Đã tạo phòng. Độ khó: Lớp {selectedGrade}. Chờ người chơi thứ 2...");
                 RefreshRoomRoster();
                 UpdateStartMatchButtonState(true);
 
@@ -1114,16 +1175,22 @@ namespace DoAnGame.UI
 
         private void NotifyBattleStarted()
         {
+            Debug.LogWarning("[UIRoom] 🔥 NotifyBattleStarted() CALLED 🔥");
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "NotifyBattleStarted invoked");
+            
             if (isQuitting || suppressAutoBattleStart)
             {
+                Debug.LogWarning($"[UIRoom] ❌ EARLY RETURN #1: isQuitting={isQuitting}, suppressAutoBattleStart={suppressAutoBattleStart}");
                 MultiplayerDetailedLogger.Trace("UI_ROOM", "NotifyBattleStarted ignored due to local quit/back suppression");
                 return;
             }
 
             // Nếu đã notify trước đó nhưng UI16 vẫn chưa visible, cho phép retry.
             if (battleStartNotified && IsBattleScreenVisible())
+            {
+                Debug.LogWarning($"[UIRoom] ❌ EARLY RETURN #2: battleStartNotified={battleStartNotified}, IsBattleScreenVisible={IsBattleScreenVisible()}");
                 return;
+            }
 
             // Do not hard-block UI transition when relay state is transient.
             // Client can still be routed by lobby StartedKey and scene fallback.
@@ -1134,6 +1201,13 @@ namespace DoAnGame.UI
 
             battleStartNotified = true;
             LogState("NotifyBattleStarted: begin");
+
+            // ===== KHỞI TẠO BATTLE MANAGER TRƯỚC KHI NAVIGATE =====
+            // Phải gọi TRƯỚC khi TryShowBattlePanel() vì navigate sẽ làm GameObject này inactive
+            Log("[UIRoom] ⚠️ ABOUT TO CALL InitializeMultiplayerBattle()...");
+            InitializeMultiplayerBattleImmediate(); // Gọi trực tiếp, không delay
+            Log("[UIRoom] ⚠️ AFTER InitializeMultiplayerBattle() call");
+            // ==================================================
 
             bool routedToBattle = TryShowBattlePanel();
             Log($"NotifyBattleStarted: direct battle route => {routedToBattle}");
@@ -1172,6 +1246,146 @@ namespace DoAnGame.UI
 
             onBattleStarted?.Invoke();
             LogState("NotifyBattleStarted: end");
+        }
+
+        /// <summary>
+        /// Khởi tạo NetworkedMathBattleManager với grade đã chọn (chỉ Host)
+        /// Gọi NGAY LẬP TỨC trước khi GameObject bị inactive
+        /// </summary>
+        private void InitializeMultiplayerBattleImmediate()
+        {
+            Debug.LogWarning("[UIRoom] 🔥🔥🔥 InitializeMultiplayerBattleImmediate() ENTRY POINT 🔥🔥🔥");
+            Log("[UIRoom] 🔄 InitializeMultiplayerBattleImmediate executing...");
+            
+            // Kiểm tra NetworkManager
+            if (NetworkManager.Singleton == null)
+            {
+                Debug.LogError("[UIRoom] ❌ NetworkManager is NULL!");
+                return;
+            }
+
+            Log($"[UIRoom] NetworkManager state: IsServer={NetworkManager.Singleton.IsServer}, IsListening={NetworkManager.Singleton.IsListening}");
+
+            if (!NetworkManager.Singleton.IsListening)
+            {
+                Debug.LogWarning("[UIRoom] ⚠️ NetworkManager not listening yet!");
+                return;
+            }
+
+            if (!NetworkManager.Singleton.IsServer)
+            {
+                Debug.LogWarning($"[UIRoom] ⚠️ Not server (IsServer={NetworkManager.Singleton.IsServer})");
+                return;
+            }
+
+            // NetworkManager sẵn sàng - Khởi tạo battle
+            Log("[UIRoom] ✅ NetworkManager ready! Initializing battle...");
+            
+            // Lấy grade đã chọn từ lobby
+            int selectedGrade = GetCurrentLobbyGrade();
+            Log($"[UIRoom] Selected grade: {selectedGrade}");
+            
+            // Tìm BattleManager trong scene
+            var battleManager = FindObjectOfType<DoAnGame.Multiplayer.NetworkedMathBattleManager>();
+            
+            if (battleManager != null)
+            {
+                Log($"[UIRoom] Found BattleManager: {battleManager.gameObject.name}");
+                
+                // Kiểm tra xem BattleManager có NetworkObject không
+                var netObj = battleManager.GetComponent<NetworkObject>();
+                if (netObj != null)
+                {
+                    Log($"[UIRoom] ℹ️ BattleManager has NetworkObject (IsSpawned={netObj.IsSpawned})");
+                    
+                    // BattleManager là scene object, đã tự động spawn khi scene load
+                    // KHÔNG CẦN gọi netObj.Spawn() thủ công!
+                }
+                else
+                {
+                    Debug.LogWarning("[UIRoom] ⚠️ BattleManager không có NetworkObject component! NetworkVariable sẽ không sync!");
+                }
+                
+                // Khởi tạo battle
+                battleManager.InitializeBattle(selectedGrade);
+                Log($"[UIRoom] ✅ Initialized battle with Grade {selectedGrade}");
+            }
+            else
+            {
+                Debug.LogError("[UIRoom] ❌ NetworkedMathBattleManager not found! Make sure BattleManager exists in scene.");
+            }
+        }
+
+        /// <summary>
+        /// Khởi tạo NetworkedMathBattleManager với grade đã chọn (chỉ Host)
+        /// Retry logic để đảm bảo NetworkManager đã sẵn sàng
+        /// </summary>
+        private void InitializeMultiplayerBattle()
+        {
+            Debug.LogWarning("[UIRoom] 🔥🔥🔥 InitializeMultiplayerBattle() ENTRY POINT 🔥🔥🔥");
+            Log("[UIRoom] 🔄 InitializeMultiplayerBattle called, scheduling delayed init...");
+            
+            // Kiểm tra xem GameObject có active không
+            if (!gameObject.activeInHierarchy)
+            {
+                Debug.LogError("[UIRoom] ❌ GameObject is INACTIVE! Cannot use Invoke()!");
+                // Gọi trực tiếp nếu GameObject inactive
+                InitializeMultiplayerBattleDelayed();
+                return;
+            }
+            
+            // Delay 1 giây để đảm bảo NetworkManager đã sẵn sàng
+            Invoke(nameof(InitializeMultiplayerBattleDelayed), 1f);
+        }
+
+        private void InitializeMultiplayerBattleDelayed()
+        {
+            Debug.LogWarning("[UIRoom] 🔥🔥🔥 InitializeMultiplayerBattleDelayed() ENTRY POINT 🔥🔥🔥");
+            Log("[UIRoom] 🔄 InitializeMultiplayerBattleDelayed executing...");
+            
+            // Kiểm tra NetworkManager
+            if (NetworkManager.Singleton == null)
+            {
+                Debug.LogError("[UIRoom] ❌ NetworkManager is NULL!");
+                return;
+            }
+
+            Log($"[UIRoom] NetworkManager state: IsServer={NetworkManager.Singleton.IsServer}, IsListening={NetworkManager.Singleton.IsListening}");
+
+            if (!NetworkManager.Singleton.IsListening)
+            {
+                Debug.LogWarning("[UIRoom] ⚠️ NetworkManager not listening yet, retrying in 0.5s...");
+                Invoke(nameof(InitializeMultiplayerBattleDelayed), 0.5f);
+                return;
+            }
+
+            if (!NetworkManager.Singleton.IsServer)
+            {
+                Debug.LogWarning($"[UIRoom] ⚠️ Not server (IsServer={NetworkManager.Singleton.IsServer}), retrying in 0.5s...");
+                Invoke(nameof(InitializeMultiplayerBattleDelayed), 0.5f);
+                return;
+            }
+
+            // NetworkManager sẵn sàng - Khởi tạo battle
+            Log("[UIRoom] ✅ NetworkManager ready! Initializing battle...");
+            
+            // Lấy grade đã chọn từ lobby
+            int selectedGrade = GetCurrentLobbyGrade();
+            Log($"[UIRoom] Selected grade: {selectedGrade}");
+            
+            // Tìm BattleManager trong scene
+            var battleManager = FindObjectOfType<DoAnGame.Multiplayer.NetworkedMathBattleManager>();
+            
+            if (battleManager != null)
+            {
+                Log($"[UIRoom] Found BattleManager: {battleManager.gameObject.name}");
+                battleManager.InitializeBattle(selectedGrade);
+                Log($"[UIRoom] ✅ Initialized battle with Grade {selectedGrade}");
+            }
+            else
+            {
+                Debug.LogError("[UIRoom] ❌ NetworkedMathBattleManager not found! Make sure BattleManager exists in scene.");
+            }
         }
 
         private bool TryShowBattlePanel()

@@ -1,0 +1,202 @@
+📝 HƯỚNG DẪN TẠO 4 ANSWER OBJECTS TỪ ĐẦU
+
+=== CHUẨN BỊ ===
+
+1. Mở scene: Test_FireBase_multi.unity
+2. Hierarchy → Tìm GameplayPanel (hoặc Canvas chứa UI battle)
+3. XÓA 4 Answer cũ (Answer_0, Answer_1, Answer_2, Answer_3) nếu có
+
+=== TẠO ANSWER_0 (MẪU) ===
+
+BƯỚC 1: TẠO GAMEOBJECT
+1. Hierarchy → Right click GameplayPanel → UI → Image
+2. Rename thành "Answer_0"
+
+BƯỚC 2: CẤU HÌNH RECTTRANSFORM
+1. Chọn Answer_0
+2. Inspector → Rect Transform:
+   - Width: 100 (hoặc kích thước bạn muốn)
+   - Height: 100
+   - Pos X, Y, Z: Đặt vị trí phù hợp (ví dụ: -150, -200, 0)
+   - Anchors: Middle Center (hoặc theo design của bạn)
+
+BƯỚC 3: CẤU HÌNH IMAGE COMPONENT
+1. Inspector → Image component:
+   - Source Image: Chọn sprite cho Answer (ví dụ: UI/Knob hoặc sprite của bạn)
+   - Color: Màu trắng hoặc màu bạn muốn
+   - ✅ QUAN TRỌNG: Raycast Target = TRUE (phải tick!)
+   - Image Type: Simple (hoặc Sliced nếu dùng 9-slice)
+
+BƯỚC 4: THÊM CANVAS GROUP
+1. Inspector → Add Component
+2. Search "Canvas Group"
+3. Cấu hình:
+   - Alpha: 1
+   - ✅ Interactable: TRUE (phải tick!)
+   - ✅ Block Raycasts: TRUE (phải tick!)
+   - Ignore Parent Groups: FALSE
+
+BƯỚC 5: THÊM MULTIPLAYERDRAGANDDROP
+1. Inspector → Add Component
+2. Search "MultiplayerDragAndDrop"
+3. Cấu hình:
+   - My Text: (để trống, sẽ gán ở bước sau)
+   - Color Correct: Green (0, 255, 0, 255)
+   - Color Wrong: Red (255, 0, 0, 255)
+   - Thoi Gian Khoa: 1
+   - ✅ Auto Find Battle Controller: TRUE (phải tick!)
+
+BƯỚC 6: TẠO TEXT CON (HIỂN THỊ SỐ)
+1. Right click Answer_0 → UI → Text - TextMeshPro
+   (Nếu popup Import TMP Essentials → Click Import)
+2. Rename thành "AnswerText"
+3. Cấu hình TextMeshPro:
+   - Text: "0" (text mặc định)
+   - Font Size: 40 (hoặc phù hợp)
+   - Alignment: Center + Middle (giữa)
+   - Color: Black (hoặc màu dễ đọc)
+   - Raycast Target: FALSE (không cần)
+4. Rect Transform:
+   - Anchors: Stretch (full parent)
+   - Left, Right, Top, Bottom: 0, 0, 0, 0 (fill parent)
+
+BƯỚC 7: GÁN TEXT VÀO MULTIPLAYERDRAGANDDROP
+1. Chọn Answer_0
+2. Inspector → MultiplayerDragAndDrop component
+3. Kéo "AnswerText" vào field "My Text"
+
+=== TẠO ANSWER_1, ANSWER_2, ANSWER_3 ===
+
+CÁCH 1: DUPLICATE (NHANH)
+1. Chọn Answer_0 trong Hierarchy
+2. Ctrl+D (duplicate) 3 lần
+3. Rename thành Answer_1, Answer_2, Answer_3
+4. Di chuyển vị trí cho phù hợp:
+   - Answer_1: Pos X = -50, Y = -200
+   - Answer_2: Pos X = 50, Y = -200
+   - Answer_3: Pos X = 150, Y = -200
+
+CÁCH 2: TẠO THỦ CÔNG (NẾU DUPLICATE BỊ LỖI)
+Lặp lại BƯỚC 1-7 cho Answer_1, Answer_2, Answer_3
+
+=== TẠO SLOT (NƠI THẢ ĐÁP ÁN) ===
+
+BƯỚC 1: TẠO SLOT GAMEOBJECT
+1. Hierarchy → Right click GameplayPanel → UI → Image
+2. Rename thành "Slot"
+
+BƯỚC 2: CẤU HÌNH SLOT
+1. Rect Transform:
+   - Width: 120
+   - Height: 120
+   - Pos: Đặt ở vị trí câu hỏi (ví dụ: 0, 0, 0)
+2. Image:
+   - Source Image: Chọn sprite (ví dụ: UI/InputFieldBackground)
+   - Color: Màu nhạt (ví dụ: 200, 200, 200, 100)
+   - ✅ Raycast Target: TRUE (phải tick!)
+3. ✅ QUAN TRỌNG: Tag = "Slot"
+   - Inspector → Tag dropdown → "Slot"
+   - Nếu không có tag "Slot":
+     * Edit → Project Settings → Tags and Layers
+     * Tags → Click "+" → Thêm "Slot"
+     * Quay lại Slot GameObject → Set tag = "Slot"
+
+BƯỚC 3: THÊM TEXT VÀO SLOT (OPTIONAL)
+1. Right click Slot → UI → Text - TextMeshPro
+2. Rename "SlotText"
+3. Text: "?" hoặc "Thả đáp án vào đây"
+4. Alignment: Center + Middle
+5. Raycast Target: FALSE
+
+=== GÁN VÀO UIMULTIPLAYERBATTLECONTROLLER ===
+
+BƯỚC 1: TÌM UIMULTIPLAYERBATTLECONTROLLER
+1. Hierarchy → Tìm GameplayPanel (hoặc object có UIMultiplayerBattleController)
+2. Chọn object đó
+
+BƯỚC 2: GÁN REFERENCES
+1. Inspector → UIMultiplayerBattleController component
+2. Gán các field:
+   - Question Text: Kéo TextMeshPro hiển thị câu hỏi
+   - Answer Slot: Kéo "Slot" GameObject
+   - Answer Choices: Set Size = 4
+     * Element 0: Kéo Answer_0
+     * Element 1: Kéo Answer_1
+     * Element 2: Kéo Answer_2
+     * Element 3: Kéo Answer_3
+
+=== KIỂM TRA ===
+
+CHECKLIST:
+✅ Answer_0/1/2/3 có MultiplayerDragAndDrop component
+✅ Answer_0/1/2/3 có CanvasGroup (alpha=1, interactable=true, blocksRaycasts=true)
+✅ Answer_0/1/2/3 có Image (raycastTarget=true)
+✅ Mỗi Answer có AnswerText child (TextMeshPro)
+✅ MultiplayerDragAndDrop.myText đã gán AnswerText
+✅ Slot có tag "Slot"
+✅ Slot có Image (raycastTarget=true)
+✅ UIMultiplayerBattleController.answerChoices đã gán đủ 4 Answer
+✅ UIMultiplayerBattleController.answerSlot đã gán Slot
+
+=== SAVE & TEST ===
+
+1. Ctrl+S để save scene
+2. Run game
+3. Vào battle scene
+4. Bấm F3 để validate
+5. Thử kéo Answer vào Slot
+
+=== NẾU VẪN KHÔNG KÉO ĐƯỢC ===
+
+Chạy các tools:
+1. Tools → Fix Drag-Drop Setup
+2. Tools → Find Blocking UI Elements
+3. Tools → Disable Raycast on Non-Interactive UI
+
+=== LAYOUT GỢI Ý ===
+
+Hierarchy nên trông như này:
+```
+Canvas
+└── GameplayPanel
+    ├── QuestionText (TextMeshPro - hiển thị câu hỏi)
+    ├── Slot (Image - nơi thả đáp án)
+    │   └── SlotText (TextMeshPro - "?")
+    ├── Answer_0 (Image + MultiplayerDragAndDrop)
+    │   └── AnswerText (TextMeshPro - "0")
+    ├── Answer_1 (Image + MultiplayerDragAndDrop)
+    │   └── AnswerText (TextMeshPro - "0")
+    ├── Answer_2 (Image + MultiplayerDragAndDrop)
+    │   └── AnswerText (TextMeshPro - "0")
+    └── Answer_3 (Image + MultiplayerDragAndDrop)
+        └── AnswerText (TextMeshPro - "0")
+```
+
+=== LƯU Ý QUAN TRỌNG ===
+
+1. ✅ PHẢI dùng MultiplayerDragAndDrop (KHÔNG PHẢI DragAndDrop!)
+2. ✅ Slot PHẢI có tag "Slot"
+3. ✅ Image.raycastTarget PHẢI = true
+4. ✅ CanvasGroup.blocksRaycasts PHẢI = true
+5. ✅ Canvas PHẢI có GraphicRaycaster component
+6. ✅ Scene PHẢI có EventSystem
+7. ✅ Answer objects nên ở cuối Hierarchy (sibling index cao) để render trên cùng
+
+=== TROUBLESHOOTING ===
+
+Vấn đề: Không kéo được
+→ Check Image.raycastTarget = true
+→ Check CanvasGroup.blocksRaycasts = true
+→ Chạy Tools → Find Blocking UI Elements
+
+Vấn đề: Kéo được nhưng không thả vào Slot
+→ Check Slot có tag "Slot"
+→ Check Slot.Image.raycastTarget = true
+
+Vấn đề: Thả vào Slot nhưng không submit
+→ Check MultiplayerDragAndDrop.battleController đã gán
+→ Check Console logs có error gì
+
+Vấn đề: answerChoices báo "Chưa gán"
+→ Gán lại trong Inspector
+→ Hoặc dùng ForceAssignAnswerChoices script

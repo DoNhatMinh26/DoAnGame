@@ -1,0 +1,162 @@
+═══════════════════════════════════════════════════════════
+🚨 SỬA NHANH - ANSWER CHOICES VẪN CHƯA GÁN
+═══════════════════════════════════════════════════════════
+
+LỖI HIỆN TẠI:
+-------------
+❌ BattleController.answerChoices: Chưa gán (đáp án sẽ không hiển thị)
+⚠️ MultiplayerDragDropAdapter: Không tìm thấy (không cần lo, không dùng nữa)
+
+
+CÁCH SỬA NHANH:
+===============
+
+OPTION 1: Chạy Auto-Setup Tool (KHUYẾN NGHỊ)
+---------------------------------------------
+1. Trong Unity Editor, menu:
+   Tools → Multiplayer Battle → Auto-Setup References
+
+2. Click "Có" trong dialog
+
+3. Đợi tool chạy xong (xem Console log)
+
+4. Save scene: Ctrl+S
+
+5. Chạy lại game và bấm F3 để validate
+
+
+OPTION 2: Gán thủ công (Nếu Auto-Setup không hoạt động)
+--------------------------------------------------------
+
+BƯỚC 1: Kiểm tra Answer_0 có MultiplayerDragAndDrop chưa
+---------------------------------------------------------
+1. Trong Hierarchy, chọn: GameplayPanel → Cauhoi → Answer_0
+
+2. Trong Inspector, kiểm tra có component "MultiplayerDragAndDrop" không?
+
+3. Nếu KHÔNG CÓ:
+   - Click "Add Component"
+   - Tìm "MultiplayerDragAndDrop"
+   - Click để thêm
+   - Kéo child "Text (TMP)" vào field "My Text"
+
+4. Lặp lại cho Answer_1, Answer_2, Answer_3
+
+
+BƯỚC 2: Gán vào Answer Choices
+-------------------------------
+1. Trong Hierarchy, chọn: GameplayPanel
+
+2. Trong Inspector, tìm component "UIMultiplayerBattleController"
+
+3. Scroll xuống phần [Battle System]
+
+4. Tìm field "Answer Choices":
+   - Click vào "Size" và đổi thành 4
+   - Bấm Enter
+
+5. Bây giờ sẽ có 4 fields:
+   - Element 0: (None)
+   - Element 1: (None)
+   - Element 2: (None)
+   - Element 3: (None)
+
+6. Kéo thả từ Hierarchy vào Inspector:
+   - Kéo Answer_0 → Thả vào Element 0
+   - Kéo Answer_1 → Thả vào Element 1
+   - Kéo Answer_2 → Thả vào Element 2
+   - Kéo Answer_3 → Thả vào Element 3
+
+7. Kết quả sẽ hiển thị:
+   - Element 0: Answer_0 (MultiplayerDragAndDrop)
+   - Element 1: Answer_1 (MultiplayerDragAndDrop)
+   - Element 2: Answer_2 (MultiplayerDragAndDrop)
+   - Element 3: Answer_3 (MultiplayerDragAndDrop)
+
+8. Save scene: Ctrl+S
+
+
+BƯỚC 3: Validate lại
+---------------------
+1. Chạy game (Host)
+
+2. Bấm F3 để validate
+
+3. Kiểm tra Console:
+   - ✅ answerChoices[0]: Answer_0
+   - ✅ answerChoices[1]: Answer_1
+   - ✅ answerChoices[2]: Answer_2
+   - ✅ answerChoices[3]: Answer_3
+
+
+TROUBLESHOOTING:
+================
+
+VẤN ĐỀ 1: Auto-Setup tool không chạy
+-------------------------------------
+NGUYÊN NHÂN: Script chưa compile hoặc có lỗi
+GIẢI PHÁP:
+- Kiểm tra Console có lỗi compile không
+- Restart Unity Editor
+- Thử gán thủ công (OPTION 2)
+
+
+VẤN ĐỀ 2: Không thấy menu "Tools → Multiplayer Battle"
+-------------------------------------------------------
+NGUYÊN NHÂN: Script MultiplayerBattleSetupHelper.cs chưa compile
+GIẢI PHÁP:
+- Kiểm tra file có tồn tại: Assets/Editor/MultiplayerBattleSetupHelper.cs
+- Kiểm tra Console có lỗi compile không
+- Restart Unity Editor
+
+
+VẤN ĐỀ 3: Kéo Answer vào Element nhưng hiển thị "None"
+--------------------------------------------------------
+NGUYÊN NHÂN: Answer chưa có MultiplayerDragAndDrop component
+GIẢI PHÁP:
+- Làm BƯỚC 1 để thêm component
+- Sau đó mới gán vào Answer Choices
+
+
+VẤN ĐỀ 4: Popup "Select MultiplayerDragAndDrop" không có gì
+-------------------------------------------------------------
+NGUYÊN NHÂN: Answer chưa có component MultiplayerDragAndDrop
+GIẢI PHÁP:
+- Chọn Answer_0
+- Add Component → MultiplayerDragAndDrop
+- Gán My Text
+- Lặp lại cho Answer_1, 2, 3
+
+
+KIỂM TRA NHANH:
+===============
+
+Chọn Answer_0 trong Hierarchy, Inspector phải có:
+✅ RectTransform
+✅ CanvasGroup
+✅ Image
+✅ MultiplayerDragAndDrop
+   - My Text: Text (TMP) ✅
+
+Nếu thiếu component nào:
+- Click "Add Component"
+- Tìm tên component
+- Click để thêm
+
+
+VIDEO HƯỚNG DẪN (Mô tả bằng text):
+===================================
+
+1. Chọn GameplayPanel trong Hierarchy
+2. Trong Inspector, tìm UIMultiplayerBattleController
+3. Scroll xuống phần [Battle System]
+4. Tìm "Answer Choices", set Size = 4
+5. Kéo Answer_0 từ Hierarchy vào Element 0
+6. Kéo Answer_1 từ Hierarchy vào Element 1
+7. Kéo Answer_2 từ Hierarchy vào Element 2
+8. Kéo Answer_3 từ Hierarchy vào Element 3
+9. Save scene (Ctrl+S)
+10. Chạy game và test!
+
+
+═══════════════════════════════════════════════════════════

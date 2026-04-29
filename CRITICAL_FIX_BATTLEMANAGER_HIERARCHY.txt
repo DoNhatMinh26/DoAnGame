@@ -1,0 +1,68 @@
+═══════════════════════════════════════════════════════════
+🚨 CRITICAL FIX: BattleManager Hierarchy Position
+═══════════════════════════════════════════════════════════
+
+VẤN ĐỀ PHÁT HIỆN:
+-----------------
+Theo scene export (Test_FireBase_multi_Export.txt), BattleManager hiện đang là
+CHILD của GameplayPanel:
+
+  Canvas
+  ├─ GameplayPanel [INACTIVE]
+  │  ├─ BattleManager ❌ SAI VỊ TRÍ!
+
+Khi GameplayPanel inactive → BattleManager cũng inactive → NetworkObject KHÔNG spawn!
+
+
+GIẢI PHÁP:
+----------
+BattleManager PHẢI ở ROOT LEVEL (cùng cấp với Canvas), KHÔNG phải child của GameplayPanel.
+
+Cấu trúc ĐÚNG:
+  Canvas
+  ├─ GameplayPanel [INACTIVE]
+  BattleManager ✅ ĐÚNG VỊ TRÍ (root level)
+
+
+CÁCH SỬA:
+---------
+1. Mở scene Test_FireBase_multi.unity
+
+2. Trong Hierarchy window:
+   - Tìm BattleManager (hiện đang nằm trong GameplayPanel)
+   - DRAG BattleManager ra ngoài (kéo lên trên cùng)
+   - Thả vào ROOT LEVEL (cùng cấp với Canvas, NetworkManager, RelayManager)
+
+3. Kiểm tra lại:
+   - BattleManager KHÔNG có indent (không có mũi tên ▶ bên trái)
+   - BattleManager nằm cùng cấp với Canvas
+   - BattleManager KHÔNG nằm trong GameplayPanel
+
+4. Save scene (Ctrl+S)
+
+
+TẠI SAO PHẢI LÀM VẬY?
+---------------------
+- NetworkObject trên scene objects chỉ auto-spawn nếu ở ROOT LEVEL
+- Nếu là child của inactive GameObject → NetworkObject không spawn
+- Không spawn → NetworkVariable không sync → Client không nhận được câu hỏi
+
+
+SAU KHI SỬA:
+------------
+1. Chạy lại game (Host + Client)
+2. Bấm F4 để export debug report
+3. Kiểm tra trong report:
+   - "Has NetworkObject: True ✅"
+   - "IsSpawned: True"
+4. Câu hỏi sẽ hiển thị trên cả Host và Client
+
+
+LƯU Ý:
+-------
+- BattleManager vẫn có thể control UI trong GameplayPanel
+- Không cần phải là child để tương tác với UI
+- UIMultiplayerBattleController sẽ tự động tìm BattleManager bằng FindObjectOfType
+
+
+═══════════════════════════════════════════════════════════

@@ -18,6 +18,7 @@ namespace DoAnGame.UI
         private const string StartedKey = "Started";
         private const string CharacterNameKey = "characterName";
         private const string HostNameKey = "HostName";
+        private const string GradeKey = "Grade";
 
         [Header("Browser Buttons")]
         [SerializeField] private Button refreshButton;
@@ -193,6 +194,7 @@ namespace DoAnGame.UI
                     BuildHostLabel(lobby),
                     BuildPlayerCount(lobby),
                     BuildLobbyStatus(lobby),
+                    BuildGradeLabel(lobby),
                     canJoin ? (() => _ = JoinLobbyAsync(lobby)) : null);
                 spawnedEntries.Add(widget);
             }
@@ -216,7 +218,7 @@ namespace DoAnGame.UI
         private string BuildHostLabel(Lobby lobby)
         {
             if (lobby == null)
-                return "Chủ phòng: Không rõ";
+                return "Không rõ";
 
             string hostName = null;
             if (!string.IsNullOrWhiteSpace(lobby.HostId) && lobby.Players != null)
@@ -245,7 +247,7 @@ namespace DoAnGame.UI
                 hostName = "Chủ phòng";
             }
 
-            return $"Chủ phòng: {hostName}";
+            return hostName;
         }
 
         private string BuildPlayerCount(Lobby lobby)
@@ -255,6 +257,27 @@ namespace DoAnGame.UI
 
             int currentPlayers = lobby.Players != null ? lobby.Players.Count : 0;
             return $"Người chơi: {currentPlayers}/{lobby.MaxPlayers}";
+        }
+
+        private string BuildGradeLabel(Lobby lobby)
+        {
+            if (lobby == null || lobby.Data == null)
+            {
+                return "Lớp 1";  // Mặc định
+            }
+
+            if (!lobby.Data.TryGetValue(GradeKey, out var gradeData) || gradeData == null)
+            {
+                return "Lớp 1";  // Mặc định
+            }
+
+            if (int.TryParse(gradeData.Value, out int grade))
+            {
+                grade = Mathf.Clamp(grade, 1, 5);
+                return $"Lớp {grade}";
+            }
+
+            return "Lớp 1";  // Fallback
         }
 
         private string BuildLobbyStatus(Lobby lobby)

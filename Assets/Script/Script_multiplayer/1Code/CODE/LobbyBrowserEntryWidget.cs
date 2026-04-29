@@ -17,6 +17,7 @@ namespace DoAnGame.UI
         [SerializeField] private TMP_Text hostText;
         [SerializeField] private TMP_Text playerCountText;
         [SerializeField] private TMP_Text statusText;
+        [SerializeField] private TMP_Text gradeText;
         [SerializeField] private Button joinButton;
 
         private Action joinAction;
@@ -36,9 +37,10 @@ namespace DoAnGame.UI
             ApplyCompactTextStyle(hostText);
             ApplyCompactTextStyle(playerCountText);
             ApplyCompactTextStyle(statusText);
+            ApplyCompactTextStyle(gradeText);
         }
 
-        public void Bind(string lobbyName, string hostName, string countText, string lobbyStatus, Action onJoinClicked)
+        public void Bind(string lobbyName, string hostName, string countText, string lobbyStatus, string gradeLabel, Action onJoinClicked)
         {
             if (lobbyNameText != null)
             {
@@ -58,6 +60,11 @@ namespace DoAnGame.UI
             if (statusText != null)
             {
                 statusText.SetText(lobbyStatus);
+            }
+
+            if (gradeText != null)
+            {
+                gradeText.SetText(gradeLabel);
             }
 
             joinAction = onJoinClicked;
