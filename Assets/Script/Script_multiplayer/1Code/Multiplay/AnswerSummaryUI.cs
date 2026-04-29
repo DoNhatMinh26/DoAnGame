@@ -38,9 +38,9 @@ namespace DoAnGame.UI
 
         private NetworkedMathBattleManager battleManager;
         private Coroutine summaryCoroutine;
+        private Coroutine questionTimerCoroutine;
         private bool isSummaryActive = false;
-        private string originalTimerText = ""; // Lưu text gốc của timer
-        private string originalTrangThaiText = ""; // Lưu text gốc của trạng thái
+        private bool isQuestionActive = false;
 
         // Enum để quản lý trạng thái
         public enum TimerState
@@ -61,8 +61,9 @@ namespace DoAnGame.UI
                 return;
             }
 
-            // Subscribe to answer result event
+            // Subscribe to events
             battleManager.OnAnswerResultReceived += HandleAnswerResult;
+            battleManager.OnQuestionGenerated += HandleQuestionGenerated;
             
             // Set trạng thái ban đầu
             SetTrangThaiQuestionTime();
@@ -78,6 +79,7 @@ namespace DoAnGame.UI
             if (battleManager != null)
             {
                 battleManager.OnAnswerResultReceived -= HandleAnswerResult;
+                battleManager.OnQuestionGenerated -= HandleQuestionGenerated;
             }
         }
 
@@ -140,13 +142,82 @@ namespace DoAnGame.UI
         }
 
         /// <summary>
+        /// Gọi khi có câu hỏi mới
+        /// </summary>
+        private void HandleQuestionGenerated(string question, int[] choices)
+        {
+            Debug.Log($"[AnswerSummaryUI] New question generated: {question}");
+
+            // Dừng summary coroutine nếu đang chạy
+            if (summaryCoroutine != null)
+            {
+                StopCoroutine(summaryCoroutine);
+                summaryCoroutine = null;
+            }
+
+            // Dừng question timer cũ nếu có
+            if (questionTimerCoroutine != null)
+            {
+                StopCoroutine(questionTimerCoroutine);
+            }
+
+            // Ẩn đáp án
+            HideAnswerTexts();
+
+            // Set trạng thái Question Time
+            SetTrangThaiQuestionTime();
+
+            // Bắt đầu đếm ngược Question Time
+            questionTimerCoroutine = StartCoroutine(QuestionTimerRoutine());
+        }
+
+        /// <summary>
+        /// Đếm ngược thời gian Question Time (10s → 0s)
+        /// </summary>
+        private IEnumerator QuestionTimerRoutine()
+        {
+            isQuestionActive = true;
+            float questionTime = 10f; // 10 giây
+            float elapsed = 0f;
+
+            while (elapsed < questionTime)
+            {
+                elapsed += Time.deltaTime;
+                float remaining = Mathf.Max(0, questionTime - elapsed);
+
+                if (timerText != null)
+                {
+                    timerText.text = $"{Mathf.CeilToInt(remaining)}s";
+                }
+
+                yield return null;
+            }
+
+            // Hết thời gian Question Time
+            if (timerText != null)
+            {
+                timerText.text = "0s";
+            }
+
+            isQuestionActive = false;
+            Debug.Log("[AnswerSummaryUI] Question Time ended");
+        }
+
+        /// <summary>
         /// Gọi khi có kết quả đáp án
         /// </summary>
         private void HandleAnswerResult(int winnerId, bool correct, long player1ResponseTimeMs, long player2ResponseTimeMs, int player1Answer, int player2Answer)
         {
             Debug.Log($"[AnswerSummaryUI] Answer result: Winner={winnerId}, Correct={correct}, P1Time={player1ResponseTimeMs}ms, P2Time={player2ResponseTimeMs}ms, P1Answer={player1Answer}, P2Answer={player2Answer}");
 
-            // Dừng coroutine cũ nếu có
+            // Dừng question timer
+            if (questionTimerCoroutine != null)
+            {
+                StopCoroutine(questionTimerCoroutine);
+                questionTimerCoroutine = null;
+            }
+
+            // Dừng summary coroutine cũ nếu có
             if (summaryCoroutine != null)
             {
                 StopCoroutine(summaryCoroutine);
@@ -163,27 +234,17 @@ namespace DoAnGame.UI
         {
             isSummaryActive = true;
             
-            // Lưu text gốc
-            if (timerText != null)
-            {
-                originalTimerText = timerText.text;
-            }
-            if (trangThaiText != null)
-            {
-                originalTrangThaiText = trangThaiText.text;
-            }
-            
-            // Thay đổi trạng thái sang Summary Time
+            // Thay đổi trạng thái sang Summary Time NGAY LẬP TỨC
             SetTrangThaiSummaryTime();
             
-            // Hiển thị đáp án người chơi chọn (giờ đã có thể hiển thị vì hết thời gian trả lời)
+            // Hiển thị đáp án người chơi chọn
             ShowAnswerTexts();
             DisplayAnswers(player1Answer, player2Answer, player1ResponseTimeMs, player2ResponseTimeMs);
             
-            // Hiển thị kết quả (bao gồm cả response time)
+            // Hiển thị kết quả
             DisplayResult(winnerId, correct, player1ResponseTimeMs, player2ResponseTimeMs, player1Answer, player2Answer);
             
-            // Đếm ngược timer
+            // Đếm ngược timer từ defaultSummaryDuration xuống 0
             float duration = defaultSummaryDuration;
             float elapsed = 0f;
             
@@ -236,32 +297,66 @@ namespace DoAnGame.UI
 
         /// <summary>
         /// Hiển thị kết quả đúng/sai cho cả 2 người chơi
-        /// (Thời gian đã hiển thị trong TextTrangThaiDapAn1/2)
         /// 
         /// Logic so sánh theo miligiây:
-        /// - winnerId = 0: Player 1 thắng
-        /// - winnerId = 1: Player 2 thắng
+        /// - winnerId = 0: Player 1 thắng (đúng hoặc nhanh hơn)
+        /// - winnerId = 1: Player 2 thắng (đúng hoặc nhanh hơn)
         /// - winnerId = -1: Cả 2 sai
-        /// - winnerId = -2: Hòa (cùng thời gian)
+        /// - winnerId = -2: Hòa (cả 2 đúng cùng thời gian)
         /// </summary>
         private void DisplayResult(int winnerId, bool correct, long player1ResponseTimeMs, long player2ResponseTimeMs, int player1Answer, int player2Answer)
         {
             string resultText = "";
             
+            // Kiểm tra xem đáp án có đúng không (dựa vào CorrectAnswer từ BattleManager)
+            int correctAnswer = battleManager.CorrectAnswer.Value;
+            bool player1Correct = (player1Answer == correctAnswer);
+            bool player2Correct = (player2Answer == correctAnswer);
+            
+            Debug.Log($"[AnswerSummaryUI] Correct answer: {correctAnswer}, P1: {player1Answer} ({player1Correct}), P2: {player2Answer} ({player2Correct})");
+            
             if (winnerId == -2)
             {
                 // Hòa - cả 2 đúng cùng thời gian
-                resultText = "<color=cyan>Hòa! Cả 2 trả lời cùng lúc!</color>";
+                resultText = "<color=cyan>Hòa! Cả 2 trả lời đúng cùng lúc!</color>";
             }
             else if (winnerId == 0)
             {
                 // Player 1 thắng
-                resultText = "<color=green>Người chơi 1 đúng!</color>\n<color=red>Người chơi 2 sai!</color>";
+                if (player1Correct && player2Correct)
+                {
+                    // Cả 2 đúng, Player 1 nhanh hơn
+                    resultText = "<color=green>Cả 2 đều đúng!</color>\n<color=yellow>Người chơi 1 nhanh hơn!</color>";
+                }
+                else if (player1Correct && !player2Correct)
+                {
+                    // Player 1 đúng, Player 2 sai
+                    resultText = "<color=green>Người chơi 1 đúng!</color>\n<color=red>Người chơi 2 sai!</color>";
+                }
+                else
+                {
+                    // Trường hợp khác (không nên xảy ra)
+                    resultText = "<color=green>Người chơi 1 thắng!</color>";
+                }
             }
             else if (winnerId == 1)
             {
                 // Player 2 thắng
-                resultText = "<color=red>Người chơi 1 sai!</color>\n<color=green>Người chơi 2 đúng!</color>";
+                if (player1Correct && player2Correct)
+                {
+                    // Cả 2 đúng, Player 2 nhanh hơn
+                    resultText = "<color=green>Cả 2 đều đúng!</color>\n<color=yellow>Người chơi 2 nhanh hơn!</color>";
+                }
+                else if (!player1Correct && player2Correct)
+                {
+                    // Player 1 sai, Player 2 đúng
+                    resultText = "<color=red>Người chơi 1 sai!</color>\n<color=green>Người chơi 2 đúng!</color>";
+                }
+                else
+                {
+                    // Trường hợp khác (không nên xảy ra)
+                    resultText = "<color=green>Người chơi 2 thắng!</color>";
+                }
             }
             else if (winnerId == -1)
             {
@@ -303,14 +398,14 @@ namespace DoAnGame.UI
                 resultText.text = "";
             }
             
-            // Khôi phục text gốc của timer
+            // Khôi phục trạng thái Question Time (sẵn sàng cho câu hỏi tiếp theo)
+            SetTrangThaiQuestionTime();
+            
+            // Reset timer text
             if (timerText != null)
             {
-                timerText.text = originalTimerText;
+                timerText.text = "10s";
             }
-            
-            // Khôi phục trạng thái Question Time
-            SetTrangThaiQuestionTime();
         }
 
         /// <summary>

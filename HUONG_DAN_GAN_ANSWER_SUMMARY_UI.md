@@ -104,14 +104,18 @@ TextTrangThaiDapAn1: HIDDEN (ẩn)
 TextTrangThaiDapAn2: HIDDEN (ẩn)
 ```
 
-### Summary Time (5 giây)
+**Quản lý bởi**: AnswerSummaryUI (QuestionTimerRoutine)
+
+### Summary Time (3 giây)
 ```
 TimerState: "Thời gian thống kê đáp án"
-Timertext: "5s" → "4s" → "3s" → "2s" → "1s" → "0s"
+Timertext: "3s" → "2s" → "1s" → "0s"
 TextTrangThaiDapAn1: "Đáp án người chơi 1 chọn là: 32 (3.2450s)" (hiển thị)
 TextTrangThaiDapAn2: "Đáp án người chơi 2 chọn là: 32 (5.6780s)" (hiển thị)
 Result: "Người chơi 1 đúng!" / "Người chơi 2 đúng!"
 ```
+
+**Quản lý bởi**: AnswerSummaryUI (ShowSummaryRoutine)
 
 ---
 

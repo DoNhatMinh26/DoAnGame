@@ -23,8 +23,10 @@ namespace DoAnGame.UI
         [SerializeField] private TMP_Text player2NameText;
         [SerializeField] private TMP_Text player2ScoreText;
 
-        [Header("=== TIMER ===")]
+        [Header("=== TIMER (OPTIONAL) ===")]
+        [Tooltip("Optional - Timer text (có thể để None nếu dùng AnswerSummaryUI)")]
         [SerializeField] private TMP_Text timerText;
+        [Tooltip("Optional - Timer fill image")]
         [SerializeField] private Image timerFillImage;
 
         [Header("=== COLORS ===")]

@@ -145,8 +145,8 @@ namespace DoAnGame.Multiplayer
             {
                 Debug.Log("[BattleManager] Client spawned");
                 
-                // Client gửi tên của mình lên server
-                Invoke(nameof(SendPlayerNameToServer), 0.5f);
+                // Client gửi tên của mình lên server (delay 3s để đảm bảo player states đã spawn)
+                Invoke(nameof(SendPlayerNameToServer), 3f);
             }
         }
 
@@ -177,7 +177,7 @@ namespace DoAnGame.Multiplayer
                 }
             }
 
-            Debug.Log($"[BattleManager] Client sending name: {playerName}");
+            Debug.Log($"[BattleManager] Client sending name: {playerName} (ClientID: {NetworkManager.Singleton.LocalClientId})");
             UpdatePlayerNameServerRpc(playerName);
         }
 
@@ -189,17 +189,70 @@ namespace DoAnGame.Multiplayer
         {
             ulong clientId = rpcParams.Receive.SenderClientId;
             
+            Debug.Log($"[BattleManager] Server received name update from client {clientId}: {playerName}");
+            
             // Tìm player state của client này
             NetworkedPlayerState playerState = null;
             if (clientId == 0)
+            {
+                playerState = player1State;
+                Debug.Log($"[BattleManager] Updating Player 1 name (client 0)");
+            }
+            else
+            {
+                playerState = player2State;
+                Debug.Log($"[BattleManager] Updating Player 2 name (client {clientId})");
+            }
+
+            if (playerState != null)
+            {
+                playerState.PlayerName.Value = playerName;
+                Debug.Log($"[BattleManager] ✅ Updated player name for client {clientId}: {playerName}");
+            }
+            else
+            {
+                Debug.LogWarning($"[BattleManager] ⚠️ Player state not found for client {clientId}! Retrying in 1s...");
+                // Retry sau 1 giây (tối đa 3 lần)
+                pendingPlayerName = playerName;
+                pendingClientId = clientId;
+                pendingRetryCount = 0;
+                Invoke(nameof(RetryUpdatePlayerName), 1f);
+            }
+        }
+
+        private string pendingPlayerName = "";
+        private ulong pendingClientId = 0;
+        private int pendingRetryCount = 0;
+        private const int MAX_RETRY_COUNT = 3;
+
+        private void RetryUpdatePlayerName()
+        {
+            if (!IsServer) return;
+
+            pendingRetryCount++;
+
+            NetworkedPlayerState playerState = null;
+            if (pendingClientId == 0)
                 playerState = player1State;
             else
                 playerState = player2State;
 
             if (playerState != null)
             {
-                playerState.PlayerName.Value = playerName;
-                Debug.Log($"[BattleManager] Updated player name for client {clientId}: {playerName}");
+                playerState.PlayerName.Value = pendingPlayerName;
+                Debug.Log($"[BattleManager] ✅ Retry {pendingRetryCount} successful! Updated player name for client {pendingClientId}: {pendingPlayerName}");
+            }
+            else
+            {
+                if (pendingRetryCount < MAX_RETRY_COUNT)
+                {
+                    Debug.LogWarning($"[BattleManager] ⚠️ Retry {pendingRetryCount} failed! Player state still not found for client {pendingClientId}. Retrying again in 1s...");
+                    Invoke(nameof(RetryUpdatePlayerName), 1f);
+                }
+                else
+                {
+                    Debug.LogError($"[BattleManager] ❌ Max retries ({MAX_RETRY_COUNT}) reached! Could not update player name for client {pendingClientId}");
+                }
             }
         }
 
