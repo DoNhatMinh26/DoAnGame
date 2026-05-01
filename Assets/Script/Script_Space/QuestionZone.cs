@@ -22,7 +22,7 @@ public class QuestionZone : MonoBehaviour
             StopCoroutine(currentFadeCoroutine);
             currentFadeCoroutine = null;
         }
-
+        
         // 2. ÉP Alpha về 1 và bật lại tương tác
         if (canvasGroup == null) canvasGroup = GetComponent<CanvasGroup>();
         if (canvasGroup != null)

@@ -53,7 +53,7 @@ public class SpaceDifficultyConfig : ScriptableObject
                 worldSpeedCurve = AnimationCurve.Linear(0, 3f, 1, 6f),
 
                 // Khoảng cách: Chạy từ 45 (màn 1) giảm dần về 35 (màn 100)
-                distanceCurve = AnimationCurve.Linear(0, 45f, 1, 35f)
+                distanceCurve = AnimationCurve.Linear(0, 35f, 1, 35f)
             };
         }
 

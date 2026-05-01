@@ -16,6 +16,7 @@ public class SpaceShipManager : MonoBehaviour
     [Header("UI Elements")]
     [SerializeField] private TextMeshProUGUI manHienTaiText;
     [SerializeField] private TextMeshProUGUI cauHoiDungYenText;
+    [SerializeField] private TextMeshProUGUI dkWinText;
 
     [Header("Hiệu ứng chữ")]
     [SerializeField] private float typingSpeed = 0.05f;
@@ -24,17 +25,34 @@ public class SpaceShipManager : MonoBehaviour
     public GameObject canvasPrefab;
     [HideInInspector] public float worldSpeed = 8f;
     [HideInInspector] public float distanceBetween = 45f;
+    public string gateTag = "Gate";
     public int activeCount = 3;
 
-    [Header("Logic Chiến Thắng")]
-    public int gatesPassed = 0;
-    public int totalGatesToWin = 10;
+    [Header("Cấu hình Lưới Tiền (3x3)")]
+    public int coinRows = 3;
+    public int coinCols = 3;
+    public float spacingX = 1.8f;
+    public float spacingY = 1.8f;
 
-    private Queue<GameObject> pool = new Queue<GameObject>();
-    private float nextSpawnX = 15f;
+    [Tooltip("Khoảng cách lùi lại phía trước cổng")]
+    public float fixedDistanceBeforeGate = 12f;
+
+    [Tooltip("Vị trí chiều cao trung tâm của lưới tiền")]
+    public float centerYOffset = 0f;
+    public GameObject coinPrefab; // Kéo Prefab đồng xu vào đây
+    
+
+    private int correctAnswersCount = 0;
+    private int totalGatesToWin = 10;
+
+    public int CorrectAnswersCount => correctAnswersCount;
+    public int TotalGatesToWin => totalGatesToWin;
+
+    private float nextSpawnX = 30f;
     private Coroutine typingCoroutine;
 
     [HideInInspector] public string currentCorrectAnswer;
+    private List<GameObject> activeZones = new List<GameObject>();
 
     void Awake()
     {
@@ -44,92 +62,169 @@ public class SpaceShipManager : MonoBehaviour
     void OnEnable()
     {
         Time.timeScale = 1f;
-        if (manHienTaiText != null)
-            manHienTaiText.text = "Màn " + LevelManager.CurrentLevel;
 
-        // Lấy độ khó
+        if (manHienTaiText != null)
+        {
+            manHienTaiText.text = "Màn " + LevelManager.CurrentLevel;
+        }
+
         if (difficultyConfig != null)
         {
             var diff = difficultyConfig.GetDifficulty(UIManager.SelectedGrade, LevelManager.CurrentLevel);
             totalGatesToWin = diff.gateCount;
             worldSpeed = diff.speed;
             distanceBetween = diff.distance;
+            correctAnswersCount = 0;
+            UpdateWinConditionUI();
         }
-
-        // DỌN DẸP MẠNH TAY
-        StopAllCoroutines();
-        if (cauHoiDungYenText != null) cauHoiDungYenText.text = "";
 
         ClearExistingZones();
-        nextSpawnX = 15f;
-        gatesPassed = 0;
+        nextSpawnX = 30f;
 
-        // Tạo cổng
-        for (int i = 0; i < activeCount; i++) SpawnNewZone();
-
-        // Hiển thị câu hỏi đầu tiên
-        if (pool.Count > 0)
+        for (int i = 0; i < activeCount; i++)
         {
-            QuestionZone firstZone = pool.Peek().GetComponent<QuestionZone>();
-            currentCorrectAnswer = firstZone.dapAnDung;
-            UpdateStaticQuestionUI(firstZone.cauHoiLuuTru);
+            SpawnNewZone();
         }
-    }
 
-   
+        UpdateFirstQuestion();
+    }
 
     void Update()
     {
-        foreach (GameObject zone in pool)
+        // Duyệt ngược danh sách để xóa an toàn khi di chuyển
+        for (int i = activeZones.Count - 1; i >= 0; i--)
         {
+            GameObject zone = activeZones[i];
+            if (zone == null)
+            {
+                activeZones.RemoveAt(i);
+                continue;
+            }
+
             zone.transform.Translate(Vector3.left * worldSpeed * Time.deltaTime);
+
+            if (zone.transform.position.x < -25f)
+            {
+                activeZones.RemoveAt(i);
+                Destroy(zone);
+            }
         }
 
-        if (pool.Count > 0 && pool.Peek().transform.position.x < -20f)
+        if (activeZones.Count < activeCount)
         {
-            GameObject oldZone = pool.Dequeue();
-
-            // Dọn dẹp UI của câu hỏi vừa trôi qua để chuẩn bị cho câu tiếp theo
-            UpdateStaticQuestionUI("");
-
-            float maxPosX = -20f;
-            foreach (GameObject g in pool)
-            {
-                if (g.transform.position.x > maxPosX) maxPosX = g.transform.position.x;
-            }
-
-            oldZone.transform.position = new Vector3(maxPosX + distanceBetween, 0, 0);
-            SetupZone(oldZone.GetComponent<QuestionZone>());
-            pool.Enqueue(oldZone);
-
-            // Cập nhật câu hỏi cho cổng gần nhất
-            QuestionZone nextQ = pool.Peek().GetComponent<QuestionZone>();
-            currentCorrectAnswer = nextQ.dapAnDung;
-            
-        }
-    }
-
-    public void CountGatePassed()
-    {
-        gatesPassed++;
-        Debug.Log("Đã vượt qua cổng: " + gatesPassed + "/" + totalGatesToWin);
-
-        if (gatesPassed >= totalGatesToWin)
-        {
-            Debug.Log("ĐIỀU KIỆN THẮNG THỎA MÃN!");
-            if (UiSp.Instance != null)
-            {
-                UiSp.Instance.ShowWin(); // Gọi bảng chiến thắng
-            }
+            SpawnNewZone();
         }
     }
 
     private void SpawnNewZone()
     {
-        GameObject zoneObj = Instantiate(canvasPrefab, new Vector3(nextSpawnX, 0, 0), Quaternion.identity);
+        float spawnPos = nextSpawnX;
+
+        if (activeZones.Count > 0)
+        {
+            float furthestX = -100f;
+            foreach (var zone in activeZones)
+            {
+                if (zone == null) continue;
+                // Tìm Portal/Gate con để lấy tọa độ X chuẩn nhất
+                Transform gate = zone.transform.Find("Gate") ?? zone.transform;
+                if (gate.position.x > furthestX) furthestX = gate.position.x;
+            }
+            spawnPos = furthestX + distanceBetween;
+        }
+
+        // 1. Sinh cổng câu hỏi
+        GameObject zoneObj = Instantiate(canvasPrefab, new Vector3(spawnPos, 0, 0), Quaternion.identity);
+        activeZones.Add(zoneObj);
         SetupZone(zoneObj.GetComponent<QuestionZone>());
-        pool.Enqueue(zoneObj);
-        nextSpawnX += distanceBetween;
+
+        // 2. Sinh tiền ngẫu nhiên phía trước cổng vừa tạo
+        TrySpawnCoin(spawnPos, zoneObj.transform);
+    }
+
+    private void TrySpawnCoin(float zoneX, Transform parentZone)
+    {
+        if (coinPrefab == null) return;
+
+        // 1. Tính toán điểm bắt đầu để lưới tiền nằm chính giữa theo trục Y dựa trên Inspector
+        // Sử dụng coinRows, spacingY và centerYOffset từ bảng cấu hình
+        float totalHeight = (coinRows - 1) * spacingY;
+        float topY = centerYOffset + (totalHeight / 2f);
+
+        // 2. Vị trí X bắt đầu lùi lại phía trước cổng dựa trên Fixed Distance Before Gate
+        float startX = zoneX - fixedDistanceBeforeGate;
+
+        // 3. Lặp qua từng cột (coinCols)
+        for (int c = 0; c < coinCols; c++)
+        {
+            // Chọn ngẫu nhiên 1 hàng duy nhất trong số các hàng (coinRows)[cite: 8]
+            int randomRow = Random.Range(0, coinRows);
+
+            // Tính toán vị trí dựa trên Spacing X và Spacing Y từ Inspector[cite: 8]
+            float posX = startX + (c * spacingX);
+            float posY = topY - (randomRow * spacingY);
+
+            Vector3 spawnPos = new Vector3(posX, posY, 0);
+
+            // 4. Sinh đồng xu duy nhất cho cột này
+            GameObject coinObj = Instantiate(coinPrefab, spawnPos, Quaternion.identity);
+
+            // Gán vào parent để trôi cùng cổng câu hỏi với tốc độ worldSpeed[cite: 8]
+            coinObj.transform.SetParent(parentZone);
+        }
+    }
+    private void UpdateFirstQuestion()
+    {
+        QuestionZone firstZone = GetNextQuestionZone();
+        if (firstZone != null)
+        {
+            currentCorrectAnswer = firstZone.dapAnDung;
+            UpdateStaticQuestionUI(firstZone.cauHoiLuuTru);
+        }
+    }
+
+    public QuestionZone GetNextQuestionZone()
+    {
+        GameObject closest = null;
+        float minX = float.MaxValue;
+
+        foreach (var zone in activeZones)
+        {
+            if (zone == null) continue;
+            float posX = zone.transform.position.x;
+
+            if (posX > -8f && posX < minX)
+            {
+                minX = posX;
+                closest = zone;
+            }
+        }
+        return closest != null ? closest.GetComponent<QuestionZone>() : null;
+    }
+
+    public void ClearExistingZones()
+    {
+        StopAllCoroutines();
+        typingCoroutine = null;
+
+        if (activeZones != null)
+        {
+            foreach (var zone in activeZones)
+            {
+                if (zone != null) DestroyImmediate(zone);
+            }
+            activeZones.Clear();
+        }
+
+        GameObject[] leftovers = GameObject.FindGameObjectsWithTag(gateTag);
+        foreach (GameObject g in leftovers)
+        {
+            if (g == null) continue;
+            DestroyImmediate(g.transform.parent != null ? g.transform.parent.gameObject : g);
+        }
+
+        nextSpawnX = 10f;
+        if (cauHoiDungYenText != null) cauHoiDungYenText.text = "";
     }
 
     private void SetupZone(QuestionZone zone)
@@ -139,75 +234,59 @@ public class SpaceShipManager : MonoBehaviour
 
         string cauHoi, dapAn;
         GenerateFullMathQuestion(out cauHoi, out dapAn);
-
         List<string> choices = GenerateDynamicChoices(dapAn);
         zone.Setup(cauHoi, choices, dapAn);
-
-        // XÓA DÒNG UpdateStaticQuestionUI(cauHoi) Ở ĐÂY
-        // Vì việc cập nhật UI sẽ do hàm OnEnable hoặc SpaceShipPhysics điều khiển theo thứ tự Queue.
     }
 
-    // Thêm hàm này để SpaceShipPhysics có thể lấy dữ liệu cổng tiếp theo
-    public QuestionZone GetNextQuestionZone()
+    public void CountCorrectAnswer()
     {
-        if (pool.Count > 0)
+        correctAnswersCount++;
+        UpdateWinConditionUI();
+        if (correctAnswersCount >= totalGatesToWin)
         {
-            return pool.Peek().GetComponent<QuestionZone>();
+            if (UiSp.Instance != null) UiSp.Instance.ShowWin();
         }
-        return null;
     }
 
-    private void ClearExistingZones()
+    #region UI & EFFECTS
+    private void UpdateWinConditionUI()
     {
-        foreach (GameObject zone in pool) Destroy(zone);
-        pool.Clear();
+        if (dkWinText != null)
+        {
+            dkWinText.text = $"{correctAnswersCount}/{totalGatesToWin}";
+        }
     }
 
     public void UpdateStaticQuestionUI(string cauHoi = "")
     {
         if (cauHoiDungYenText == null) return;
-
-        // 1. Dừng Coroutine cụ thể đang chạy thay vì dùng StopAllCoroutines (tránh dừng nhầm logic khác)
-        if (typingCoroutine != null)
-        {
-            StopCoroutine(typingCoroutine);
-            typingCoroutine = null; // Đảm bảo biến được giải phóng
-        }
-
-        // 2. Xóa sạch text ngay lập tức để không bị chữ cũ đè chữ mới
+        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
         cauHoiDungYenText.text = "";
 
-        // 3. Chỉ bắt đầu Coroutine mới nếu có nội dung câu hỏi
         if (!string.IsNullOrEmpty(cauHoi))
-        {
             typingCoroutine = StartCoroutine(TypeEffect(cauHoi));
-        }
     }
 
     private IEnumerator TypeEffect(string text)
     {
-        // Xóa text một lần nữa khi bắt đầu chạy loop
         cauHoiDungYenText.text = "";
-
         foreach (char c in text.ToCharArray())
         {
-            // Kiểm tra null đề phòng trường hợp object UI bị hủy đột ngột
             if (cauHoiDungYenText == null) yield break;
-
             cauHoiDungYenText.text += c;
             yield return new WaitForSeconds(typingSpeed);
         }
-
         typingCoroutine = null;
     }
 
     public void SetCauHoiDungYenResult(string title, string result)
     {
         if (cauHoiDungYenText != null)
-            cauHoiDungYenText.text = title + " " + result;
+            cauHoiDungYenText.text = $"{title} {result}";
     }
+    #endregion
 
-    // --- FULL LOGIC TẠO CÂU HỎI TOÁN HỌC (8 DẠNG) ---
+    #region MATH LOGIC (GIỮ NGUYÊN)
     private void GenerateFullMathQuestion(out string cauHoiStr, out string dapAnStr)
     {
         var config = levelData.GetConfigForLevel(UIManager.SelectedGrade, LevelManager.CurrentLevel);
@@ -316,4 +395,5 @@ public class SpaceShipManager : MonoBehaviour
         }
         return choices;
     }
+    #endregion
 }

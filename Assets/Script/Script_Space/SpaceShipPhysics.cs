@@ -16,6 +16,8 @@ public class SpaceShipPhysics : MonoBehaviour
     private bool canMove = true;
     private bool isLockedByMagnet = false;
 
+    private GameObject lastHitGate;
+
     void Update()
     {
         if (canMove)
@@ -69,15 +71,12 @@ public class SpaceShipPhysics : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        
-        // Chỉ xử lý nếu đang được phép di chuyển (không bị khóa)
         if (canMove && other.CompareTag(gateTag))
         {
-            canMove = false; // KHÓA NGAY LẬP TỨC
-            isLockedByMagnet = false;
+            canMove = false;
+            lastHitGate = other.transform.parent.gameObject; // Lưu lại để xóa
 
             TextMeshProUGUI gateText = other.GetComponentInChildren<TextMeshProUGUI>();
-
             if (gateText != null && SpaceShipManager.Instance != null)
             {
                 string correctAnswer = SpaceShipManager.Instance.currentCorrectAnswer;
@@ -88,6 +87,7 @@ public class SpaceShipPhysics : MonoBehaviour
                 if (isCorrect)
                 {
                     gateText.color = Color.green;
+                    SpaceShipManager.Instance.CountCorrectAnswer();
                 }
                 else
                 {
@@ -95,34 +95,31 @@ public class SpaceShipPhysics : MonoBehaviour
                     if (Enemy.Instance != null) Enemy.Instance.MoveCloser();
                 }
 
-                SpaceShipManager.Instance.CountGatePassed();
-
-                // Sử dụng Coroutine để đợi 2 giây trước khi mở khóa
-                if (SpaceShipManager.Instance.gatesPassed < SpaceShipManager.Instance.totalGatesToWin)
+                if (SpaceShipManager.Instance.CorrectAnswersCount < SpaceShipManager.Instance.TotalGatesToWin)
                 {
                     StartCoroutine(UpdateNextQuestionRoutine());
                 }
             }
             QuestionZone zone = other.GetComponentInParent<QuestionZone>();
-            if (zone != null)
-            {
-                // Làm mờ cổng trong vòng 1.5 giây
-                zone.FadeOut(1.5f);
-            }
-            // Vô hiệu hóa cổng vừa chạm để tránh va chạm lặp
-            other.enabled = false;
+            if (zone != null) zone.FadeOut(1.5f);
+
+            other.enabled = false; // Tắt va chạm tạm thời
         }
     }
 
     private IEnumerator UpdateNextQuestionRoutine()
     {
-        // Đợi đúng 2 giây theo yêu cầu của bạn
         yield return new WaitForSeconds(2f);
 
-        // Mở khóa cho phép di chuyển và chọn đáp án tiếp theo
+        // XÓA cổng vừa va chạm
+        if (lastHitGate != null)
+        {
+            Destroy(lastHitGate);
+        }
+
         ResetMovement();
 
-        // Cập nhật câu hỏi cho cổng tiếp theo
+        // Cập nhật câu hỏi mới từ cổng kế tiếp
         if (SpaceShipManager.Instance != null)
         {
             QuestionZone nextQ = SpaceShipManager.Instance.GetNextQuestionZone();
@@ -134,6 +131,12 @@ public class SpaceShipPhysics : MonoBehaviour
         }
     }
 
+
+   
+    private void OnEnable()
+    {
+        ResetMovement(); // Đảm bảo phi thuyền luôn di chuyển được khi bắt đầu
+    }
     public void ResetMovement()
     {
         canMove = true;

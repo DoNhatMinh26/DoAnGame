@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 
 public class UiSp : MonoBehaviour
@@ -25,6 +26,13 @@ public class UiSp : MonoBehaviour
     public GameObject panelLose;
     private bool isGameOver = false;
 
+    [Header("Quản lý Tiền")]
+    public TextMeshProUGUI totalCoinTxt; // Kéo Text ở Menu vào đây
+    public TextMeshProUGUI levelCoinTxt; // Kéo Text ở Gameplay vào đây
+    public Transform coinTarget;
+    private int totalCoins = 0;
+    private int levelCoins = 0;
+
     [Header("UI Thông báo")]
     public CanvasGroup notificationCanvasGroup;
     public TextMeshProUGUI notificationTxt;
@@ -33,14 +41,43 @@ public class UiSp : MonoBehaviour
 
     private void Start()
     {
+        LoadCoins();
         GenerateLevelButtons();
         ShowHome();
     }
 
+    #region QUẢN LÝ TIỀN
+    private void LoadCoins()
+    {
+        // Load tiền từ máy khi vừa mở game
+        totalCoins = PlayerPrefs.GetInt("TotalCoins", 0);
+        levelCoins = 0;
+        UpdateCoinUI();
+    }
+
+    public void AddCoins(int amount)
+    {
+        levelCoins += amount;
+        totalCoins += amount;
+
+        // Lưu lại ngay lập tức
+        PlayerPrefs.SetInt("TotalCoins", totalCoins);
+        PlayerPrefs.Save();
+
+        UpdateCoinUI();
+    }
+
+    private void UpdateCoinUI()
+    {
+        if (totalCoinTxt != null) totalCoinTxt.text = totalCoins.ToString();
+        if (levelCoinTxt != null) levelCoinTxt.text = levelCoins.ToString();
+    }
+    #endregion
     #region QUẢN LÝ PANEL
     public void ShowHome()
     {
         HideAllPanels();
+        panelGameplay.SetActive(false);
         panelHome.SetActive(true);
         Time.timeScale = 1f;
     }
@@ -48,25 +85,25 @@ public class UiSp : MonoBehaviour
     public void ShowChonMan()
     {
         HideAllPanels();
+        panelGameplay.SetActive(false);
         panelChonMan.SetActive(true);
-        GenerateLevelButtons(); // Cập nhật trạng thái khóa/mở
+        GenerateLevelButtons();
     }
 
     public void ShowGameplay()
     {
         HideAllPanels();
         panelGameplay.SetActive(true);
+        levelCoins = 0;
+        UpdateCoinUI();
         Time.timeScale = 1f;
     }
 
     public void Click_Setting()
     {
-        // Hiển thị Panel Setting mà không ẩn các panel khác (để hiện đè lên Gameplay hoặc Home)
         if (panelSetting != null)
         {
             panelSetting.SetActive(true);
-
-            // Tạm dừng trò chơi khi mở bảng cài đặt
             Time.timeScale = 0f;
         }
     }
@@ -76,100 +113,91 @@ public class UiSp : MonoBehaviour
         if (panelSetting != null)
         {
             panelSetting.SetActive(false);
-
-            // Nếu đang ở trong Gameplay thì tiếp tục chạy game, nếu ở Home thì giữ nguyên
-            if (panelGameplay.activeSelf)
-            {
-                Time.timeScale = 1f;
-            }
+            if (panelGameplay.activeSelf) Time.timeScale = 1f;
         }
     }
+
     public void Click_BackToHome()
     {
-        // 1. Dừng mọi hoạt động của game nếu đang chơi
-        Time.timeScale = 1f; // Đảm bảo thời gian trở lại bình thường khi về Home
+        Time.timeScale = 1f;
 
-        // 2. Vô hiệu hóa SpaceShipManager để dừng logic sinh cổng
         if (SpaceShipManager.Instance != null)
         {
+            // Gọi trực tiếp hàm dọn dẹp
+            SpaceShipManager.Instance.ClearExistingZones();
+
+            // Sau đó mới tắt Object
             SpaceShipManager.Instance.gameObject.SetActive(false);
         }
 
-        // 3. Hiển thị lại màn hình Home
         ShowHome();
 
-        // 4. (Tùy chọn) Reset vị trí kẻ địch nếu có
         if (Enemy.Instance != null)
         {
             Enemy.Instance.ResetPosition();
         }
     }
+
     private void HideAllPanels()
     {
         panelHome.SetActive(false);
         panelChonMan.SetActive(false);
-        panelGameplay.SetActive(false);
+        
         if (panelWin) panelWin.SetActive(false);
         if (panelLose) panelLose.SetActive(false);
-        if (panelSetting) panelSetting.SetActive(false); // THÊM DÒNG NÀY
+        if (panelSetting) panelSetting.SetActive(false);
     }
+
     public void ShowLose()
     {
-        // 1. Ẩn tất cả các panel khác
         HideAllPanels();
-
-        // 2. Hiện bảng thua cuộc
         if (panelLose != null)
         {
             panelLose.SetActive(true);
-
-            // 3. Dừng thời gian để game không chạy tiếp khi đã thua
             Time.timeScale = 0f;
         }
-
-        Debug.Log("Game Over! Bạn đã bị kẻ địch bắt kịp.");
     }
+
+    // Tối ưu: Chuyển ShowWin thành Coroutine để đợi vài giây trước khi hiện bảng[cite: 8]
     public void ShowWin()
     {
+        StartCoroutine(ShowWinRoutine(2.0f));
+    }
+
+    private IEnumerator ShowWinRoutine(float delay)
+    {
+        yield return new WaitForSeconds(delay); // Đợi 2 giây[cite: 8]
+
         HideAllPanels();
         if (panelWin != null)
         {
             panelWin.SetActive(true);
-            Time.timeScale = 0f; // Dừng game để người chơi nhận thưởng
+            Time.timeScale = 0f;
         }
 
-        // LƯU TIẾN TRÌNH: Mở khóa màn tiếp theo cho chế độ Space
+        // Lưu tiến trình
         int currentHighest = PlayerPrefs.GetInt("Space_HighestLevel", 1);
         int wonLevel = LevelManager.CurrentLevel;
-
         if (wonLevel == currentHighest && wonLevel < 100)
         {
             PlayerPrefs.SetInt("Space_HighestLevel", wonLevel + 1);
             PlayerPrefs.Save();
         }
     }
+
     public void Click_Retry()
     {
-        // Chơi lại màn hiện tại
         BatDauChoiSpace(LevelManager.CurrentLevel);
     }
+
     public void Click_NextLevel()
     {
-        // 1. Kiểm tra xem có màn tiếp theo không (giới hạn 100 màn)
         if (LevelManager.CurrentLevel < 100)
         {
-            // 2. Tăng màn hiện tại lên 1
-            int nextLevel = LevelManager.CurrentLevel + 1;
-
-            // 3. Gọi hàm bắt đầu chơi với màn mới
-            // Hàm này đã bao gồm Reset kẻ địch, cập nhật UI và SpaceShipManager
-            BatDauChoiSpace(nextLevel);
-
-            Debug.Log("Chuyển sang màn tiếp theo: " + nextLevel);
+            BatDauChoiSpace(LevelManager.CurrentLevel + 1);
         }
         else
         {
-            // Nếu đã ở màn cuối cùng thì quay về màn hình chọn màn
             ShowChonMan();
             ShowShopNotification("Bạn đã hoàn thành tất cả các màn!");
         }
@@ -179,34 +207,45 @@ public class UiSp : MonoBehaviour
     {
         ShowChonMan();
     }
+    public void Click_ResetGameProgress()
+    {
+        // 1. Xóa toàn bộ dữ liệu đã lưu trong PlayerPrefs
+        PlayerPrefs.DeleteAll();
+        PlayerPrefs.Save();
+        LoadCoins();
+        // 2. Cập nhật lại LevelManager về màn 1
+        LevelManager.CurrentLevel = 1;
+
+        // 3. Làm mới lại danh sách nút chọn màn (để cập nhật trạng thái khóa/mở)
+        GenerateLevelButtons();
+
+        // 4. Hiển thị thông báo cho người chơi
+        ShowShopNotification("Đã reset toàn bộ tiến trình game!");
+
+        Debug.Log("Dữ liệu game đã được xóa sạch.");
+    }
     #endregion
 
     #region LOGIC MÀN CHƠI
     private void GenerateLevelButtons()
     {
-        // Xóa các nút cũ
         foreach (Transform child in contentParent) Destroy(child.gameObject);
 
-        // Lấy màn cao nhất của Space Mode (Tạm thời dùng PlayerPrefs)
-        int highestLevel = PlayerPrefs.GetInt("Space_HighestLevel", 10);
-
+        int highestLevel = PlayerPrefs.GetInt("Space_HighestLevel", 1);
         float startOffset = 200f;
 
         for (int i = 1; i <= 100; i++)
         {
             GameObject btnObj = Instantiate(levelButtonPrefab, contentParent);
-
-            // Đặt vị trí hình lượn sóng giống UiTp
             float x = startOffset + (i - 1) * buttonSpacing;
             float y = Mathf.Sin((i - 1) * waveFrequency) * waveAmplitude;
             btnObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
 
             Button btn = btnObj.GetComponent<Button>();
-            TextMeshProUGUI txt = btnObj.GetComponentInChildren<TextMeshProUGUI>();
-            txt.text = i.ToString();
+            btnObj.GetComponentInChildren<TextMeshProUGUI>().text = i.ToString();
 
             int levelIndex = i;
-            if (i <= highestLevel)
+            if (i <= highestLevel || i == 30 || i == 50 || i == 70 || i == 100)
             {
                 btn.interactable = true;
                 btn.onClick.AddListener(() => BatDauChoiSpace(levelIndex));
@@ -222,26 +261,28 @@ public class UiSp : MonoBehaviour
 
     public void BatDauChoiSpace(int levelIndex)
     {
-        if (Enemy.Instance != null)
-        {
-            Enemy.Instance.ResetPosition();
-        }
+        // Đảm bảo Reset kẻ địch khi chơi lại[cite: 8]
+        if (Enemy.Instance != null) Enemy.Instance.ResetPosition();
+
         LevelManager.CurrentLevel = levelIndex;
         isGameOver = false;
+
         ShowGameplay();
 
-        // Kích hoạt SpaceShipManager để bắt đầu game
         if (SpaceShipManager.Instance != null)
         {
             SpaceShipManager.Instance.gameObject.SetActive(false);
             SpaceShipManager.Instance.gameObject.SetActive(true);
         }
 
+        SpaceShipPhysics ship = FindObjectOfType<SpaceShipPhysics>();
+        if (ship != null) ship.ResetMovement();
+
         ShowShopNotification("Bắt đầu Màn " + levelIndex);
     }
     #endregion
 
-    #region THÔNG BÁO (FADE EFFECT)
+    #region THÔNG BÁO
     public void ShowShopNotification(string message)
     {
         if (notificationTxt != null && notificationCanvasGroup != null)
@@ -252,7 +293,7 @@ public class UiSp : MonoBehaviour
         }
     }
 
-    private System.Collections.IEnumerator FadeNotificationRoutine()
+    private IEnumerator FadeNotificationRoutine()
     {
         notificationCanvasGroup.alpha = 1f;
         notificationCanvasGroup.gameObject.SetActive(true);
