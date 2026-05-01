@@ -37,15 +37,126 @@ public class UiSp : MonoBehaviour
     public CanvasGroup notificationCanvasGroup;
     public TextMeshProUGUI notificationTxt;
 
+    [Header("Giao diện Shop Phi Thuyền")]
+    public ShipSkin[] allShips;
+    public Image[] shipButtonImages;
+    public TextMeshProUGUI[] shipPriceTexts;
+    public SpriteRenderer shopShipRenderer;
+    public SpriteRenderer gameplayShipRenderer; // Renderer của phi thuyền trong trận
+
+    private int pendingShipIndex = -1;
     private void Awake() => Instance = this;
 
     private void Start()
     {
         LoadCoins();
+        InitShipShop();
         GenerateLevelButtons();
         ShowHome();
     }
+    #region QUẢN LÝ SHOP
+    public void InitShipShop()
+    {
+        LoadCurrentShip();
+        UpdateShipShopUI();
+    }
 
+    public void SelectShipToPreview(int index)
+    {
+        if (allShips == null || index < 0 || index >= allShips.Length) return;
+
+        pendingShipIndex = index;
+
+        // 1. Hiển thị hình ảnh lên Renderer ở Shop để xem trước
+        if (shopShipRenderer != null)
+            shopShipRenderer.sprite = allShips[index].shipSprite;
+
+        // 2. Kiểm tra trạng thái sở hữu
+        if (IsShipUnlocked(index))
+        {
+            PlayerPrefs.SetInt("SelectedShipID", index);
+            PlayerPrefs.Save();
+
+            // Nếu đã sở hữu, cập nhật luôn hình ảnh cho cả phi thuyền trong trận
+            if (gameplayShipRenderer != null)
+                gameplayShipRenderer.sprite = allShips[index].shipSprite;
+
+            ShowShopNotification("Đã trang bị: " + allShips[index].shipName);
+        }
+        else
+        {
+            ShowShopNotification("Chưa sở hữu");
+        }
+
+        UpdateShipShopUI();
+    }
+
+    public void Click_BuyShip()
+    {
+        if (pendingShipIndex == -1)
+        {
+            ShowShopNotification("Vui lòng chọn một phi thuyền!");
+            return;
+        }
+
+        ShipSkin ship = allShips[pendingShipIndex];
+        bool isUnlocked = IsShipUnlocked(pendingShipIndex);
+
+        if (!isUnlocked && totalCoins >= ship.price)
+        {
+            AddCoins(-ship.price);
+            PlayerPrefs.SetInt("ShipUnlocked_" + pendingShipIndex, 1);
+            PlayerPrefs.SetInt("SelectedShipID", pendingShipIndex);
+            PlayerPrefs.Save();
+
+            ShowShopNotification("Mua thành công: " + ship.shipName + "!");
+            UpdateShipShopUI();
+            LoadCurrentShip();
+        }
+        else if (isUnlocked)
+        {
+            // Trường hợp nhấn mua khi đã có
+            ShowShopNotification("Đã sở hữu");
+
+            PlayerPrefs.SetInt("SelectedShipID", pendingShipIndex);
+            PlayerPrefs.Save();
+            LoadCurrentShip();
+        }
+        else
+        {
+            int thieu = ship.price - totalCoins;
+            ShowShopNotification("Bạn còn thiếu " + thieu + "$ để mua!");
+        }
+    }
+
+    public void LoadCurrentShip()
+    {
+        int id = PlayerPrefs.GetInt("SelectedShipID", 0);
+
+        if (id < allShips.Length)
+        {
+            Sprite currentSprite = allShips[id].shipSprite;
+
+            // Cập nhật cho cả phi thuyền ở Shop và trong trận
+            if (shopShipRenderer != null) shopShipRenderer.sprite = currentSprite;
+            if (gameplayShipRenderer != null) gameplayShipRenderer.sprite = currentSprite;
+        }
+    }
+
+    private bool IsShipUnlocked(int index) => index == 0 || PlayerPrefs.GetInt("ShipUnlocked_" + index, 0) == 1;
+
+    public void UpdateShipShopUI()
+    {
+        for (int i = 0; i < allShips.Length; i++)
+        {
+            bool unlocked = IsShipUnlocked(i);
+            if (i < shipButtonImages.Length)
+                shipButtonImages[i].color = unlocked ? Color.white : new Color(0.3f, 0.3f, 0.3f, 1f);
+            if (i < shipPriceTexts.Length)
+                shipPriceTexts[i].text = unlocked ? "Đã sở hữu" : allShips[i].price + "$";
+        }
+    }
+    #endregion
     #region QUẢN LÝ TIỀN
     private void LoadCoins()
     {
@@ -57,14 +168,15 @@ public class UiSp : MonoBehaviour
 
     public void AddCoins(int amount)
     {
-        levelCoins += amount;
+        // levelCoins chỉ tăng khi nhặt tiền dương (trong trận), không giảm khi mua đồ
+        if (amount > 0) levelCoins += amount;
+
         totalCoins += amount;
 
-        // Lưu lại ngay lập tức
         PlayerPrefs.SetInt("TotalCoins", totalCoins);
         PlayerPrefs.Save();
 
-        UpdateCoinUI();
+        UpdateCoinUI(); // Cập nhật lại Text hiển thị tiền trên cả Home và Gameplay
     }
 
     private void UpdateCoinUI()
@@ -79,6 +191,11 @@ public class UiSp : MonoBehaviour
         HideAllPanels();
         panelGameplay.SetActive(false);
         panelHome.SetActive(true);
+
+        // Cập nhật lại UI Shop mỗi khi quay về màn hình chính
+        UpdateShipShopUI();
+        LoadCurrentShip();
+
         Time.timeScale = 1f;
     }
 
@@ -209,21 +326,28 @@ public class UiSp : MonoBehaviour
     }
     public void Click_ResetGameProgress()
     {
-        // 1. Xóa toàn bộ dữ liệu đã lưu trong PlayerPrefs
+        // 1. Xóa toàn bộ dữ liệu đã lưu trong PlayerPrefs (Tiền, Level, Skins)
         PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
-        LoadCoins();
-        // 2. Cập nhật lại LevelManager về màn 1
+
+        // 2. Cập nhật lại các biến logic về mặc định
         LevelManager.CurrentLevel = 1;
+        totalCoins = 0;
+        levelCoins = 0;
+        pendingShipIndex = -1;
 
-        // 3. Làm mới lại danh sách nút chọn màn (để cập nhật trạng thái khóa/mở)
-        GenerateLevelButtons();
+        // 3. Làm mới giao diện ngay lập tức[cite: 12]
+        LoadCoins();           // Cập nhật Text tiền về 0
+        LoadCurrentShip();     // Trả phi thuyền về Skin mặc định (ID 0)
+        UpdateShipShopUI();    // Khóa lại các nút Skin trong Shop
+        GenerateLevelButtons(); // Khóa lại các màn chơi (trừ màn 1)[cite: 12]
 
-        // 4. Hiển thị thông báo cho người chơi
-        ShowShopNotification("Đã reset toàn bộ tiến trình game!");
+        // 4. Hiển thị thông báo[cite: 12]
+        ShowShopNotification("Đã xóa sạch tiến trình và Skin!");
 
-        Debug.Log("Dữ liệu game đã được xóa sạch.");
+        Debug.Log("Dữ liệu game và Skin đã được reset hoàn toàn.");
     }
+    
     #endregion
 
     #region LOGIC MÀN CHƠI
@@ -268,7 +392,7 @@ public class UiSp : MonoBehaviour
         isGameOver = false;
 
         ShowGameplay();
-
+        LoadCurrentShip();
         if (SpaceShipManager.Instance != null)
         {
             SpaceShipManager.Instance.gameObject.SetActive(false);
