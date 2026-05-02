@@ -46,6 +46,13 @@ namespace DoAnGame.Multiplayer
         [Tooltip("Player đã submit đáp án cho câu hỏi hiện tại chưa")]
         public NetworkVariable<bool> HasAnswered = new NetworkVariable<bool>();
 
+        [Tooltip("Player đã sẵn sàng chưa")]
+        public NetworkVariable<bool> IsReady = new NetworkVariable<bool>(
+            false,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
         // Events để UI subscribe
         public event Action<int, int> OnHealthChanged; // (oldHealth, newHealth)
         public event Action<int> OnScoreChanged;

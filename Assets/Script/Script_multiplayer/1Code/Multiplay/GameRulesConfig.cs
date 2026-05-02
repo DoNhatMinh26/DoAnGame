@@ -27,9 +27,9 @@ namespace DoAnGame.Multiplayer
         [Range(5f, 30f)]
         public float questionTimeLimit = 10f; // Question Time Limit
 
-        [Tooltip("Thời gian chờ giữa các câu hỏi (giây) - Mặc định: 2 giây")]
-        [Range(0.5f, 5f)]
-        public float delayBetweenQuestions = 2f; // Delay Between Questions
+        [Tooltip("Thời gian chờ giữa các câu hỏi (giây) - Mặc định: 7.5 giây (phải >= summary time 7s)")]
+        [Range(0.5f, 10f)]
+        public float delayBetweenQuestions = 7.5f; // Delay Between Questions
 
         [Header("=== TĂNG ĐỘ KHÓ ===")]
         [Tooltip("Số câu trả lời đúng liên tiếp để tăng độ khó (mặc định: 2 câu)")]

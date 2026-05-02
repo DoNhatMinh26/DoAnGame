@@ -41,6 +41,8 @@ namespace DoAnGame.UI
         private NetworkedMathBattleManager battleManager;
         private NetworkedPlayerState player1State;
         private NetworkedPlayerState player2State;
+        private int initRetryCount = 0;
+        private const int MAX_INIT_RETRIES = 10; // Retry tối đa 10 lần (10 giây)
 
         private void Start()
         {
@@ -65,12 +67,25 @@ namespace DoAnGame.UI
             Debug.Log($"[HealthUI] Player1State: {(player1State != null ? "FOUND" : "NULL")}");
             Debug.Log($"[HealthUI] Player2State: {(player2State != null ? "FOUND" : "NULL")}");
 
-            // Nếu không tìm được, không init
+            // Nếu không tìm được, retry sau 1 giây
             if (player1State == null || player2State == null)
             {
-                Debug.LogError("[HealthUI] Player states not found! Skipping initialization.");
-                return;
+                initRetryCount++;
+                if (initRetryCount < MAX_INIT_RETRIES)
+                {
+                    Debug.LogWarning($"[HealthUI] Player states not found yet (retry {initRetryCount}/{MAX_INIT_RETRIES}). Retrying in 1s...");
+                    Invoke(nameof(InitializeUI), 1f);
+                    return;
+                }
+                else
+                {
+                    Debug.LogError("[HealthUI] Player states not found after max retries! Skipping initialization.");
+                    return;
+                }
             }
+
+            // Reset retry count
+            initRetryCount = 0;
 
             // Subscribe Player 1
             Debug.Log($"[HealthUI] Subscribing to Player1: HP={player1State.CurrentHealth.Value}/{player1State.MaxHealth.Value}");
@@ -145,6 +160,7 @@ namespace DoAnGame.UI
             if (fill != null)
             {
                 fill.fillAmount = percent;
+                Debug.Log($"[HealthUI] UpdateHealth: {fill.gameObject.name} fillAmount={percent:F2} ({current}/{max}), FillMethod={fill.fillMethod}, Color={fill.color}");
 
                 // Đổi màu theo %
                 if (percent > 0.5f)
@@ -153,6 +169,10 @@ namespace DoAnGame.UI
                     fill.color = healthMediumColor;
                 else
                     fill.color = healthLowColor;
+            }
+            else
+            {
+                Debug.LogWarning($"[HealthUI] ⚠️ UpdateHealth: fill is NULL! Cannot update fillAmount. current={current}, max={max}");
             }
 
             // Update text

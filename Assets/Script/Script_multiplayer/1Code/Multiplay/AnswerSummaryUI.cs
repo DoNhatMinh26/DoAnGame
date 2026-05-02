@@ -34,13 +34,15 @@ namespace DoAnGame.UI
         [Header("=== SETTINGS ===")]
         [SerializeField] private float summaryDurationMin = 1f;
         [SerializeField] private float summaryDurationMax = 10f;
-        [SerializeField] private float defaultSummaryDuration = 3f;
+        [SerializeField] private float defaultSummaryDuration = 7f; // Thay đổi từ 3f thành 7f
 
         private NetworkedMathBattleManager battleManager;
         private Coroutine summaryCoroutine;
         private Coroutine questionTimerCoroutine;
         private bool isSummaryActive = false;
         private bool isQuestionActive = false;
+        private int initRetryCount = 0;
+        private const int MAX_INIT_RETRIES = 10; // Retry tối đa 10 lần (10 giây)
 
         // Enum để quản lý trạng thái
         public enum TimerState
@@ -58,8 +60,36 @@ namespace DoAnGame.UI
             if (battleManager == null)
             {
                 Debug.LogError("[AnswerSummaryUI] BattleManager not found!");
+                // Retry sau 1 giây
+                Invoke(nameof(InitializeUI), 1f);
                 return;
             }
+
+            InitializeUI();
+        }
+
+        private void InitializeUI()
+        {
+            battleManager = NetworkedMathBattleManager.Instance;
+            
+            if (battleManager == null)
+            {
+                initRetryCount++;
+                if (initRetryCount < MAX_INIT_RETRIES)
+                {
+                    Debug.LogWarning($"[AnswerSummaryUI] BattleManager not found yet (retry {initRetryCount}/{MAX_INIT_RETRIES}). Retrying in 1s...");
+                    Invoke(nameof(InitializeUI), 1f);
+                    return;
+                }
+                else
+                {
+                    Debug.LogError("[AnswerSummaryUI] BattleManager not found after max retries!");
+                    return;
+                }
+            }
+
+            // Reset retry count
+            initRetryCount = 0;
 
             // Subscribe to events
             battleManager.OnAnswerResultReceived += HandleAnswerResult;

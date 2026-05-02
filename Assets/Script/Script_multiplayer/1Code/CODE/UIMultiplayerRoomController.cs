@@ -28,6 +28,8 @@ namespace DoAnGame.UI
         private const string CharacterNameKey = "characterName";
         private const string HostNameKey = "HostName";
         private const string GradeKey = "Grade";
+        private const string Player1ReadyKey = "Player1Ready";
+        private const string Player2ReadyKey = "Player2Ready";
         private const int MaxPlayers = 2;
         private const int QuickJoinQueryMaxResults = 20;
         private const string DefaultIdleStatus = "Mời tạo phòng để chơi.";
@@ -41,7 +43,10 @@ namespace DoAnGame.UI
         [SerializeField] private Button quickJoinButton;
         [SerializeField] private Button joinByCodeButton;
         [SerializeField] private Button quitRoomButton;
+        [Tooltip("Chỉ hiển thị cho HOST — bắt đầu trận khi client đã sẵn sàng")]
         [SerializeField] private Button startMatchButton;
+        [Tooltip("Chỉ hiển thị cho CLIENT — báo sẵn sàng cho host")]
+        [SerializeField] private Button readyButton;
 
         [Header("Room Inputs")]
         [SerializeField] private TMP_InputField roomCodeInput;
@@ -92,6 +97,7 @@ namespace DoAnGame.UI
         private string authStatusMessage = "Chưa đăng nhập dịch vụ multiplayer";
         private const string StartMatchMessageName = "ui_room_start_match";
         private bool startMatchMessageHandlerRegistered;
+        private bool receivedStartSignalFromHost; // Client-only: true khi nhận NGO message từ host
 
         protected override void Awake()
         {
@@ -119,6 +125,7 @@ namespace DoAnGame.UI
             joinByCodeButton?.onClick.AddListener(() => _ = HandleJoinByCode());
             quitRoomButton?.onClick.AddListener(() => _ = HandleQuitRoom());
             startMatchButton?.onClick.AddListener(() => _ = HandleStartMatch());
+            readyButton?.onClick.AddListener(() => _ = HandleReadyButtonClick());
             EnsureStartMatchMessageHandlerRegistered();
         }
 
@@ -140,6 +147,7 @@ namespace DoAnGame.UI
             RefreshRoomRoster();
             EnsureInitialized();
             battleStartNotified = false;
+            UpdateReadyButtonState();
 
             StopRoutines();
             pollingRoutine = StartCoroutine(PollLobbyRoutine());
@@ -306,6 +314,13 @@ namespace DoAnGame.UI
             else if (statusText != null)
             {
                 statusText.SetText(BuildRosterText());
+            }
+
+            // Always show start button when in a lobby, just update state
+            if (currentLobby != null && startMatchButton != null)
+            {
+                startMatchButton.gameObject.SetActive(true);
+                UpdateReadyButtonState();
             }
         }
 
@@ -655,6 +670,7 @@ namespace DoAnGame.UI
 
                 currentLobby = await LobbyService.Instance.CreateLobbyAsync("Math Room", MaxPlayers, options);
                 isHost = true;
+                receivedStartSignalFromHost = false; // Reset flag khi tạo phòng mới (host không cần flag này nhưng reset cho nhất quán)
                 await SyncLocalPlayerLobbyDataAsync();
 
                 lobbyCodeText?.SetText($"Mã phòng: {currentLobby.LobbyCode}");
@@ -893,12 +909,13 @@ namespace DoAnGame.UI
 
             if (startMatchButton != null)
             {
-                UpdateStartMatchButtonState(true);
+                UpdateReadyButtonState();
             }
 
             RefreshAuthState();
             EnsureLobbyRuntimeRoutines();
             suppressAutoBattleStart = false;
+            receivedStartSignalFromHost = false; // Reset flag khi join phòng mới
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", $"JoinLobbyAndRelayAsync success: lobbyId={currentLobby.Id}, isHost={isHost}, players={(currentLobby.Players != null ? currentLobby.Players.Count : 0)}");
 
             return true;
@@ -915,21 +932,19 @@ namespace DoAnGame.UI
         private async Task HandleStartMatch()
         {
             MultiplayerDetailedLogger.TraceUserAction("UIRoom", "HandleStartMatch", "startMatchButton");
-            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "HandleStartMatch invoked");
-            if (isBusy || isQuitting)
+            if (isBusy || isQuitting) return;
+            
+            // Double-check: isHost flag + NetworkManager.IsServer
+            bool isActuallyHost = isHost && (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer);
+            if (!isActuallyHost || currentLobby == null)
+            {
+                Debug.LogWarning($"[UIRoom] HandleStartMatch blocked: isHost={isHost}, IsServer={NetworkManager.Singleton?.IsServer}, isActuallyHost={isActuallyHost}");
+                SetStatus("Chỉ chủ phòng mới được bắt đầu.");
                 return;
+            }
 
             isBusy = true;
             SetActionButtonsInteractable(false);
-
-            if (!isHost || currentLobby == null)
-            {
-                SetStatus("Chỉ chủ phòng mới được bắt đầu.");
-                MultiplayerDetailedLogger.TraceWarning("UI_ROOM", "HandleStartMatch denied: local user is not host or lobby null");
-                isBusy = false;
-                SetActionButtonsInteractable(true);
-                return;
-            }
 
             var lobby = currentLobby;
             if (lobby != null && lobby.Players.Count < MaxPlayers)
@@ -950,6 +965,17 @@ namespace DoAnGame.UI
             {
                 SetStatus("Chưa đủ 2 người chơi.");
                 MultiplayerDetailedLogger.TraceWarning("UI_ROOM", $"HandleStartMatch blocked: players={(lobby != null && lobby.Players != null ? lobby.Players.Count : 0)}/{MaxPlayers}");
+                startMatchButton.interactable = false;
+                isBusy = false;
+                SetActionButtonsInteractable(true);
+                return;
+            }
+
+            // Check if client is ready
+            if (!IsClientReady(lobby))
+            {
+                SetStatus("Chờ người chơi khác sẵn sàng...");
+                MultiplayerDetailedLogger.TraceWarning("UI_ROOM", "HandleStartMatch blocked: client not ready");
                 startMatchButton.interactable = false;
                 isBusy = false;
                 SetActionButtonsInteractable(true);
@@ -1080,6 +1106,7 @@ namespace DoAnGame.UI
             currentLobby = null;
             isHost = false;
             battleStartNotified = false;
+            receivedStartSignalFromHost = false; // Reset flag khi rời phòng
             nextLobbyReadAt = 0f;
             ApplyIdleVisualState(status);
             roomCodeInput?.SetTextWithoutNotify(string.Empty);
@@ -1091,11 +1118,8 @@ namespace DoAnGame.UI
             SetPlayerCount(DefaultIdlePlayerCount);
             lobbyCodeText?.SetText(DefaultIdleCode);
 
-            if (startMatchButton != null)
-            {
-                startMatchButton.gameObject.SetActive(false);
-                startMatchButton.interactable = false;
-            }
+            startMatchButton?.gameObject.SetActive(false);
+            readyButton?.gameObject.SetActive(false);
         }
 
         private IEnumerator PollLobbyRoutine()
@@ -1159,7 +1183,15 @@ namespace DoAnGame.UI
                 UpdateStartMatchButtonState(true);
             }
 
-            if (currentLobby.Data.TryGetValue(StartedKey, out var startedData) && startedData.Value == "1")
+            // CHỈ HOST mới dùng StartedKey từ poll để trigger battle.
+            // Client KHÔNG dùng StartedKey từ poll — client chỉ vào battle qua NGO named message
+            // (HandleStartMatchMessageReceived). Điều này tránh stale StartedKey=1 từ trận trước
+            // khiến client tự chuyển sang GameplayPanel khi chưa được host cho phép.
+            
+            // Double-check: isHost flag + NetworkManager.IsServer để tránh race condition
+            bool isActuallyHost = isHost && (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer);
+            
+            if (isActuallyHost && currentLobby.Data.TryGetValue(StartedKey, out var startedData) && startedData.Value == "1")
             {
                 if (suppressAutoBattleStart)
                 {
@@ -1167,15 +1199,217 @@ namespace DoAnGame.UI
                     return;
                 }
 
+                Debug.Log($"[UIRoom] Poll: isHost={isHost}, IsServer={NetworkManager.Singleton?.IsServer}, isActuallyHost={isActuallyHost}");
                 SetStatus("Trận đấu bắt đầu.");
                 MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", $"Poll detected StartedKey=1 in lobbyId={currentLobby.Id}");
                 NotifyBattleStarted();
             }
+
+            // Update ready button state based on lobby metadata
+            UpdateReadyButtonState();
+        }
+
+        /// <summary>
+        /// Client marks themselves as ready by updating lobby metadata
+        /// </summary>
+        /// <summary>
+        /// Client bấm nút "Sẵn sàng" — chỉ gửi trạng thái, KHÔNG chuyển UI
+        /// </summary>
+        private async Task HandleReadyButtonClick()
+        {
+            Debug.Log($"[UIRoom] 🟢 HandleReadyButtonClick START: isHost={isHost}, isBusy={isBusy}");
+            if (isBusy || isHost || currentLobby == null)
+            {
+                Debug.LogWarning($"[UIRoom] HandleReadyButtonClick blocked: isBusy={isBusy}, isHost={isHost}, lobby={(currentLobby != null)}");
+                return;
+            }
+
+            isBusy = true;
+            if (readyButton != null) readyButton.interactable = false;
+
+            try
+            {
+                Debug.Log("[UIRoom] 🟢 Calling MarkClientReadyAsync...");
+                await MarkClientReadyAsync();
+                Debug.Log("[UIRoom] 🟢 MarkClientReadyAsync completed. UI should stay on LobbyPanel.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[UIRoom] HandleReadyButtonClick lỗi: {ex.Message}");
+                SetStatus("Không thể gửi trạng thái sẵn sàng. Thử lại.");
+                if (readyButton != null) readyButton.interactable = true;
+            }
+            finally
+            {
+                isBusy = false;
+                Debug.Log($"[UIRoom] 🟢 HandleReadyButtonClick END: isHost={isHost}, receivedStartSignalFromHost={receivedStartSignalFromHost}");
+            }
+        }
+
+        /// <summary>
+        /// Async method to mark client as ready - dùng UpdatePlayerAsync vì client không có quyền UpdateLobbyAsync
+        /// </summary>
+        private async Task MarkClientReadyAsync()
+        {
+            try
+            {
+                if (currentLobby == null)
+                    return;
+
+                string localPlayerId = AuthenticationService.Instance?.PlayerId;
+                if (string.IsNullOrEmpty(localPlayerId))
+                {
+                    Debug.LogError("[UIRoom] Cannot mark ready: no local player ID");
+                    return;
+                }
+
+                // Client dùng UpdatePlayerAsync để update Player Data của chính mình
+                var updatedLobby = await LobbyService.Instance.UpdatePlayerAsync(
+                    currentLobby.Id,
+                    localPlayerId,
+                    new UpdatePlayerOptions
+                    {
+                        Data = new Dictionary<string, PlayerDataObject>
+                        {
+                            { Player2ReadyKey, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "1") }
+                        }
+                    }
+                );
+
+                // Chỉ update currentLobby nếu StartedKey chưa được set
+                // Tránh trường hợp lobby snapshot cũ có StartedKey=1 trigger NotifyBattleStarted sớm
+                if (updatedLobby != null)
+                {
+                    bool alreadyStarted = updatedLobby.Data != null &&
+                                         updatedLobby.Data.TryGetValue(StartedKey, out var sd) &&
+                                         sd.Value == "1";
+                    if (!alreadyStarted)
+                    {
+                        currentLobby = updatedLobby;
+                    }
+                }
+
+                SetStatus("Đã sẵn sàng! Chờ chủ phòng bắt đầu...");
+                UpdateReadyButtonState();
+                MultiplayerDetailedLogger.Trace("UI_ROOM", "Client marked ready via UpdatePlayerAsync");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[UIRoom] Failed to mark ready: {ex.Message}");
+                MultiplayerDetailedLogger.TraceException("UI_ROOM", ex, "MarkClientReadyAsync failed");
+            }
+        }
+
+        /// <summary>
+        /// Update ready button text and interactable state based on lobby metadata
+        /// </summary>
+        /// <summary>
+        /// Cập nhật trạng thái 2 button riêng biệt:
+        /// - startMatchButton: chỉ hiển thị cho HOST
+        /// - readyButton: chỉ hiển thị cho CLIENT
+        /// </summary>
+        private void UpdateReadyButtonState()
+        {
+            if (currentLobby == null)
+            {
+                startMatchButton?.gameObject.SetActive(false);
+                readyButton?.gameObject.SetActive(false);
+                return;
+            }
+
+            if (isHost)
+            {
+                // HOST: ẩn readyButton, hiển thị startMatchButton
+                readyButton?.gameObject.SetActive(false);
+
+                if (startMatchButton != null)
+                {
+                    startMatchButton.gameObject.SetActive(true);
+                    bool clientReady = IsClientReady(currentLobby);
+                    startMatchButton.interactable = clientReady && IsRelayReadyForMatchHost();
+                    // Button luôn hiển thị "Bắt đầu", trạng thái chờ hiển thị ở statusText
+                    startMatchButton.GetComponentInChildren<TMP_Text>()?.SetText("Bắt đầu");
+                    // Hiển thị trạng thái ở statusText
+                    SetStatus(clientReady
+                        ? "Người chơi đã sẵn sàng! Có thể bắt đầu."
+                        : "Chờ người chơi thứ 2 sẵn sàng...");
+                }
+            }
+            else
+            {
+                // CLIENT: ẩn startMatchButton, hiển thị readyButton
+                startMatchButton?.gameObject.SetActive(false);
+
+                if (readyButton != null)
+                {
+                    readyButton.gameObject.SetActive(true);
+                    bool alreadyReady = IsLocalPlayerReady(currentLobby);
+                    readyButton.interactable = !alreadyReady;
+                    readyButton.GetComponentInChildren<TMP_Text>()?.SetText(
+                        alreadyReady ? "Đã sẵn sàng ✓" : "Sẵn sàng");
+                    // Hiển thị trạng thái ở statusText
+                    SetStatus(alreadyReady
+                        ? "Đã sẵn sàng! Chờ chủ phòng bắt đầu..."
+                        : "Nhấn Sẵn sàng để báo hiệu cho chủ phòng.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Check if client (Player 2 / non-host) is ready bằng cách đọc Player Data
+        /// </summary>
+        private bool IsClientReady(Lobby lobby)
+        {
+            if (lobby == null || lobby.Players == null)
+                return false;
+
+            string hostId = lobby.HostId;
+
+            // Tìm player không phải host (client)
+            foreach (var player in lobby.Players)
+            {
+                if (player == null) continue;
+                if (string.Equals(player.Id, hostId, StringComparison.OrdinalIgnoreCase)) continue;
+
+                // Đây là client - check Player Data
+                if (player.Data != null &&
+                    player.Data.TryGetValue(Player2ReadyKey, out var readyData) &&
+                    readyData.Value == "1")
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Check nếu local player (client) đã mark ready chưa
+        /// </summary>
+        private bool IsLocalPlayerReady(Lobby lobby)
+        {
+            if (lobby == null || lobby.Players == null) return false;
+
+            string localId = AuthenticationService.Instance?.PlayerId;
+            if (string.IsNullOrEmpty(localId)) return false;
+
+            foreach (var player in lobby.Players)
+            {
+                if (player == null) continue;
+                if (!string.Equals(player.Id, localId, StringComparison.OrdinalIgnoreCase)) continue;
+
+                return player.Data != null &&
+                       player.Data.TryGetValue(Player2ReadyKey, out var readyData) &&
+                       readyData.Value == "1";
+            }
+
+            return false;
         }
 
         private void NotifyBattleStarted()
         {
-            Debug.LogWarning("[UIRoom] 🔥 NotifyBattleStarted() CALLED 🔥");
+            Debug.LogWarning($"[UIRoom] 🔥 NotifyBattleStarted() CALLED 🔥 isHost={isHost}, receivedStartSignalFromHost={receivedStartSignalFromHost}");
+            Debug.LogWarning($"[UIRoom] 🔥 Stack trace: {System.Environment.StackTrace}");
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "NotifyBattleStarted invoked");
             
             if (isQuitting || suppressAutoBattleStart)
@@ -1185,10 +1419,27 @@ namespace DoAnGame.UI
                 return;
             }
 
+            // CLIENT GUARD: Client KHÔNG ĐƯỢC phép vào battle nếu chưa nhận NGO message từ host
+            // Đây là guard cuối cùng - nếu client vẫn vào được, có nghĩa có bug ở đâu đó
+            if (!isHost && !receivedStartSignalFromHost)
+            {
+                Debug.LogError($"[UIRoom] ❌❌❌ CRITICAL: CLIENT TRYING TO ENTER BATTLE WITHOUT HOST PERMISSION! isHost={isHost}, receivedStartSignalFromHost={receivedStartSignalFromHost}");
+                Debug.LogError($"[UIRoom] ❌❌❌ Stack trace: {System.Environment.StackTrace}");
+                MultiplayerDetailedLogger.Trace("UI_ROOM", "CRITICAL: NotifyBattleStarted blocked - client must receive NGO message from host first");
+                return;
+            }
+
             // Nếu đã notify trước đó nhưng UI16 vẫn chưa visible, cho phép retry.
             if (battleStartNotified && IsBattleScreenVisible())
             {
-                Debug.LogWarning($"[UIRoom] ❌ EARLY RETURN #2: battleStartNotified={battleStartNotified}, IsBattleScreenVisible={IsBattleScreenVisible()}");
+                Debug.LogWarning($"[UIRoom] ❌ EARLY RETURN #3: battleStartNotified={battleStartNotified}, IsBattleScreenVisible={IsBattleScreenVisible()}");
+                return;
+            }
+
+            // ADDITIONAL GUARD: Nếu đã notify rồi, không gọi lại (tránh multiple calls)
+            if (battleStartNotified)
+            {
+                Debug.LogWarning($"[UIRoom] ❌ EARLY RETURN #4: battleStartNotified={battleStartNotified} - already notified once, prevent re-entry");
                 return;
             }
 
@@ -1788,16 +2039,21 @@ namespace DoAnGame.UI
         {
             int signal = 0;
             reader.ReadValueSafe(out signal);
+            Debug.LogWarning($"[UIRoom] 🔴 HandleStartMatchMessageReceived: signal={signal}, sender={senderClientId}, isHost={isHost}");
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", $"Received start-match signal={signal} from sender={senderClientId}");
 
             if (signal == 1)
             {
                 if (suppressAutoBattleStart)
                 {
+                    Debug.LogWarning("[UIRoom] 🔴 Ignored: suppressAutoBattleStart=true");
                     MultiplayerDetailedLogger.Trace("UI_ROOM", "Ignored start-match signal because local quit/back suppression is active");
                     return;
                 }
 
+                // Set flag để cho phép client vào battle
+                receivedStartSignalFromHost = true;
+                Debug.LogWarning("[UIRoom] 🔴 TRIGGERING NotifyBattleStarted from NGO message! receivedStartSignalFromHost=true");
                 SetStatus("Nhận tín hiệu bắt đầu từ host...");
                 NotifyBattleStarted();
             }

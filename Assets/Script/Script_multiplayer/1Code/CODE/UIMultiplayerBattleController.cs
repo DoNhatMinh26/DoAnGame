@@ -13,13 +13,8 @@ namespace DoAnGame.UI
     /// </summary>
     public class UIMultiplayerBattleController : BasePanelController
     {
-        [Header("Role Texts")]
-        [SerializeField] private TMP_Text topPlayerText;
-        [SerializeField] private TMP_Text bottomPlayerText;
+        [Header("Battle Status")]
         [SerializeField] private TMP_Text battleStatusText;
-
-        [Header("Optional Texts")]
-        [SerializeField] private TMP_Text roomInfoText;
 
         [Header("Battle System")]
         [SerializeField] private NetworkedMathBattleManager battleManager;
@@ -27,10 +22,7 @@ namespace DoAnGame.UI
         [SerializeField] private GameObject answerSlot; // Slot để thả đáp án
         [SerializeField] private MultiplayerDragAndDrop[] answerChoices; // 3-4 đáp án kéo được (MULTIPLAYER)
 
-        [Header("Fallback")]
-        [SerializeField] private string localPlayerLabel = "Player 1 - người chơi";
-        [SerializeField] private string enemyPlayerLabel = "Player 2 - đối thủ";
-        [SerializeField] private string aiEnemyLabel = "Máy AI - đối thủ";
+
 
         [Header("Session End Handling")]
         [SerializeField] private UIMultiplayerRoomController roomController;
@@ -54,6 +46,7 @@ namespace DoAnGame.UI
 
         private void OnEnable()
         {
+            Debug.Log("[BattleController] OnEnable CALLED");
             HandlePanelActivated();
         }
 
@@ -66,6 +59,8 @@ namespace DoAnGame.UI
 
         private void Start()
         {
+            Debug.Log("[BattleController] Start CALLED");
+            
             // Auto-resolve BattleManager nếu chưa gán
             if (battleManager == null)
             {
@@ -110,8 +105,12 @@ namespace DoAnGame.UI
             {
                 TryResolveSessionEndedNavigator();
             }
-            BindRoles();
             RegisterNetCallbacks();
+            
+            // ✅ FIX: Subscribe battle events mỗi khi panel được activate
+            // Vì Start() chỉ gọi 1 lần, nhưng OnEnable() gọi mỗi lần panel active
+            EnsureBattleManagerAndSubscribe();
+            
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_BATTLE", "HandlePanelActivated done");
         }
 
@@ -142,26 +141,54 @@ namespace DoAnGame.UI
         #region BATTLE SYSTEM INTEGRATION
 
         /// <summary>
+        /// Đảm bảo BattleManager được tìm thấy và subscribe events
+        /// Gọi mỗi khi panel được activate để đảm bảo events luôn được subscribe
+        /// </summary>
+        private void EnsureBattleManagerAndSubscribe()
+        {
+            // Tìm BattleManager nếu chưa có
+            if (battleManager == null)
+            {
+                battleManager = FindObjectOfType<NetworkedMathBattleManager>();
+                if (battleManager != null)
+                {
+                    Debug.Log($"[BattleController] Found BattleManager: {battleManager.name}");
+                }
+                else
+                {
+                    Debug.LogWarning("[BattleController] BattleManager not found, will retry in next frame");
+                    // Retry trong frame tiếp theo
+                    Invoke(nameof(EnsureBattleManagerAndSubscribe), 0.1f);
+                    return;
+                }
+            }
+
+            // Subscribe events
+            SubscribeBattleEvents();
+        }
+
+        /// <summary>
         /// Subscribe vào events của NetworkedMathBattleManager
         /// </summary>
         private void SubscribeBattleEvents()
         {
             if (battleManager == null)
             {
-                Log("BattleManager is null, cannot subscribe to events");
+                Debug.LogWarning("[BattleController] BattleManager is null, cannot subscribe to events");
                 return;
             }
 
+            // Unsubscribe trước để tránh duplicate subscription
             battleManager.OnQuestionGenerated -= HandleQuestionGenerated;
-            battleManager.OnQuestionGenerated += HandleQuestionGenerated;
-
             battleManager.OnAnswerResult -= HandleAnswerResult;
-            battleManager.OnAnswerResult += HandleAnswerResult;
-
             battleManager.OnMatchEnded -= HandleMatchEnded;
+
+            // Subscribe lại
+            battleManager.OnQuestionGenerated += HandleQuestionGenerated;
+            battleManager.OnAnswerResult += HandleAnswerResult;
             battleManager.OnMatchEnded += HandleMatchEnded;
 
-            Log("Subscribed to BattleManager events");
+            Debug.Log("[BattleController] ✅ Subscribed to BattleManager events");
         }
 
         /// <summary>
@@ -361,7 +388,11 @@ namespace DoAnGame.UI
                 Log($"✅ Updated question text: {question}");
             }
 
-            // Hiển thị đáp án
+            // ✅ MỞ KHÓA TRƯỚC KHI RESET (quan trọng!)
+            DragAndDrop.SetGlobalLock(false);
+            DoAnGame.Multiplayer.MultiplayerDragAndDrop.SetGlobalLock(false);
+
+            // ✅ Reset tất cả đáp án về vị trí gốc (câu hỏi mới)
             if (answerChoices != null && answerChoices.Length >= 4)
             {
                 int[] choices = new int[]
@@ -378,14 +409,13 @@ namespace DoAnGame.UI
                         continue;
 
                     answerChoices[i].myText.text = choices[i].ToString();
-                    answerChoices[i].ForceResetPosition();
+                    
+                    // ✅ Reset về vị trí gốc và clear màu
+                    answerChoices[i].ResetForNewQuestion();
                     
                     Log($"✅ Updated choice {i}: {choices[i]}");
                 }
             }
-
-            // Enable dragging
-            DragAndDrop.SetGlobalLock(false);
 
             // Update status
             if (battleStatusText != null)
@@ -442,7 +472,11 @@ namespace DoAnGame.UI
                 questionText.text = question;
             }
 
-            // Hiển thị đáp án vào các DragAndDrop objects
+            // ✅ MỞ KHÓA TRƯỚC KHI RESET (quan trọng!)
+            DragAndDrop.SetGlobalLock(false);
+            DoAnGame.Multiplayer.MultiplayerDragAndDrop.SetGlobalLock(false);
+
+            // ✅ Reset tất cả đáp án về vị trí gốc (câu hỏi mới)
             if (answerChoices != null)
             {
                 for (int i = 0; i < answerChoices.Length && i < choices.Length; i++)
@@ -452,13 +486,10 @@ namespace DoAnGame.UI
 
                     answerChoices[i].myText.text = choices[i].ToString();
                     
-                    // Reset position và enable dragging
-                    answerChoices[i].ForceResetPosition();
+                    // ✅ Reset về vị trí gốc và clear màu
+                    answerChoices[i].ResetForNewQuestion();
                 }
             }
-
-            // Enable dragging
-            DragAndDrop.SetGlobalLock(false);
 
             // Update status
             if (battleStatusText != null)
@@ -498,34 +529,78 @@ namespace DoAnGame.UI
         /// </summary>
         private void HandleAnswerResult(int winnerId, bool correct, long responseTimeMs)
         {
-            Log($"Answer result: Winner={winnerId}, Correct={correct}, Time={responseTimeMs}ms");
-
-            // Hiển thị kết quả trên drag-drop objects
             var net = NetworkManager.Singleton;
-            bool isLocalWinner = net != null && ((net.IsHost && winnerId == 0) || (!net.IsHost && winnerId == 1));
+            string role = net != null && net.IsHost ? "HOST" : "CLIENT";
             
-            // Tìm tất cả MultiplayerDragAndDrop
-            var dragObjects = FindObjectsOfType<DoAnGame.Multiplayer.MultiplayerDragAndDrop>();
-            foreach (var drag in dragObjects)
+            Debug.Log($"[BattleController] [{role}] HandleAnswerResult CALLED: Winner={winnerId}, Correct={correct}, Time={responseTimeMs}ms");
+            Log($"[{role}] Answer result: Winner={winnerId}, Correct={correct}, Time={responseTimeMs}ms");
+
+            // ✅ KHÓA DRAG-DROP NGAY LẬP TỨC (không cho kéo thả trong thời gian thống kê)
+            DragAndDrop.SetGlobalLock(true);
+            DoAnGame.Multiplayer.MultiplayerDragAndDrop.SetGlobalLock(true);
+            Log($"[{role}] 🔒 Locked drag-drop during answer summary");
+
+            // ✅ Lấy đáp án đúng từ BattleManager
+            int correctAnswer = battleManager != null ? battleManager.CorrectAnswer.Value : -1;
+            
+            if (correctAnswer == -1)
             {
-                if (winnerId == -1)
+                Debug.LogError($"[BattleController] [{role}] Cannot get correct answer from BattleManager!");
+                return;
+            }
+
+            Debug.Log($"[BattleController] [{role}] Correct answer: {correctAnswer}");
+            Log($"[{role}] Correct answer: {correctAnswer}");
+
+            // ✅ Kiểm tra answerChoices
+            if (answerChoices == null)
+            {
+                Debug.LogError($"[BattleController] [{role}] answerChoices is NULL!");
+                return;
+            }
+
+            Debug.Log($"[BattleController] [{role}] answerChoices.Length: {answerChoices.Length}");
+
+            // ✅ Hiển thị màu cho TỪNG đáp án dựa trên đúng/sai
+            for (int i = 0; i < answerChoices.Length; i++)
+            {
+                if (answerChoices[i] == null)
                 {
-                    // Cả 2 sai
-                    drag.ShowResult(false);
+                    Debug.LogWarning($"[BattleController] [{role}] answerChoices[{i}] is NULL!");
+                    continue;
                 }
-                else if (isLocalWinner)
+
+                if (answerChoices[i].myText == null)
                 {
-                    // Local player thắng
-                    drag.ShowResult(true);
+                    Debug.LogWarning($"[BattleController] [{role}] answerChoices[{i}].myText is NULL!");
+                    continue;
+                }
+
+                // Parse đáp án từ text
+                string answerText = answerChoices[i].myText.text;
+                Debug.Log($"[BattleController] [{role}] Answer {i} text: '{answerText}'");
+
+                if (int.TryParse(answerText, out int answerValue))
+                {
+                    // So sánh với đáp án đúng
+                    bool isCorrectAnswer = (answerValue == correctAnswer);
+                    
+                    Debug.Log($"[BattleController] [{role}] Answer {i}: {answerValue} → {(isCorrectAnswer ? "CORRECT" : "WRONG")} → Calling ShowResultForce({isCorrectAnswer})");
+                    
+                    // ✅ FORCE hiển thị màu cho TẤT CẢ đáp án (kể cả đáp án trong slot)
+                    answerChoices[i].ShowResultForce(isCorrectAnswer);
+                    
+                    Debug.Log($"[BattleController] [{role}] Answer {i}: ShowResultForce DONE");
                 }
                 else
                 {
-                    // Đối thủ thắng
-                    drag.ShowResult(false);
+                    Debug.LogWarning($"[BattleController] [{role}] Cannot parse answer text: '{answerText}'");
                 }
             }
 
             // Hiển thị kết quả text
+            bool isLocalWinner = net != null && ((net.IsHost && winnerId == 0) || (!net.IsHost && winnerId == 1));
+            
             if (battleStatusText != null)
             {
                 if (winnerId == -1)
@@ -545,7 +620,7 @@ namespace DoAnGame.UI
                 }
             }
 
-            // TODO: Thêm animation, sound effects, particle effects
+            Debug.Log($"[BattleController] [{role}] HandleAnswerResult COMPLETED");
         }
 
         /// <summary>
@@ -580,53 +655,7 @@ namespace DoAnGame.UI
 
         #endregion
 
-        private void BindRoles()
-        {
-            try
-            {
-                var net = NetworkManager.Singleton;
-                if (net == null || (!net.IsClient && !net.IsServer))
-                {
-                    // Trường hợp test UI offline: vẫn hiển thị đúng bố cục player dưới - đối thủ trên.
-                    SetBottom(localPlayerLabel);
-                    SetTop(aiEnemyLabel);
-                    battleStatusText?.SetText("Chế độ test offline");
-                    roomInfoText?.SetText("Room: Local Test");
-                    return;
-                }
 
-                int count = net.ConnectedClientsIds.Count;
-                bool hasOpponent = count >= 2;
-                if (hasOpponent)
-                {
-                    hadTwoPlayersInSession = true;
-                }
-
-                if (net.IsHost)
-                {
-                    SetBottom("Player 1 - chủ phòng");
-                    SetTop(hasOpponent ? "Player 2 - người chơi" : aiEnemyLabel);
-                }
-                else
-                {
-                    SetBottom("Player 2 - bạn");
-                    SetTop("Player 1 - chủ phòng");
-                }
-
-                battleStatusText?.SetText(hasOpponent ? "Đang đấu 1v1" : "Đang chờ đối thủ...");
-                roomInfoText?.SetText($"Connected: {count}/2");
-                MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_BATTLE", $"BindRoles success, hasOpponent={hasOpponent}, connected={count}");
-            }
-            catch (System.Exception ex)
-            {
-                Debug.LogWarning($"[UIBattle] BindRoles error: {ex.Message}");
-                MultiplayerDetailedLogger.TraceException("UI_BATTLE", ex, "BindRoles failed");
-                // Safe fallback display
-                SetBottom(localPlayerLabel);
-                SetTop("Player 1 - đối thủ");
-                battleStatusText?.SetText("Kết nối đang thiết lập...");
-            }
-        }
 
         private void RegisterNetCallbacks()
         {
@@ -664,7 +693,6 @@ namespace DoAnGame.UI
                 hadTwoPlayersInSession = true;
             }
 
-            BindRoles();
             Log($"Client connected: {clientId} | count={count}");
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_BATTLE", $"HandleClientConnected clientId={clientId}, count={count}");
         }
@@ -674,7 +702,6 @@ namespace DoAnGame.UI
             var net = NetworkManager.Singleton;
             int count = net != null ? net.ConnectedClientsIds.Count : 0;
 
-            BindRoles();
             Log($"Client disconnected: {clientId} | count={count}");
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_BATTLE", $"HandleClientDisconnect clientId={clientId}, count={count}");
 
@@ -841,15 +868,7 @@ namespace DoAnGame.UI
             }
         }
 
-        private void SetTop(string text)
-        {
-            topPlayerText?.SetText(text);
-        }
 
-        private void SetBottom(string text)
-        {
-            bottomPlayerText?.SetText(text);
-        }
 
         private void DisableRaycastOnRuntimePlayerClones()
         {

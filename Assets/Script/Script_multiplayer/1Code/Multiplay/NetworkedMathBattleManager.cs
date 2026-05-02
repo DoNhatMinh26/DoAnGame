@@ -143,10 +143,9 @@ namespace DoAnGame.Multiplayer
             }
             else
             {
-                Debug.Log("[BattleManager] Client spawned");
-                
-                // Client gửi tên của mình lên server (delay 3s để đảm bảo player states đã spawn)
-                Invoke(nameof(SendPlayerNameToServer), 3f);
+                Debug.Log("[BattleManager] Client spawned, waiting for player states...");
+                // Client sẽ gửi tên sau khi player states đã spawn
+                // (được trigger từ StartMatch hoặc khi detect player states)
             }
         }
 
@@ -211,48 +210,26 @@ namespace DoAnGame.Multiplayer
             }
             else
             {
-                Debug.LogWarning($"[BattleManager] ⚠️ Player state not found for client {clientId}! Retrying in 1s...");
-                // Retry sau 1 giây (tối đa 3 lần)
-                pendingPlayerName = playerName;
-                pendingClientId = clientId;
-                pendingRetryCount = 0;
-                Invoke(nameof(RetryUpdatePlayerName), 1f);
+                Debug.LogWarning($"[BattleManager] ⚠️ Player state not found for client {clientId}! Retrying in 1 second...");
+                // Retry sau 1 giây
+                StartCoroutine(RetryUpdatePlayerName(clientId, playerName));
             }
         }
 
-        private string pendingPlayerName = "";
-        private ulong pendingClientId = 0;
-        private int pendingRetryCount = 0;
-        private const int MAX_RETRY_COUNT = 3;
-
-        private void RetryUpdatePlayerName()
+        private System.Collections.IEnumerator RetryUpdatePlayerName(ulong clientId, string playerName)
         {
-            if (!IsServer) return;
-
-            pendingRetryCount++;
-
-            NetworkedPlayerState playerState = null;
-            if (pendingClientId == 0)
-                playerState = player1State;
-            else
-                playerState = player2State;
-
+            yield return new WaitForSeconds(1f);
+            
+            NetworkedPlayerState playerState = clientId == 0 ? player1State : player2State;
+            
             if (playerState != null)
             {
-                playerState.PlayerName.Value = pendingPlayerName;
-                Debug.Log($"[BattleManager] ✅ Retry {pendingRetryCount} successful! Updated player name for client {pendingClientId}: {pendingPlayerName}");
+                playerState.PlayerName.Value = playerName;
+                Debug.Log($"[BattleManager] ✅ [RETRY] Updated player name for client {clientId}: {playerName}");
             }
             else
             {
-                if (pendingRetryCount < MAX_RETRY_COUNT)
-                {
-                    Debug.LogWarning($"[BattleManager] ⚠️ Retry {pendingRetryCount} failed! Player state still not found for client {pendingClientId}. Retrying again in 1s...");
-                    Invoke(nameof(RetryUpdatePlayerName), 1f);
-                }
-                else
-                {
-                    Debug.LogError($"[BattleManager] ❌ Max retries ({MAX_RETRY_COUNT}) reached! Could not update player name for client {pendingClientId}");
-                }
+                Debug.LogError($"[BattleManager] ❌ [RETRY FAILED] Player state still not found for client {clientId}!");
             }
         }
 
@@ -359,8 +336,25 @@ namespace DoAnGame.Multiplayer
             MatchStarted.Value = true;
             Debug.Log("[BattleManager] ⚔️ Match started!");
 
+            // Notify clients để gửi tên (sau khi player states đã spawn)
+            NotifyPlayerStatesReadyClientRpc();
+
             // Sinh câu hỏi đầu tiên
             GenerateQuestion();
+        }
+
+        /// <summary>
+        /// Notify clients rằng player states đã sẵn sàng
+        /// </summary>
+        [ClientRpc]
+        private void NotifyPlayerStatesReadyClientRpc()
+        {
+            if (IsServer) return; // Server không cần gửi tên (đã set trong SpawnPlayerStates)
+
+            Debug.Log("[BattleManager] Client received player states ready notification");
+            
+            // Delay nhỏ để đảm bảo NetworkObjects đã replicate
+            Invoke(nameof(SendPlayerNameToServer), 0.5f);
         }
 
         /// <summary>
@@ -834,6 +828,10 @@ namespace DoAnGame.Multiplayer
 
                 // Notify clients với winnerId chính xác
                 NotifyAnswerResultClientRpc(winnerId, true, player1ResponseTime, player2ResponseTime, player1Answer, player2Answer);
+                
+                // ✅ FIX: Invoke event trên Host (ClientRpc không chạy trên Host)
+                OnAnswerResult?.Invoke(winnerId, true, player1ResponseTime);
+                OnAnswerResultReceived?.Invoke(winnerId, true, player1ResponseTime, player2ResponseTime, player1Answer, player2Answer);
             }
             else if (winnerId == -2)
             {
@@ -857,6 +855,10 @@ namespace DoAnGame.Multiplayer
 
                 // Notify clients với winnerId = -2 (draw)
                 NotifyAnswerResultClientRpc(-2, true, player1ResponseTime, player2ResponseTime, player1Answer, player2Answer);
+                
+                // ✅ FIX: Invoke event trên Host (ClientRpc không chạy trên Host)
+                OnAnswerResult?.Invoke(-2, true, player1ResponseTime);
+                OnAnswerResultReceived?.Invoke(-2, true, player1ResponseTime, player2ResponseTime, player1Answer, player2Answer);
             }
             else
             {
@@ -876,6 +878,10 @@ namespace DoAnGame.Multiplayer
 
                 // Notify clients với winnerId = -1 (both wrong)
                 NotifyAnswerResultClientRpc(-1, false, player1ResponseTime, player2ResponseTime, player1Answer, player2Answer);
+                
+                // ✅ FIX: Invoke event trên Host (ClientRpc không chạy trên Host)
+                OnAnswerResult?.Invoke(-1, false, player1ResponseTime);
+                OnAnswerResultReceived?.Invoke(-1, false, player1ResponseTime, player2ResponseTime, player1Answer, player2Answer);
             }
 
             // Kiểm tra kết thúc trận

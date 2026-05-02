@@ -1,7 +1,7 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: Test_FireBase_multi (DETAILED EXPORT)
 Đường dẫn: Assets/Scenes/Test_FireBase_multi.unity
-Thời gian export: 4/29/2026 11:27:37 PM
+Thời gian export: 5/2/2026 9:20:20 PM
 ═══════════════════════════════════════════════════════════
 
 Tổng số Root GameObjects: 6
@@ -84,8 +84,6 @@ BattleManager [Layer: UI]
      [Choice2] = (Complex type)
      [Choice3] = (Complex type)
      [Choice4] = (Complex type)
-   • TestHealthSync ()
-   • PlayerStateDebugger ()
 Canvas [Layer: UI]
    • Canvas (RenderMode: ScreenSpaceOverlay)
      [m_RenderMode] = Screen Space - Overlay
@@ -148,6 +146,7 @@ Canvas [Layer: UI]
 │     [joinByCodeButton] = → JoinButton (Button)
 │     [quitRoomButton] = → QuitButton (Button)
 │     [startMatchButton] = → StartButton (Button)
+│     [readyButton] = → SanSangButton (Button)
 │     [roomCodeInput] = → JoinInputField (TMP_InputField)
 │     [lobbyCodeText] = → JoinCodeText (TextMeshProUGUI)
 │     [statusText] = → StatusText (TextMeshProUGUI)
@@ -1431,6 +1430,102 @@ Canvas [Layer: UI]
 ││     [m_isVolumetricText] = False
 ││     [m_hasFontAssetChanged] = False
 ││     [m_baseMaterial] = NULL
+││├─ SanSangButton [Layer: UI]
+││   • CanvasRenderer
+││     [m_CullTransparentMesh] = True
+││   • Image (UnityEngine.UI)
+││     [m_Material] = NULL
+││     [m_Color] = RGBA(1.000, 1.000, 1.000, 1.000)
+││     [m_RaycastTarget] = True
+││     [m_Maskable] = True
+││     [m_OnCullStateChanged] = (Complex type)
+││     [m_Sprite] = → Long Square Skyblue (Sprite)
+││     [m_Type] = Sliced
+││     [m_PreserveAspect] = False
+││     [m_FillCenter] = True
+││     [m_FillMethod] = Radial360
+││     [m_FillAmount] = 1.00
+││     [m_FillClockwise] = True
+││     [m_FillOrigin] = 0
+││     [m_UseSpriteMesh] = False
+││     [m_PixelsPerUnitMultiplier] = 1.00
+││   • Button (UnityEngine.UI)
+││     [m_Navigation] = (Complex type)
+││     [m_Transition] = ColorTint
+││     [m_Colors] = (Complex type)
+││     [m_SpriteState] = (Complex type)
+││     [m_AnimationTriggers] = (Complex type)
+││     [m_Interactable] = True
+││     [m_TargetGraphic] = → SanSangButton (Image)
+││     [m_OnClick] = (Complex type)
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││     [m_CullTransparentMesh] = True
+│││   • TextMeshProUGUI (TMPro)
+│││     [m_Material] = NULL
+│││     [m_Color] = RGBA(1.000, 1.000, 1.000, 1.000)
+│││     [m_RaycastTarget] = True
+│││     [m_Maskable] = True
+│││     [m_OnCullStateChanged] = (Complex type)
+│││     [m_text] = "Sẵn Sàng"
+│││     [m_isRightToLeft] = False
+│││     [m_fontAsset] = → Roboto-Bold SDF (TMP_FontAsset)
+│││     [m_sharedMaterial] = → Roboto-Bold SDF Material (Material)
+│││     [m_fontSharedMaterials] = Array[0]
+│││     [m_fontMaterial] = NULL
+│││     [m_fontMaterials] = Array[0]
+│││     [m_fontColor32] = RGBA(1.000, 0.000, 0.000, 1.000)
+│││     [m_fontColor] = RGBA(1.000, 0.000, 0.000, 1.000)
+│││     [m_enableVertexGradient] = False
+│││     [m_colorMode] = FourCornersGradient
+│││     [m_fontColorGradient] = (Complex type)
+│││     [m_fontColorGradientPreset] = NULL
+│││     [m_spriteAsset] = NULL
+│││     [m_tintAllSprites] = False
+│││     [m_StyleSheet] = NULL
+│││     [m_TextStyleHashCode] = -1183493901
+│││     [m_overrideHtmlColors] = False
+│││     [m_faceColor] = RGBA(1.000, 1.000, 1.000, 1.000)
+│││     [m_fontSize] = 100.00
+│││     [m_fontSizeBase] = 100.00
+│││     [m_fontWeight] = Regular
+│││     [m_enableAutoSizing] = False
+│││     [m_fontSizeMin] = 18.00
+│││     [m_fontSizeMax] = 72.00
+│││     [m_fontStyle] = Bold
+│││     [m_HorizontalAlignment] = Center
+│││     [m_VerticalAlignment] = Middle
+│││     [m_textAlignment] = Converted
+│││     [m_characterSpacing] = 0.00
+│││     [m_wordSpacing] = 0.00
+│││     [m_lineSpacing] = 0.00
+│││     [m_lineSpacingMax] = 0.00
+│││     [m_paragraphSpacing] = 0.00
+│││     [m_charWidthMaxAdj] = 0.00
+│││     [m_enableWordWrapping] = True
+│││     [m_wordWrappingRatios] = 0.40
+│││     [m_overflowMode] = Overflow
+│││     [m_linkedTextComponent] = NULL
+│││     [parentLinkedComponent] = NULL
+│││     [m_enableKerning] = True
+│││     [m_enableExtraPadding] = False
+│││     [checkPaddingRequired] = False
+│││     [m_isRichText] = True
+│││     [m_parseCtrlCharacters] = True
+│││     [m_isOrthographic] = True
+│││     [m_isCullingEnabled] = False
+│││     [m_horizontalMapping] = Character
+│││     [m_verticalMapping] = Character
+│││     [m_uvLineOffset] = 0.00
+│││     [m_geometrySortingOrder] = Normal
+│││     [m_IsTextObjectScaleStatic] = False
+│││     [m_VertexBufferAutoSizeReduction] = False
+│││     [m_useMaxVisibleDescender] = True
+│││     [m_pageToDisplay] = 1
+│││     [m_isUsingLegacyAnimationComponent] = False
+│││     [m_isVolumetricText] = False
+│││     [m_hasFontAssetChanged] = False
+│││     [m_baseMaterial] = NULL
 ││├─ StartButton [Layer: UI]
 ││   • CanvasRenderer
 ││     [m_CullTransparentMesh] = True
@@ -1981,6 +2076,15 @@ Canvas [Layer: UI]
 │     [autoNavigateOnSessionEnded] = True
 │     [sessionCheckInterval] = 0.50
 │     [enableDebugLogs] = False
+│   • AnswerSummaryUI (DoAnGame.UI)
+│     [textTrangThaiDapAn1] = → TextTrangThaiDapAn1 (TextMeshProUGUI)
+│     [textTrangThaiDapAn2] = → TextTrangThaiDapAn2 (TextMeshProUGUI)
+│     [timerText] = → Timertext (TextMeshProUGUI)
+│     [trangThaiText] = → TimerState  (TextMeshProUGUI)
+│     [resultText] = → TrangThaiWin (TextMeshProUGUI)
+│     [summaryDurationMin] = 1.00
+│     [summaryDurationMax] = 10.00
+│     [defaultSummaryDuration] = 7.00
 ││├─ Slot (Tag: Slot) [Layer: UI]
 ││   • CanvasRenderer
 ││     [m_CullTransparentMesh] = True
@@ -2395,8 +2499,8 @@ Canvas [Layer: UI]
 ││     [m_fontSharedMaterials] = Array[0]
 ││     [m_fontMaterial] = NULL
 ││     [m_fontMaterials] = Array[0]
-││     [m_fontColor32] = RGBA(0.000, 0.000, 0.000, 1.000)
-││     [m_fontColor] = RGBA(0.000, 0.000, 0.000, 1.000)
+││     [m_fontColor32] = RGBA(1.000, 0.000, 0.043, 1.000)
+││     [m_fontColor] = RGBA(1.000, 0.000, 0.044, 1.000)
 ││     [m_enableVertexGradient] = False
 ││     [m_colorMode] = FourCornersGradient
 ││     [m_fontColorGradient] = (Complex type)
@@ -2407,15 +2511,15 @@ Canvas [Layer: UI]
 ││     [m_TextStyleHashCode] = -1183493901
 ││     [m_overrideHtmlColors] = False
 ││     [m_faceColor] = RGBA(1.000, 1.000, 1.000, 1.000)
-││     [m_fontSize] = 40.00
-││     [m_fontSizeBase] = 40.00
+││     [m_fontSize] = 30.00
+││     [m_fontSizeBase] = 30.00
 ││     [m_fontWeight] = Regular
 ││     [m_enableAutoSizing] = False
 ││     [m_fontSizeMin] = 18.00
 ││     [m_fontSizeMax] = 72.00
-││     [m_fontStyle] = Normal
+││     [m_fontStyle] = Bold
 ││     [m_HorizontalAlignment] = Center
-││     [m_VerticalAlignment] = Top
+││     [m_VerticalAlignment] = Middle
 ││     [m_textAlignment] = Converted
 ││     [m_characterSpacing] = 0.00
 ││     [m_wordSpacing] = 0.00
@@ -2940,8 +3044,8 @@ Canvas [Layer: UI]
 ││     [player2HealthText] = → healText 2 (TextMeshProUGUI)
 ││     [player2NameText] = → NamePL2 (TextMeshProUGUI)
 ││     [player2ScoreText] = → Player2Score (TextMeshProUGUI)
-││     [timerText] = → TimerText (TextMeshProUGUI)
-││     [timerFillImage] = → TimerFill (Image)
+││     [timerText] = NULL
+││     [timerFillImage] = NULL
 ││     [healthHighColor] = RGBA(0.000, 1.000, 0.000, 1.000)
 ││     [healthMediumColor] = RGBA(1.000, 1.000, 0.000, 1.000)
 ││     [healthLowColor] = RGBA(1.000, 0.000, 0.000, 1.000)
@@ -2977,13 +3081,13 @@ Canvas [Layer: UI]
 ││││     [m_TextStyleHashCode] = -1183493901
 ││││     [m_overrideHtmlColors] = False
 ││││     [m_faceColor] = RGBA(1.000, 1.000, 1.000, 1.000)
-││││     [m_fontSize] = 40.00
-││││     [m_fontSizeBase] = 40.00
+││││     [m_fontSize] = 30.00
+││││     [m_fontSizeBase] = 30.00
 ││││     [m_fontWeight] = Regular
 ││││     [m_enableAutoSizing] = False
 ││││     [m_fontSizeMin] = 18.00
 ││││     [m_fontSizeMax] = 72.00
-││││     [m_fontStyle] = Normal
+││││     [m_fontStyle] = Bold
 ││││     [m_HorizontalAlignment] = Center
 ││││     [m_VerticalAlignment] = Middle
 ││││     [m_textAlignment] = Converted
@@ -3200,7 +3304,7 @@ Canvas [Layer: UI]
 ││││     [m_RaycastTarget] = True
 ││││     [m_Maskable] = True
 ││││     [m_OnCullStateChanged] = (Complex type)
-││││     [m_text] = "New Text"
+││││     [m_text] = ""
 ││││     [m_isRightToLeft] = False
 ││││     [m_fontAsset] = → LiberationSans SDF (TMP_FontAsset)
 ││││     [m_sharedMaterial] = → LiberationSans SDF Material (Material)
@@ -3219,15 +3323,15 @@ Canvas [Layer: UI]
 ││││     [m_TextStyleHashCode] = -1183493901
 ││││     [m_overrideHtmlColors] = False
 ││││     [m_faceColor] = RGBA(1.000, 1.000, 1.000, 1.000)
-││││     [m_fontSize] = 36.00
-││││     [m_fontSizeBase] = 36.00
+││││     [m_fontSize] = 30.00
+││││     [m_fontSizeBase] = 30.00
 ││││     [m_fontWeight] = Regular
 ││││     [m_enableAutoSizing] = False
 ││││     [m_fontSizeMin] = 18.00
 ││││     [m_fontSizeMax] = 72.00
-││││     [m_fontStyle] = Normal
-││││     [m_HorizontalAlignment] = Left
-││││     [m_VerticalAlignment] = Top
+││││     [m_fontStyle] = Bold
+││││     [m_HorizontalAlignment] = Center
+││││     [m_VerticalAlignment] = Middle
 ││││     [m_textAlignment] = Converted
 ││││     [m_characterSpacing] = 0.00
 ││││     [m_wordSpacing] = 0.00
@@ -3288,13 +3392,13 @@ Canvas [Layer: UI]
 ││││     [m_TextStyleHashCode] = -1183493901
 ││││     [m_overrideHtmlColors] = False
 ││││     [m_faceColor] = RGBA(1.000, 1.000, 1.000, 1.000)
-││││     [m_fontSize] = 40.00
-││││     [m_fontSizeBase] = 40.00
+││││     [m_fontSize] = 30.00
+││││     [m_fontSizeBase] = 30.00
 ││││     [m_fontWeight] = Regular
 ││││     [m_enableAutoSizing] = False
 ││││     [m_fontSizeMin] = 18.00
 ││││     [m_fontSizeMax] = 72.00
-││││     [m_fontStyle] = Normal
+││││     [m_fontStyle] = Bold
 ││││     [m_HorizontalAlignment] = Center
 ││││     [m_VerticalAlignment] = Middle
 ││││     [m_textAlignment] = Converted
@@ -3511,7 +3615,7 @@ Canvas [Layer: UI]
 ││││     [m_RaycastTarget] = True
 ││││     [m_Maskable] = True
 ││││     [m_OnCullStateChanged] = (Complex type)
-││││     [m_text] = "New Text"
+││││     [m_text] = ""
 ││││     [m_isRightToLeft] = False
 ││││     [m_fontAsset] = → LiberationSans SDF (TMP_FontAsset)
 ││││     [m_sharedMaterial] = → LiberationSans SDF Material (Material)
@@ -3530,15 +3634,15 @@ Canvas [Layer: UI]
 ││││     [m_TextStyleHashCode] = -1183493901
 ││││     [m_overrideHtmlColors] = False
 ││││     [m_faceColor] = RGBA(1.000, 1.000, 1.000, 1.000)
-││││     [m_fontSize] = 36.00
-││││     [m_fontSizeBase] = 36.00
+││││     [m_fontSize] = 30.00
+││││     [m_fontSizeBase] = 30.00
 ││││     [m_fontWeight] = Regular
 ││││     [m_enableAutoSizing] = False
 ││││     [m_fontSizeMin] = 18.00
 ││││     [m_fontSizeMax] = 72.00
-││││     [m_fontStyle] = Normal
-││││     [m_HorizontalAlignment] = Left
-││││     [m_VerticalAlignment] = Top
+││││     [m_fontStyle] = Bold
+││││     [m_HorizontalAlignment] = Center
+││││     [m_VerticalAlignment] = Middle
 ││││     [m_textAlignment] = Converted
 ││││     [m_characterSpacing] = 0.00
 ││││     [m_wordSpacing] = 0.00
@@ -3571,7 +3675,7 @@ Canvas [Layer: UI]
 ││││     [m_hasFontAssetChanged] = False
 ││││     [m_baseMaterial] = NULL
 │││├─ TimerPanel [Layer: UI]
-││││├─ TimerText [Layer: UI]
+││││├─ TimerState  [Layer: UI]
 ││││   • CanvasRenderer
 ││││     [m_CullTransparentMesh] = True
 ││││   • TextMeshProUGUI (TMPro)
@@ -3639,44 +3743,142 @@ Canvas [Layer: UI]
 ││││     [m_isVolumetricText] = False
 ││││     [m_hasFontAssetChanged] = False
 ││││     [m_baseMaterial] = NULL
-││││├─ TimerBG [Layer: UI]
+││││├─ Timertext [Layer: UI]
 ││││   • CanvasRenderer
 ││││     [m_CullTransparentMesh] = True
-││││   • Image (UnityEngine.UI)
+││││   • TextMeshProUGUI (TMPro)
 ││││     [m_Material] = NULL
 ││││     [m_Color] = RGBA(1.000, 1.000, 1.000, 1.000)
 ││││     [m_RaycastTarget] = True
 ││││     [m_Maskable] = True
 ││││     [m_OnCullStateChanged] = (Complex type)
-││││     [m_Sprite] = NULL
-││││     [m_Type] = Simple
-││││     [m_PreserveAspect] = False
-││││     [m_FillCenter] = True
-││││     [m_FillMethod] = Radial360
-││││     [m_FillAmount] = 1.00
-││││     [m_FillClockwise] = True
-││││     [m_FillOrigin] = 0
-││││     [m_UseSpriteMesh] = False
-││││     [m_PixelsPerUnitMultiplier] = 1.00
-│││││├─ TimerFill [Layer: UI]
-│││││   • CanvasRenderer
-│││││     [m_CullTransparentMesh] = True
-│││││   • Image (UnityEngine.UI)
-│││││     [m_Material] = NULL
-│││││     [m_Color] = RGBA(0.000, 0.000, 0.000, 1.000)
-│││││     [m_RaycastTarget] = True
-│││││     [m_Maskable] = True
-│││││     [m_OnCullStateChanged] = (Complex type)
-│││││     [m_Sprite] = NULL
-│││││     [m_Type] = Simple
-│││││     [m_PreserveAspect] = False
-│││││     [m_FillCenter] = True
-│││││     [m_FillMethod] = Radial360
-│││││     [m_FillAmount] = 1.00
-│││││     [m_FillClockwise] = True
-│││││     [m_FillOrigin] = 0
-│││││     [m_UseSpriteMesh] = False
-│││││     [m_PixelsPerUnitMultiplier] = 1.00
+││││     [m_text] = "Time"
+││││     [m_isRightToLeft] = False
+││││     [m_fontAsset] = → LiberationSans SDF (TMP_FontAsset)
+││││     [m_sharedMaterial] = → LiberationSans SDF Material (Material)
+││││     [m_fontSharedMaterials] = Array[0]
+││││     [m_fontMaterial] = NULL
+││││     [m_fontMaterials] = Array[0]
+││││     [m_fontColor32] = RGBA(1.000, 1.000, 1.000, 1.000)
+││││     [m_fontColor] = RGBA(1.000, 1.000, 1.000, 1.000)
+││││     [m_enableVertexGradient] = False
+││││     [m_colorMode] = FourCornersGradient
+││││     [m_fontColorGradient] = (Complex type)
+││││     [m_fontColorGradientPreset] = NULL
+││││     [m_spriteAsset] = NULL
+││││     [m_tintAllSprites] = False
+││││     [m_StyleSheet] = NULL
+││││     [m_TextStyleHashCode] = -1183493901
+││││     [m_overrideHtmlColors] = False
+││││     [m_faceColor] = RGBA(1.000, 1.000, 1.000, 1.000)
+││││     [m_fontSize] = 36.00
+││││     [m_fontSizeBase] = 36.00
+││││     [m_fontWeight] = Regular
+││││     [m_enableAutoSizing] = False
+││││     [m_fontSizeMin] = 18.00
+││││     [m_fontSizeMax] = 72.00
+││││     [m_fontStyle] = Bold
+││││     [m_HorizontalAlignment] = Center
+││││     [m_VerticalAlignment] = Middle
+││││     [m_textAlignment] = Converted
+││││     [m_characterSpacing] = 0.00
+││││     [m_wordSpacing] = 0.00
+││││     [m_lineSpacing] = 0.00
+││││     [m_lineSpacingMax] = 0.00
+││││     [m_paragraphSpacing] = 0.00
+││││     [m_charWidthMaxAdj] = 0.00
+││││     [m_enableWordWrapping] = True
+││││     [m_wordWrappingRatios] = 0.40
+││││     [m_overflowMode] = Overflow
+││││     [m_linkedTextComponent] = NULL
+││││     [parentLinkedComponent] = NULL
+││││     [m_enableKerning] = True
+││││     [m_enableExtraPadding] = False
+││││     [checkPaddingRequired] = False
+││││     [m_isRichText] = True
+││││     [m_parseCtrlCharacters] = True
+││││     [m_isOrthographic] = True
+││││     [m_isCullingEnabled] = False
+││││     [m_horizontalMapping] = Character
+││││     [m_verticalMapping] = Character
+││││     [m_uvLineOffset] = 0.00
+││││     [m_geometrySortingOrder] = Normal
+││││     [m_IsTextObjectScaleStatic] = False
+││││     [m_VertexBufferAutoSizeReduction] = False
+││││     [m_useMaxVisibleDescender] = True
+││││     [m_pageToDisplay] = 1
+││││     [m_isUsingLegacyAnimationComponent] = False
+││││     [m_isVolumetricText] = False
+││││     [m_hasFontAssetChanged] = False
+││││     [m_baseMaterial] = NULL
+││├─ TrangThaiWin [Layer: UI]
+││   • CanvasRenderer
+││     [m_CullTransparentMesh] = True
+││   • TextMeshProUGUI (TMPro)
+││     [m_Material] = NULL
+││     [m_Color] = RGBA(1.000, 1.000, 1.000, 1.000)
+││     [m_RaycastTarget] = True
+││     [m_Maskable] = True
+││     [m_OnCullStateChanged] = (Complex type)
+││     [m_text] = ""
+││     [m_isRightToLeft] = False
+││     [m_fontAsset] = → LiberationSans SDF (TMP_FontAsset)
+││     [m_sharedMaterial] = → LiberationSans SDF Material (Material)
+││     [m_fontSharedMaterials] = Array[0]
+││     [m_fontMaterial] = NULL
+││     [m_fontMaterials] = Array[0]
+││     [m_fontColor32] = RGBA(0.176, 1.000, 0.000, 1.000)
+││     [m_fontColor] = RGBA(0.176, 1.000, 0.000, 1.000)
+││     [m_enableVertexGradient] = False
+││     [m_colorMode] = FourCornersGradient
+││     [m_fontColorGradient] = (Complex type)
+││     [m_fontColorGradientPreset] = NULL
+││     [m_spriteAsset] = NULL
+││     [m_tintAllSprites] = False
+││     [m_StyleSheet] = NULL
+││     [m_TextStyleHashCode] = -1183493901
+││     [m_overrideHtmlColors] = False
+││     [m_faceColor] = RGBA(1.000, 1.000, 1.000, 1.000)
+││     [m_fontSize] = 30.00
+││     [m_fontSizeBase] = 30.00
+││     [m_fontWeight] = Regular
+││     [m_enableAutoSizing] = False
+││     [m_fontSizeMin] = 18.00
+││     [m_fontSizeMax] = 72.00
+││     [m_fontStyle] = Bold
+││     [m_HorizontalAlignment] = Center
+││     [m_VerticalAlignment] = Middle
+││     [m_textAlignment] = Converted
+││     [m_characterSpacing] = 0.00
+││     [m_wordSpacing] = 0.00
+││     [m_lineSpacing] = 0.00
+││     [m_lineSpacingMax] = 0.00
+││     [m_paragraphSpacing] = 0.00
+││     [m_charWidthMaxAdj] = 0.00
+││     [m_enableWordWrapping] = True
+││     [m_wordWrappingRatios] = 0.40
+││     [m_overflowMode] = Overflow
+││     [m_linkedTextComponent] = NULL
+││     [parentLinkedComponent] = NULL
+││     [m_enableKerning] = True
+││     [m_enableExtraPadding] = False
+││     [checkPaddingRequired] = False
+││     [m_isRichText] = True
+││     [m_parseCtrlCharacters] = True
+││     [m_isOrthographic] = True
+││     [m_isCullingEnabled] = False
+││     [m_horizontalMapping] = Character
+││     [m_verticalMapping] = Character
+││     [m_uvLineOffset] = 0.00
+││     [m_geometrySortingOrder] = Normal
+││     [m_IsTextObjectScaleStatic] = False
+││     [m_VertexBufferAutoSizeReduction] = False
+││     [m_useMaxVisibleDescender] = True
+││     [m_pageToDisplay] = 1
+││     [m_isUsingLegacyAnimationComponent] = False
+││     [m_isVolumetricText] = False
+││     [m_hasFontAssetChanged] = False
+││     [m_baseMaterial] = NULL
 │├─ LobbyBrowserPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │     [m_CullTransparentMesh] = True
@@ -3713,6 +3915,7 @@ Canvas [Layer: UI]
 │     [showStartedRooms] = True
 │     [maxLobbyNameLength] = 18
 │     [maxHostNameLength] = 14
+│     [autoRefreshIntervalSeconds] = 2.00
 ││├─ Backgroud [Layer: UI]
 ││   • CanvasRenderer
 ││     [m_CullTransparentMesh] = True
@@ -4590,6 +4793,44 @@ Canvas [Layer: UI]
 ││     [m_isVolumetricText] = False
 ││     [m_hasFontAssetChanged] = False
 ││     [m_baseMaterial] = NULL
+│├─ Wins [INACTIVE] [Layer: UI]
+│   • CanvasRenderer
+│     [m_CullTransparentMesh] = True
+│   • Image (UnityEngine.UI)
+│     [m_Material] = NULL
+│     [m_Color] = RGBA(1.000, 1.000, 1.000, 0.392)
+│     [m_RaycastTarget] = True
+│     [m_Maskable] = True
+│     [m_OnCullStateChanged] = (Complex type)
+│     [m_Sprite] = → Background (Sprite)
+│     [m_Type] = Sliced
+│     [m_PreserveAspect] = False
+│     [m_FillCenter] = True
+│     [m_FillMethod] = Radial360
+│     [m_FillAmount] = 1.00
+│     [m_FillClockwise] = True
+│     [m_FillOrigin] = 0
+│     [m_UseSpriteMesh] = False
+│     [m_PixelsPerUnitMultiplier] = 1.00
+││├─ ImagePlayerWin [Layer: UI]
+││   • CanvasRenderer
+││     [m_CullTransparentMesh] = True
+││   • Image (UnityEngine.UI)
+││     [m_Material] = NULL
+││     [m_Color] = RGBA(1.000, 1.000, 1.000, 1.000)
+││     [m_RaycastTarget] = True
+││     [m_Maskable] = True
+││     [m_OnCullStateChanged] = (Complex type)
+││     [m_Sprite] = NULL
+││     [m_Type] = Simple
+││     [m_PreserveAspect] = False
+││     [m_FillCenter] = True
+││     [m_FillMethod] = Radial360
+││     [m_FillAmount] = 1.00
+││     [m_FillClockwise] = True
+││     [m_FillOrigin] = 0
+││     [m_UseSpriteMesh] = False
+││     [m_PixelsPerUnitMultiplier] = 1.00
 EventSystem
    • EventSystem (UnityEngine.EventSystems)
      [m_FirstSelected] = NULL
@@ -4606,5 +4847,5 @@ EventSystem
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 109
+Tổng số GameObjects: 113
 ═══════════════════════════════════════════════════════════

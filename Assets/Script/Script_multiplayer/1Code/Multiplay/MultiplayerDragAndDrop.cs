@@ -288,8 +288,35 @@ namespace DoAnGame.Multiplayer
                 Debug.Log($"[MultiplayerDragAndDrop] Wrong answer!");
             }
 
-            // Tự động reset sau delay
-            StartCoroutine(ResetAfterDelay(1.5f));
+            // ✅ KHÔNG TỰ ĐỘNG RESET - Giữ đáp án trong slot cho đến khi câu hỏi mới
+            // Reset sẽ được gọi từ UIMultiplayerBattleController khi câu hỏi mới xuất hiện
+        }
+
+        /// <summary>
+        /// FORCE hiển thị kết quả (bỏ qua mọi điều kiện, dùng cho thời gian thống kê)
+        /// </summary>
+        public void ShowResultForce(bool isCorrect)
+        {
+            // Stop tất cả coroutines để tránh conflict
+            StopAllCoroutines();
+            
+            // Set màu
+            if (isCorrect)
+            {
+                image.color = colorCorrect;
+                Debug.Log($"[MultiplayerDragAndDrop] FORCE Correct answer: {name}");
+            }
+            else
+            {
+                image.color = colorWrong;
+                Debug.Log($"[MultiplayerDragAndDrop] FORCE Wrong answer: {name}");
+            }
+
+            // Đảm bảo visible
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 1f;
+            }
         }
 
         /// <summary>
@@ -311,7 +338,7 @@ namespace DoAnGame.Multiplayer
         }
 
         /// <summary>
-        /// Reset sau khi hiển thị kết quả
+        /// Reset sau khi hiển thị kết quả (KHÔNG DÙNG NỮA - giữ lại để tương thích)
         /// </summary>
         private IEnumerator ResetAfterDelay(float delay)
         {
@@ -322,6 +349,25 @@ namespace DoAnGame.Multiplayer
             
             // Mở khóa nếu không còn menu nào
             SetGlobalLock(false);
+        }
+
+        /// <summary>
+        /// Reset về vị trí gốc và mở khóa (gọi khi câu hỏi mới)
+        /// </summary>
+        public void ResetForNewQuestion()
+        {
+            StopAllCoroutines();
+            
+            image.color = originalColor;
+            rectTransform.anchoredPosition = originalPosition;
+            
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 1f;
+                canvasGroup.blocksRaycasts = true;
+            }
+            
+            Debug.Log($"[MultiplayerDragAndDrop] Reset for new question: {name}");
         }
 
         /// <summary>

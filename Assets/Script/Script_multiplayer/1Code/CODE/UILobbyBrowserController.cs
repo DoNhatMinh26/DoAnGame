@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
@@ -44,10 +45,13 @@ namespace DoAnGame.UI
         [SerializeField] private bool showStartedRooms = true;
         [SerializeField] private int maxLobbyNameLength = 18;
         [SerializeField] private int maxHostNameLength = 14;
+        [SerializeField] private float autoRefreshIntervalSeconds = 2f;
 
         private readonly List<LobbyBrowserEntryWidget> spawnedEntries = new List<LobbyBrowserEntryWidget>();
         private bool isBusy;
         private AuthManager authManager;
+        private Coroutine autoRefreshRoutine;
+        private float nextRefreshTime;
 
         protected override void Awake()
         {
@@ -68,12 +72,26 @@ namespace DoAnGame.UI
             {
                 _ = RefreshLobbyListAsync();
             }
+
+            // Start auto-refresh polling
+            if (autoRefreshRoutine != null)
+            {
+                StopCoroutine(autoRefreshRoutine);
+            }
+            autoRefreshRoutine = StartCoroutine(AutoRefreshRoutine());
         }
 
         protected override void OnHide()
         {
             base.OnHide();
             ClearEntries();
+
+            // Stop auto-refresh polling
+            if (autoRefreshRoutine != null)
+            {
+                StopCoroutine(autoRefreshRoutine);
+                autoRefreshRoutine = null;
+            }
         }
 
         private void OnDestroy()
@@ -81,6 +99,12 @@ namespace DoAnGame.UI
             refreshButton?.onClick.RemoveAllListeners();
             backButton?.onClick.RemoveAllListeners();
             ClearEntries();
+
+            if (autoRefreshRoutine != null)
+            {
+                StopCoroutine(autoRefreshRoutine);
+                autoRefreshRoutine = null;
+            }
         }
 
         private void HandleBackClicked()
@@ -100,6 +124,20 @@ namespace DoAnGame.UI
             if (roomController == null)
             {
                 roomController = FindObjectOfType<UIMultiplayerRoomController>(true);
+            }
+        }
+
+        private IEnumerator AutoRefreshRoutine()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(Mathf.Max(1f, autoRefreshIntervalSeconds));
+                
+                if (Time.unscaledTime >= nextRefreshTime && !isBusy)
+                {
+                    _ = RefreshLobbyListAsync();
+                    nextRefreshTime = Time.unscaledTime + autoRefreshIntervalSeconds;
+                }
             }
         }
 

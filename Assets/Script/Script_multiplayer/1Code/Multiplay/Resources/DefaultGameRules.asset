@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b4c0eaf34e0bfe4f9f1b63a221c507d, type: 3}
   m_Name: DefaultGameRules
   m_EditorClassIdentifier: 
-  startingHealth: 10
+  startingHealth: 3
   damageOnWrongAnswer: 1
   damageOnTimeout: 1
-  questionTimeLimit: 10
+  questionTimeLimit: 7
   delayBetweenQuestions: 5
-  correctAnswersToIncreaseDifficulty: 2
+  correctAnswersToIncreaseDifficulty: 1
   difficultyIncrement: 15
   maxDifficulty: 100
   pointsPerCorrectAnswer: 10
