@@ -16,7 +16,7 @@ MonoBehaviour:
   damageOnWrongAnswer: 1
   damageOnTimeout: 1
   questionTimeLimit: 10
-  delayBetweenQuestions: 3
+  delayBetweenQuestions: 5
   correctAnswersToIncreaseDifficulty: 2
   difficultyIncrement: 15
   maxDifficulty: 100
