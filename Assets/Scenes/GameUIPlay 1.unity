@@ -2228,7 +2228,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &176901116
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9879,7 +9879,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneAsset: {fileID: 102900000, guid: daad5358ee7d76249b073a5c6b0d4927, type: 3}
   targetSceneName: ChonDA
-  destinationTargetPanelName: 
+  destinationTargetPanelName: ShopPanel
   screensRoot: {fileID: 0}
   targetScreen: {fileID: 0}
   rootsToHide: []
@@ -13239,7 +13239,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1179138730
 RectTransform:
   m_ObjectHideFlags: 0

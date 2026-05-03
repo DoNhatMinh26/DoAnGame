@@ -13,6 +13,10 @@ public class MathManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI cauHoiText;
     [SerializeField] private TextMeshProUGUI manHienTaiText;
     [SerializeField] private Button[] dapAnBnt;
+    [Header("Ô Trống Hiển Thị")]
+    [SerializeField] private RectTransform oTrongRect; // Kéo cụm Ô Trống (Image) vào đây
+    [SerializeField] private Image oTrongImage;
+    [SerializeField] private TextMeshProUGUI oTrongText;
 
     private int minVal, maxVal, dapAnDung;
     private List<string> activeOps = new List<string>();
@@ -26,6 +30,10 @@ public class MathManager : MonoBehaviour
 
         if (config != null)
         {
+            if (UiClass.Instance != null)
+            {
+                UiClass.Instance.SetupLevelDifficulty(UIManager.SelectedGrade, LevelManager.CurrentLevel);
+            }
             if (manHienTaiText != null) manHienTaiText.text = "Màn " + config.LevelIndex;
 
             minVal = config.MinNumber;
@@ -57,7 +65,9 @@ public class MathManager : MonoBehaviour
 
         if (activeOps.Count == 0) activeOps.Add("+");
         string phepToan = activeOps[Random.Range(0, activeOps.Count)];
-
+        // Reset ô trống
+        if (oTrongText != null) oTrongText.text = "";
+        if (oTrongImage != null) oTrongImage.color = Color.white;
         int n1, n2, n3;
 
         switch (phepToan)
@@ -65,13 +75,13 @@ public class MathManager : MonoBehaviour
             case "+":
                 n1 = Random.Range(minVal, maxVal + 1);
                 n2 = Random.Range(minVal, maxVal + 1);
-                dapAnDung = n1 + n2; cauHoiText.text = $"{n1} + {n2} = ?"; break;
+                dapAnDung = n1 + n2; cauHoiText.text = $"{n1} + {n2} =  ?"; break;
 
             case "-":
                 n1 = Random.Range(minVal, maxVal + 1);
                 n2 = Random.Range(minVal, maxVal + 1);
                 if (n1 < n2) { int t = n1; n1 = n2; n2 = t; }
-                dapAnDung = n1 - n2; cauHoiText.text = $"{n1} - {n2} = ?"; break;
+                dapAnDung = n1 - n2; cauHoiText.text = $"{n1} - {n2} =  ?"; break;
 
             case "x":
                 if (UIManager.SelectedGrade >= 4)
@@ -82,7 +92,7 @@ public class MathManager : MonoBehaviour
                 {
                     n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(2, 10);
                 }
-                dapAnDung = n1 * n2; cauHoiText.text = $"{n1} x {n2} = ?"; break;
+                dapAnDung = n1 * n2; cauHoiText.text = $"{n1} x {n2} =  ?"; break;
 
             case ":":
                 int sc, kq;
@@ -95,7 +105,7 @@ public class MathManager : MonoBehaviour
                 {
                     kq = Random.Range(2, 10); sc = Random.Range(minVal, maxVal + 1);
                 }
-                dapAnDung = kq; cauHoiText.text = $"{sc * kq} : {sc} = ?"; break;
+                dapAnDung = kq; cauHoiText.text = $"{sc * kq} : {sc} =  ?"; break;
 
             case "find_+-":
                 int x = Random.Range(minVal, maxVal + 1);
@@ -103,7 +113,7 @@ public class MathManager : MonoBehaviour
                 if (Random.value > 0.5f)
                 { // Cộng
                     int tong = x + b; dapAnDung = x;
-                    cauHoiText.text = (Random.value > 0.5f) ? $"? + {b} = {tong}" : $"{b} + ? = {tong}";
+                    cauHoiText.text = (Random.value > 0.5f) ? $"?  + {b} = {tong}" : $"{b} +  ?  = {tong}";
                 }
                 else
                 { // Trừ
@@ -111,11 +121,11 @@ public class MathManager : MonoBehaviour
                     if (Random.value > 0.5f)
                     {
                         int hieu = x - b; if (x < b) { x = b; b = x - hieu; }
-                        cauHoiText.text = $"? - {b} = {hieu}";
+                        cauHoiText.text = $"?  - {b} = {hieu}";
                     }
                     else
                     {
-                        int a = x + b; cauHoiText.text = $"{a} - ? = {b}";
+                        int a = x + b; cauHoiText.text = $"{a} -  ?  = {b}";
                     }
                 }
                 break;
@@ -124,7 +134,7 @@ public class MathManager : MonoBehaviour
                 int vX = (UIManager.SelectedGrade >= 4) ? Random.Range(minVal, maxVal + 1) : Random.Range(2, 10);
                 int vB = Random.Range(minVal, maxVal + 1);
                 int tich = vX * vB; dapAnDung = vX;
-                cauHoiText.text = (Random.value > 0.5f) ? $"? x {vB} = {tich}" : $"{vB} x ? = {tich}";
+                cauHoiText.text = (Random.value > 0.5f) ? $"?  x {vB} = {tich}" : $"{vB} x  ?  = {tich}";
                 break;
 
             case "find :": // Tìm x trong phép chia
@@ -132,8 +142,8 @@ public class MathManager : MonoBehaviour
                 int vBc = Random.Range(minVal, maxVal + 1);
                 if (vBc == 0) vBc = 1;
                 int sbc = vXc * vBc;
-                if (Random.value > 0.5f) { dapAnDung = sbc; cauHoiText.text = $"? : {vBc} = {vXc}"; }
-                else { dapAnDung = vBc; cauHoiText.text = $"{sbc} : ? = {vXc}"; }
+                if (Random.value > 0.5f) { dapAnDung = sbc; cauHoiText.text = $"?  : {vBc} = {vXc}"; }
+                else { dapAnDung = vBc; cauHoiText.text = $"{sbc} :  ?  = {vXc}"; }
                 break;
 
             case "hai phép tính +-": // Dạng tính 3 số
@@ -142,21 +152,21 @@ public class MathManager : MonoBehaviour
                 n3 = Random.Range(minVal, maxVal + 1);
                 if (Random.value > 0.5f)
                 {
-                    dapAnDung = n1 + n2 - n3; cauHoiText.text = $"{n1} + {n2} - {n3} = ?";
-                    if (dapAnDung < 0) { dapAnDung = n1 + n2 + n3; cauHoiText.text = $"{n1} + {n2} + {n3} = ?"; }
+                    dapAnDung = n1 + n2 - n3; cauHoiText.text = $"{n1} + {n2} - {n3} =  ?";
+                    if (dapAnDung < 0) { dapAnDung = n1 + n2 + n3; cauHoiText.text = $"{n1} + {n2} + {n3} =  ?"; }
                 }
                 else
                 {
                     if (n1 < n2) n1 = n2 + Random.Range(1, 10);
-                    dapAnDung = n1 - n2 + n3; cauHoiText.text = $"{n1} - {n2} + {n3} = ?";
+                    dapAnDung = n1 - n2 + n3; cauHoiText.text = $"{n1} - {n2} + {n3} =  ?";
                 }
                 break;
 
             default:
                 n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(minVal, maxVal + 1);
-                dapAnDung = n1 + n2; cauHoiText.text = $"{n1} + {n2} = ?"; break;
+                dapAnDung = n1 + n2; cauHoiText.text = $"{n1} + {n2} =  ?"; break;
         }
-
+        StartCoroutine(UpdateOTrongPosition());
         GenerateChoices();
     }
 
@@ -187,17 +197,41 @@ public class MathManager : MonoBehaviour
         }
     }
 
+    IEnumerator UpdateOTrongPosition()
+    {
+        yield return new WaitForEndOfFrame();
+
+        // Tìm vị trí ký tự '?'[cite: 5]
+        int charIndex = cauHoiText.text.IndexOf('?');
+
+        if (charIndex != -1 && cauHoiText.textInfo.characterCount > charIndex)
+        {
+            TMP_CharacterInfo charInfo = cauHoiText.textInfo.characterInfo[charIndex];
+            // Lấy tâm của ký tự để ô trống đè lên chuẩn nhất
+            Vector3 charCenterLocal = (charInfo.bottomLeft + charInfo.topRight) / 2f;
+            Vector3 worldPos = cauHoiText.transform.TransformPoint(charCenterLocal);
+            oTrongRect.position = worldPos;
+        }
+    }
+
     private void CheckDapAn(int val)
     {
         SetButtonsInteractable(false);
+        if (oTrongText != null) oTrongText.text = val.ToString();
+
         if (val == dapAnDung)
         {
-            HighlightButton(val.ToString(), Color.green);
+            if (oTrongImage != null) oTrongImage.color = Color.green;
+            if (UiClass.Instance != null)
+            {
+                UiClass.Instance.AddCoins(5);
+                UiClass.Instance.OnCorrectAnswer();
+            }
             StartCoroutine(ActionAfterDelay(1f, true));
         }
         else
         {
-            HighlightButton(val.ToString(), Color.red);
+            if (oTrongImage != null) oTrongImage.color = Color.red;
             StartCoroutine(ActionAfterDelay(0.5f, false));
         }
     }
@@ -206,9 +240,14 @@ public class MathManager : MonoBehaviour
     {
         yield return new WaitForSeconds(d);
         if (win) TaoCauHoi();
-        else { ResetColorButtons(); SetButtonsInteractable(true); }
+        else
+        {
+            if (oTrongText != null) oTrongText.text = "";
+            if (oTrongImage != null) oTrongImage.color = Color.white;
+            ResetColorButtons();
+            SetButtonsInteractable(true);
+        }
     }
-
     private void HighlightButton(string label, Color c)
     {
         foreach (var b in dapAnBnt)
