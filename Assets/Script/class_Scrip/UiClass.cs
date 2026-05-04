@@ -134,7 +134,7 @@ public class UiClass : MonoBehaviour
         if (IsSkinUnlocked(index))
         {
             // Nếu đã có, trang bị ngay lập tức
-            PlayerPrefs.SetInt("SelectedSkinID", index);
+            PlayerPrefs.SetInt("SelectedClassSkinID", index);
             PlayerPrefs.Save();
 
             // Cập nhật hình ảnh linh vật trong trận[cite: 20]
@@ -166,8 +166,8 @@ public class UiClass : MonoBehaviour
         if (!isUnlocked && totalCoins >= skin.price)
         {
             AddCoins(-skin.price); // Trừ tiền bằng hàm có sẵn
-            PlayerPrefs.SetInt("SkinUnlocked_" + pendingSkinIndex, 1);
-            PlayerPrefs.SetInt("SelectedSkinID", pendingSkinIndex);
+            PlayerPrefs.SetInt("ClassSkinUnlocked" + pendingSkinIndex, 1);
+            PlayerPrefs.SetInt("SelectedClassSkinID", pendingSkinIndex);
             PlayerPrefs.Save();
 
             ShowClassNotification("Mua thành công: " + skin.shipName + "!"); 
@@ -177,7 +177,7 @@ public class UiClass : MonoBehaviour
         else if (isUnlocked)
         {
             ShowClassNotification("Đã sở hữu trang phục này"); 
-        PlayerPrefs.SetInt("SelectedSkinID", pendingSkinIndex);
+        PlayerPrefs.SetInt("SelectedClassSkinID", pendingSkinIndex);
             PlayerPrefs.Save();
             LoadCurrentSkin();
         }
@@ -190,7 +190,7 @@ public class UiClass : MonoBehaviour
 
     public void LoadCurrentSkin()
     {
-        int id = PlayerPrefs.GetInt("SelectedSkinID", 0);
+        int id = PlayerPrefs.GetInt("SelectedClassSkinID", 0);
 
         if (id < allSkins.Length)
         {
@@ -202,7 +202,7 @@ public class UiClass : MonoBehaviour
         }
     }
 
-    private bool IsSkinUnlocked(int index) => index == 0 || PlayerPrefs.GetInt("SkinUnlocked_" + index, 0) == 1;
+    private bool IsSkinUnlocked(int index) => index == 0 || PlayerPrefs.GetInt("ClassSkinUnlocked" + index, 0) == 1;
 
     public void UpdateSkinShopUI()
     {
@@ -324,19 +324,7 @@ public class UiClass : MonoBehaviour
 
         if (panelWin != null) panelWin.SetActive(false);
     }
-    public void Click_ResetToanBoTienTrinh()
-    {
-        PlayerPrefs.DeleteAll(); // Xóa sạch Tiền, Level và Trang phục[cite: 20]
-        PlayerPrefs.Save();
-
-        LoadCoins();
-        LoadCurrentSkin(); // Trả về trang phục mặc định
-        GenerateLevelButtons();
-        UpdateSkinShopUI(); // Khóa lại các nút trong Shop[cite: 20]
-
-        ShowClassNotification("Đã xóa sạch tiến trình và trang phục!"); 
-        ShowHome();
-    }
+    
     #endregion
     #region LOGIC SINH NÚT MÀN CHƠI
     public void GenerateLevelButtons()
@@ -433,13 +421,22 @@ public class UiClass : MonoBehaviour
 
         currentCorrectCount++;
         UpdateProgressUI();
-        // Kiểm tra điều kiện thắng[cite: 15]
+
+        // Gọi trực tiếp thông qua Property Instance thông minh đã sửa ở trên
+        if (DataManager.Instance != null)
+        {
+            DataManager.Instance.AddScore(10);
+        }
+        else
+        {
+            Debug.LogError("Vẫn không tìm thấy DataManager! Hãy kiểm tra xem đối tượng DataManager đã được tạo trong Scene Menu chưa.");
+        }
+
         if (currentCorrectCount >= targetCorrectAnswers)
         {
             WinGame();
         }
     }
-
     public void WinGame()
     {
         if (isGameOver) return;
