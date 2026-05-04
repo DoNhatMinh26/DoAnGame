@@ -24,7 +24,7 @@ public class UiClass : MonoBehaviour
     [Header("Quản lý Kết Thúc")]
     public GameObject panelWin;
     public GameObject panelLose;
-    private bool isGameOver = false;
+    public bool isGameOver = false;
 
     [Header("Quản lý Tiền & Phần thưởng")]
     public TextMeshProUGUI totalCoinTxt; // Text hiển thị ở Menu
@@ -32,7 +32,10 @@ public class UiClass : MonoBehaviour
     public Transform coinTarget;        // Vị trí icon tiền để tiền bay về
     private int totalCoins = 0;
     private int levelCoins = 0;
-
+    [Header("Cấu hình hiệu ứng tiền")]
+    public GameObject coinPrefab; // Kéo Prefab hình đồng xu vào đây
+    public Transform coinSpawnPoint; // Kéo Empty Object (vị trí sinh tiền) vào đây
+    public float flySpeed = 15f;
     [Header("UI Thông báo")]
     public CanvasGroup notificationCanvasGroup;
     public TextMeshProUGUI notificationTxt;
@@ -41,8 +44,21 @@ public class UiClass : MonoBehaviour
 
     [Header("UI Hiển Thị Tiến Độ")]
     [SerializeField] private TextMeshProUGUI progressTxt;
-    private int targetCorrectAnswers; // Mục tiêu từ file ClassDifficultyConfig[cite: 17]
-    private int currentCorrectCount;
+    public int targetCorrectAnswers; // Mục tiêu từ file ClassDifficultyConfig[cite: 17]
+    public int currentCorrectCount;
+    [Header("Quản lý Máu (HP)")]
+    public GameObject[] hearts; // Kéo 3 trái tim tim1, tim1(1), tim1(2) vào đây
+    private int currentHealth;
+    [Header("Cấu hình thời gian chờ")]
+    [SerializeField] private float delayTime = 1.0f;
+    [Header("Giao diện Shop Trang Phục")]
+    public MathSkin[] allSkins;          // Danh sách ScriptableObject trang phục[cite: 18, 20]
+    public Image[] skinButtonImages;     // Hình ảnh hiển thị trên các nút chọn
+    public TextMeshProUGUI[] skinPriceTexts; // Text hiển thị giá tiền
+    public SpriteRenderer shopMascotPreview;
+    public SpriteRenderer gameplayMascotRenderer; // Hình ảnh linh vật mèo trong trận đấu
+
+    private int pendingSkinIndex = -1;
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -50,9 +66,11 @@ public class UiClass : MonoBehaviour
 
     private void Start()
     {
+        InitSkinShop();
         LoadCoins(); // Tự nạp tiền từ PlayerPrefs[cite: 9]
         GenerateLevelButtons(); // Tự sinh danh sách nút[cite: 9]
         ShowHome();
+
     }
     // Hàm cập nhật chữ hiển thị lên màn hình[cite: 15]
     private void UpdateProgressUI()
@@ -63,6 +81,145 @@ public class UiClass : MonoBehaviour
             progressTxt.text = $"Số câu đúng : {currentCorrectCount}/{targetCorrectAnswers}";
         }
     }
+    #region QUẢN LÝ SHOP
+    public void SpawnAndFlyCoin(int amount)
+    {
+        if (coinPrefab == null || coinSpawnPoint == null || coinTarget == null)
+        {
+            // Nếu chưa kịp setup hiệu ứng thì cộng thẳng luôn để không lỗi game
+            AddCoins(amount);
+            return;
+        }
+
+        // Sinh ra đồng xu tại vị trí Empty Object
+        GameObject newCoin = Instantiate(coinPrefab, coinSpawnPoint.position, Quaternion.identity, transform);
+
+        // Bắt đầu hiệu ứng bay
+        StartCoroutine(FlyCoinRoutine(newCoin, amount));
+    }
+
+    private IEnumerator FlyCoinRoutine(GameObject coin, int amount)
+    {
+        // Bay từ điểm sinh đến mục tiêu (coinTarget)
+        while (Vector3.Distance(coin.transform.position, coinTarget.position) > 0.1f)
+        {
+            coin.transform.position = Vector3.MoveTowards(coin.transform.position, coinTarget.position, flySpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        // Khi đã chạm vào biểu tượng tiền trên UI
+        Destroy(coin); // Xóa đồng xu hiệu ứng
+        AddCoins(amount); // Lúc này mới thực sự cộng tiền vào hệ thống
+    }
+    #endregion
+    #region QUẢN LÝ SHOP (Dựa trên UiSp)
+
+    public void InitSkinShop()
+    {
+        LoadCurrentSkin();
+        UpdateSkinShopUI();
+    }
+
+    public void SelectSkinToPreview(int index)
+    {
+        if (allSkins == null || index < 0 || index >= allSkins.Length) return;
+
+        pendingSkinIndex = index;
+
+        // 1. Hiển thị hình ảnh xem trước trong Shop
+        if (shopMascotPreview != null)
+            shopMascotPreview.sprite = allSkins[index].shipSprite; // Dùng shipSprite từ MathSkin[cite: 18, 20]
+
+        // 2. Kiểm tra trạng thái sở hữu
+        if (IsSkinUnlocked(index))
+        {
+            // Nếu đã có, trang bị ngay lập tức
+            PlayerPrefs.SetInt("SelectedSkinID", index);
+            PlayerPrefs.Save();
+
+            // Cập nhật hình ảnh linh vật trong trận[cite: 20]
+            if (gameplayMascotRenderer != null)
+                gameplayMascotRenderer.sprite = allSkins[index].shipSprite;
+
+            ShowClassNotification("Đã trang bị: " + allSkins[index].shipName); 
+    }
+        else
+        {
+            ShowClassNotification("Giá: " + allSkins[index].price + "$"); 
+    }
+
+        UpdateSkinShopUI();
+    }
+
+    public void Click_BuySkin()
+    {
+        if (pendingSkinIndex == -1)
+        {
+            ShowClassNotification("Vui lòng chọn một trang phục!"); 
+        return;
+        }
+
+        MathSkin skin = allSkins[pendingSkinIndex];
+        bool isUnlocked = IsSkinUnlocked(pendingSkinIndex);
+
+        // Kiểm tra tiền và trạng thái khóa
+        if (!isUnlocked && totalCoins >= skin.price)
+        {
+            AddCoins(-skin.price); // Trừ tiền bằng hàm có sẵn
+            PlayerPrefs.SetInt("SkinUnlocked_" + pendingSkinIndex, 1);
+            PlayerPrefs.SetInt("SelectedSkinID", pendingSkinIndex);
+            PlayerPrefs.Save();
+
+            ShowClassNotification("Mua thành công: " + skin.shipName + "!"); 
+        UpdateSkinShopUI();
+            LoadCurrentSkin();
+        }
+        else if (isUnlocked)
+        {
+            ShowClassNotification("Đã sở hữu trang phục này"); 
+        PlayerPrefs.SetInt("SelectedSkinID", pendingSkinIndex);
+            PlayerPrefs.Save();
+            LoadCurrentSkin();
+        }
+        else
+        {
+            int thieu = skin.price - totalCoins;
+            ShowClassNotification("Bạn còn thiếu " + thieu + "$!"); 
+    }
+    }
+
+    public void LoadCurrentSkin()
+    {
+        int id = PlayerPrefs.GetInt("SelectedSkinID", 0);
+
+        if (id < allSkins.Length)
+        {
+            Sprite currentSprite = allSkins[id].shipSprite;
+
+            // Cập nhật linh vật mèo cho cả Shop và Gameplay[cite: 20]
+            if (shopMascotPreview != null) shopMascotPreview.sprite = currentSprite;
+            if (gameplayMascotRenderer != null) gameplayMascotRenderer.sprite = currentSprite;
+        }
+    }
+
+    private bool IsSkinUnlocked(int index) => index == 0 || PlayerPrefs.GetInt("SkinUnlocked_" + index, 0) == 1;
+
+    public void UpdateSkinShopUI()
+    {
+        for (int i = 0; i < allSkins.Length; i++)
+        {
+            bool unlocked = IsSkinUnlocked(i);
+
+            // Làm mờ nút nếu chưa mở khóa[cite: 20]
+            if (i < skinButtonImages.Length)
+                skinButtonImages[i].color = unlocked ? Color.white : new Color(0.3f, 0.3f, 0.3f, 1f);
+
+            // Hiển thị trạng thái Giá hoặc "Đã có"[cite: 20]
+            if (i < skinPriceTexts.Length)
+                skinPriceTexts[i].text = unlocked ? "Đã sở hữu" : allSkins[i].price + "$";
+        }
+    }
+    #endregion
     #region QUẢN LÝ TIỀN (Độc lập hoàn toàn)
     private void LoadCoins()
     {
@@ -169,25 +326,17 @@ public class UiClass : MonoBehaviour
     }
     public void Click_ResetToanBoTienTrinh()
     {
-        // 1. Xóa Key lưu màn chơi cao nhất của Lớp học
-        PlayerPrefs.DeleteKey("Class_HighestLevel");
-
-        // 2. Xóa Key tiền (nếu bạn muốn reset cả tiền)
-        PlayerPrefs.DeleteKey("TotalCoins");
-
-        // 3. Lưu lại thay đổi[cite: 9]
+        PlayerPrefs.DeleteAll(); // Xóa sạch Tiền, Level và Trang phục[cite: 20]
         PlayerPrefs.Save();
 
-        // 4. Cập nhật lại các biến trong code để đồng bộ ngay lập tức[cite: 9, 14]
-        LoadCoins(); // Nạp lại tiền (sẽ về 0)[cite: 9]
-        GenerateLevelButtons(); // Sinh lại danh sách nút (tất cả sẽ bị khóa trừ màn 1)
+        LoadCoins();
+        LoadCurrentSkin(); // Trả về trang phục mặc định
+        GenerateLevelButtons();
+        UpdateSkinShopUI(); // Khóa lại các nút trong Shop[cite: 20]
 
-        // 5. Thông báo cho người chơi[cite: 14]
-        ShowClassNotification("Đã xóa toàn bộ tiến trình chơi!");
-
-        // Nếu đang ở trong Shop, có thể đóng panel hoặc quay về Home
-        ShowHome(); 
-}
+        ShowClassNotification("Đã xóa sạch tiến trình và trang phục!"); 
+        ShowHome();
+    }
     #endregion
     #region LOGIC SINH NÚT MÀN CHƠI
     public void GenerateLevelButtons()
@@ -240,7 +389,7 @@ public class UiClass : MonoBehaviour
         levelCoins = 0;
         UpdateCoinUI();
         isGameOver = false;
-
+        ResetHealth();
         ShowGameplay();
         MathManager math = FindObjectOfType<MathManager>();
         if (math != null)
@@ -253,6 +402,8 @@ public class UiClass : MonoBehaviour
     #region QUẢN LÝ PANEL (Tự động hóa hoàn toàn)
     public void ShowHome()
     {
+        UpdateSkinShopUI();
+        LoadCurrentSkin();
         DeactivateAll();
         if (panelHome != null) panelHome.SetActive(true);
         Time.timeScale = 1f;
@@ -291,9 +442,10 @@ public class UiClass : MonoBehaviour
 
     public void WinGame()
     {
+        if (isGameOver) return;
         isGameOver = true;
 
-        // Lưu tiến trình mở khóa màn mới[cite: 15]
+        // Lưu tiến trình[cite: 17]
         int highestLevel = PlayerPrefs.GetInt("Class_HighestLevel", 1);
         if (LevelManager.CurrentLevel >= highestLevel)
         {
@@ -301,8 +453,60 @@ public class UiClass : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        // Hiển thị Panel thắng[cite: 15]
+        // Chạy Coroutine chờ rồi mới hiện bảng Win[cite: 17]
+        StartCoroutine(ShowWinPanelWithDelay());
+    }
+
+    IEnumerator ShowWinPanelWithDelay()
+    {
+        yield return new WaitForSeconds(delayTime); // Đợi 1 khoảng thời gian[cite: 17]
         if (panelWin != null) panelWin.SetActive(true);
+    }
+    public void ResetHealth()
+    {
+        currentHealth = hearts.Length; 
+    for (int i = 0; i < hearts.Length; i++)
+        {
+            hearts[i].SetActive(true); // Hiển thị lại tất cả trái tim
+        }
+        isGameOver = false; 
+}
+
+    public void OnWrongAnswer()
+    {
+        if (isGameOver) return; 
+
+        currentHealth--; 
+
+    // Ẩn trái tim tương ứng
+        if (currentHealth >= 0 && currentHealth < hearts.Length)
+            {
+            hearts[currentHealth].SetActive(false); 
+        }
+
+        // Kiểm tra nếu hết máu thì thua
+        if (currentHealth <= 0)
+        {
+            LoseGame(); 
+        }
+    }
+
+    public void LoseGame()
+    {
+        if (isGameOver) return;
+        isGameOver = true;
+        
+        // Chạy Coroutine chờ rồi mới hiện bảng Lose[cite: 17]
+        StartCoroutine(ShowLosePanelWithDelay());
+    }
+
+    IEnumerator ShowLosePanelWithDelay()
+    {
+        
+        yield return new WaitForSeconds(delayTime); // Đợi 1 khoảng thời gian[cite: 17]
+        Time.timeScale = 0f; // Tạm dừng game sau khi bảng hiện lên[cite: 17]
+       
+        if (panelLose != null) panelLose.SetActive(true);
     }
     private void DeactivateAll()
     {

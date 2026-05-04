@@ -75,13 +75,13 @@ public class MathManager : MonoBehaviour
             case "+":
                 n1 = Random.Range(minVal, maxVal + 1);
                 n2 = Random.Range(minVal, maxVal + 1);
-                dapAnDung = n1 + n2; cauHoiText.text = $"{n1} + {n2} =  ?"; break;
+                dapAnDung = n1 + n2; cauHoiText.text = $"{n1} + {n2} =   ?"; break;
 
             case "-":
                 n1 = Random.Range(minVal, maxVal + 1);
                 n2 = Random.Range(minVal, maxVal + 1);
                 if (n1 < n2) { int t = n1; n1 = n2; n2 = t; }
-                dapAnDung = n1 - n2; cauHoiText.text = $"{n1} - {n2} =  ?"; break;
+                dapAnDung = n1 - n2; cauHoiText.text = $"{n1} - {n2} =   ?"; break;
 
             case "x":
                 if (UIManager.SelectedGrade >= 4)
@@ -92,7 +92,7 @@ public class MathManager : MonoBehaviour
                 {
                     n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(2, 10);
                 }
-                dapAnDung = n1 * n2; cauHoiText.text = $"{n1} x {n2} =  ?"; break;
+                dapAnDung = n1 * n2; cauHoiText.text = $"{n1} x {n2} =   ?"; break;
 
             case ":":
                 int sc, kq;
@@ -105,7 +105,7 @@ public class MathManager : MonoBehaviour
                 {
                     kq = Random.Range(2, 10); sc = Random.Range(minVal, maxVal + 1);
                 }
-                dapAnDung = kq; cauHoiText.text = $"{sc * kq} : {sc} =  ?"; break;
+                dapAnDung = kq; cauHoiText.text = $"{sc * kq} : {sc} =   ?"; break;
 
             case "find_+-":
                 int x = Random.Range(minVal, maxVal + 1);
@@ -113,7 +113,7 @@ public class MathManager : MonoBehaviour
                 if (Random.value > 0.5f)
                 { // Cộng
                     int tong = x + b; dapAnDung = x;
-                    cauHoiText.text = (Random.value > 0.5f) ? $"?  + {b} = {tong}" : $"{b} +  ?  = {tong}";
+                    cauHoiText.text = (Random.value > 0.5f) ? $"?   + {b} = {tong}" : $"{b} +   ?   = {tong}";
                 }
                 else
                 { // Trừ
@@ -121,11 +121,11 @@ public class MathManager : MonoBehaviour
                     if (Random.value > 0.5f)
                     {
                         int hieu = x - b; if (x < b) { x = b; b = x - hieu; }
-                        cauHoiText.text = $"?  - {b} = {hieu}";
+                        cauHoiText.text = $"?   - {b} = {hieu}";
                     }
                     else
                     {
-                        int a = x + b; cauHoiText.text = $"{a} -  ?  = {b}";
+                        int a = x + b; cauHoiText.text = $"{a} -   ?   = {b}";
                     }
                 }
                 break;
@@ -134,7 +134,7 @@ public class MathManager : MonoBehaviour
                 int vX = (UIManager.SelectedGrade >= 4) ? Random.Range(minVal, maxVal + 1) : Random.Range(2, 10);
                 int vB = Random.Range(minVal, maxVal + 1);
                 int tich = vX * vB; dapAnDung = vX;
-                cauHoiText.text = (Random.value > 0.5f) ? $"?  x {vB} = {tich}" : $"{vB} x  ?  = {tich}";
+                cauHoiText.text = (Random.value > 0.5f) ? $"?   x {vB} = {tich}" : $"{vB} x   ?   = {tich}";
                 break;
 
             case "find :": // Tìm x trong phép chia
@@ -142,8 +142,8 @@ public class MathManager : MonoBehaviour
                 int vBc = Random.Range(minVal, maxVal + 1);
                 if (vBc == 0) vBc = 1;
                 int sbc = vXc * vBc;
-                if (Random.value > 0.5f) { dapAnDung = sbc; cauHoiText.text = $"?  : {vBc} = {vXc}"; }
-                else { dapAnDung = vBc; cauHoiText.text = $"{sbc} :  ?  = {vXc}"; }
+                if (Random.value > 0.5f) { dapAnDung = sbc; cauHoiText.text = $"?   : {vBc} = {vXc}"; }
+                else { dapAnDung = vBc; cauHoiText.text = $"{sbc} :   ?   = {vXc}"; }
                 break;
 
             case "hai phép tính +-": // Dạng tính 3 số
@@ -152,13 +152,13 @@ public class MathManager : MonoBehaviour
                 n3 = Random.Range(minVal, maxVal + 1);
                 if (Random.value > 0.5f)
                 {
-                    dapAnDung = n1 + n2 - n3; cauHoiText.text = $"{n1} + {n2} - {n3} =  ?";
-                    if (dapAnDung < 0) { dapAnDung = n1 + n2 + n3; cauHoiText.text = $"{n1} + {n2} + {n3} =  ?"; }
+                    dapAnDung = n1 + n2 - n3; cauHoiText.text = $"{n1} + {n2} - {n3} =   ?";
+                    if (dapAnDung < 0) { dapAnDung = n1 + n2 + n3; cauHoiText.text = $"{n1} + {n2} + {n3} =   ?"; }
                 }
                 else
                 {
                     if (n1 < n2) n1 = n2 + Random.Range(1, 10);
-                    dapAnDung = n1 - n2 + n3; cauHoiText.text = $"{n1} - {n2} + {n3} =  ?";
+                    dapAnDung = n1 - n2 + n3; cauHoiText.text = $"{n1} - {n2} + {n3} =   ?";
                 }
                 break;
 
@@ -216,6 +216,7 @@ public class MathManager : MonoBehaviour
 
     private void CheckDapAn(int val)
     {
+        if (UiClass.Instance != null && UiClass.Instance.isGameOver) return;
         SetButtonsInteractable(false);
         if (oTrongText != null) oTrongText.text = val.ToString();
 
@@ -224,15 +225,26 @@ public class MathManager : MonoBehaviour
             if (oTrongImage != null) oTrongImage.color = Color.green;
             if (UiClass.Instance != null)
             {
-                UiClass.Instance.AddCoins(5);
+                UiClass.Instance.SpawnAndFlyCoin(1);
                 UiClass.Instance.OnCorrectAnswer();
             }
-            StartCoroutine(ActionAfterDelay(1f, true));
+            if (UiClass.Instance != null && UiClass.Instance.currentCorrectCount < UiClass.Instance.targetCorrectAnswers)
+            {
+                StartCoroutine(ActionAfterDelay(1f, true));
+            }
         }
+
         else
         {
             if (oTrongImage != null) oTrongImage.color = Color.red;
-            StartCoroutine(ActionAfterDelay(0.5f, false));
+            if (UiClass.Instance != null)
+            {
+                UiClass.Instance.OnWrongAnswer(); 
+            }
+            if (UiClass.Instance != null && !UiClass.Instance.isGameOver)
+            {
+                StartCoroutine(ActionAfterDelay(1f, false)); 
+            }
         }
     }
 
