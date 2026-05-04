@@ -34,6 +34,9 @@ namespace DoAnGame.UI
         [SerializeField] private float sessionCheckInterval = 0.5f;
         [SerializeField] private bool enableDebugLogs;
 
+        [Header("Match End Navigation")]
+        [SerializeField] private UIButtonScreenNavigator matchEndNavigator; // Navigate to Wins panel
+
         private bool hadTwoPlayersInSession;
         private bool sessionEndedHandled;
         private float nextSessionCheckAt;
@@ -42,6 +45,9 @@ namespace DoAnGame.UI
         {
             base.OnShow();
             HandlePanelActivated();
+            
+            // ✅ Bắt đầu countdown "3, 2, 1, Ready, GO!" khi panel hiển thị
+            StartCountdown();
         }
 
         private void OnEnable()
@@ -496,6 +502,10 @@ namespace DoAnGame.UI
             {
                 battleStatusText.text = "Kéo đáp án vào ô!";
             }
+
+            // ✅ CRITICAL FIX: Start timer cho câu hỏi mới
+            // Gọi StartQuestionTimer() để bắt đầu đếm ngược cho câu hỏi này
+            StartQuestionTimer();
         }
 
         /// <summary>
@@ -633,7 +643,7 @@ namespace DoAnGame.UI
             // Disable dragging
             DragAndDrop.SetGlobalLock(true);
 
-            // Hiển thị kết quả
+            // Hiển thị kết quả tạm thời
             if (battleStatusText != null)
             {
                 var net = NetworkManager.Singleton;
@@ -649,8 +659,206 @@ namespace DoAnGame.UI
                 }
             }
 
-            // TODO: Hiển thị màn hình kết quả chi tiết
-            // ShowResultPanel(winnerId);
+            // Navigate to Wins panel sau 2 giây (cho người chơi thấy kết quả)
+            Invoke(nameof(NavigateToWinsPanel), 2f);
+        }
+
+        /// <summary>
+        /// Navigate to Wins panel
+        /// </summary>
+        private void NavigateToWinsPanel()
+        {
+            if (matchEndNavigator != null)
+            {
+                Log("Navigating to Wins panel");
+                matchEndNavigator.NavigateNow();
+            }
+            else
+            {
+                Debug.LogWarning("[BattleController] matchEndNavigator is not assigned! Cannot navigate to Wins panel.");
+            }
+        }
+
+        #endregion
+
+        #region COUNTDOWN LOGIC
+
+        /// <summary>
+        /// Bắt đầu countdown "3, 2, 1, Ready, GO!" khi vào GameplayPanel
+        /// </summary>
+        private void StartCountdown()
+        {
+            Debug.Log("[BattleController] 🎬 Starting countdown...");
+            
+            // Ẩn tất cả UI trong khi countdown
+            HideAllBattleUI();
+            
+            // Bắt đầu countdown coroutine
+            StartCoroutine(CountdownRoutine());
+        }
+
+        /// <summary>
+        /// Countdown routine: "3, 2, 1, Ready, GO!"
+        /// Timing: 0.5s delay → 3 (1s) → 2 (1s) → 1 (1s) → Ready (1s) → GO! (1s)
+        /// Tổng: ~5.5 giây
+        /// </summary>
+        private System.Collections.IEnumerator CountdownRoutine()
+        {
+            // Delay nhỏ trước khi bắt đầu countdown (cho người chơi chuẩn bị)
+            yield return new WaitForSeconds(0.5f);
+
+            // Countdown: 3, 2, 1
+            for (int i = 3; i >= 1; i--)
+            {
+                if (battleStatusText != null)
+                {
+                    battleStatusText.SetText(i.ToString());
+                }
+                Debug.Log($"[BattleController] Countdown: {i}");
+                yield return new WaitForSeconds(1f); // Hiển thị mỗi số trong 1 giây
+            }
+
+            // Ready (hiển thị 1 giây)
+            if (battleStatusText != null)
+            {
+                battleStatusText.SetText("Ready");
+            }
+            Debug.Log("[BattleController] Countdown: Ready");
+            yield return new WaitForSeconds(1f);
+
+            // GO! (hiển thị 1 giây - tăng từ 0.5s để rõ ràng hơn)
+            if (battleStatusText != null)
+            {
+                battleStatusText.SetText("GO!");
+            }
+            Debug.Log("[BattleController] Countdown: GO!");
+            yield return new WaitForSeconds(1f);
+
+            // Hiển thị tất cả UI và bắt đầu timer
+            ShowAllBattleUI();
+            StartQuestionTimer();
+            
+            Debug.Log("[BattleController] ✅ Countdown complete, battle started!");
+        }
+
+        /// <summary>
+        /// Ẩn tất cả UI trong khi countdown (chỉ hiển thị battleStatusText)
+        /// </summary>
+        private void HideAllBattleUI()
+        {
+            // Ẩn question text
+            if (questionText != null)
+            {
+                questionText.gameObject.SetActive(false);
+            }
+
+            // Ẩn answer slot
+            if (answerSlot != null)
+            {
+                answerSlot.SetActive(false);
+            }
+
+            // Ẩn answer choices
+            if (answerChoices != null)
+            {
+                foreach (var choice in answerChoices)
+                {
+                    if (choice != null)
+                    {
+                        choice.gameObject.SetActive(false);
+                    }
+                }
+            }
+
+            // Ẩn AnswerSummaryUI (timer, status, answer texts)
+            var answerSummaryUI = FindObjectOfType<AnswerSummaryUI>();
+            if (answerSummaryUI != null)
+            {
+                answerSummaryUI.HideAllUI();
+            }
+
+            Debug.Log("[BattleController] ✅ Hidden all battle UI for countdown");
+        }
+
+        /// <summary>
+        /// Hiển thị tất cả UI sau countdown
+        /// </summary>
+        private void ShowAllBattleUI()
+        {
+            // Hiển thị question text
+            if (questionText != null)
+            {
+                questionText.gameObject.SetActive(true);
+            }
+
+            // Hiển thị answer slot
+            if (answerSlot != null)
+            {
+                answerSlot.SetActive(true);
+            }
+
+            // Hiển thị answer choices
+            if (answerChoices != null)
+            {
+                foreach (var choice in answerChoices)
+                {
+                    if (choice != null)
+                    {
+                        choice.gameObject.SetActive(true);
+                    }
+                }
+            }
+
+            // Hiển thị AnswerSummaryUI
+            var answerSummaryUI = FindObjectOfType<AnswerSummaryUI>();
+            if (answerSummaryUI != null)
+            {
+                answerSummaryUI.ShowAllUI();
+            }
+
+            // Reset battle status text về trạng thái mặc định
+            if (battleStatusText != null)
+            {
+                battleStatusText.SetText("Thời gian trả lời câu hỏi");
+            }
+
+            Debug.Log("[BattleController] ✅ Shown all battle UI after countdown");
+        }
+
+        /// <summary>
+        /// Bắt đầu timer cho câu hỏi
+        /// - Host: Start cả BattleManager timer (server-side) VÀ AnswerSummaryUI timer (UI)
+        /// - Client: Chỉ start AnswerSummaryUI timer (UI)
+        /// </summary>
+        private void StartQuestionTimer()
+        {
+            var nm = NetworkManager.Singleton;
+            
+            // ✅ HOST: Start BattleManager timer (server-side logic)
+            if (nm != null && nm.IsServer)
+            {
+                if (battleManager == null)
+                {
+                    Debug.LogError("[BattleController] BattleManager is null, cannot start timer!");
+                    return;
+                }
+
+                // Gọi BattleManager để start timer (server-side)
+                battleManager.StartQuestionTimer();
+                Debug.Log("[BattleController] ✅ Started BattleManager timer (server-side)");
+            }
+
+            // ✅ CẢ HOST VÀ CLIENT: Start AnswerSummaryUI timer (UI countdown)
+            var answerSummaryUI = FindObjectOfType<AnswerSummaryUI>();
+            if (answerSummaryUI != null)
+            {
+                answerSummaryUI.StartQuestionTimer();
+                Debug.Log("[BattleController] ✅ Started AnswerSummaryUI timer (UI)");
+            }
+            else
+            {
+                Debug.LogWarning("[BattleController] ⚠️ AnswerSummaryUI not found!");
+            }
         }
 
         #endregion

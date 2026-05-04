@@ -101,12 +101,12 @@ namespace DoAnGame.UI
             };
             
             player1State.PlayerName.OnValueChanged += (old, val) => 
-                UpdateName(player1NameText, val.ToString(), "Player 1");
+                UpdatePlayerName(player1NameText, val.ToString(), "Player 1", player1State);
 
             // Initial update Player 1
             UpdateHealth(player1HealthFill, player1HealthText, player1State.CurrentHealth.Value, player1State.MaxHealth.Value);
             UpdateScore(player1ScoreText, player1State.Score.Value);
-            UpdateName(player1NameText, player1State.PlayerName.Value.ToString(), "Player 1");
+            UpdatePlayerName(player1NameText, player1State.PlayerName.Value.ToString(), "Player 1", player1State);
 
             // Subscribe Player 2
             Debug.Log($"[HealthUI] Subscribing to Player2: HP={player2State.CurrentHealth.Value}/{player2State.MaxHealth.Value}");
@@ -122,12 +122,12 @@ namespace DoAnGame.UI
             };
             
             player2State.PlayerName.OnValueChanged += (old, val) => 
-                UpdateName(player2NameText, val.ToString(), "Player 2");
+                UpdatePlayerName(player2NameText, val.ToString(), "Player 2", player2State);
 
             // Initial update Player 2
             UpdateHealth(player2HealthFill, player2HealthText, player2State.CurrentHealth.Value, player2State.MaxHealth.Value);
             UpdateScore(player2ScoreText, player2State.Score.Value);
-            UpdateName(player2NameText, player2State.PlayerName.Value.ToString(), "Player 2");
+            UpdatePlayerName(player2NameText, player2State.PlayerName.Value.ToString(), "Player 2", player2State);
 
             // Subscribe Timer
             if (battleManager != null)
@@ -194,7 +194,7 @@ namespace DoAnGame.UI
         }
 
         /// <summary>
-        /// Cập nhật tên
+        /// Cập nhật tên (cũ - không dùng nữa)
         /// </summary>
         private void UpdateName(TMP_Text text, string name, string defaultName)
         {
@@ -202,6 +202,44 @@ namespace DoAnGame.UI
             {
                 text.text = string.IsNullOrEmpty(name) ? defaultName : name;
             }
+        }
+
+        /// <summary>
+        /// Cập nhật tên player với "(Bạn)" nếu là local player
+        /// </summary>
+        private void UpdatePlayerName(TMP_Text text, string name, string defaultName, NetworkedPlayerState playerState)
+        {
+            if (text == null) return;
+
+            // Lấy tên
+            string displayName = string.IsNullOrEmpty(name) ? defaultName : name;
+
+            // Kiểm tra xem có phải local player không
+            if (playerState != null && IsLocalPlayer(playerState))
+            {
+                displayName += " (Bạn)";
+            }
+
+            text.text = displayName;
+        }
+
+        /// <summary>
+        /// Kiểm tra xem player có phải local player không
+        /// </summary>
+        private bool IsLocalPlayer(NetworkedPlayerState state)
+        {
+            if (state == null)
+                return false;
+
+            var nm = Unity.Netcode.NetworkManager.Singleton;
+            if (nm == null)
+                return false;
+
+            // Host = Player 0, Client = Player 1
+            bool isHost = nm.IsHost;
+            int playerId = state.PlayerId.Value;
+
+            return (isHost && playerId == 0) || (!isHost && playerId == 1);
         }
 
         /// <summary>

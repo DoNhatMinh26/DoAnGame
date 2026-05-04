@@ -17,8 +17,13 @@ namespace DoAnGame.Multiplayer
         public static NetworkedMathBattleManager Instance { get; private set; }
 
         [Header("=== CONFIGURATION ===")]
-        [SerializeField] private GameRulesConfig gameRules;
+        [SerializeField] private GameRulesConfig _gameRules;
         [SerializeField] private LevelGenerate levelData;
+
+        /// <summary>
+        /// Public accessor cho GameRules (để các UI components có thể đọc settings)
+        /// </summary>
+        public GameRulesConfig gameRules => _gameRules;
 
         [Header("=== PLAYER REFERENCES ===")]
         [Tooltip("Prefab của NetworkedPlayerState (phải có NetworkObject)")]
@@ -122,7 +127,7 @@ namespace DoAnGame.Multiplayer
             Instance = this;
 
             // Validate references
-            if (gameRules == null)
+            if (_gameRules == null)
             {
                 Debug.LogError("[BattleManager] GameRulesConfig chưa được gán!");
             }
@@ -254,8 +259,9 @@ namespace DoAnGame.Multiplayer
             // Spawn player states
             SpawnPlayerStates();
 
-            // Bắt đầu trận đấu sau 2 giây
-            Invoke(nameof(StartMatch), 2f);
+            // ✅ Bắt đầu trận đấu NGAY LẬP TỨC (không delay)
+            // LoadingPanel sẽ đợi player states ready trước khi navigate đến GameplayPanel
+            StartMatch();
         }
 
         /// <summary>
@@ -304,7 +310,7 @@ namespace DoAnGame.Multiplayer
             NetworkObject p1NetObj = p1Obj.GetComponent<NetworkObject>();
             p1NetObj.SpawnWithOwnership(0); // Owner = Host
             player1State = p1Obj.GetComponent<NetworkedPlayerState>();
-            player1State.InitializeServerRpc(0, player1Name, gameRules.startingHealth);
+            player1State.InitializeServerRpc(0, player1Name, _gameRules.startingHealth);
 
             Debug.Log("[BattleManager] ✅ Player 1 spawned");
 
@@ -318,7 +324,7 @@ namespace DoAnGame.Multiplayer
             player2State = p2Obj.GetComponent<NetworkedPlayerState>();
             
             // Player 2 name sẽ được set từ client (vì chỉ client biết tên của mình)
-            player2State.InitializeServerRpc(1, player2Name, gameRules.startingHealth);
+            player2State.InitializeServerRpc(1, player2Name, _gameRules.startingHealth);
 
             Debug.Log($"[BattleManager] ✅ Player 2 spawned (ClientID: {clientId})");
 
@@ -339,8 +345,84 @@ namespace DoAnGame.Multiplayer
             // Notify clients để gửi tên (sau khi player states đã spawn)
             NotifyPlayerStatesReadyClientRpc();
 
-            // Sinh câu hỏi đầu tiên
-            GenerateQuestion();
+            // ✅ Sinh câu hỏi đầu tiên NHƯNG KHÔNG START TIMER
+            // Timer sẽ được start từ UIMultiplayerBattleController sau countdown "3, 2, 1, Ready, GO!"
+            GenerateQuestionWithoutTimer();
+        }
+
+        /// <summary>
+        /// Sinh câu hỏi mới KHÔNG start timer (dùng cho câu hỏi đầu tiên)
+        /// </summary>
+        private void GenerateQuestionWithoutTimer()
+        {
+            if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsServer) return;
+
+            Debug.Log("[BattleManager] 📝 Generating new question (without timer)...");
+
+            // Reset answer tracking
+            playerAnswers.Clear();
+            player1State?.ResetAnswerState();
+            player2State?.ResetAnswerState();
+
+            // Lấy config từ LevelGenerate
+            var config = levelData.GetConfigForLevel(CurrentGrade.Value, CurrentDifficulty.Value);
+
+            if (config == null || config.AllowedOperators == null || config.AllowedOperators.Length == 0)
+            {
+                Debug.LogError($"[BattleManager] Không lấy được config cho Grade {CurrentGrade.Value}, Level {CurrentDifficulty.Value}");
+                return;
+            }
+
+            // Sinh câu hỏi (logic từ MathManager)
+            string questionText = GenerateQuestionFromConfig(config, out int correctAnswer);
+
+            // Sinh các đáp án sai
+            int[] choices = GenerateChoices(correctAnswer, config.MinNumber, config.MaxNumber);
+
+            // Broadcast câu hỏi
+            CurrentQuestion.Value = questionText;
+            CorrectAnswer.Value = correctAnswer;
+            Choice1.Value = choices[0];
+            Choice2.Value = choices[1];
+            Choice3.Value = choices[2];
+            Choice4.Value = choices[3];
+
+            // Set timestamp
+            QuestionStartTimestamp.Value = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            TimeRemaining.Value = _gameRules.questionTimeLimit;
+
+            Debug.Log($"[BattleManager] Generated question (no timer): {questionText} = {correctAnswer}");
+
+            // ❌ KHÔNG start timer ở đây
+            // Timer sẽ được start từ UIMultiplayerBattleController.StartQuestionTimer()
+
+            // Notify clients
+            NotifyQuestionGeneratedClientRpc(questionText, choices);
+        }
+
+        /// <summary>
+        /// Start timer cho câu hỏi hiện tại (gọi từ UIMultiplayerBattleController sau countdown)
+        /// </summary>
+        public void StartQuestionTimer()
+        {
+            if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsServer)
+            {
+                Debug.LogWarning("[BattleManager] StartQuestionTimer chỉ được gọi trên Server!");
+                return;
+            }
+
+            Debug.Log("[BattleManager] ⏱️ Starting question timer...");
+
+            // Reset timestamp để timer bắt đầu từ đầu
+            QuestionStartTimestamp.Value = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            TimeRemaining.Value = _gameRules.questionTimeLimit;
+
+            // Bắt đầu đếm ngược
+            if (timerRoutine != null)
+            {
+                StopCoroutine(timerRoutine);
+            }
+            timerRoutine = StartCoroutine(QuestionTimerRoutine());
         }
 
         /// <summary>
@@ -403,7 +485,7 @@ namespace DoAnGame.Multiplayer
 
             // Set timestamp
             QuestionStartTimestamp.Value = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            TimeRemaining.Value = gameRules.questionTimeLimit;
+            TimeRemaining.Value = _gameRules.questionTimeLimit;
 
             Debug.Log($"[BattleManager] Generated question: {questionText} = {correctAnswer}");
 
@@ -570,7 +652,7 @@ namespace DoAnGame.Multiplayer
         {
             List<int> choices = new List<int> { correctAnswer };
 
-            int maxOffset = (int)(CurrentGrade.Value * gameRules.wrongAnswerOffsetMultiplier);
+            int maxOffset = (int)(CurrentGrade.Value * _gameRules.wrongAnswerOffsetMultiplier);
 
             int safety = 0;
             while (choices.Count < 4 && safety < 100)
@@ -604,7 +686,7 @@ namespace DoAnGame.Multiplayer
         private IEnumerator QuestionTimerRoutine()
         {
             float elapsed = 0f;
-            float timeLimit = gameRules.questionTimeLimit;
+            float timeLimit = _gameRules.questionTimeLimit;
 
             while (elapsed < timeLimit)
             {
@@ -632,8 +714,8 @@ namespace DoAnGame.Multiplayer
             if (playerAnswers.Count == 0)
             {
                 // Cả 2 không trả lời → Cả 2 mất máu
-                player1State?.TakeDamage(gameRules.damageOnTimeout);
-                player2State?.TakeDamage(gameRules.damageOnTimeout);
+                player1State?.TakeDamage(_gameRules.damageOnTimeout);
+                player2State?.TakeDamage(_gameRules.damageOnTimeout);
                 Debug.Log("[BattleManager] Both players timed out!");
             }
             else if (playerAnswers.Count == 1)
@@ -642,12 +724,12 @@ namespace DoAnGame.Multiplayer
                 ulong answeredPlayer = playerAnswers.Keys.First();
                 if (answeredPlayer == 0)
                 {
-                    player2State?.TakeDamage(gameRules.damageOnTimeout);
+                    player2State?.TakeDamage(_gameRules.damageOnTimeout);
                     Debug.Log("[BattleManager] Player 2 timed out!");
                 }
                 else
                 {
-                    player1State?.TakeDamage(gameRules.damageOnTimeout);
+                    player1State?.TakeDamage(_gameRules.damageOnTimeout);
                     Debug.Log("[BattleManager] Player 1 timed out!");
                 }
             }
@@ -662,7 +744,7 @@ namespace DoAnGame.Multiplayer
             else
             {
                 // Sinh câu mới sau delay
-                Invoke(nameof(GenerateQuestion), gameRules.delayBetweenQuestions);
+                Invoke(nameof(GenerateQuestion), _gameRules.delayBetweenQuestions);
             }
         }
 
@@ -677,7 +759,7 @@ namespace DoAnGame.Multiplayer
             long elapsedMs = submitTime - QuestionStartTimestamp.Value;
 
             // Kiểm tra timeout
-            if (elapsedMs > gameRules.GetTimeoutMilliseconds())
+            if (elapsedMs > _gameRules.GetTimeoutMilliseconds())
             {
                 Debug.Log($"[BattleManager] Client {clientId} submitted too late ({elapsedMs}ms)");
                 return;
@@ -799,29 +881,29 @@ namespace DoAnGame.Multiplayer
                 {
                     // Cả 2 đúng: Người thắng +10, người thua +5 (khuyến khích)
                     winnerState?.MarkCorrectAnswer();
-                    winnerState?.AddScore(gameRules.pointsPerCorrectAnswer); // +10
+                    winnerState?.AddScore(_gameRules.pointsPerCorrectAnswer); // +10
 
                     loserState?.MarkCorrectAnswer();
-                    loserState?.AddScore(gameRules.pointsPerCorrectAnswer / 2); // +5 (khuyến khích)
+                    loserState?.AddScore(_gameRules.pointsPerCorrectAnswer / 2); // +5 (khuyến khích)
 
-                    Debug.Log($"[BattleManager] Both correct! Winner gets {gameRules.pointsPerCorrectAnswer}, loser gets {gameRules.pointsPerCorrectAnswer / 2} (encouragement)");
+                    Debug.Log($"[BattleManager] Both correct! Winner gets {_gameRules.pointsPerCorrectAnswer}, loser gets {_gameRules.pointsPerCorrectAnswer / 2} (encouragement)");
                 }
                 else
                 {
                     // Chỉ 1 người đúng: Người thắng +10, người thua -1 HP
                     winnerState?.MarkCorrectAnswer();
-                    winnerState?.AddScore(gameRules.pointsPerCorrectAnswer);
+                    winnerState?.AddScore(_gameRules.pointsPerCorrectAnswer);
 
-                    loserState?.TakeDamage(gameRules.damageOnWrongAnswer);
+                    loserState?.TakeDamage(_gameRules.damageOnWrongAnswer);
                     loserState?.MarkWrongAnswer();
                 }
 
                 correctAnswersInRow++;
 
                 // Tăng độ khó
-                if (gameRules.ShouldIncreaseDifficulty(correctAnswersInRow))
+                if (_gameRules.ShouldIncreaseDifficulty(correctAnswersInRow))
                 {
-                    CurrentDifficulty.Value = gameRules.CalculateNewDifficulty(CurrentDifficulty.Value);
+                    CurrentDifficulty.Value = _gameRules.CalculateNewDifficulty(CurrentDifficulty.Value);
                     correctAnswersInRow = 0;
                     Debug.Log($"[BattleManager] Difficulty increased to level {CurrentDifficulty.Value}");
                 }
@@ -840,15 +922,15 @@ namespace DoAnGame.Multiplayer
                 player2State?.MarkCorrectAnswer();
                 
                 // Cả 2 được nửa điểm
-                player1State?.AddScore(gameRules.pointsPerCorrectAnswer / 2);
-                player2State?.AddScore(gameRules.pointsPerCorrectAnswer / 2);
+                player1State?.AddScore(_gameRules.pointsPerCorrectAnswer / 2);
+                player2State?.AddScore(_gameRules.pointsPerCorrectAnswer / 2);
 
                 correctAnswersInRow++;
 
                 // Tăng độ khó
-                if (gameRules.ShouldIncreaseDifficulty(correctAnswersInRow))
+                if (_gameRules.ShouldIncreaseDifficulty(correctAnswersInRow))
                 {
-                    CurrentDifficulty.Value = gameRules.CalculateNewDifficulty(CurrentDifficulty.Value);
+                    CurrentDifficulty.Value = _gameRules.CalculateNewDifficulty(CurrentDifficulty.Value);
                     correctAnswersInRow = 0;
                     Debug.Log($"[BattleManager] Difficulty increased to level {CurrentDifficulty.Value}");
                 }
@@ -868,10 +950,10 @@ namespace DoAnGame.Multiplayer
                 player1State?.MarkWrongAnswer();
                 player2State?.MarkWrongAnswer();
 
-                if (gameRules.damageMode == GameRulesConfig.DamageMode.BothWrongBothDamaged)
+                if (_gameRules.damageMode == GameRulesConfig.DamageMode.BothWrongBothDamaged)
                 {
-                    player1State?.TakeDamage(gameRules.damageOnWrongAnswer);
-                    player2State?.TakeDamage(gameRules.damageOnWrongAnswer);
+                    player1State?.TakeDamage(_gameRules.damageOnWrongAnswer);
+                    player2State?.TakeDamage(_gameRules.damageOnWrongAnswer);
                 }
 
                 correctAnswersInRow = 0;
@@ -892,7 +974,7 @@ namespace DoAnGame.Multiplayer
             else
             {
                 // Sinh câu mới
-                Invoke(nameof(GenerateQuestion), gameRules.delayBetweenQuestions);
+                Invoke(nameof(GenerateQuestion), _gameRules.delayBetweenQuestions);
             }
         }
 
@@ -935,6 +1017,9 @@ namespace DoAnGame.Multiplayer
             WinnerId.Value = winnerId;
 
             Debug.Log($"[BattleManager] Match ended! Winner: Player {winnerId + 1}");
+
+            // ✅ FIX: Invoke event trên Host (ClientRpc không chạy trên Host)
+            OnMatchEnded?.Invoke(winnerId, winnerHealth);
 
             // Notify clients
             ShowMatchResultClientRpc(winnerId, winnerHealth);

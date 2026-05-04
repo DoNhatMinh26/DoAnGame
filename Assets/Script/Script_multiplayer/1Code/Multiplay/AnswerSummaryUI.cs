@@ -9,8 +9,14 @@ namespace DoAnGame.UI
     /// Quản lý UI tổng kết đáp án giữa các câu hỏi
     /// 
     /// LOGIC:
-    /// 1. Question Time (10s): TextTrangThaiDapAn1/2 HIDDEN (không hiển thị)
-    /// 2. Summary Time (3s): TextTrangThaiDapAn1/2 VISIBLE + kết quả + response time (ms)
+    /// 1. Question Time (10s): 
+    ///    - TextTrangThaiDapAn1/2 HIDDEN (không hiển thị)
+    ///    - resultText (TrangThaiWin) HIDDEN (không hiển thị)
+    /// 2. Summary Time (3s): 
+    ///    - TextTrangThaiDapAn1/2 VISIBLE + kết quả + response time (ms)
+    ///    - resultText (TrangThaiWin) VISIBLE + "Người chơi X đúng/sai!"
+    /// 3. Sau Summary Time:
+    ///    - Tất cả text bị ẨN và RESET về trạng thái ban đầu
     /// 
     /// So sánh theo miligiây (ms):
     /// - Cả 2 đúng → So sánh ms (ai nhanh hơn thắng)
@@ -31,10 +37,10 @@ namespace DoAnGame.UI
         [Header("=== RESULT DISPLAY ===")]
         [SerializeField] private TextMeshProUGUI resultText; // Text hiển thị kết quả (optional)
         
-        [Header("=== SETTINGS ===")]
-        [SerializeField] private float summaryDurationMin = 1f;
-        [SerializeField] private float summaryDurationMax = 10f;
-        [SerializeField] private float defaultSummaryDuration = 7f; // Thay đổi từ 3f thành 7f
+        // ✅ Ẩn settings - tự động lấy từ GameRules
+        // [Header("=== SETTINGS ===")]
+        // Không cần set trong Inspector nữa - tự động lấy từ DefaultGameRules.delayBetweenQuestions
+        // Không có min/max hard-code - hoàn toàn linh hoạt theo GameRules
 
         private NetworkedMathBattleManager battleManager;
         private Coroutine summaryCoroutine;
@@ -43,6 +49,8 @@ namespace DoAnGame.UI
         private bool isQuestionActive = false;
         private int initRetryCount = 0;
         private const int MAX_INIT_RETRIES = 10; // Retry tối đa 10 lần (10 giây)
+        private bool matchHasEnded = false; // Flag để track match đã kết thúc
+        private float actualSummaryDuration; // Thời gian tổng kết thực tế (từ GameRules hoặc default)
 
         // Enum để quản lý trạng thái
         public enum TimerState
@@ -91,14 +99,19 @@ namespace DoAnGame.UI
             // Reset retry count
             initRetryCount = 0;
 
+            // ✅ AUTO-LOAD summary duration từ GameRules (không có giới hạn min/max)
+            actualSummaryDuration = battleManager.gameRules.delayBetweenQuestions;
+            Debug.Log($"[AnswerSummaryUI] Auto-loaded summary duration from GameRules: {actualSummaryDuration}s");
+
             // Subscribe to events
             battleManager.OnAnswerResultReceived += HandleAnswerResult;
             battleManager.OnQuestionGenerated += HandleQuestionGenerated;
+            battleManager.OnMatchEnded += HandleMatchEnded; // ✅ Subscribe to match end event
             
             // Set trạng thái ban đầu
             SetTrangThaiQuestionTime();
             
-            // Đảm bảo TextTrangThaiDapAn1/2 bị ẩn lúc đầu
+            // Đảm bảo TextTrangThaiDapAn1/2 và resultText bị ẩn lúc đầu
             HideAnswerTexts();
             
             Debug.Log("[AnswerSummaryUI] ✅ Initialized");
@@ -110,6 +123,7 @@ namespace DoAnGame.UI
             {
                 battleManager.OnAnswerResultReceived -= HandleAnswerResult;
                 battleManager.OnQuestionGenerated -= HandleQuestionGenerated;
+                battleManager.OnMatchEnded -= HandleMatchEnded; // ✅ Unsubscribe
             }
         }
 
@@ -134,13 +148,36 @@ namespace DoAnGame.UI
             currentState = TimerState.SummaryTime;
             if (trangThaiText != null)
             {
-                trangThaiText.text = "Thời gian thống kê đáp án";
+                // ✅ Kiểm tra xem match đã kết thúc chưa
+                if (matchHasEnded)
+                {
+                    trangThaiText.text = "Đã có kết quả tổng kết";
+                }
+                else
+                {
+                    trangThaiText.text = "Thời gian thống kê đáp án";
+                }
             }
-            Debug.Log("[AnswerSummaryUI] State: Summary Time");
+            Debug.Log($"[AnswerSummaryUI] State: Summary Time (matchEnded={matchHasEnded})");
         }
 
         /// <summary>
-        /// Ẩn TextTrangThaiDapAn1 và 2 (dùng trong Question Time)
+        /// Xử lý khi match kết thúc (có người hết máu)
+        /// </summary>
+        private void HandleMatchEnded(int winnerId, int winnerHealth)
+        {
+            matchHasEnded = true;
+            Debug.Log($"[AnswerSummaryUI] Match ended! Winner={winnerId}, Health={winnerHealth}");
+            
+            // Cập nhật text ngay lập tức nếu đang trong summary time
+            if (currentState == TimerState.SummaryTime && trangThaiText != null)
+            {
+                trangThaiText.text = "Đã có kết quả tổng kết";
+            }
+        }
+
+        /// <summary>
+        /// Ẩn TextTrangThaiDapAn1/2 và resultText (dùng trong Question Time)
         /// </summary>
         private void HideAnswerTexts()
         {
@@ -153,10 +190,16 @@ namespace DoAnGame.UI
             {
                 textTrangThaiDapAn2.gameObject.SetActive(false);
             }
+            
+            // ✅ Ẩn resultText (TrangThaiWin) trong Question Time
+            if (resultText != null)
+            {
+                resultText.gameObject.SetActive(false);
+            }
         }
 
         /// <summary>
-        /// Hiển thị TextTrangThaiDapAn1 và 2 (dùng trong Summary Time)
+        /// Hiển thị TextTrangThaiDapAn1/2 và resultText (dùng trong Summary Time)
         /// </summary>
         private void ShowAnswerTexts()
         {
@@ -168,6 +211,12 @@ namespace DoAnGame.UI
             if (textTrangThaiDapAn2 != null)
             {
                 textTrangThaiDapAn2.gameObject.SetActive(true);
+            }
+            
+            // ✅ Hiển thị resultText (TrangThaiWin) trong Summary Time
+            if (resultText != null)
+            {
+                resultText.gameObject.SetActive(true);
             }
         }
 
@@ -197,18 +246,38 @@ namespace DoAnGame.UI
             // Set trạng thái Question Time
             SetTrangThaiQuestionTime();
 
-            // Bắt đầu đếm ngược Question Time
-            questionTimerCoroutine = StartCoroutine(QuestionTimerRoutine());
+            // ❌ XÓA: KHÔNG tự động start timer nữa
+            // Timer sẽ được start từ UIMultiplayerBattleController.StartQuestionTimer()
+            // questionTimerCoroutine = StartCoroutine(QuestionTimerRoutine());
+            
+            Debug.Log("[AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController");
         }
 
         /// <summary>
-        /// Đếm ngược thời gian Question Time (10s → 0s)
+        /// ✅ MỚI: Start timer từ bên ngoài (gọi từ UIMultiplayerBattleController)
+        /// </summary>
+        public void StartQuestionTimer()
+        {
+            if (questionTimerCoroutine != null)
+            {
+                StopCoroutine(questionTimerCoroutine);
+            }
+            questionTimerCoroutine = StartCoroutine(QuestionTimerRoutine());
+            Debug.Log("[AnswerSummaryUI] ✅ Timer started from external call");
+        }
+
+        /// <summary>
+        /// Đếm ngược thời gian Question Time (lấy từ GameRules)
         /// </summary>
         private IEnumerator QuestionTimerRoutine()
         {
             isQuestionActive = true;
-            float questionTime = 10f; // 10 giây
+            
+            // ✅ Lấy thời gian từ GameRules thay vì hard-code
+            float questionTime = battleManager.gameRules.questionTimeLimit;
             float elapsed = 0f;
+
+            Debug.Log($"[AnswerSummaryUI] Starting question countdown: {questionTime}s");
 
             while (elapsed < questionTime)
             {
@@ -274,9 +343,11 @@ namespace DoAnGame.UI
             // Hiển thị kết quả
             DisplayResult(winnerId, correct, player1ResponseTimeMs, player2ResponseTimeMs, player1Answer, player2Answer);
             
-            // Đếm ngược timer từ defaultSummaryDuration xuống 0
-            float duration = defaultSummaryDuration;
+            // ✅ Đếm ngược timer từ actualSummaryDuration xuống 0 (auto từ GameRules)
+            float duration = actualSummaryDuration;
             float elapsed = 0f;
+            
+            Debug.Log($"[AnswerSummaryUI] Starting summary countdown: {duration}s");
             
             while (elapsed < duration)
             {
@@ -408,7 +479,7 @@ namespace DoAnGame.UI
         /// </summary>
         private void ClearSummary()
         {
-            // Ẩn đáp án
+            // Ẩn đáp án và resultText
             HideAnswerTexts();
             
             // Xóa text đáp án
@@ -422,7 +493,7 @@ namespace DoAnGame.UI
                 textTrangThaiDapAn2.text = "";
             }
             
-            // Xóa kết quả
+            // ✅ Xóa text kết quả (TrangThaiWin)
             if (resultText != null)
             {
                 resultText.text = "";
@@ -431,11 +502,14 @@ namespace DoAnGame.UI
             // Khôi phục trạng thái Question Time (sẵn sàng cho câu hỏi tiếp theo)
             SetTrangThaiQuestionTime();
             
-            // Reset timer text
-            if (timerText != null)
+            // ✅ Reset timer text về giá trị ban đầu từ GameRules
+            if (timerText != null && battleManager != null)
             {
-                timerText.text = "10s";
+                int initialTime = Mathf.CeilToInt(battleManager.gameRules.questionTimeLimit);
+                timerText.text = $"{initialTime}s";
             }
+            
+            Debug.Log("[AnswerSummaryUI] Summary cleared, all texts hidden");
         }
 
         /// <summary>
@@ -449,12 +523,63 @@ namespace DoAnGame.UI
         public TimerState GetCurrentState => currentState;
 
         /// <summary>
-        /// Set thời gian tổng kết (admin có thể tuỳ chỉnh)
+        /// Set thời gian tổng kết (admin có thể tuỳ chỉnh) - DEPRECATED
+        /// Không còn dùng nữa - thời gian tự động lấy từ GameRules
         /// </summary>
+        [System.Obsolete("Use GameRules.delayBetweenQuestions instead")]
         public void SetSummaryDuration(float duration)
         {
-            defaultSummaryDuration = Mathf.Clamp(duration, summaryDurationMin, summaryDurationMax);
-            Debug.Log($"[AnswerSummaryUI] Summary duration set to {defaultSummaryDuration}s");
+            Debug.LogWarning("[AnswerSummaryUI] SetSummaryDuration is deprecated. Use GameRules.delayBetweenQuestions instead.");
         }
+
+        #region COUNTDOWN SUPPORT
+
+        /// <summary>
+        /// Ẩn tất cả UI (dùng cho countdown "3, 2, 1, Ready, GO!")
+        /// </summary>
+        public void HideAllUI()
+        {
+            // Ẩn timer text
+            if (timerText != null)
+            {
+                timerText.gameObject.SetActive(false);
+            }
+
+            // Ẩn trạng thái text
+            if (trangThaiText != null)
+            {
+                trangThaiText.gameObject.SetActive(false);
+            }
+
+            // Ẩn answer texts
+            HideAnswerTexts();
+
+            Debug.Log("[AnswerSummaryUI] ✅ Hidden all UI for countdown");
+        }
+
+        /// <summary>
+        /// Hiển thị tất cả UI (sau countdown)
+        /// </summary>
+        public void ShowAllUI()
+        {
+            // Hiển thị timer text
+            if (timerText != null)
+            {
+                timerText.gameObject.SetActive(true);
+            }
+
+            // Hiển thị trạng thái text
+            if (trangThaiText != null)
+            {
+                trangThaiText.gameObject.SetActive(true);
+            }
+
+            // Answer texts vẫn ẨN (chỉ hiển thị trong Summary Time)
+            // resultText vẫn ẨN (chỉ hiển thị trong Summary Time)
+
+            Debug.Log("[AnswerSummaryUI] ✅ Shown all UI after countdown");
+        }
+
+        #endregion
     }
 }

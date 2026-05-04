@@ -67,6 +67,7 @@ namespace DoAnGame.UI
         [SerializeField] private UIFlowManager flowManager;
         [SerializeField] private UIButtonScreenNavigator startBattleNavigator;
         [SerializeField] private UIButtonScreenNavigator quitRoomNavigator;
+        [SerializeField] private UIButtonScreenNavigator loadingPanelNavigator; // ← THÊM DÒNG NÀY
         [SerializeField] private UnityEvent onBattleStarted;
         [SerializeField] private UnityEvent onQuitRoom;
 
@@ -90,6 +91,9 @@ namespace DoAnGame.UI
         private bool isBusy;
         private bool isQuitting;
         private bool suppressAutoBattleStart;
+        
+        // ✅ STATIC flag để persist ngay cả khi GameObject inactive
+        private static bool s_needsRematchReset; // Flag để báo hiệu cần reset cho rematch
         private float nextLobbyReadAt;
         private Coroutine delayedBattleFallbackRoutine;
         private AuthManager authManager;
@@ -143,6 +147,16 @@ namespace DoAnGame.UI
         {
             base.OnShow();
             ResolveTextReferences();
+            
+            // Check nếu cần reset cho rematch
+            if (s_needsRematchReset)
+            {
+                Debug.Log("[UIRoom] 🔄 OnShow detected s_needsRematchReset=true, calling ResetForRematch");
+                s_needsRematchReset = false;
+                ResetForRematch();
+                return; // ResetForRematch đã gọi RefreshAuthState, RefreshRoomRoster, UpdateReadyButtonState
+            }
+            
             RefreshAuthState();
             RefreshRoomRoster();
             EnsureInitialized();
@@ -278,34 +292,15 @@ namespace DoAnGame.UI
                 roomStatusMessage = DefaultIdleStatus;
             }
 
-            statusText.SetText($"{authStatusMessage}\n{roomStatusMessage}");
+            // ✅ Chỉ hiển thị roomStatusMessage, không hiển thị authStatusMessage nữa
+            statusText.SetText(roomStatusMessage);
         }
 
         private void RefreshRoomRoster()
         {
-            string titleText = currentLobby == null
-                ? "Người chơi trong room"
-                : $"Người chơi trong room ({GetCurrentLobbyPlayerCount()}/{MaxPlayers})";
-
-            string playerCountDisplayText = currentLobby == null
-                ? "Người chơi: 0/2"
-                : $"Người chơi: {GetCurrentLobbyPlayerCount()}/{MaxPlayers}";
-
-            if (rosterTitleText != null)
-            {
-                rosterTitleText.SetText(titleText);
-            }
-            else if (playerCountText != null)
-            {
-                // Fallback: nếu không có rosterTitleText, dùng playerCountText
-                playerCountText.SetText(titleText);
-            }
-
-            // Nếu có playerCountText riêng biệt, update nó với format "Người chơi: X/2"
-            if (playerCountText != null && rosterTitleText != null)
-            {
-                playerCountText.SetText(playerCountDisplayText);
-            }
+            // ✅ KHÔNG gán rosterTitleText - giữ nguyên text từ Inspector
+            // ✅ KHÔNG gán playerCountText - giữ nguyên text từ Inspector
+            // Chỉ update rosterListText với danh sách người chơi
 
             if (rosterListText != null)
             {
@@ -1317,6 +1312,9 @@ namespace DoAnGame.UI
                 return;
             }
 
+            // Check nếu đang ở chế độ rematch
+            bool isRematchMode = roomStatusMessage == "Bạn có muốn tiếp tục đấu lại?";
+
             if (isHost)
             {
                 // HOST: ẩn readyButton, hiển thị startMatchButton
@@ -1329,10 +1327,22 @@ namespace DoAnGame.UI
                     startMatchButton.interactable = clientReady && IsRelayReadyForMatchHost();
                     // Button luôn hiển thị "Bắt đầu", trạng thái chờ hiển thị ở statusText
                     startMatchButton.GetComponentInChildren<TMP_Text>()?.SetText("Bắt đầu");
+                    
                     // Hiển thị trạng thái ở statusText
-                    SetStatus(clientReady
-                        ? "Người chơi đã sẵn sàng! Có thể bắt đầu."
-                        : "Chờ người chơi thứ 2 sẵn sàng...");
+                    if (isRematchMode)
+                    {
+                        // Rematch mode: append status to rematch message
+                        SetStatus(clientReady
+                            ? "Bạn có muốn tiếp tục đấu lại?\nNgười chơi đã sẵn sàng! Có thể bắt đầu."
+                            : "Bạn có muốn tiếp tục đấu lại?\nĐợi thành viên sẵn sàng...");
+                    }
+                    else
+                    {
+                        // Normal mode
+                        SetStatus(clientReady
+                            ? "Người chơi đã sẵn sàng! Có thể bắt đầu."
+                            : "Chờ người chơi thứ 2 sẵn sàng...");
+                    }
                 }
             }
             else
@@ -1347,10 +1357,22 @@ namespace DoAnGame.UI
                     readyButton.interactable = !alreadyReady;
                     readyButton.GetComponentInChildren<TMP_Text>()?.SetText(
                         alreadyReady ? "Đã sẵn sàng ✓" : "Sẵn sàng");
+                    
                     // Hiển thị trạng thái ở statusText
-                    SetStatus(alreadyReady
-                        ? "Đã sẵn sàng! Chờ chủ phòng bắt đầu..."
-                        : "Nhấn Sẵn sàng để báo hiệu cho chủ phòng.");
+                    if (isRematchMode)
+                    {
+                        // Rematch mode: append status to rematch message
+                        SetStatus(alreadyReady
+                            ? "Bạn có muốn tiếp tục đấu lại?\nĐã sẵn sàng! Chờ chủ phòng bắt đầu..."
+                            : "Bạn có muốn tiếp tục đấu lại?\nẤn Sẵn sàng để chuẩn bị đấu lại.");
+                    }
+                    else
+                    {
+                        // Normal mode
+                        SetStatus(alreadyReady
+                            ? "Đã sẵn sàng! Chờ chủ phòng bắt đầu..."
+                            : "Nhấn Sẵn sàng để báo hiệu cho chủ phòng.");
+                    }
                 }
             }
         }
@@ -1398,11 +1420,20 @@ namespace DoAnGame.UI
                 if (player == null) continue;
                 if (!string.Equals(player.Id, localId, StringComparison.OrdinalIgnoreCase)) continue;
 
-                return player.Data != null &&
-                       player.Data.TryGetValue(Player2ReadyKey, out var readyData) &&
-                       readyData.Value == "1";
+                if (player.Data != null && player.Data.TryGetValue(Player2ReadyKey, out var readyData))
+                {
+                    bool isReady = readyData != null && readyData.Value == "1";
+                    Debug.Log($"[UIRoom] IsLocalPlayerReady: playerId={localId}, hasKey=true, value={readyData?.Value ?? "null"}, isReady={isReady}");
+                    return isReady;
+                }
+                else
+                {
+                    Debug.Log($"[UIRoom] IsLocalPlayerReady: playerId={localId}, hasKey=false, isReady=false");
+                    return false;
+                }
             }
 
+            Debug.Log($"[UIRoom] IsLocalPlayerReady: local player not found in lobby");
             return false;
         }
 
@@ -1453,46 +1484,41 @@ namespace DoAnGame.UI
             battleStartNotified = true;
             LogState("NotifyBattleStarted: begin");
 
-            // ===== KHỞI TẠO BATTLE MANAGER TRƯỚC KHI NAVIGATE =====
-            // Phải gọi TRƯỚC khi TryShowBattlePanel() vì navigate sẽ làm GameObject này inactive
+            // ===== KHỞI TẠO BATTLE MANAGER TRƯỚC KHI CHUYỂN PANEL =====
             Log("[UIRoom] ⚠️ ABOUT TO CALL InitializeMultiplayerBattle()...");
             InitializeMultiplayerBattleImmediate(); // Gọi trực tiếp, không delay
             Log("[UIRoom] ⚠️ AFTER InitializeMultiplayerBattle() call");
             // ==================================================
 
-            bool routedToBattle = TryShowBattlePanel();
-            Log($"NotifyBattleStarted: direct battle route => {routedToBattle}");
+            // ✅ GIẢI PHÁP MỚI: Dùng BasePanelController.Show()/Hide() trực tiếp
+            // Không dùng UIButtonScreenNavigator nữa
+            
+            // Ẩn LobbyPanel (panel hiện tại)
+            Log("[UIRoom] Hiding LobbyPanel...");
+            Hide();
 
-            // Scene fallback chỉ chạy khi route UI thất bại hoàn toàn.
-            if (!routedToBattle && !IsBattleScreenVisible())
+            // Tìm và hiển thị LoadingPanel
+            var loadingPanel = FindObjectOfType<UIMultiplayerLoadingController>(true); // true = include inactive
+            if (loadingPanel != null)
             {
-                LoadBattleSceneFallback();
-            }
-
-            if (startBattleNavigator != null)
-            {
-                Log($"NotifyBattleStarted: navigator={startBattleNavigator.name}");
-                startBattleNavigator.NavigateNow();
+                Log($"[UIRoom] ✅ Found LoadingPanel, showing it...");
+                loadingPanel.Show();
             }
             else
             {
-                Log("NotifyBattleStarted: startBattleNavigator is NULL");
-            }
-
-            // Fallback chống case client bị blank (đã ẩn lobby nhưng chưa bật được panel battle).
-            // Nếu object đã bị inactive bởi navigator thì không thể StartCoroutine trên object này.
-            if (isActiveAndEnabled && gameObject.activeInHierarchy)
-            {
-                if (delayedBattleFallbackRoutine != null)
+                Debug.LogError("[UIRoom] ❌ LoadingPanel not found! Cannot proceed.");
+                
+                // Fallback: Hiển thị trực tiếp GameplayPanel
+                var gameplayPanel = FindObjectOfType<UIMultiplayerBattleController>(true);
+                if (gameplayPanel != null)
                 {
-                    StopCoroutine(delayedBattleFallbackRoutine);
+                    Debug.LogWarning("[UIRoom] Fallback: Showing GameplayPanel directly");
+                    gameplayPanel.Show();
                 }
-                delayedBattleFallbackRoutine = StartCoroutine(EnsureBattleScreenVisibleNextFrame());
-            }
-            else
-            {
-                Log("NotifyBattleStarted: room panel inactive sau navigate, áp fallback ngay lập tức");
-                EnsureBattleScreenVisibleImmediate();
+                else
+                {
+                    Debug.LogError("[UIRoom] ❌ GameplayPanel also not found! Critical error.");
+                }
             }
 
             onBattleStarted?.Invoke();
@@ -2156,6 +2182,164 @@ namespace DoAnGame.UI
             }
 
             MultiplayerDetailedLogger.Trace("UI_ROOM", $"SetActionButtonsInteractable: interactable={interactable}, inLobbySession={isInLobbySession}, isHost={isHost}");
+        }
+
+        /// <summary>
+        /// Set flag để báo hiệu cần reset cho rematch khi LobbyPanel được hiển thị
+        /// </summary>
+        public void MarkNeedsRematchReset()
+        {
+            s_needsRematchReset = true;
+            Debug.Log("[UIRoom] 🔄 MarkNeedsRematchReset: STATIC flag set to true");
+        }
+
+        /// <summary>
+        /// Static method để set rematch reset flag từ bên ngoài (e.g., UIWinsController)
+        /// </summary>
+        public static void SetRematchResetFlag()
+        {
+            s_needsRematchReset = true;
+            Debug.Log("[UIRoom] 🔄 SetRematchResetFlag: STATIC flag set to true");
+        }
+
+        /// <summary>
+        /// Reset ready state khi quay về từ Wins Panel để chuẩn bị rematch
+        /// </summary>
+        public void ResetForRematch()
+        {
+            Debug.Log("[UIRoom] 🔄 ResetForRematch called");
+
+            // Reset flags
+            battleStartNotified = false;
+            receivedStartSignalFromHost = false;
+            suppressAutoBattleStart = false;
+
+            // Reset room status message
+            if (currentLobby != null)
+            {
+                roomStatusMessage = "Bạn có muốn tiếp tục đấu lại?";
+                
+                // Reset Player2ReadyKey để client phải mark ready lại
+                _ = ClearReadyStateAsync();
+            }
+            else
+            {
+                roomStatusMessage = DefaultIdleStatus;
+            }
+
+            // Refresh UI
+            RefreshStatusLabel();
+            RefreshRoomRoster();
+            UpdateReadyButtonState();
+            
+            // Restart polling
+            StopRoutines();
+            pollingRoutine = StartCoroutine(PollLobbyRoutine());
+
+            Debug.Log($"[UIRoom] 🔄 ResetForRematch done: isHost={isHost}, roomStatus={roomStatusMessage}");
+        }
+
+        /// <summary>
+        /// Clear Player2ReadyKey để reset ready state cho rematch
+        /// </summary>
+        private async Task ClearReadyStateAsync()
+        {
+            try
+            {
+                if (currentLobby == null)
+                    return;
+
+                string localPlayerId = AuthenticationService.Instance?.PlayerId;
+                if (string.IsNullOrEmpty(localPlayerId))
+                {
+                    Debug.LogWarning("[UIRoom] Cannot clear ready state: no local player ID");
+                    return;
+                }
+
+                if (isHost)
+                {
+                    // Host clear StartedKey trong Lobby Data
+                    Debug.Log("[UIRoom] 🔄 Host clearing StartedKey for rematch...");
+                    
+                    var updatedLobby = await LobbyService.Instance.UpdateLobbyAsync(
+                        currentLobby.Id,
+                        new UpdateLobbyOptions
+                        {
+                            Data = new Dictionary<string, DataObject>
+                            {
+                                { StartedKey, new DataObject(DataObject.VisibilityOptions.Member, "0") }
+                            }
+                        }
+                    );
+
+                    if (updatedLobby != null)
+                    {
+                        currentLobby = updatedLobby;
+                        Debug.Log($"[UIRoom] ✅ Host cleared StartedKey successfully. StartedKey={updatedLobby.Data?.GetValueOrDefault(StartedKey)?.Value ?? "null"}");
+                    }
+                }
+                else
+                {
+                    // Client clear Player2ReadyKey trong Player Data
+                    Debug.Log($"[UIRoom] 🔄 Client clearing Player2ReadyKey for rematch... localPlayerId={localPlayerId}");
+
+                    var updatedLobby = await LobbyService.Instance.UpdatePlayerAsync(
+                        currentLobby.Id,
+                        localPlayerId,
+                        new UpdatePlayerOptions
+                        {
+                            Data = new Dictionary<string, PlayerDataObject>
+                            {
+                                { Player2ReadyKey, new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member, "0") }
+                            }
+                        }
+                    );
+
+                    if (updatedLobby != null)
+                    {
+                        currentLobby = updatedLobby;
+                        
+                        // Debug: check Player2ReadyKey value in updated lobby
+                        foreach (var player in updatedLobby.Players)
+                        {
+                            if (player.Id == localPlayerId && player.Data != null)
+                            {
+                                var hasKey = player.Data.TryGetValue(Player2ReadyKey, out var readyData);
+                                Debug.Log($"[UIRoom] ✅ Client cleared Player2ReadyKey. hasKey={hasKey}, value={readyData?.Value ?? "null"}");
+                            }
+                        }
+                    }
+                }
+
+                // Force refresh lobby để đảm bảo có snapshot mới nhất
+                await Task.Delay(200); // Đợi server propagate changes
+                var refreshedLobby = await RefreshLobbySafe();
+                if (refreshedLobby != null)
+                {
+                    currentLobby = refreshedLobby;
+                    Debug.Log("[UIRoom] 🔄 Force refreshed lobby after clearing ready state");
+                    
+                    // Debug: check Player2ReadyKey value in refreshed lobby
+                    if (!isHost)
+                    {
+                        foreach (var player in refreshedLobby.Players)
+                        {
+                            if (player.Id == localPlayerId && player.Data != null)
+                            {
+                                var hasKey = player.Data.TryGetValue(Player2ReadyKey, out var readyData);
+                                Debug.Log($"[UIRoom] 🔄 After refresh: hasKey={hasKey}, value={readyData?.Value ?? "null"}");
+                            }
+                        }
+                    }
+                }
+
+                // Refresh UI sau khi clear
+                RefreshAuthState(); // Gọi RefreshAuthState thay vì chỉ UpdateReadyButtonState
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[UIRoom] Failed to clear ready state: {ex.Message}");
+            }
         }
     }
 }
