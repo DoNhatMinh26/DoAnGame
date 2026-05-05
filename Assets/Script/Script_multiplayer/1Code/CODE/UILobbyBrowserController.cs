@@ -34,8 +34,7 @@ namespace DoAnGame.UI
         [SerializeField] private LobbyBrowserEntryWidget entryPrefab;
 
         [Header("Navigation")]
-        [SerializeField] private UIButtonScreenNavigator backNavigator;
-        [SerializeField] private UIButtonScreenNavigator roomNavigator;
+        [Tooltip("Reference đến UIMultiplayerRoomController (LobbyPanel) để navigate khi Back hoặc Join")]
         [SerializeField] private UIMultiplayerRoomController roomController;
 
         [Header("Query Tuning")]
@@ -110,13 +109,18 @@ namespace DoAnGame.UI
         private void HandleBackClicked()
         {
             MultiplayerDetailedLogger.TraceUserAction("UILobbyBrowser", "HandleBackClicked", "backButton");
-            if (backNavigator != null)
+            
+            // ✅ FIX: Navigate trực tiếp đến LobbyPanel thay vì dùng backNavigator
+            if (roomController != null)
             {
-                backNavigator.NavigateNow();
-                return;
+                roomController.Show(); // Gọi Show() để trigger OnShow() đúng cách
             }
-
-            Hide();
+            else
+            {
+                Debug.LogWarning("[LobbyBrowser] roomController chưa được gán!");
+            }
+            
+            Hide(); // Ẩn LobbyBrowserPanel
         }
 
         private void ResolveRoomController()
@@ -519,11 +523,9 @@ namespace DoAnGame.UI
                 if (joined)
                 {
                     SetStatus("Đã vào phòng.");
-                    roomController.NotifyEnteredFromBrowser();
-                    if (roomNavigator != null)
-                    {
-                        roomNavigator.NavigateNow();
-                    }
+                    // ✅ FIX: Navigate trực tiếp đến LobbyPanel
+                    roomController.Show(); // Gọi Show() để trigger OnShow() đúng cách
+                    Hide(); // Ẩn LobbyBrowserPanel
                 }
                 else
                 {
@@ -534,6 +536,7 @@ namespace DoAnGame.UI
             {
                 Debug.LogWarning($"[LobbyBrowser] Join lỗi: {ex.Message}");
                 SetStatus("Không vào được phòng.");
+                MultiplayerDetailedLogger.TraceException("UI_LOBBY_BROWSER", ex, "JoinLobbyAsync failed");
             }
             finally
             {

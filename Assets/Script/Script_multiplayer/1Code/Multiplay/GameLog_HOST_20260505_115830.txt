@@ -1,0 +1,377 @@
+=== GAME LOG START (HOST) ===
+Time: 5/5/2026 11:58:30 AM
+Unity Version: 2022.3.62f3
+Platform: WindowsEditor
+Log Path: D:/app/GameDoan/DoAnGame_clone_0/Assets\Script\Script_multiplayer\1Code\Multiplay\GameLog_HOST_20260505_115830.txt
+================================
+
+[11:58:31.230] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[11:58:31.232] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:31.234] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:31.234] [INFO] [UIRoom] Đã tạo phòng. Độ khó: Lớp 3. Chờ người chơi thứ 2...
+[11:58:31.236] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[11:58:31.236] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:31.238] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:31.239] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[11:58:31.245] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[11:58:31.277] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[11:58:31.277] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:31.278] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:31.279] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[11:58:31.280] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:32.519] [INFO] [UIButtonScreenNavigator:DS Room] Click detected. targetSceneName='', targetScreen='LobbyBrowserPanel'
+[11:58:32.519] [INFO] [UIButtonScreenNavigator:DS Room] Switching UI to 'LobbyBrowserPanel'
+[11:58:32.524] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-normalized panel 'LobbyBrowserPanel' to full-screen.
+[11:58:33.928] [INFO] [LobbyBrowser] Đang tải danh sách phòng...
+[11:58:34.216] [INFO] [LobbyBrowser] Tìm thấy 2 phòng.
+[11:58:46.765] [INFO] [LobbyBrowser] Đang tải danh sách phòng...
+[11:58:47.032] [INFO] [LobbyBrowser] Tìm thấy 1 phòng.
+[11:58:48.149] [INFO] [UIRoom] 🔄 OnEnable: Panel active lại, force refresh lobby...
+[11:58:48.151] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[11:58:48.151] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:48.151] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:48.153] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[11:58:48.153] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:48.153] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:48.153] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:48.440] [INFO] [UIRoom] ✅ OnEnable refresh: 2 players in lobby
+[11:58:48.441] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:48.441] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:48.442] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:48.442] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:48.443] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:48.443] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:48.445] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:48.445] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:48.446] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:48.446] [INFO] [UIRoom] UpdateStartMatchButton: players=2, clientReady=False, relayReady=True, visible=True, interactable=False
+[11:58:48.447] [INFO] [UIRoom] 🔄 Starting aggressive polling to catch client ready state...
+[11:58:49.715] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:49.716] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:49.716] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:49.718] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:49.718] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:49.719] [INFO] [UIRoom] 🔄 Aggressive poll #1: clientReady=False
+[11:58:50.725] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:50.725] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:50.726] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:50.726] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:50.726] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:50.726] [INFO] [UIRoom] 🔄 Aggressive poll #2: clientReady=False
+[11:58:51.730] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:51.731] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:51.731] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:51.731] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:51.731] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:51.731] [INFO] [UIRoom] 🔄 Aggressive poll #3: clientReady=False
+[11:58:52.735] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:52.735] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:52.735] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:52.736] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:52.736] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:52.736] [INFO] [UIRoom] 🔄 Aggressive poll #4: clientReady=False
+[11:58:54.044] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:54.045] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:54.045] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:54.047] [INFO] [UIRoom] Người chơi đã sẵn sàng! Có thể bắt đầu.
+[11:58:54.047] [INFO] [UIRoom] Người chơi đã sẵn sàng! Có thể bắt đầu.
+[11:58:54.047] [INFO] [UIRoom] 🔄 Aggressive poll #5: clientReady=True
+[11:58:54.047] [INFO] [UIRoom] ✅ Client ready detected! Stopping aggressive polling.
+[11:59:06.542] [INFO] [UIRoom] UpdateStartMatchButton: players=2, clientReady=True, relayReady=True, visible=True, interactable=False
+[11:59:06.832] [INFO] [UIRoom] Bắt đầu trận đấu...
+[11:59:06.836] [WARNING] [UIRoom] 🔥 NotifyBattleStarted() CALLED 🔥 isHost=True, receivedStartSignalFromHost=False
+[11:59:06.844] [WARNING] [UIRoom] 🔥 Stack trace:   at System.Environment.get_StackTrace () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at DoAnGame.UI.UIMultiplayerRoomController.NotifyBattleStarted () [0x00025] in D:\app\GameDoan\DoAnGame_clone_0\Assets\Script\Script_multiplayer\1Code\CODE\UIMultiplayerRoomController.cs:1812 
+  at DoAnGame.UI.UIMultiplayerRoomController.HandleStartMatch () [0x00420] in D:\app\GameDoan\DoAnGame_clone_0\Assets\Script\Script_multiplayer\1Code\CODE\UIMultiplayerRoomController.cs:1235 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Internal.WrappedLobbyService.UpdateLobbyAsync (System.String lobbyId, Unity.Services.Lobbies.UpdateLobbyOptions options) [0x00167] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\SDK\WrappedLobbyService.cs:286 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Internal.WrappedLobbyService.TryCatchRequest[TRequest,TReturn] (System.String api, System.Func`3[T1,T2,TResult] func, TRequest request) [0x001ae] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\SDK\WrappedLobbyService.cs:447 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Apis.Lobby.LobbyApiClient.UpdateLobbyAsync (Unity.Services.Lobbies.Lobby.UpdateLobbyRequest request, Unity.Services.Lobbies.Configuration operationConfiguration) [0x0019e] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\Apis\LobbyApi.cs:668 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Http.HttpClient.MakeRequestAsync (System.String method, System.String url, System.Byte[] body, System.Collections.Generic.Dictionary`2[TKey,TValue] headers, System.Int32 requestTimeout) [0x000b0] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\Http\HttpClient.cs:41 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Http.HttpClient.CreateWebRequestAsync (System.String method, System.String url, System.Byte[] body, System.Collections.Generic.IDictionary`2[TKey,TValue] headers, System.Int32 requestTimeout) [0x000ab] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\Http\HttpClient.cs:56 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Http.HttpClient.CreateHttpClientResponse (System.String method, System.String url, System.Byte[] body, System.Collections.Generic.IDictionary`2[TKey,TValue] headers, System.Int32 requestTimeout) [0x00151] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\Http\HttpClient.cs:84 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Http.HttpClient+<>c__DisplayClass4_0.<CreateHttpClientResponse>b__0 () [0x0018d] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\Http\HttpClient.cs:81 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.TaskCompletionSource`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.TaskCompletionSource`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Http.UnityWebRequestHelpers+<>c__DisplayClass0_0.<GetAwaiter>b__0 (UnityEngine.AsyncOperation obj) [0x0000c] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\Http\UnityWebRequestHelpers.cs:34 
+  at UnityEngine.AsyncOperation.InvokeCompletionEvent () [0x00000] in <37cc348edc804f4cb176b63962c716e7>:0 
+[11:59:06.846] [WARNING] [UIRoom] 🔥🔥🔥 InitializeMultiplayerBattleImmediate() ENTRY POINT 🔥🔥🔥
+[11:59:06.847] [INFO] [BattleManager] ✅ Initializing battle: Grade 3, Difficulty 1
+[11:59:06.850] [INFO] [BattleManager] 🎮 Spawning player states...
+[11:59:06.850] [INFO] [BattleManager] Player 1 name: VovangiangPro
+[11:59:06.853] [INFO] [PlayerState] Spawned player 0 on server
+[11:59:06.860] [INFO] [PlayerState] Initialized P0: VovangiangPro, HP=2
+[11:59:06.862] [INFO] [BattleManager] ✅ Player 1 spawned
+[11:59:06.863] [INFO] [PlayerState] Spawned player 1 on server
+[11:59:06.863] [INFO] [PlayerState] Initialized P1: Player 2, HP=2
+[11:59:06.864] [INFO] [BattleManager] ✅ Player 2 spawned (ClientID: 1)
+[11:59:06.865] [INFO] [BattleManager] Spawned player states: P1=0, P2=1
+[11:59:06.866] [INFO] [BattleManager] ⚔️ Match started!
+[11:59:06.871] [INFO] [BattleManager] 📝 Generating new question (without timer)...
+[11:59:06.875] [INFO] [BattleManager] Generated question (no timer): 55 + 29 = ? = 84
+[11:59:06.878] [INFO] [BattleManager] Client received question: 55 + 29 = ?
+[11:59:06.879] [INFO] [LoadingPanel] 🔄 LoadingRoutine START
+[11:59:06.881] [INFO] [LoadingPanel] Phase 1: Kết nối...
+[11:59:06.882] [INFO] [UIRoom] UpdateStartMatchButton: players=2, clientReady=True, relayReady=True, visible=True, interactable=True
+[11:59:07.335] [INFO] [LoadingPanel] Phase 2: Đồng bộ dữ liệu...
+[11:59:07.336] [INFO] [LoadingPanel] IsNetworkReady: True
+[11:59:07.340] [INFO] [LoadingPanel] ✅ Network ready!
+[11:59:07.340] [INFO] [LoadingPanel] Phase 3: Chuẩn bị trận đấu...
+[11:59:07.341] [INFO] [LoadingPanel] ArePlayerStatesReady: True
+[11:59:07.344] [INFO] [LoadingPanel] ✅ Player states ready!
+[11:59:07.344] [INFO] [LoadingPanel] Waiting 1.49s to reach minLoadingTime...
+[11:59:07.591] [INFO] [BattleManager] Server received name update from client 1: Huynh2333
+[11:59:07.592] [INFO] [BattleManager] Updating Player 2 name (client 1)
+[11:59:07.592] [INFO] [BattleManager] ✅ Updated player name for client 1: Huynh2333
+[11:59:08.832] [INFO] [LoadingPanel] ✅ Loading complete!
+[11:59:09.132] [INFO] [LoadingPanel] ✅ Loading complete, navigating to GameplayPanel
+[11:59:09.133] [INFO] [LoadingPanel] ✅ Found GameplayPanel, showing it...
+[11:59:09.135] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0 (1): (-138.14, -309.22)
+[11:59:09.136] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0 (2): (46.16, -309.22)
+[11:59:09.138] [INFO] [BattleController] OnEnable CALLED
+[11:59:09.140] [INFO] [BattleController] ✅ Subscribed to BattleManager events
+[11:59:09.140] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0: (-314.52, -309.22)
+[11:59:09.140] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0 (3): (212.71, -309.22)
+[11:59:09.141] [INFO] [BattleController] ✅ Subscribed to BattleManager events
+[11:59:09.141] [INFO] [BattleController] 🎬 Starting countdown...
+[11:59:09.142] [INFO] [AnswerSummaryUI] ✅ Hidden all UI for countdown
+[11:59:09.143] [INFO] [BattleController] ✅ Hidden all battle UI for countdown
+[11:59:09.144] [INFO] [AnswerSummaryUI] Auto-loaded summary duration from GameRules: 3s
+[11:59:09.144] [INFO] [AnswerSummaryUI] State: Question Time
+[11:59:09.144] [INFO] [AnswerSummaryUI] ✅ Initialized
+[11:59:09.145] [INFO] [BattleController] Start CALLED
+[11:59:09.145] [INFO] [BattleController] ✅ Subscribed to BattleManager events
+[11:59:09.624] [INFO] [BattleController] 🔗 Subscribing to NetworkVariables (IsSpawned=True)
+[11:59:09.625] [INFO] [BattleController] ✅ Subscribed to NetworkVariable changes
+[11:59:09.632] [INFO] [BattleController] Countdown: 3
+[11:59:09.824] [INFO] [BattleController] 🔄 Force initial sync...
+[11:59:09.824] [INFO] [BattleController] 📝 Initial question found: 55 + 29 = ?
+[11:59:09.825] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:09.825] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:09.825] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:09.826] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:09.826] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[11:59:09.826] [INFO] [BattleController] ⚔️ Match already started
+[11:59:10.124] [INFO] [HealthUI] Player1State: FOUND
+[11:59:10.124] [INFO] [HealthUI] Player2State: FOUND
+[11:59:10.124] [INFO] [HealthUI] Subscribing to Player1: HP=2/2
+[11:59:10.125] [INFO] [HealthUI] UpdateHealth: TimerFill1 fillAmount=1.00 (2/2), FillMethod=Horizontal, Color=RGBA(0.248, 1.000, 0.000, 1.000)
+[11:59:10.125] [INFO] [HealthUI] Subscribing to Player2: HP=2/2
+[11:59:10.125] [INFO] [HealthUI] UpdateHealth: TimerFill2 fillAmount=1.00 (2/2), FillMethod=Horizontal, Color=RGBA(0.316, 1.000, 0.000, 1.000)
+[11:59:10.127] [INFO] [HealthUI] ✅ Successfully initialized!
+[11:59:10.632] [INFO] [BattleController] Countdown: 2
+[11:59:11.633] [INFO] [BattleController] Countdown: 1
+[11:59:12.635] [INFO] [BattleController] Countdown: Ready
+[11:59:13.636] [INFO] [BattleController] Countdown: GO!
+[11:59:14.640] [INFO] [AnswerSummaryUI] ✅ Shown all UI after countdown
+[11:59:14.641] [INFO] [BattleController] ✅ Shown all battle UI after countdown
+[11:59:14.641] [INFO] [BattleManager] ⏱️ Starting question timer...
+[11:59:14.642] [INFO] [BattleController] ✅ Started BattleManager timer (server-side)
+[11:59:14.643] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[11:59:14.643] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[11:59:14.643] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[11:59:14.643] [INFO] [BattleController] ✅ Countdown complete, battle started!
+[11:59:14.644] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[11:59:14.644] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[11:59:14.644] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[11:59:14.644] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[11:59:20.642] [INFO] [BattleManager] 🎯 Evaluating answers...
+[11:59:20.643] [INFO] [BattleManager] P1: answer=-1, correct=False, time=9223372036854775807ms
+[11:59:20.643] [INFO] [BattleManager] P2: answer=-1, correct=False, time=9223372036854775807ms
+[11:59:20.643] [INFO] [BattleManager] Both answered incorrectly
+[11:59:20.643] [INFO] [BattleManager] Both players answered incorrectly
+[11:59:20.644] [INFO] [BattleManager] Client received answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=9223372036854775807ms, P1Answer=-1, P2Answer=-1
+[11:59:20.645] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=-1, Correct=False, Time=9223372036854775807ms
+[11:59:20.646] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[11:59:20.646] [INFO] [BattleController] [HOST] Correct answer: 84
+[11:59:20.646] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[11:59:20.647] [INFO] [BattleController] [HOST] Answer 0 text: '70'
+[11:59:20.647] [INFO] [BattleController] [HOST] Answer 0: 70 → WRONG → Calling ShowResultForce(False)
+[11:59:20.647] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[11:59:20.647] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[11:59:20.648] [INFO] [BattleController] [HOST] Answer 1 text: '94'
+[11:59:20.648] [INFO] [BattleController] [HOST] Answer 1: 94 → WRONG → Calling ShowResultForce(False)
+[11:59:20.648] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[11:59:20.648] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[11:59:20.649] [INFO] [BattleController] [HOST] Answer 2 text: '84'
+[11:59:20.649] [INFO] [BattleController] [HOST] Answer 2: 84 → CORRECT → Calling ShowResultForce(True)
+[11:59:20.649] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (2)
+[11:59:20.649] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[11:59:20.649] [INFO] [BattleController] [HOST] Answer 3 text: '99'
+[11:59:20.650] [INFO] [BattleController] [HOST] Answer 3: 99 → WRONG → Calling ShowResultForce(False)
+[11:59:20.650] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[11:59:20.650] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[11:59:20.650] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[11:59:20.650] [INFO] [AnswerSummaryUI] Answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=9223372036854775807ms, P1Answer=-1, P2Answer=-1
+[11:59:20.652] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[11:59:20.653] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[11:59:20.653] [INFO] [AnswerSummaryUI] P2 answer: (Không trả lời)
+[11:59:20.653] [INFO] [AnswerSummaryUI] Correct answer: 84, P1: -1 (False), P2: -1 (False)
+[11:59:20.654] [INFO] [AnswerSummaryUI] Result: <color=red>Cả 2 đều sai!</color>
+[11:59:20.654] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[11:59:20.654] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=-1, Correct=False, Time=9223372036854775807ms
+[11:59:20.654] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[11:59:20.654] [INFO] [BattleController] [HOST] Correct answer: 84
+[11:59:20.655] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[11:59:20.655] [INFO] [BattleController] [HOST] Answer 0 text: '70'
+[11:59:20.655] [INFO] [BattleController] [HOST] Answer 0: 70 → WRONG → Calling ShowResultForce(False)
+[11:59:20.655] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[11:59:20.655] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[11:59:20.655] [INFO] [BattleController] [HOST] Answer 1 text: '94'
+[11:59:20.655] [INFO] [BattleController] [HOST] Answer 1: 94 → WRONG → Calling ShowResultForce(False)
+[11:59:20.655] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[11:59:20.656] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[11:59:20.656] [INFO] [BattleController] [HOST] Answer 2 text: '84'
+[11:59:20.656] [INFO] [BattleController] [HOST] Answer 2: 84 → CORRECT → Calling ShowResultForce(True)
+[11:59:20.656] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (2)
+[11:59:20.656] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[11:59:20.656] [INFO] [BattleController] [HOST] Answer 3 text: '99'
+[11:59:20.656] [INFO] [BattleController] [HOST] Answer 3: 99 → WRONG → Calling ShowResultForce(False)
+[11:59:20.656] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[11:59:20.656] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[11:59:20.657] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[11:59:20.657] [INFO] [AnswerSummaryUI] Answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=9223372036854775807ms, P1Answer=-1, P2Answer=-1
+[11:59:20.657] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[11:59:20.657] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[11:59:20.657] [INFO] [AnswerSummaryUI] P2 answer: (Không trả lời)
+[11:59:20.657] [INFO] [AnswerSummaryUI] Correct answer: 84, P1: -1 (False), P2: -1 (False)
+[11:59:20.657] [INFO] [AnswerSummaryUI] Result: <color=red>Cả 2 đều sai!</color>
+[11:59:20.657] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[11:59:23.624] [INFO] [BattleManager] 📝 Generating new question...
+[11:59:23.625] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:23.625] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:23.625] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:23.626] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:23.626] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[11:59:23.626] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:23.626] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:23.626] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:23.626] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:23.627] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[11:59:23.627] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:23.627] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:23.628] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:23.628] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:23.628] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[11:59:23.628] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:23.628] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:23.628] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:23.628] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:23.628] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[11:59:23.628] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:23.628] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:23.628] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:23.629] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:23.629] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[11:59:23.629] [INFO] [BattleManager] Generated question: 88 - 87 + 40 = ? = 41
+[11:59:23.629] [INFO] [BattleManager] Client received question: 88 - 87 + 40 = ?
+[11:59:23.630] [INFO] [AnswerSummaryUI] New question generated: 88 - 87 + 40 = ?
+[11:59:23.630] [INFO] [AnswerSummaryUI] State: Question Time
+[11:59:23.630] [INFO] [AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController
+[11:59:23.631] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:23.631] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:23.631] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:23.632] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:23.632] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[11:59:23.633] [INFO] [BattleManager] ⏱️ Starting question timer...
+[11:59:23.633] [INFO] [BattleController] ✅ Started BattleManager timer (server-side)
+[11:59:23.633] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[11:59:23.633] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[11:59:23.634] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[11:59:26.455] [WARNING] Directly calling `UnityTransport.Shutdown()` results in unexpected shutdown behaviour. All pending events will be lost. Use `NetworkManager.Shutdown()` instead.
+[11:59:26.473] [INFO] [UIRoom] UpdateStartMatchButton: players=2, clientReady=True, relayReady=False, visible=True, interactable=False
+[11:59:26.473] [INFO] [UIRoom] Đang rời phòng...
+[11:59:26.475] [INFO] [UIButtonScreenNavigator:Quit] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[11:59:26.475] [INFO] [UIButtonScreenNavigator:Quit] Switching UI to 'LobbyPanel'
+[11:59:26.476] [INFO] [UIRoom] 🔄 OnEnable: Panel active lại, force refresh lobby...
+[11:59:26.477] [WARNING] [UIButtonScreenNavigator:Quit] Auto-normalized panel 'LobbyPanel' to full-screen.
+
+=== GAME LOG END ===
+Time: 5/5/2026 11:59:26 AM
+====================

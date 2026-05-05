@@ -15,12 +15,9 @@ namespace DoAnGame.UI
         [Header("UI References")]
         [SerializeField] private TMP_InputField emailInputField;
         [SerializeField] private Button sendButton;
-        // returnButton KHÔNG CẦN NỮA - dùng UIButtonScreenNavigator thay thế
+        [SerializeField] private Button completeButton; // Nút "Hoàn Thành" để quay lại LoginPanel
         [SerializeField] private TMP_Text statusText;
         [SerializeField] private TMP_Text errorText;
-
-        [Header("Navigation")]
-        [SerializeField] private string backPanelName = "LoginPanel";
 
         [Header("Anti-Spam")]
         [SerializeField] private float cooldownSeconds = 60f; // 1 phút cooldown
@@ -52,24 +49,27 @@ namespace DoAnGame.UI
             // Auto-find components nếu chưa gán
             if (emailInputField == null)
             {
-                emailInputField = transform.Find("EmailInputField")?.GetComponent<TMP_InputField>();
+                emailInputField = transform.Find("ContentPanel/EmailInputField")?.GetComponent<TMP_InputField>();
             }
 
             if (sendButton == null)
             {
-                sendButton = transform.Find("GuiEmailBtn")?.GetComponent<Button>();
+                sendButton = transform.Find("ContentPanel/GuiEmailBtn")?.GetComponent<Button>();
             }
 
-            // returnButton KHÔNG CẦN auto-find - dùng UIButtonScreenNavigator
+            if (completeButton == null)
+            {
+                completeButton = transform.Find("ContentPanel/HoanThanhBtn (1)")?.GetComponent<Button>();
+            }
 
             if (statusText == null)
             {
-                statusText = transform.Find("StatusText")?.GetComponent<TMP_Text>();
+                statusText = transform.Find("ContentPanel/StatusText")?.GetComponent<TMP_Text>();
             }
 
             if (errorText == null)
             {
-                errorText = transform.Find("ErrorText")?.GetComponent<TMP_Text>();
+                errorText = transform.Find("ContentPanel/ErrorText")?.GetComponent<TMP_Text>();
             }
 
             // Bind buttons
@@ -79,7 +79,11 @@ namespace DoAnGame.UI
                 sendButton.onClick.AddListener(OnSendButtonClicked);
             }
 
-            // returnButton KHÔNG CẦN bind - UIButtonScreenNavigator tự xử lý
+            if (completeButton != null)
+            {
+                completeButton.onClick.RemoveAllListeners();
+                completeButton.onClick.AddListener(OnCompleteButtonClicked);
+            }
         }
 
         protected override void OnShow()
@@ -108,7 +112,7 @@ namespace DoAnGame.UI
         {
             base.OnDestroy();
             sendButton?.onClick.RemoveAllListeners();
-            // returnButton KHÔNG CẦN cleanup - UIButtonScreenNavigator tự xử lý
+            completeButton?.onClick.RemoveAllListeners();
         }
 
         /// <summary>
@@ -164,23 +168,7 @@ namespace DoAnGame.UI
                     ShowStatus("✅ Đã gửi email! Vui lòng kiểm tra hộp thư.");
                     Debug.Log($"[ForgotPassword] Password reset email sent to: {email}");
 
-                    // Đợi 2 giây rồi quay về LoginPanel
-                    await Task.Delay(2000);
-                    
-                    // Tìm BackBtn và trigger UIButtonScreenNavigator
-                    Transform backBtn = transform.Find("BackBtn");
-                    if (backBtn != null)
-                    {
-                        var navigator = backBtn.GetComponent<UIButtonScreenNavigator>();
-                        if (navigator != null)
-                        {
-                            navigator.NavigateNow();
-                        }
-                        else
-                        {
-                            Debug.LogWarning("[ForgotPassword] BackBtn không có UIButtonScreenNavigator!");
-                        }
-                    }
+                    // Không tự động quay về - để user click nút "Hoàn Thành"
                 }
                 else
                 {
@@ -206,6 +194,55 @@ namespace DoAnGame.UI
                 {
                     sendButton.interactable = true;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Xử lý khi click button "Hoàn Thành" - quay lại LoginPanel
+        /// </summary>
+        private void OnCompleteButtonClicked()
+        {
+            try
+            {
+                Debug.Log("[ForgotPassword] Complete button clicked - returning to LoginPanel");
+
+                // Tìm LoginPanel
+                Transform canvas = transform.parent;
+                if (canvas == null)
+                {
+                    Debug.LogError("[ForgotPassword] Cannot find parent canvas!");
+                    ShowError("Không thể quay lại màn hình đăng nhập");
+                    return;
+                }
+
+                Transform loginPanel = canvas.Find("LoginPanel");
+                if (loginPanel == null)
+                {
+                    Debug.LogError("[ForgotPassword] Cannot find LoginPanel!");
+                    ShowError("Không tìm thấy màn hình đăng nhập");
+                    return;
+                }
+
+                // Ẩn ForgotPasswordPanel
+                Hide();
+
+                // Hiển thị LoginPanel
+                var flowPanel = loginPanel.GetComponent<FlowPanelController>();
+                if (flowPanel != null)
+                {
+                    flowPanel.Show();
+                }
+                else
+                {
+                    loginPanel.gameObject.SetActive(true);
+                }
+
+                Debug.Log("[ForgotPassword] Successfully navigated back to LoginPanel");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[ForgotPassword] Error in OnCompleteButtonClicked: {e.Message}");
+                ShowError("❌ Có lỗi xảy ra khi quay lại!");
             }
         }
 

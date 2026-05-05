@@ -1,0 +1,251 @@
+=== GAME LOG START (HOST) ===
+Time: 5/5/2026 11:58:28 AM
+Unity Version: 2022.3.62f3
+Platform: WindowsEditor
+Log Path: D:/app/GameDoan/DoAnGame/Assets\Script\Script_multiplayer\1Code\Multiplay\GameLog_HOST_20260505_115828.txt
+================================
+
+[11:58:29.893] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[11:58:29.894] [INFO] [UIRoom]   Player 1: Huynh2333 (chủ phòng) (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:29.896] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:29.896] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[11:58:29.899] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:30.077] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[11:58:30.078] [INFO] [UIRoom]   Player 1: Huynh2333 (chủ phòng) (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:30.079] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:30.080] [INFO] [UIRoom] Đã tạo phòng. Độ khó: Lớp 1. Chờ người chơi thứ 2...
+[11:58:30.080] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[11:58:30.081] [INFO] [UIRoom]   Player 1: Huynh2333 (chủ phòng) (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:30.081] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:30.082] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[11:58:30.090] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[11:58:33.805] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[11:58:33.806] [INFO] [UIRoom]   Player 1: Huynh2333 (chủ phòng) (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:33.807] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:33.807] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[11:58:33.808] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[11:58:34.708] [WARNING] A meta data file (.meta) exists but its asset 'Assets/Script/Script_multiplayer/1Code/Multiplay/GameLog_HOST_20260505_115040.txt' can't be found. When moving or deleting files outside of Unity, please ensure that the corresponding .meta file is moved or deleted along with it.
+[11:58:34.708] [WARNING] A meta data file (.meta) exists but its asset 'Assets/Script/Script_multiplayer/1Code/Multiplay/GameLog_HOST_20260505_115042.txt' can't be found. When moving or deleting files outside of Unity, please ensure that the corresponding .meta file is moved or deleted along with it.
+[11:58:34.774] [WARNING] Import Error Code:(4)
+Message: Build asset version error: assets/script/script_multiplayer/1code/multiplay/gamelog_host_20260505_115828.txt in SourceAssetDB has modification time of '2026-05-05T04:58:33.80899Z' while content on disk has modification time of '2026-05-05T04:58:34.7080085Z'
+
+[11:58:35.589] [INFO] [UIButtonScreenNavigator:DS Room] Click detected. targetSceneName='', targetScreen='LobbyBrowserPanel'
+[11:58:35.590] [INFO] [UIButtonScreenNavigator:DS Room] Switching UI to 'LobbyBrowserPanel'
+[11:58:35.600] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-normalized panel 'LobbyBrowserPanel' to full-screen.
+[11:58:36.516] [INFO] [LobbyBrowser] Đang tải danh sách phòng...
+[11:58:36.845] [INFO] [LobbyBrowser] Tìm thấy 2 phòng.
+[11:58:39.897] [INFO] [LobbyBrowser] Đang vào phòng 'Math Room'...
+[11:58:40.536] [INFO] [Relay] Đang ngắt kết nối Relay...
+[11:58:41.040] [INFO] [Relay] Đang tham gia phòng...
+[11:58:41.567] [INFO] [Relay] Đã cấu hình Transport thành công.
+[11:58:41.583] [INFO] [Relay] Client đang kết nối...
+[11:58:41.886] [INFO] [UIRoom] ✅ Updated dropdown to Grade 3 (locked)
+[11:58:41.886] [INFO] [UIRoom] Đã vào phòng (2/2). Chờ chủ phòng bắt đầu...
+[11:58:41.887] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:41.887] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:41.888] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:41.889] [INFO] [UIRoom] IsLocalPlayerReady: playerId=QtautDXHtw4pZAJehVA9dPStMR9k, hasKey=false, isReady=false
+[11:58:41.889] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[11:58:42.197] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:42.199] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:42.199] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:42.199] [INFO] [UIRoom] IsLocalPlayerReady: playerId=QtautDXHtw4pZAJehVA9dPStMR9k, hasKey=false, isReady=false
+[11:58:42.200] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[11:58:42.811] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:42.811] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:42.812] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:42.812] [INFO] [UIRoom] IsLocalPlayerReady: playerId=QtautDXHtw4pZAJehVA9dPStMR9k, hasKey=false, isReady=false
+[11:58:42.813] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[11:58:42.814] [INFO] [UIRoom] ✅ Force refreshed lobby after join: 2 players
+[11:58:42.814] [INFO] [UIRoom] IsLocalPlayerReady: playerId=QtautDXHtw4pZAJehVA9dPStMR9k, hasKey=false, isReady=false
+[11:58:42.815] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[11:58:42.815] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:42.817] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:42.817] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:42.817] [INFO] [UIRoom] IsLocalPlayerReady: playerId=QtautDXHtw4pZAJehVA9dPStMR9k, hasKey=false, isReady=false
+[11:58:42.818] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[11:58:42.820] [INFO] [LobbyBrowser] Đã vào phòng.
+[11:58:42.822] [INFO] [UIRoom] 🔄 OnEnable: Panel active lại, force refresh lobby...
+[11:58:42.824] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:42.826] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:42.826] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:42.827] [INFO] [UIRoom] IsLocalPlayerReady: playerId=QtautDXHtw4pZAJehVA9dPStMR9k, hasKey=false, isReady=false
+[11:58:42.828] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[11:58:42.829] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:42.830] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:42.830] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:42.831] [INFO] [UIRoom] IsLocalPlayerReady: playerId=QtautDXHtw4pZAJehVA9dPStMR9k, hasKey=false, isReady=false
+[11:58:42.832] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[11:58:42.832] [INFO] [UIRoom] IsLocalPlayerReady: playerId=QtautDXHtw4pZAJehVA9dPStMR9k, hasKey=false, isReady=false
+[11:58:42.834] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[11:58:43.062] [INFO] [BattleManager] Client spawned, waiting for player states...
+[11:58:43.138] [WARNING] [UIRoom] OnEnable refresh failed: Something went wrong.
+[11:58:43.139] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:43.140] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:43.140] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:43.140] [INFO] [UIRoom] IsLocalPlayerReady: playerId=QtautDXHtw4pZAJehVA9dPStMR9k, hasKey=false, isReady=false
+[11:58:43.142] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[11:58:43.143] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[11:58:43.144] [INFO] [UIRoom]   Player 1: VovangiangPro (chủ phòng) (ID: 6GMN9O29ihOmESR5ClbNCdEVPuYK)
+[11:58:43.144] [INFO] [UIRoom]   Player 2: Huynh2333 (ID: QtautDXHtw4pZAJehVA9dPStMR9k)
+[11:58:43.145] [INFO] [UIRoom] IsLocalPlayerReady: playerId=QtautDXHtw4pZAJehVA9dPStMR9k, hasKey=false, isReady=false
+[11:58:43.145] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[11:58:50.620] [INFO] [UIRoom] 🟢 HandleReadyButtonClick START: isHost=False, isBusy=False
+[11:58:50.621] [INFO] [UIRoom] 🟢 Calling MarkClientReadyAsync...
+[11:58:50.935] [INFO] [UIRoom] Đã sẵn sàng! Chờ chủ phòng bắt đầu...
+[11:58:50.936] [INFO] [UIRoom] IsLocalPlayerReady: playerId=QtautDXHtw4pZAJehVA9dPStMR9k, hasKey=true, value=1, isReady=True
+[11:58:50.936] [INFO] [UIRoom] Đã sẵn sàng! Chờ chủ phòng bắt đầu...
+[11:58:50.938] [INFO] [UIRoom] 🟢 MarkClientReadyAsync completed. UI should stay on LobbyPanel.
+[11:58:50.939] [INFO] [UIRoom] 🟢 HandleReadyButtonClick END: isHost=False, receivedStartSignalFromHost=False
+[11:58:50.944] [WARNING] The character with Unicode value \u2713 was not found in the [Roboto-Bold SDF] font asset or any potential fallbacks. It was replaced by Unicode character \u25A1 in text object [Text (TMP)].
+[11:59:06.962] [WARNING] [UIRoom] 🔴 HandleStartMatchMessageReceived: signal=1, sender=0, isHost=False
+[11:59:06.963] [WARNING] [UIRoom] 🔴 TRIGGERING NotifyBattleStarted from NGO message! receivedStartSignalFromHost=true
+[11:59:06.963] [INFO] [UIRoom] Nhận tín hiệu bắt đầu từ host...
+[11:59:06.964] [WARNING] [UIRoom] 🔥 NotifyBattleStarted() CALLED 🔥 isHost=False, receivedStartSignalFromHost=True
+[11:59:06.967] [WARNING] [UIRoom] 🔥 Stack trace:   at System.Environment.get_StackTrace () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at DoAnGame.UI.UIMultiplayerRoomController.NotifyBattleStarted () [0x00025] in D:\app\GameDoan\DoAnGame\Assets\Script\Script_multiplayer\1Code\CODE\UIMultiplayerRoomController.cs:1812 
+  at DoAnGame.UI.UIMultiplayerRoomController.HandleStartMatchMessageReceived (System.UInt64 senderClientId, Unity.Netcode.FastBufferReader reader) [0x0009c] in D:\app\GameDoan\DoAnGame\Assets\Script\Script_multiplayer\1Code\CODE\UIMultiplayerRoomController.cs:2488 
+  at Unity.Netcode.CustomMessagingManager.InvokeNamedMessage (System.UInt64 hash, System.UInt64 sender, Unity.Netcode.FastBufferReader reader, System.Int32 serializedHeaderSize) [0x000cb] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Messaging\CustomMessageManager.cs:183 
+  at Unity.Netcode.NamedMessage.Handle (Unity.Netcode.NetworkContext& context) [0x0001c] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Messaging\Messages\NamedMessage.cs:30 
+  at Unity.Netcode.NetworkMessageManager.ReceiveMessage[T] (Unity.Netcode.FastBufferReader reader, Unity.Netcode.NetworkContext& context, Unity.Netcode.NetworkMessageManager manager) [0x000c0] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Messaging\NetworkMessageManager.cs:582 
+  at Unity.Netcode.NetworkMessageManager.HandleMessage (Unity.Netcode.NetworkMessageHeader& header, Unity.Netcode.FastBufferReader reader, System.UInt64 senderId, System.Single timestamp, System.Int32 serializedHeaderSize) [0x000ff] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Messaging\NetworkMessageManager.cs:446 
+  at Unity.Netcode.NetworkMessageManager.ProcessIncomingMessageQueue () [0x0001a] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Messaging\NetworkMessageManager.cs:472 
+  at Unity.Netcode.NetworkManager.NetworkUpdate (Unity.Netcode.NetworkUpdateStage updateStage) [0x00054] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Core\NetworkManager.cs:59 
+  at Unity.Netcode.NetworkUpdateLoop.RunNetworkUpdateStage (Unity.Netcode.NetworkUpdateStage updateStage) [0x00021] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Core\NetworkUpdateLoop.cs:192 
+  at Unity.Netcode.NetworkUpdateLoop+NetworkEarlyUpdate+<>c.<CreateLoopSystem>b__0_0 () [0x00000] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Core\NetworkUpdateLoop.cs:215 
+[11:59:06.969] [WARNING] [UIRoom] 🔥🔥🔥 InitializeMultiplayerBattleImmediate() ENTRY POINT 🔥🔥🔥
+[11:59:06.969] [WARNING] [UIRoom] ⚠️ Not server (IsServer=False)
+[11:59:06.973] [INFO] [LoadingPanel] 🔄 LoadingRoutine START
+[11:59:06.973] [INFO] [LoadingPanel] Phase 1: Kết nối...
+[11:59:06.981] [INFO] [BattleManager] Client received player states ready notification
+[11:59:06.985] [INFO] [BattleManager] Client received question: 55 + 29 = ?
+[11:59:07.448] [INFO] [BattleManager] Client sending name: Huynh2333 (ClientID: 1)
+[11:59:07.465] [INFO] [LoadingPanel] Phase 2: Đồng bộ dữ liệu...
+[11:59:07.466] [INFO] [LoadingPanel] IsNetworkReady: True
+[11:59:07.468] [INFO] [LoadingPanel] ✅ Network ready!
+[11:59:07.470] [INFO] [LoadingPanel] Phase 3: Chuẩn bị trận đấu...
+[11:59:07.470] [INFO] [BattleManager] Re-found Player1State from scene
+[11:59:07.470] [INFO] [BattleManager] Re-found Player2State from scene
+[11:59:07.471] [INFO] [LoadingPanel] ArePlayerStatesReady: True
+[11:59:07.473] [INFO] [LoadingPanel] ✅ Player states ready!
+[11:59:07.473] [INFO] [LoadingPanel] Waiting 1.49s to reach minLoadingTime...
+[11:59:08.964] [INFO] [LoadingPanel] ✅ Loading complete!
+[11:59:09.265] [INFO] [LoadingPanel] ✅ Loading complete, navigating to GameplayPanel
+[11:59:09.266] [INFO] [LoadingPanel] ✅ Found GameplayPanel, showing it...
+[11:59:09.269] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0 (1): (-138.14, -309.22)
+[11:59:09.269] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0 (2): (46.16, -309.22)
+[11:59:09.272] [INFO] [BattleController] OnEnable CALLED
+[11:59:09.274] [INFO] [BattleController] ✅ Subscribed to BattleManager events
+[11:59:09.274] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0: (-314.52, -309.22)
+[11:59:09.275] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0 (3): (212.71, -309.22)
+[11:59:09.275] [INFO] [BattleController] ✅ Subscribed to BattleManager events
+[11:59:09.275] [INFO] [BattleController] 🎬 Starting countdown...
+[11:59:09.276] [INFO] [AnswerSummaryUI] ✅ Hidden all UI for countdown
+[11:59:09.276] [INFO] [BattleController] ✅ Hidden all battle UI for countdown
+[11:59:09.277] [INFO] [AnswerSummaryUI] Auto-loaded summary duration from GameRules: 3s
+[11:59:09.278] [INFO] [AnswerSummaryUI] State: Question Time
+[11:59:09.278] [INFO] [AnswerSummaryUI] ✅ Initialized
+[11:59:09.278] [INFO] [BattleController] Start CALLED
+[11:59:09.278] [INFO] [BattleController] ✅ Subscribed to BattleManager events
+[11:59:09.766] [INFO] [BattleController] 🔗 Subscribing to NetworkVariables (IsSpawned=True)
+[11:59:09.766] [INFO] [BattleController] ✅ Subscribed to NetworkVariable changes
+[11:59:09.769] [INFO] [BattleController] Countdown: 3
+[11:59:09.965] [INFO] [BattleController] 🔄 Force initial sync...
+[11:59:09.966] [INFO] [BattleController] 📝 Initial question found: 55 + 29 = ?
+[11:59:09.966] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:09.966] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:09.968] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:09.968] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:09.968] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[11:59:09.968] [INFO] [BattleController] ⚔️ Match already started
+[11:59:10.265] [INFO] [HealthUI] Player1State: FOUND
+[11:59:10.267] [INFO] [HealthUI] Player2State: FOUND
+[11:59:10.267] [INFO] [HealthUI] Subscribing to Player1: HP=2/2
+[11:59:10.268] [INFO] [HealthUI] UpdateHealth: TimerFill1 fillAmount=1.00 (2/2), FillMethod=Horizontal, Color=RGBA(0.248, 1.000, 0.000, 1.000)
+[11:59:10.269] [INFO] [HealthUI] Subscribing to Player2: HP=2/2
+[11:59:10.269] [INFO] [HealthUI] UpdateHealth: TimerFill2 fillAmount=1.00 (2/2), FillMethod=Horizontal, Color=RGBA(0.316, 1.000, 0.000, 1.000)
+[11:59:10.269] [INFO] [HealthUI] ✅ Successfully initialized!
+[11:59:10.769] [INFO] [BattleController] Countdown: 2
+[11:59:11.768] [INFO] [BattleController] Countdown: 1
+[11:59:12.769] [INFO] [BattleController] Countdown: Ready
+[11:59:13.774] [INFO] [BattleController] Countdown: GO!
+[11:59:14.775] [INFO] [AnswerSummaryUI] ✅ Shown all UI after countdown
+[11:59:14.775] [INFO] [BattleController] ✅ Shown all battle UI after countdown
+[11:59:14.776] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[11:59:14.776] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[11:59:14.776] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[11:59:14.776] [INFO] [BattleController] ✅ Countdown complete, battle started!
+[11:59:14.777] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[11:59:14.777] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[11:59:14.777] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[11:59:14.777] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[11:59:20.734] [INFO] [BattleManager] Client received answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=9223372036854775807ms, P1Answer=-1, P2Answer=-1
+[11:59:20.734] [INFO] [BattleController] [CLIENT] HandleAnswerResult CALLED: Winner=-1, Correct=False, Time=9223372036854775807ms
+[11:59:20.735] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[11:59:20.735] [INFO] [BattleController] [CLIENT] Correct answer: 84
+[11:59:20.736] [INFO] [BattleController] [CLIENT] answerChoices.Length: 4
+[11:59:20.736] [INFO] [BattleController] [CLIENT] Answer 0 text: '70'
+[11:59:20.737] [INFO] [BattleController] [CLIENT] Answer 0: 70 → WRONG → Calling ShowResultForce(False)
+[11:59:20.737] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[11:59:20.737] [INFO] [BattleController] [CLIENT] Answer 0: ShowResultForce DONE
+[11:59:20.737] [INFO] [BattleController] [CLIENT] Answer 1 text: '94'
+[11:59:20.737] [INFO] [BattleController] [CLIENT] Answer 1: 94 → WRONG → Calling ShowResultForce(False)
+[11:59:20.739] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[11:59:20.739] [INFO] [BattleController] [CLIENT] Answer 1: ShowResultForce DONE
+[11:59:20.739] [INFO] [BattleController] [CLIENT] Answer 2 text: '84'
+[11:59:20.739] [INFO] [BattleController] [CLIENT] Answer 2: 84 → CORRECT → Calling ShowResultForce(True)
+[11:59:20.739] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (2)
+[11:59:20.739] [INFO] [BattleController] [CLIENT] Answer 2: ShowResultForce DONE
+[11:59:20.740] [INFO] [BattleController] [CLIENT] Answer 3 text: '99'
+[11:59:20.740] [INFO] [BattleController] [CLIENT] Answer 3: 99 → WRONG → Calling ShowResultForce(False)
+[11:59:20.740] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[11:59:20.740] [INFO] [BattleController] [CLIENT] Answer 3: ShowResultForce DONE
+[11:59:20.740] [INFO] [BattleController] [CLIENT] HandleAnswerResult COMPLETED
+[11:59:20.740] [INFO] [AnswerSummaryUI] Answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=9223372036854775807ms, P1Answer=-1, P2Answer=-1
+[11:59:20.741] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[11:59:20.742] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[11:59:20.742] [INFO] [AnswerSummaryUI] P2 answer: (Không trả lời)
+[11:59:20.743] [INFO] [AnswerSummaryUI] Correct answer: 84, P1: -1 (False), P2: -1 (False)
+[11:59:20.743] [INFO] [AnswerSummaryUI] Result: <color=red>Cả 2 đều sai!</color>
+[11:59:20.744] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[11:59:23.699] [INFO] [BattleManager] Client received question: 88 - 87 + 40 = ?
+[11:59:23.700] [INFO] [AnswerSummaryUI] New question generated: 88 - 87 + 40 = ?
+[11:59:23.700] [INFO] [AnswerSummaryUI] State: Question Time
+[11:59:23.700] [INFO] [AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController
+[11:59:23.701] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:23.701] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:23.701] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:23.701] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:23.702] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[11:59:23.702] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[11:59:23.702] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[11:59:23.702] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[11:59:23.715] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:23.715] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:23.715] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:23.717] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:23.717] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[11:59:23.717] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:23.717] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:23.717] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:23.717] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:23.717] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[11:59:23.717] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:23.718] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:23.718] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:23.718] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:23.719] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[11:59:23.719] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:23.719] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:23.719] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:23.719] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:23.720] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[11:59:23.720] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[11:59:23.720] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[11:59:23.720] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[11:59:23.721] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[11:59:23.721] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+
+=== GAME LOG END ===
+Time: 5/5/2026 11:59:27 AM
+====================

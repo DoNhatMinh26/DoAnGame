@@ -47,6 +47,8 @@ namespace DoAnGame.UI
         [SerializeField] private Button startMatchButton;
         [Tooltip("Chỉ hiển thị cho CLIENT — báo sẵn sàng cho host")]
         [SerializeField] private Button readyButton;
+        [Tooltip("Nút làm mới thủ công — force refresh lobby ngay lập tức")]
+        [SerializeField] private Button refreshButton;
 
         [Header("Room Inputs")]
         [SerializeField] private TMP_InputField roomCodeInput;
@@ -130,6 +132,7 @@ namespace DoAnGame.UI
             quitRoomButton?.onClick.AddListener(() => _ = HandleQuitRoom());
             startMatchButton?.onClick.AddListener(() => _ = HandleStartMatch());
             readyButton?.onClick.AddListener(() => _ = HandleReadyButtonClick());
+            refreshButton?.onClick.AddListener(() => _ = HandleRefreshButton());
             EnsureStartMatchMessageHandlerRegistered();
         }
 
@@ -157,16 +160,32 @@ namespace DoAnGame.UI
                 return; // ResetForRematch đã gọi RefreshAuthState, RefreshRoomRoster, UpdateReadyButtonState
             }
             
+            // ✅ FIX 3: Reset flags SAU khi check rematch
+            // CHÚ Ý: KHÔNG reset receivedStartSignalFromHost ở đây nếu đang trong lobby session
+            // vì host back từ LobbyBrowserPanel không phải là "join mới"
+            battleStartNotified = false;
+            suppressAutoBattleStart = false;
+            isQuitting = false;
+            if (currentLobby == null)
+            {
+                // Chỉ reset khi không có lobby (idle state)
+                receivedStartSignalFromHost = false;
+            }
+            
+            // ✅ FIX: Refresh UI với data hiện tại
             RefreshAuthState();
             RefreshRoomRoster();
             EnsureInitialized();
-            battleStartNotified = false;
             UpdateReadyButtonState();
-
-            StopRoutines();
-            pollingRoutine = StartCoroutine(PollLobbyRoutine());
+            
+            // ✅ FIX: Đảm bảo polling chạy khi panel active trở lại
+            // (polling có thể bị null nếu chưa được start, hoặc đã bị stop)
+            EnsureLobbyRuntimeRoutines();
         }
 
+        /// <summary>
+        /// Force refresh lobby khi OnShow() - để host thấy client đã join khi quay lại từ LobbyBrowserPanel
+        /// </summary>
         private void EnsureInitialized()
         {
             if (initialized)
@@ -190,10 +209,95 @@ namespace DoAnGame.UI
                 authManager.OnCurrentUserChanged += HandleAuthUserChanged;
             }
 
-            // Trong một số flow dùng UIButtonScreenNavigator, OnShow có thể không được gọi.
-            // Chủ động đảm bảo polling/heartbeat khi panel được kích hoạt lại.
+            // ✅ Subscribe to NetworkManager events để refresh khi client connect
+            if (NetworkManager.Singleton != null)
+            {
+                NetworkManager.Singleton.OnClientConnectedCallback += HandleClientConnected;
+                NetworkManager.Singleton.OnClientDisconnectCallback += HandleClientDisconnected;
+            }
+
+            // ✅ FIX: UIButtonScreenNavigator dùng SetActive trực tiếp, KHÔNG gọi Show()/OnShow()
+            // Vì vậy OnEnable() phải làm đầy đủ những gì OnShow() làm:
+            // 1. Force refresh lobby để lấy data mới nhất
+            // 2. Refresh toàn bộ UI
+            // 3. Đảm bảo polling chạy
+            if (currentLobby != null)
+            {
+                Debug.Log("[UIRoom] 🔄 OnEnable: Panel active lại, force refresh lobby...");
+                _ = OnEnableRefreshAsync();
+            }
+
             EnsureLobbyRuntimeRoutines();
             EnsureStartMatchMessageHandlerRegistered();
+        }
+
+        /// <summary>
+        /// Force refresh lobby khi OnEnable() - UIButtonScreenNavigator dùng SetActive trực tiếp
+        /// nên OnShow() không được gọi, phải refresh trong OnEnable()
+        /// </summary>
+        private async Task OnEnableRefreshAsync()
+        {
+            try
+            {
+                // Bypass rate limit để lấy data mới nhất ngay lập tức
+                nextLobbyReadAt = 0f;
+
+                var refreshed = await LobbyService.Instance.GetLobbyAsync(currentLobby.Id);
+                if (refreshed != null)
+                {
+                    currentLobby = refreshed;
+                    int playerCount = refreshed.Players?.Count ?? 0;
+                    Debug.Log($"[UIRoom] ✅ OnEnable refresh: {playerCount} players in lobby");
+
+                    RefreshAuthState();
+                    RefreshRoomRoster();
+                    UpdateReadyButtonState();
+
+                    if (isHost && startMatchButton != null)
+                    {
+                        UpdateStartMatchButtonState(true);
+                    }
+                    
+                    // ✅ FIX: Aggressive polling kéo dài hơn (10 lần @ 1s) để bắt được ready state
+                    // Client có thể mark ready sau khi host quay lại panel
+                    if (isHost && playerCount >= 2)
+                    {
+                        Debug.Log("[UIRoom] 🔄 Starting aggressive polling to catch client ready state...");
+                        for (int i = 0; i < 10; i++) // ← Tăng từ 3 lên 10 lần
+                        {
+                            await Task.Delay(1000); // ← Tăng từ 500ms lên 1000ms
+                            var polled = await RefreshLobbySafe();
+                            if (polled != null)
+                            {
+                                currentLobby = polled;
+                                RefreshRoomRoster();
+                                UpdateReadyButtonState();
+                                
+                                bool clientReady = IsClientReady(currentLobby);
+                                Debug.Log($"[UIRoom] 🔄 Aggressive poll #{i+1}: clientReady={clientReady}");
+                                
+                                if (clientReady)
+                                {
+                                    Debug.Log("[UIRoom] ✅ Client ready detected! Stopping aggressive polling.");
+                                    break; // Client đã ready, dừng aggressive polling
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (LobbyServiceException ex) when (IsLobbyNotFoundException(ex))
+            {
+                Debug.LogWarning("[UIRoom] OnEnable refresh: Lobby không còn tồn tại");
+                ResetRoomSessionState(DefaultIdleStatus);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[UIRoom] OnEnable refresh failed: {ex.Message}");
+                // Vẫn refresh UI với data cũ
+                RefreshAuthState();
+                RefreshRoomRoster();
+            }
         }
 
         private void OnDisable()
@@ -201,6 +305,66 @@ namespace DoAnGame.UI
             if (authManager != null)
             {
                 authManager.OnCurrentUserChanged -= HandleAuthUserChanged;
+            }
+
+            // ✅ Unsubscribe NetworkManager events
+            if (NetworkManager.Singleton != null)
+            {
+                NetworkManager.Singleton.OnClientConnectedCallback -= HandleClientConnected;
+                NetworkManager.Singleton.OnClientDisconnectCallback -= HandleClientDisconnected;
+            }
+        }
+
+        /// <summary>
+        /// ✅ Callback khi client connect vào NetworkManager (chỉ host nhận)
+        /// </summary>
+        private void HandleClientConnected(ulong clientId)
+        {
+            if (!isHost || currentLobby == null) return;
+
+            Debug.Log($"[UIRoom] 🔔 Client {clientId} connected! Force refreshing lobby...");
+            
+            // Force refresh lobby để thấy player mới ngay
+            _ = ForceRefreshLobby();
+        }
+
+        /// <summary>
+        /// ✅ Callback khi client disconnect
+        /// </summary>
+        private void HandleClientDisconnected(ulong clientId)
+        {
+            if (!isHost || currentLobby == null) return;
+
+            Debug.Log($"[UIRoom] 🔔 Client {clientId} disconnected! Force refreshing lobby...");
+            
+            // Force refresh lobby để update roster
+            _ = ForceRefreshLobby();
+        }
+
+        /// <summary>
+        /// ✅ Force refresh lobby (bypass rate limit)
+        /// </summary>
+        private async Task ForceRefreshLobby()
+        {
+            if (currentLobby == null) return;
+
+            try
+            {
+                nextLobbyReadAt = 0f; // Bypass rate limit
+                await Task.Delay(500); // Đợi server sync
+                
+                var refreshed = await LobbyService.Instance.GetLobbyAsync(currentLobby.Id);
+                if (refreshed != null)
+                {
+                    currentLobby = refreshed;
+                    RefreshRoomRoster();
+                    UpdateReadyButtonState();
+                    Debug.Log($"[UIRoom] ✅ Force refreshed: {currentLobby.Players?.Count ?? 0} players");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[UIRoom] Force refresh failed: {ex.Message}");
             }
         }
 
@@ -328,15 +492,18 @@ namespace DoAnGame.UI
         {
             if (currentLobby == null || currentLobby.Players == null || currentLobby.Players.Count == 0)
             {
+                Debug.LogWarning("[UIRoom] BuildRosterText: currentLobby null or no players");
                 return "Chưa có ai trong room.";
             }
 
+            Debug.Log($"[UIRoom] BuildRosterText: {currentLobby.Players.Count} players in lobby");
             var lines = new List<string>(currentLobby.Players.Count);
             for (int i = 0; i < currentLobby.Players.Count; i++)
             {
                 var lobbyPlayer = currentLobby.Players[i];
                 string displayName = ResolveLobbyPlayerName(lobbyPlayer, i);
                 lines.Add($"{i + 1}. {displayName}");
+                Debug.Log($"[UIRoom]   Player {i + 1}: {displayName} (ID: {lobbyPlayer?.Id})");
             }
 
             return string.Join("\n", lines);
@@ -605,7 +772,12 @@ namespace DoAnGame.UI
         protected override void OnHide()
         {
             base.OnHide();
-            StopRoutines();
+            
+            // ✅ FIX: CHỈ reset flags - KHÔNG dừng polling
+            // Polling cần luôn chạy dù panel inactive (host ở LobbyBrowserPanel)
+            receivedStartSignalFromHost = false;
+            battleStartNotified = false;
+            suppressAutoBattleStart = false;
         }
 
         private void OnDestroy()
@@ -626,7 +798,12 @@ namespace DoAnGame.UI
             if (isBusy)
                 return;
 
+            // ✅ FIX 1: Reset ALL state flags
             suppressAutoBattleStart = false;
+            isQuitting = false;
+            battleStartNotified = false;
+            receivedStartSignalFromHost = false;
+            
             isBusy = true;
             SetActionButtonsInteractable(false);
 
@@ -693,7 +870,12 @@ namespace DoAnGame.UI
             if (isBusy)
                 return;
 
+            // ✅ FIX 4: Reset ALL state flags
             suppressAutoBattleStart = false;
+            isQuitting = false;
+            battleStartNotified = false;
+            receivedStartSignalFromHost = false;
+            
             isBusy = true;
             SetActionButtonsInteractable(false);
 
@@ -760,7 +942,12 @@ namespace DoAnGame.UI
             if (isBusy)
                 return;
 
+            // ✅ FIX 5: Reset ALL state flags
             suppressAutoBattleStart = false;
+            isQuitting = false;
+            battleStartNotified = false;
+            receivedStartSignalFromHost = false;
+            
             isBusy = true;
             SetActionButtonsInteractable(false);
 
@@ -889,17 +1076,30 @@ namespace DoAnGame.UI
             currentLobby = await LobbyService.Instance.GetLobbyAsync(joinedLobby.Id);
             isHost = !string.IsNullOrWhiteSpace(currentLobby.HostId) && string.Equals(currentLobby.HostId, localPlayerId, StringComparison.OrdinalIgnoreCase);
             lobbyCodeText?.SetText($"Mã phòng: {currentLobby.LobbyCode}");
+            
+            // ✅ FIX: Update dropdown để hiển thị đúng grade của phòng host
+            int lobbyGrade = GetLobbyGrade(currentLobby);
+            if (gradeDropdown != null)
+            {
+                gradeDropdown.value = lobbyGrade - 1; // Dropdown: 0→Lớp 1, 1→Lớp 2, ...
+                gradeDropdown.interactable = false; // Lock dropdown khi đã join phòng
+                Debug.Log($"[UIRoom] ✅ Updated dropdown to Grade {lobbyGrade} (locked)");
+            }
+            
             int localCount = currentLobby.Players != null ? currentLobby.Players.Count : 0;
             SetStatus($"Đã vào phòng ({localCount}/{MaxPlayers}). Chờ chủ phòng bắt đầu...");
             RefreshRoomRoster();
             await SyncLocalPlayerLobbyDataAsync();
 
-            // Đọc lại lobby ngay sau khi join để host/client đều thấy roster mới nhất.
+            // ✅ FIX: Bypass rate limit để force refresh ngay sau khi join
+            nextLobbyReadAt = 0f; // Reset rate limit
+            await Task.Delay(300); // Đợi server propagate changes
             var refreshed = await RefreshLobbySafe();
             if (refreshed != null)
             {
                 currentLobby = refreshed;
                 RefreshRoomRoster();
+                Debug.Log($"[UIRoom] ✅ Force refreshed lobby after join: {currentLobby.Players?.Count ?? 0} players");
             }
 
             if (startMatchButton != null)
@@ -929,12 +1129,29 @@ namespace DoAnGame.UI
             MultiplayerDetailedLogger.TraceUserAction("UIRoom", "HandleStartMatch", "startMatchButton");
             if (isBusy || isQuitting) return;
             
-            // Double-check: isHost flag + NetworkManager.IsServer
-            bool isActuallyHost = isHost && (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer);
-            if (!isActuallyHost || currentLobby == null)
+            // ✅ FIX 6: Double-check với retry logic
+            if (!isHost || currentLobby == null)
             {
-                Debug.LogWarning($"[UIRoom] HandleStartMatch blocked: isHost={isHost}, IsServer={NetworkManager.Singleton?.IsServer}, isActuallyHost={isActuallyHost}");
                 SetStatus("Chỉ chủ phòng mới được bắt đầu.");
+                return;
+            }
+            
+            // Đợi NetworkManager sẵn sàng (max 2s)
+            int retries = 0;
+            while (retries < 4)
+            {
+                if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+                    break;
+                
+                await Task.Delay(500);
+                retries++;
+            }
+            
+            bool isActuallyHost = NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer;
+            if (!isActuallyHost)
+            {
+                Debug.LogError($"[UIRoom] NetworkManager not ready after 2s! IsServer={NetworkManager.Singleton?.IsServer}");
+                SetStatus("Lỗi kết nối. Thử lại sau.");
                 return;
             }
 
@@ -1103,6 +1320,13 @@ namespace DoAnGame.UI
             battleStartNotified = false;
             receivedStartSignalFromHost = false; // Reset flag khi rời phòng
             nextLobbyReadAt = 0f;
+            
+            // ✅ FIX: Unlock dropdown khi rời phòng
+            if (gradeDropdown != null)
+            {
+                gradeDropdown.interactable = true;
+            }
+            
             ApplyIdleVisualState(status);
             roomCodeInput?.SetTextWithoutNotify(string.Empty);
         }
@@ -1115,14 +1339,35 @@ namespace DoAnGame.UI
 
             startMatchButton?.gameObject.SetActive(false);
             readyButton?.gameObject.SetActive(false);
+            refreshButton?.gameObject.SetActive(false); // ✅ Ẩn refresh button khi idle
         }
 
         private IEnumerator PollLobbyRoutine()
         {
             while (true)
             {
-                _ = PollLobbyOnce();
-                yield return new WaitForSeconds(Mathf.Max(1.5f, pollIntervalSeconds));
+                // ✅ FIX: Polling LUÔN CHẠY dù LobbyPanel inactive (host ở LobbyBrowserPanel)
+                // Dừng khi: isQuitting, không có lobby, hoặc đã vào battle
+                if (currentLobby != null && !isQuitting && !battleStartNotified)
+                {
+                    _ = PollLobbyOnce();
+                }
+                
+                // ✅ DYNAMIC POLLING:
+                // - 0.5s khi chờ player 2 (cần detect join nhanh)
+                // - 2s khi đã đủ 2 players (tránh rate limit, chỉ cần detect ready state)
+                int playerCount = currentLobby?.Players?.Count ?? 0;
+                float interval = (playerCount < MaxPlayers) ? 0.5f : 2f;
+                
+                // ✅ FIX: Dùng WaitForSecondsRealtime để coroutine chạy ngay cả khi GameObject inactive
+                yield return new WaitForSecondsRealtime(interval);
+                
+                // ✅ Dừng polling khi đã vào battle
+                if (battleStartNotified)
+                {
+                    Debug.Log("[UIRoom] Polling dừng: battleStartNotified=true");
+                    break;
+                }
             }
         }
 
@@ -1178,23 +1423,22 @@ namespace DoAnGame.UI
                 UpdateStartMatchButtonState(true);
             }
 
-            // CHỈ HOST mới dùng StartedKey từ poll để trigger battle.
-            // Client KHÔNG dùng StartedKey từ poll — client chỉ vào battle qua NGO named message
-            // (HandleStartMatchMessageReceived). Điều này tránh stale StartedKey=1 từ trận trước
-            // khiến client tự chuyển sang GameplayPanel khi chưa được host cho phép.
+            // ✅ FIX 7: CHỈ HOST check StartedKey từ poll
+            // Client PHẢI đợi NGO message từ host (HandleStartMatchMessageReceived)
+            bool isActuallyHost = isHost && 
+                                 (NetworkManager.Singleton != null && 
+                                  NetworkManager.Singleton.IsServer);
             
-            // Double-check: isHost flag + NetworkManager.IsServer để tránh race condition
-            bool isActuallyHost = isHost && (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer);
-            
-            if (isActuallyHost && currentLobby.Data.TryGetValue(StartedKey, out var startedData) && startedData.Value == "1")
+            if (isActuallyHost && 
+                currentLobby.Data.TryGetValue(StartedKey, out var startedData) && 
+                startedData.Value == "1")
             {
                 if (suppressAutoBattleStart)
                 {
-                    MultiplayerDetailedLogger.Trace("UI_ROOM", "Poll detected StartedKey=1 but auto-start is suppressed by local quit/back state");
+                    MultiplayerDetailedLogger.Trace("UI_ROOM", "Poll detected StartedKey=1 but suppressed");
                     return;
                 }
 
-                Debug.Log($"[UIRoom] Poll: isHost={isHost}, IsServer={NetworkManager.Singleton?.IsServer}, isActuallyHost={isActuallyHost}");
                 SetStatus("Trận đấu bắt đầu.");
                 MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", $"Poll detected StartedKey=1 in lobbyId={currentLobby.Id}");
                 NotifyBattleStarted();
@@ -1202,6 +1446,30 @@ namespace DoAnGame.UI
 
             // Update ready button state based on lobby metadata
             UpdateReadyButtonState();
+            
+            // ✅ FIX: Adaptive polling - tăng tốc khi có 2 players nhưng chưa ready
+            // Giảm interval xuống 1s thay vì 1.5s để bắt ready state nhanh hơn
+            // QUAN TRỌNG: Polling này chạy MÃI MÃI cho đến khi client ready hoặc battle start!
+            if (isHost && currentLobby.Players != null && currentLobby.Players.Count >= 2)
+            {
+                bool clientReady = IsClientReady(currentLobby);
+                if (!clientReady)
+                {
+                    // Tăng tốc polling: 1s thay vì 1.5s
+                    nextLobbyReadAt = Time.unscaledTime + 1f;
+                    // Debug.Log($"[UIRoom] ⚡ Adaptive polling: 2 players but not ready, polling faster (1s)");
+                }
+                else
+                {
+                    // Client đã ready, quay lại polling bình thường
+                    nextLobbyReadAt = Time.unscaledTime + pollIntervalSeconds;
+                }
+            }
+            else
+            {
+                // Polling bình thường
+                nextLobbyReadAt = Time.unscaledTime + pollIntervalSeconds;
+            }
         }
 
         /// <summary>
@@ -1238,6 +1506,98 @@ namespace DoAnGame.UI
             {
                 isBusy = false;
                 Debug.Log($"[UIRoom] 🟢 HandleReadyButtonClick END: isHost={isHost}, receivedStartSignalFromHost={receivedStartSignalFromHost}");
+            }
+        }
+
+        /// <summary>
+        /// Xử lý khi người dùng click nút "Làm mới" — force refresh lobby ngay lập tức
+        /// </summary>
+        private async Task HandleRefreshButton()
+        {
+            if (isBusy || currentLobby == null)
+            {
+                Debug.LogWarning($"[UIRoom] HandleRefreshButton blocked: isBusy={isBusy}, lobby={(currentLobby != null)}");
+                return;
+            }
+
+            isBusy = true;
+            SetActionButtonsInteractable(false);
+            SetStatus("Đang làm mới...");
+            MultiplayerDetailedLogger.TraceUserAction("UI_ROOM", "HandleRefreshButton", "Manual refresh requested");
+
+            try
+            {
+                // Bypass rate limit bằng cách reset nextLobbyReadAt
+                nextLobbyReadAt = 0f;
+                
+                // Force refresh lobby
+                var refreshed = await LobbyService.Instance.GetLobbyAsync(currentLobby.Id);
+                if (refreshed != null)
+                {
+                    currentLobby = refreshed;
+                    
+                    // ✅ FIX: Refresh toàn bộ UI state
+                    RefreshAuthState();
+                    RefreshRoomRoster();
+                    UpdateReadyButtonState();
+                    
+                    int playerCount = refreshed.Players?.Count ?? 0;
+                    Debug.Log($"[UIRoom] ✅ Manual refresh successful: {playerCount} players");
+                    MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", $"HandleRefreshButton success: players={playerCount}");
+                    
+                    // Hiển thị status phù hợp
+                    if (isHost)
+                    {
+                        bool clientReady = IsClientReady(currentLobby);
+                        if (playerCount < 2)
+                        {
+                            SetStatus("Chờ người chơi thứ 2 sẵn sàng...");
+                        }
+                        else if (clientReady)
+                        {
+                            SetStatus("Người chơi đã sẵn sàng! Có thể bắt đầu.");
+                        }
+                        else
+                        {
+                            SetStatus("Chờ người chơi thứ 2 sẵn sàng...");
+                        }
+                    }
+                    else
+                    {
+                        bool localReady = IsLocalPlayerReady(currentLobby);
+                        if (localReady)
+                        {
+                            SetStatus("Đã sẵn sàng! Chờ chủ phòng bắt đầu...");
+                        }
+                        else
+                        {
+                            SetStatus("Nhấn Sẵn sàng để báo hiệu cho chủ phòng.");
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("[UIRoom] Manual refresh returned null");
+                    SetStatus("Không thể làm mới. Thử lại.");
+                    MultiplayerDetailedLogger.TraceWarning("UI_ROOM", "HandleRefreshButton returned null");
+                }
+            }
+            catch (LobbyServiceException ex)
+            {
+                Debug.LogError($"[UIRoom] Manual refresh lỗi: {ex.Reason} - {ex.Message}");
+                SetStatus("Lỗi làm mới. Thử lại sau.");
+                MultiplayerDetailedLogger.TraceException("UI_ROOM", ex, "HandleRefreshButton failed");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[UIRoom] Manual refresh lỗi: {ex.Message}");
+                SetStatus("Lỗi làm mới. Thử lại sau.");
+                MultiplayerDetailedLogger.TraceException("UI_ROOM", ex, "HandleRefreshButton failed");
+            }
+            finally
+            {
+                isBusy = false;
+                SetActionButtonsInteractable(true);
             }
         }
 
@@ -1309,6 +1669,7 @@ namespace DoAnGame.UI
             {
                 startMatchButton?.gameObject.SetActive(false);
                 readyButton?.gameObject.SetActive(false);
+                refreshButton?.gameObject.SetActive(false); // ✅ Ẩn refresh button khi không có lobby
                 return;
             }
 
@@ -1317,8 +1678,15 @@ namespace DoAnGame.UI
 
             if (isHost)
             {
-                // HOST: ẩn readyButton, hiển thị startMatchButton
+                // HOST: ẩn readyButton, hiển thị startMatchButton và refreshButton
                 readyButton?.gameObject.SetActive(false);
+                
+                // ✅ FIX: Hiển thị refresh button cho host
+                if (refreshButton != null)
+                {
+                    refreshButton.gameObject.SetActive(true);
+                    refreshButton.interactable = !isBusy; // Disable khi đang busy
+                }
 
                 if (startMatchButton != null)
                 {
@@ -1347,8 +1715,9 @@ namespace DoAnGame.UI
             }
             else
             {
-                // CLIENT: ẩn startMatchButton, hiển thị readyButton
+                // CLIENT: ẩn startMatchButton và refreshButton, hiển thị readyButton
                 startMatchButton?.gameObject.SetActive(false);
+                refreshButton?.gameObject.SetActive(false); // ✅ Client không cần refresh button
 
                 if (readyButton != null)
                 {
@@ -1818,6 +2187,11 @@ namespace DoAnGame.UI
             _ = HandleQuitRoom();
         }
 
+        public void RequestRefresh()
+        {
+            _ = HandleRefreshButton();
+        }
+
         private IEnumerator HeartbeatRoutine()
         {
             while (true)
@@ -1851,16 +2225,22 @@ namespace DoAnGame.UI
             if (Time.unscaledTime < nextLobbyReadAt)
                 return currentLobby;
 
-            RefreshRoomRoster();
+            // Set nextLobbyReadAt trước khi gọi API để tránh concurrent calls
+            nextLobbyReadAt = Time.unscaledTime + Mathf.Max(1f, pollIntervalSeconds);
+
             try
             {
-                return await LobbyService.Instance.GetLobbyAsync(currentLobby.Id);
+                var result = await LobbyService.Instance.GetLobbyAsync(currentLobby.Id);
+                // Reset backoff khi thành công
+                nextLobbyReadAt = Time.unscaledTime + pollIntervalSeconds;
+                return result;
             }
             catch (LobbyServiceException ex) when (IsRateLimitException(ex))
             {
-                nextLobbyReadAt = Time.unscaledTime + Mathf.Max(1f, rateLimitBackoffSeconds);
-            RefreshRoomRoster();
-                Debug.LogWarning($"[UIRoom] Refresh lobby bị rate limit, tạm dừng đọc đến t={nextLobbyReadAt:F1}. {ex.Reason} - {ex.Message}");
+                // Rate limit: backoff dài hơn
+                nextLobbyReadAt = Time.unscaledTime + Mathf.Max(2f, rateLimitBackoffSeconds);
+                Debug.LogWarning($"[UIRoom] Refresh lobby bị rate limit, backoff đến t={nextLobbyReadAt:F1}s. {ex.Reason}");
+                RefreshRoomRoster();
                 return currentLobby;
             }
             catch (LobbyServiceException ex) when (IsLobbyNotFoundException(ex))
@@ -1868,14 +2248,18 @@ namespace DoAnGame.UI
                 Debug.LogWarning($"[UIRoom] Refresh lobby báo not found: {ex.Reason} - {ex.Message}");
                 return null;
             }
-            catch (LobbyServiceException ex) when (!IsLobbyNotFoundException(ex))
+            catch (LobbyServiceException ex)
             {
-                Debug.LogWarning($"[UIRoom] Refresh lobby lỗi tạm thời, giữ state hiện tại: {ex.Reason} - {ex.Message}");
+                // Lỗi tạm thời: backoff 2s rồi thử lại
+                nextLobbyReadAt = Time.unscaledTime + 2f;
+                Debug.LogWarning($"[UIRoom] Refresh lobby lỗi tạm thời, backoff 2s: {ex.Reason} - {ex.Message}");
                 return currentLobby;
             }
             catch (Exception ex)
             {
-                Debug.LogWarning($"[UIRoom] Refresh lobby lỗi tạm thời: {ex.Message}");
+                // Lỗi không xác định: backoff 2s
+                nextLobbyReadAt = Time.unscaledTime + 2f;
+                Debug.LogWarning($"[UIRoom] Refresh lobby lỗi: {ex.Message}");
                 return currentLobby;
             }
         }
@@ -1988,19 +2372,39 @@ namespace DoAnGame.UI
 
         private void EnsureLobbyRuntimeRoutines()
         {
-            if (!gameObject.activeInHierarchy)
-                return;
-
             EnsureStartMatchMessageHandlerRegistered();
 
-            if (pollingRoutine == null)
+            // ✅ FIX: StartCoroutine cần gameObject active, nhưng một khi đã start,
+            // coroutine với WaitForSecondsRealtime sẽ tiếp tục chạy dù panel inactive
+            if (pollingRoutine == null && gameObject.activeInHierarchy)
             {
                 pollingRoutine = StartCoroutine(PollLobbyRoutine());
             }
 
-            if (isHost && currentLobby != null && heartbeatRoutine == null)
+            if (isHost && currentLobby != null && heartbeatRoutine == null && gameObject.activeInHierarchy)
             {
                 heartbeatRoutine = StartCoroutine(HeartbeatRoutine());
+            }
+        }
+
+        /// <summary>
+        /// Coroutine helper: đợi LobbyPanel active rồi start polling
+        /// </summary>
+        private static IEnumerator StartPollingWhenReady(UIMultiplayerRoomController controller)
+        {
+            // Đợi tối đa 10s cho đến khi panel active
+            float timeout = 10f;
+            float elapsed = 0f;
+            while (!controller.gameObject.activeInHierarchy && elapsed < timeout)
+            {
+                yield return new WaitForSecondsRealtime(0.1f);
+                elapsed += 0.1f;
+            }
+
+            if (controller != null && controller.gameObject.activeInHierarchy && controller.pollingRoutine == null)
+            {
+                controller.pollingRoutine = controller.StartCoroutine(controller.PollLobbyRoutine());
+                Debug.Log("[UIRoom] ✅ Polling started after panel became active");
             }
         }
 
@@ -2123,11 +2527,19 @@ namespace DoAnGame.UI
             bool isInLobbySession = currentLobby != null;
             int playerCount = currentLobby != null && currentLobby.Players != null ? currentLobby.Players.Count : 0;
             bool hasEnoughPlayers = playerCount >= MaxPlayers;
-
-            // Only show start when lobby is full to avoid misleading host UI in 1/2 state.
+            
+            // ✅ Hiển thị nút khi đủ 2 players (dù client chưa sẵn sàng)
+            // Chỉ enable khi client đã click "Sẵn sàng"
+            // KHÔNG check IsRelayReadyForMatchHost() ở đây - chỉ check khi thực sự bắt đầu
+            bool clientReady = IsClientReady(currentLobby);
             bool visible = isHost && isInLobbySession && hasEnoughPlayers;
+            bool relayReady = IsRelayReadyForMatchHost();
+            
             startMatchButton.gameObject.SetActive(visible);
-            startMatchButton.interactable = visible && interactable && IsRelayReadyForMatchHost();
+            // Xám khi client chưa sẵn sàng, sáng khi client đã sẵn sàng
+            startMatchButton.interactable = visible && interactable && clientReady;
+            
+            Debug.Log($"[UIRoom] UpdateStartMatchButton: players={playerCount}, clientReady={clientReady}, relayReady={relayReady}, visible={visible}, interactable={startMatchButton.interactable}");
         }
 
         private void SetStatus(string text)
@@ -2175,6 +2587,13 @@ namespace DoAnGame.UI
 
             // Chỉ cho quit khi đang ở trong room.
             if (quitRoomButton != null) quitRoomButton.interactable = interactable && isInLobbySession;
+
+            // Nút Làm mới: chỉ hiển thị khi đang ở trong room
+            if (refreshButton != null)
+            {
+                refreshButton.gameObject.SetActive(isInLobbySession);
+                refreshButton.interactable = interactable && isInLobbySession;
+            }
 
             if (startMatchButton != null)
             {
