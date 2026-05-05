@@ -176,9 +176,9 @@ public class FirebaseManager : MonoBehaviour
 
     /// <summary>
     /// Đăng ký tài khoản + lưu vào Firestore
-    /// Tham số: email, password, characterName (tên nhân vật), age
+    /// Tham số: email, password, characterName (tên nhân vật), grade (lớp 1–5)
     /// </summary>
-    public async Task<bool> RegisterAsync(string email, string password, string characterName, int age)
+    public async Task<bool> RegisterAsync(string email, string password, string characterName, int grade)
     {
         try
         {
@@ -222,13 +222,12 @@ public class FirebaseManager : MonoBehaviour
                     return false;
                 }
 
-                // Validate age
-                var ageResult = validationService.ValidateAge(age);
-                if (!ageResult.IsValid)
+                // Validate grade (1–5)
+                if (grade < 1 || grade > 5)
                 {
-                    lastRegisterErrorDetail = $"age_out_of_range:{ageResult.Message}";
-                    lastRegisterErrorMessage = ageResult.Message;
-                    Debug.LogWarning($"[Firebase] ⚠️ Age validation failed: {ageResult.Message}");
+                    lastRegisterErrorDetail = "grade_invalid:Lớp học phải từ 1 đến 5";
+                    lastRegisterErrorMessage = "Lớp học không hợp lệ.";
+                    Debug.LogWarning($"[Firebase] ⚠️ Grade validation failed: {grade}");
                     OnRegisterFailedDetail?.Invoke(lastRegisterErrorDetail);
                     return false;
                 }
@@ -247,8 +246,8 @@ public class FirebaseManager : MonoBehaviour
             {
                 uid = newUser.UserId,
                 email = email,
-                characterName = characterName,  // ← Tên nhân vật
-                age = age,
+                characterName = characterName,
+                grade = grade,                  // ← Lớp học thay thế age
                 createdAt = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                 lastLogin = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
             };
@@ -557,7 +556,7 @@ public class FirebaseManager : MonoBehaviour
                 { "uid", userData.uid },
                 { "email", userData.email },
                 { "characterName", userData.characterName },
-                { "age", userData.age },
+                { "grade", userData.grade },    // ← grade thay age
                 { "avatar", userData.avatar ?? string.Empty },
                 { "createdAt", userData.createdAt },
                 { "lastLogin", userData.lastLogin },
@@ -926,6 +925,80 @@ public class FirebaseManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Migration: Chuyển field "age" → "grade" cho tài khoản cũ.
+    /// Gọi sau khi đăng nhập thành công.
+    /// Logic convert: age 5–7 → Lớp 1, 8 → Lớp 2, 9 → Lớp 3, 10 → Lớp 4, 11+ → Lớp 5
+    /// Nếu document đã có field "grade" thì bỏ qua (không migrate lại).
+    /// </summary>
+    public async Task<int> MigrateAgeToGradeIfNeeded(string uid)
+    {
+        try
+        {
+            if (firestore == null)
+            {
+                Debug.LogWarning("[Firebase] ⚠️ Firestore chưa sẵn sàng để migrate.");
+                return -1;
+            }
+
+            var docRef = firestore.Collection("users").Document(uid);
+            var snapshot = await docRef.GetSnapshotAsync();
+
+            if (!snapshot.Exists)
+            {
+                Debug.LogWarning($"[Firebase] ⚠️ Không tìm thấy user document: {uid}");
+                return -1;
+            }
+
+            var data = snapshot.ToDictionary();
+
+            // Đã có field "grade" → không cần migrate
+            if (data.ContainsKey("grade") && data["grade"] != null)
+            {
+                int existingGrade = GetInt(data, "grade", 0);
+                if (existingGrade >= 1 && existingGrade <= 5)
+                {
+                    Debug.Log($"[Firebase] ℹ️ User {uid} đã có grade={existingGrade}, bỏ qua migration.");
+                    return existingGrade;
+                }
+            }
+
+            // Chưa có "grade" → đọc "age" và convert
+            int age = GetInt(data, "age", 0);
+            int grade = ConvertAgeToGrade(age);
+
+            Debug.Log($"[Firebase] 🔄 Migrating user {uid}: age={age} → grade={grade}");
+
+            // Ghi "grade" vào Firestore, giữ nguyên "age" để không mất dữ liệu cũ
+            var updatePayload = new Dictionary<string, object>
+            {
+                { "grade", grade }
+            };
+            await docRef.SetAsync(updatePayload, SetOptions.MergeAll);
+
+            Debug.Log($"[Firebase] ✅ Migration hoàn tất: uid={uid}, grade={grade}");
+            return grade;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[Firebase] ⚠️ Lỗi migration age→grade: {ex.Message}");
+            return 1; // fallback Lớp 1
+        }
+    }
+
+    /// <summary>
+    /// Convert tuổi sang lớp học.
+    /// age 5–7 → Lớp 1 | 8 → Lớp 2 | 9 → Lớp 3 | 10 → Lớp 4 | 11+ → Lớp 5
+    /// </summary>
+    private static int ConvertAgeToGrade(int age)
+    {
+        if (age <= 7)  return 1;
+        if (age == 8)  return 2;
+        if (age == 9)  return 3;
+        if (age == 10) return 4;
+        return 5; // 11+
+    }
+
     private static Dictionary<string, object> PlayerDataToMap(PlayerData playerData)
     {
         return new Dictionary<string, object>
@@ -1018,7 +1091,7 @@ public class UserData
     public string uid;
     public string email;
     public string characterName;        // ← Tên nhân vật (dùng trong game + multiplayer)
-    public int age;
+    public int grade;                   // ← Lớp học (1–5), thay thế age
     public string avatar;
     public long createdAt;
     public long lastLogin;

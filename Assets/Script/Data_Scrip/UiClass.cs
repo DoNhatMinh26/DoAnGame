@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using DoAnGame.Auth;
 
 public class UiClass : MonoBehaviour
 {
@@ -171,21 +172,38 @@ public class UiClass : MonoBehaviour
             PlayerPrefs.Save();
 
             ShowClassNotification("Mua thành công: " + skin.shipName + "!"); 
-        UpdateSkinShopUI();
+            UpdateSkinShopUI();
             LoadCurrentSkin();
+
+            // Sync shop lên Firebase
+            SyncChondaShop();
         }
         else if (isUnlocked)
         {
             ShowClassNotification("Đã sở hữu trang phục này"); 
-        PlayerPrefs.SetInt("SelectedClassSkinID", pendingSkinIndex);
+            PlayerPrefs.SetInt("SelectedClassSkinID", pendingSkinIndex);
             PlayerPrefs.Save();
             LoadCurrentSkin();
+
+            // Sync selected skin lên Firebase
+            SyncChondaShop();
         }
         else
         {
             int thieu = skin.price - totalCoins;
             ShowClassNotification("Bạn còn thiếu " + thieu + "$!"); 
+        }
     }
+
+    private void SyncChondaShop()
+    {
+        int selected = PlayerPrefs.GetInt("SelectedClassSkinID", 0);
+        var unlocked = new System.Collections.Generic.List<int> { 0 };
+        for (int i = 1; i < allSkins.Length; i++)
+        {
+            if (IsSkinUnlocked(i)) unlocked.Add(i);
+        }
+        DoAnGame.Auth.CloudSyncService.Instance?.OnShopPurchased("chonda_skin", selected, unlocked.ToArray());
     }
 
     public void LoadCurrentSkin()
@@ -237,6 +255,10 @@ public class UiClass : MonoBehaviour
         PlayerPrefs.SetInt("TotalCoins", totalCoins);
         PlayerPrefs.Save();
         UpdateCoinUI();
+
+        // Sync coins lên Firebase nếu đã đăng nhập
+        if (amount != 0)
+            DoAnGame.Auth.CloudSyncService.Instance?.OnCoinsChanged(totalCoins);
     }
 
     private void UpdateCoinUI()
@@ -442,7 +464,7 @@ public class UiClass : MonoBehaviour
         if (isGameOver) return;
         isGameOver = true;
 
-        // Lưu tiến trình[cite: 17]
+        // Lưu tiến trình local
         int highestLevel = PlayerPrefs.GetInt("Class_HighestLevel", 1);
         if (LevelManager.CurrentLevel >= highestLevel)
         {
@@ -450,7 +472,16 @@ public class UiClass : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        // Chạy Coroutine chờ rồi mới hiện bảng Win[cite: 17]
+        // Sync lên Firebase (nếu đã đăng nhập)
+        DoAnGame.Auth.CloudSyncService.Instance?.OnLevelCompleted(
+            gameMode:     "chonda",
+            grade:        UIManager.SelectedGrade,
+            levelNumber:  LevelManager.CurrentLevel,
+            score:        currentCorrectCount * 10,  // điểm màn này = số câu đúng × 10
+            coinsEarned:  levelCoins
+        );
+
+        // Chạy Coroutine chờ rồi mới hiện bảng Win
         StartCoroutine(ShowWinPanelWithDelay());
     }
 

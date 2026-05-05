@@ -104,16 +104,17 @@ namespace DoAnGame.Auth
         {
             return new PlayerData
             {
-                uid = GetString(map, "uid", uid),
+                uid           = GetString(map, "uid", uid),
                 characterName = GetString(map, "characterName", "Player"),
-                level = GetInt(map, "level", 1),
-                totalXp = GetInt(map, "totalXp", 0),
-                totalScore = GetInt(map, "totalScore", 0),
-                rank = GetInt(map, "rank", 0),
-                gamesPlayed = GetInt(map, "gamesPlayed", 0),
-                gamesWon = GetInt(map, "gamesWon", 0),
-                winRate = GetFloat(map, "winRate", 0f),
-                lastUpdated = GetLong(map, "lastUpdated", System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())
+                level         = GetInt(map, "level", 1),
+                totalXp       = GetInt(map, "totalXp", 0),
+                totalScore    = GetInt(map, "totalScore", 0),
+                rank          = GetInt(map, "rank", 0),
+                coins         = GetInt(map, "coins", 0),
+                gamesPlayed   = GetInt(map, "gamesPlayed", 0),
+                gamesWon      = GetInt(map, "gamesWon", 0),
+                winRate       = GetFloat(map, "winRate", 0f),
+                lastUpdated   = GetLong(map, "lastUpdated", System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds())
             };
         }
 
@@ -292,6 +293,7 @@ namespace DoAnGame.Auth
         public int totalXp = 0;
         public int totalScore = 0;
         public int rank = 0;
+        public int coins = 0;       // ← Tiền vàng (sync Firebase)
         public int gamesPlayed = 0;
         public int gamesWon = 0;
         public float winRate = 0f;

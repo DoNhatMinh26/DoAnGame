@@ -643,6 +643,9 @@ namespace DoAnGame.UI
             // Disable dragging
             DragAndDrop.SetGlobalLock(true);
 
+            // Client tự sync kết quả của mình lên Firebase
+            SyncOwnMatchResult(winnerId);
+
             // Hiển thị kết quả tạm thời
             if (battleStatusText != null)
             {
@@ -676,6 +679,37 @@ namespace DoAnGame.UI
             else
             {
                 Debug.LogWarning("[BattleController] matchEndNavigator is not assigned! Cannot navigate to Wins panel.");
+            }
+        }
+
+        /// <summary>
+        /// Cả Host và Client đều tự sync kết quả của mình lên Firebase.
+        /// Host đã sync trong NetworkedMathBattleManager.EndMatch(), nhưng gọi lại ở đây
+        /// để đảm bảo Client cũng được sync (Host không biết uid của Client).
+        /// </summary>
+        private void SyncOwnMatchResult(int winnerId)
+        {
+            var net = NetworkManager.Singleton;
+            if (net == null) return;
+
+            // Xác định local player là Player 0 (Host) hay Player 1 (Client)
+            bool isHost      = net.IsHost;
+            int  localPlayer = isHost ? 0 : 1;
+            bool isWin       = (winnerId == localPlayer);
+
+            // Lấy điểm của local player từ NetworkedPlayerState
+            int score = 0;
+            if (battleManager != null)
+            {
+                var state = isHost ? battleManager.GetPlayer1State() : battleManager.GetPlayer2State();
+                if (state != null) score = state.Score.Value;
+            }
+
+            // Sync lên Firebase qua CloudSyncService
+            var cloudSync = DoAnGame.Auth.CloudSyncService.Instance;
+            if (cloudSync != null)
+            {
+                cloudSync.OnMultiplayerMatchCompleted(score, isWin);
             }
         }
 

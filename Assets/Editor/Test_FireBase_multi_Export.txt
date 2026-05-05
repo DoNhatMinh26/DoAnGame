@@ -1,7 +1,7 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: Test_FireBase_multi
 Đường dẫn: Assets/Scenes/Test_FireBase_multi.unity
-Thời gian export: 5/5/2026 10:21:44 AM
+Thời gian export: 5/5/2026 2:05:25 PM
 ═══════════════════════════════════════════════════════════
 
 Tổng số Root GameObjects: 8
@@ -164,6 +164,17 @@ Canvas [Layer: UI]
 ││││││├─ Handle [Layer: UI]
 ││││││   • CanvasRenderer
 ││││││   • Image (UnityEngine.UI)
+││├─ RefreshButton [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││││├─ TMP SubMeshUI [LiberationSans SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││   • LayoutElement (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • TMP_SubMeshUI (TMPro)
 │├─ GameplayPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -381,7 +392,6 @@ Canvas [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-││   • UIButtonScreenNavigator (DoAnGame.UI)
 │││├─ Text (TMP) [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
@@ -438,5 +448,5 @@ MatchEndNavigator
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 136
+Tổng số GameObjects: 139
 ═══════════════════════════════════════════════════════════

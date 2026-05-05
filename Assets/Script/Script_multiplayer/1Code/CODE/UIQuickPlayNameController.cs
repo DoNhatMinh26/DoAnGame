@@ -7,12 +7,14 @@ using DoAnGame.Auth;
 namespace DoAnGame.UI
 {
     /// <summary>
-    /// Controller cho panel nhập tên chơi nhanh (khách vãng lai)
+    /// Controller cho panel nhập tên + chọn lớp (khách vãng lai).
+    /// Thay thế ChonTuoi dropdown trên WELCOMESCREEN — người chơi chọn Lớp 1–5 tại đây.
     /// </summary>
     public class UIQuickPlayNameController : MonoBehaviour
     {
         [Header("UI References")]
         [SerializeField] private TMP_InputField nameInputField;
+        [SerializeField] private TMP_Dropdown gradeDropdown;   // Dropdown chọn Lớp 1–5
         [SerializeField] private Button startButton;
         [SerializeField] private Button continueButton; // Button "Tiếp tục" (cho returning user)
         [SerializeField] private TextMeshProUGUI statusText; // Text thông báo
@@ -28,6 +30,9 @@ namespace DoAnGame.UI
 
         private void Start()
         {
+            // Khởi tạo dropdown chọn lớp
+            InitializeGradeDropdown();
+
             // Gán sự kiện cho buttons
             if (startButton != null)
             {
@@ -53,6 +58,38 @@ namespace DoAnGame.UI
 
             // Kiểm tra returning user
             CheckReturningUser();
+        }
+
+        /// <summary>
+        /// Khởi tạo dropdown chọn lớp 1–5 (giống LobbyPanel trong Test_FireBase_multi)
+        /// </summary>
+        private void InitializeGradeDropdown()
+        {
+            if (gradeDropdown == null) return;
+
+            gradeDropdown.ClearOptions();
+            gradeDropdown.AddOptions(new System.Collections.Generic.List<string>
+            {
+                "Lớp 1",
+                "Lớp 2",
+                "Lớp 3",
+                "Lớp 4",
+                "Lớp 5"
+            });
+
+            // Restore lớp đã chọn lần trước (nếu có)
+            int savedGrade = GetSelectedGrade();
+            gradeDropdown.value = savedGrade > 0 ? savedGrade - 1 : 0;
+            gradeDropdown.RefreshShownValue();
+        }
+
+        /// <summary>
+        /// Đọc grade từ dropdown (1–5). Trả về 1 nếu dropdown chưa gán.
+        /// </summary>
+        private int GetGradeFromDropdown()
+        {
+            if (gradeDropdown == null) return 1;
+            return gradeDropdown.value + 1; // value 0 = Lớp 1, value 4 = Lớp 5
         }
 
         private void CheckReturningUser()
@@ -121,10 +158,13 @@ namespace DoAnGame.UI
 
         private void OnContinueButtonClicked()
         {
-            // Tiếp tục với tên cũ
+            // Tiếp tục với tên cũ — nhưng vẫn cập nhật grade nếu user đổi
+            int grade = GetGradeFromDropdown();
+            UIManager.SelectedGrade = grade;
+            SaveSelectedGrade(grade);
+
             string savedName = GetGuestName();
-            
-            Debug.Log($"[QuickPlay] User chose to continue with: {savedName}");
+            Debug.Log($"[QuickPlay] User chose to continue with: {savedName}, Grade: {grade}");
             
             // Chuyển sang MainMenuPanel
             NavigateToMainMenu();
@@ -133,6 +173,14 @@ namespace DoAnGame.UI
         private void OnStartButtonClicked()
         {
             string playerName = nameInputField != null ? nameInputField.text.Trim() : "";
+
+            // Validate lớp học
+            int grade = GetGradeFromDropdown();
+            if (grade < 1 || grade > 5)
+            {
+                ShowError("Vui lòng chọn lớp học!");
+                return;
+            }
 
             // Nếu là returning user và nhập tên mới
             if (isReturningUser)
@@ -180,7 +228,11 @@ namespace DoAnGame.UI
             PlayerPrefs.SetInt(IS_GUEST_KEY, 1); // Đánh dấu là chế độ khách
             PlayerPrefs.Save();
 
-            Debug.Log($"[QuickPlay] Saved guest name: {playerName}");
+            // Lưu và áp dụng grade đã chọn
+            UIManager.SelectedGrade = grade;
+            SaveSelectedGrade(grade);
+
+            Debug.Log($"[QuickPlay] Saved guest name: {playerName}, Grade: {grade}");
 
             // Chuyển sang MainMenuPanel
             NavigateToMainMenu();

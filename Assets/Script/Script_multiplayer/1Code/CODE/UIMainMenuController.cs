@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DoAnGame.Auth;
+using DoAnGame.UI;
 
 namespace DoAnGame.UI
 {
@@ -18,6 +19,9 @@ namespace DoAnGame.UI
         [SerializeField] private TMP_Text levelText;
         [SerializeField] private TMP_Text scoreText;
         [SerializeField] private TMP_Text characterNameText;
+
+        [Header("Logout Confirm Popup")]
+        [SerializeField] private UIConfirmPopupController logoutConfirmPopup;
 
         [SerializeField] private UIFlowManager flowManager;
 
@@ -75,9 +79,19 @@ namespace DoAnGame.UI
                 }
 
                 logoutButton.onClick.RemoveAllListeners();
-                logoutButton.onClick.AddListener(HandleLogout);
+                logoutButton.onClick.AddListener(HandleLogoutButtonClicked);
             }
 
+            // Auto-find popup nếu chưa gán trong Inspector
+            if (logoutConfirmPopup == null)
+            {
+                logoutConfirmPopup = GetComponentInChildren<UIConfirmPopupController>(true);
+                if (logoutConfirmPopup == null)
+                {
+                    // Tìm rộng hơn trong canvas
+                    logoutConfirmPopup = FindObjectOfType<UIConfirmPopupController>(true);
+                }
+            }
         }
 
         protected override void OnShow()
@@ -215,29 +229,60 @@ namespace DoAnGame.UI
             scoreText?.SetText($"Score: {data.totalScore}");
         }
 
-        private async void HandleLogout()
+        /// <summary>
+        /// Bước 1: Nhấn nút Đăng Xuất → hiện popup xác nhận
+        /// </summary>
+        private void HandleLogoutButtonClicked()
         {
-            Debug.Log("[MainMenu] Logout button clicked");
-            
-            // Clear session tokens FIRST
+            Debug.Log("[MainMenu] Logout button clicked — showing confirm popup");
+
+            if (logoutConfirmPopup == null)
+            {
+                // Không có popup → logout thẳng (fallback an toàn)
+                Debug.LogWarning("[MainMenu] logoutConfirmPopup chưa gán, logout thẳng.");
+                _ = ExecuteLogout();
+                return;
+            }
+
+            // Xác định tên người dùng để hiển thị trong popup
+            string userName = UIQuickPlayNameController.IsGuestMode()
+                ? UIQuickPlayNameController.GetGuestName()
+                : (authManager?.GetCharacterName() ?? "bạn");
+
+            logoutConfirmPopup.Show(
+                title:        "Xác nhận đăng xuất",
+                message:      $"Bạn có chắc muốn đăng xuất khỏi tài khoản <b>{userName}</b>?",
+                confirmLabel: "Đăng xuất",
+                onConfirm:    () => _ = ExecuteLogout(),
+                onCancel:     null,   // Huỷ → chỉ đóng popup, không làm gì
+                cancelLabel:  "Huỷ"
+            );
+        }
+
+        /// <summary>
+        /// Bước 2: Người dùng xác nhận → thực hiện logout
+        /// </summary>
+        private async System.Threading.Tasks.Task ExecuteLogout()
+        {
+            Debug.Log("[MainMenu] ExecuteLogout — clearing session...");
+
+            // Clear session tokens
             PlayerPrefs.DeleteKey("SessionToken");
             PlayerPrefs.DeleteKey("SessionExpiry");
             PlayerPrefs.Save();
-            Debug.Log("[MainMenu] Cleared session tokens from PlayerPrefs");
-            
-            // Then logout from AuthManager
+
+            // Logout Firebase
             authManager?.Logout();
-            
+
             // Xóa dữ liệu khách nếu có
             UIQuickPlayNameController.ClearGuestData();
-            
-            Debug.Log("[MainMenu] Cleared all session data");
-            
-            // Wait for Firebase to clear
+
+            Debug.Log("[MainMenu] Session cleared, reloading scene...");
+
+            // Đợi Firebase sign-out hoàn tất
             await System.Threading.Tasks.Task.Delay(100);
-            
-            // Reload scene to reset all states
-            Debug.Log("[MainMenu] Reloading scene...");
+
+            // Reload scene để reset toàn bộ trạng thái
             UnityEngine.SceneManagement.SceneManager.LoadScene(
                 UnityEngine.SceneManagement.SceneManager.GetActiveScene().name
             );

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DoAnGame.Auth;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -109,6 +110,10 @@ public class GameUIManager : MonoBehaviour
         PlayerPrefs.SetInt("TotalCoins", totalCoins);
         PlayerPrefs.Save();
         UpdateCoinUI();
+
+        // Sync coins lên Firebase nếu đã đăng nhập
+        if (amount != 0)
+            DoAnGame.Auth.CloudSyncService.Instance?.OnCoinsChanged(totalCoins);
     }
     public void ShowShopNotification(string message)
     {
@@ -235,51 +240,59 @@ public class GameUIManager : MonoBehaviour
 
     public void Click_ConfirmPurchase()
     {
-        // 1. Kiểm tra nếu chưa chọn skin nào để xem
         if (pendingSkinIndex == -1)
         {
             ShowShopNotification("Vui lòng chọn một nhân vật!");
             return;
         }
 
-        // Lấy thông tin skin đang chọn
         CatSkin skin = allSkins[pendingSkinIndex];
         bool isUnlocked = IsSkinUnlocked(pendingSkinIndex);
 
-        // 2. Logic xử lý Mua hoặc Mặc
         if (isUnlocked || totalCoins >= skin.price)
         {
             if (!isUnlocked)
             {
-                // Thực hiện trừ tiền nếu chưa mua
                 totalCoins -= skin.price;
                 PlayerPrefs.SetInt("TotalCoins", totalCoins);
                 PlayerPrefs.SetInt("SkinUnlocked_" + pendingSkinIndex, 1);
-
                 ShowShopNotification("Mua thành công: " + skin.skinName + "!");
             }
             else
             {
-                // Thông báo khi nhấn vào món đã sở hữu
                 ShowShopNotification("Đã Sở Hữu: " + skin.skinName);
             }
 
-            // 3. Lưu và mặc skin vừa chọn
             PlayerPrefs.SetInt("SelectedSkinID", pendingSkinIndex);
             PlayerPrefs.Save();
 
-            // 4. Cập nhật giao diện đồng nhất với Shop
-            UpdateCoinUI(); // Hiển thị số tiền mới (kèm dấu $ nếu bạn đã sửa)
-            UpdateShopUI(); // Làm sáng nút skin và đổi chữ thành "Đã sở hữu"
-            LoadCurrentSkin(); // Cập nhật hình ảnh mèo cho cả Menu và Gameplay
+            UpdateCoinUI();
+            UpdateShopUI();
+            LoadCurrentSkin();
+
+            // Sync shop lên Firebase
+            SyncKeoThadaSkinShop();
         }
         else
         {
-            // Thông báo chi tiết số tiền còn thiếu tương tự như Pháo
             int thieu = skin.price - totalCoins;
             ShowShopNotification("Bạn còn thiếu " + thieu + "$ để mua skin này!");
             Debug.Log("Không đủ tiền mua skin này!");
         }
+    }
+
+    private void SyncKeoThadaSkinShop()
+    {
+        int selected = PlayerPrefs.GetInt("SelectedSkinID", 0);
+        var unlocked = new System.Collections.Generic.List<int> { 0 };
+        if (allSkins != null)
+        {
+            for (int i = 1; i < allSkins.Length; i++)
+            {
+                if (IsSkinUnlocked(i)) unlocked.Add(i);
+            }
+        }
+        DoAnGame.Auth.CloudSyncService.Instance?.OnShopPurchased("keothada_skin", selected, unlocked.ToArray());
     }
     public void BuyAndApplySkin(int index)
     {
@@ -351,7 +364,6 @@ public class GameUIManager : MonoBehaviour
 
     public void Click_ConfirmPurchasePhao()
     {
-        // 1. Kiểm tra nếu chưa chọn pháo nào để xem
         if (pendingPhaoIndex == -1)
         {
             ShowShopNotification("Vui lòng chọn một khẩu pháo!");
@@ -359,19 +371,15 @@ public class GameUIManager : MonoBehaviour
         }
 
         PhaoSkin skin = allPhaoSkins[pendingPhaoIndex];
-        // Kiểm tra trạng thái mở khóa
         bool isUnlocked = pendingPhaoIndex == 0 || PlayerPrefs.GetInt("PhaoUnlocked_" + pendingPhaoIndex, 0) == 1;
 
-        // 2. Logic xử lý Mua hoặc Mặc
         if (isUnlocked || totalCoins >= skin.price)
         {
             if (!isUnlocked)
             {
-                // Thực hiện trừ tiền nếu chưa mua
                 totalCoins -= skin.price;
                 PlayerPrefs.SetInt("TotalCoins", totalCoins);
                 PlayerPrefs.SetInt("PhaoUnlocked_" + pendingPhaoIndex, 1);
-
                 ShowShopNotification("Đã mua thành công: " + skin.phaoName + "!");
             }
             else
@@ -379,21 +387,35 @@ public class GameUIManager : MonoBehaviour
                 ShowShopNotification("Đã sở hữu: " + skin.phaoName);
             }
 
-            // Lưu lựa chọn vào máy
             PlayerPrefs.SetInt("SelectedPhaoID", pendingPhaoIndex);
             PlayerPrefs.Save();
 
-            // 3. Cập nhật giao diện và hình ảnh
-            UpdateCoinUI();      // Sẽ hiện tiền kèm dấu $ nếu bạn đã sửa hàm này
-            UpdatePhaoShopUI();  // Sẽ hiện chữ "Đã sở hữu" hoặc giá kèm dấu $
-            LoadCurrentPhao();   // Đồng bộ hình ảnh cho cả Shop và Gameplay
+            UpdateCoinUI();
+            UpdatePhaoShopUI();
+            LoadCurrentPhao();
+
+            // Sync shop lên Firebase
+            SyncKeoThadaPhaoShop();
         }
         else
         {
-            // Thông báo khi không đủ tiền
             int thieu = skin.price - totalCoins;
             ShowShopNotification("Bạn còn thiếu " + thieu + "$ để mua pháo này!");
         }
+    }
+
+    private void SyncKeoThadaPhaoShop()
+    {
+        int selected = PlayerPrefs.GetInt("SelectedPhaoID", 0);
+        var unlocked = new System.Collections.Generic.List<int> { 0 };
+        if (allPhaoSkins != null)
+        {
+            for (int i = 1; i < allPhaoSkins.Length; i++)
+            {
+                if (PlayerPrefs.GetInt("PhaoUnlocked_" + i, 0) == 1) unlocked.Add(i);
+            }
+        }
+        DoAnGame.Auth.CloudSyncService.Instance?.OnShopPurchased("keothada_phao", selected, unlocked.ToArray());
     }
     public void UpdatePhaoShopUI()
     {
@@ -494,19 +516,25 @@ public class GameUIManager : MonoBehaviour
             Time.timeScale = 0f;
             DragAndDrop.SetGlobalLock(true);
 
-            // LƯU DỮ LIỆU MỞ KHÓA MÀN TIẾP THEO
+            // Lưu tiến trình local
             int currentHighest = PlayerPrefs.GetInt("HighestLevelReached", 1);
             int wonLevel = LevelManager.CurrentLevel;
 
-            // Nếu thắng màn hiện tại là màn cao nhất, mở màn tiếp theo
             if (wonLevel == currentHighest && wonLevel < 100)
             {
                 PlayerPrefs.SetInt("HighestLevelReached", wonLevel + 1);
-                PlayerPrefs.Save(); // Đảm bảo dữ liệu được ghi xuống bộ nhớ
-
-                // Cập nhật lại danh sách nút để hiển thị màn mới vừa mở
+                PlayerPrefs.Save();
                 GenerateLevelButtons();
             }
+
+            // Sync lên Firebase (nếu đã đăng nhập)
+            DoAnGame.Auth.CloudSyncService.Instance?.OnLevelCompleted(
+                gameMode:    "keothada",
+                grade:       UIManager.SelectedGrade,
+                levelNumber: wonLevel,
+                score:       100,  // điểm cố định mỗi màn thắng KeoThaDA
+                coinsEarned: levelCoins
+            );
         }
     }
     // Hàm đợi 3 giây trước khi hiện bảng thắng để tiền kịp nạp vào

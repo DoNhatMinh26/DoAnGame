@@ -188,15 +188,23 @@ public class AuthManager : MonoBehaviour
             sessionManager.SaveSession(uid, user.Email);
         }
 
+        // Restore tiến độ từ Firebase (kể cả auto-login)
+        var cloudSyncAuto = DoAnGame.Auth.CloudSyncService.Instance;
+        if (cloudSyncAuto != null)
+        {
+            _ = cloudSyncAuto.RestoreProgressFromFirebase();
+            Debug.Log("[Auth] 🔄 Auto-login: đang restore tiến độ từ Firebase...");
+        }
+
         Debug.Log($"[Auth] ✅ Auto-load account thành công: {currentPlayerData.characterName}");
         NotifyCurrentUserChanged();
         return true;
     }
 
     /// <summary>
-    /// Đăng ký tài khoản với tên nhân vật
+    /// Đăng ký tài khoản với tên nhân vật và lớp học
     /// </summary>
-    public async Task<bool> Register(string email, string password, string characterName, int age)
+    public async Task<bool> Register(string email, string password, string characterName, int grade)
     {
         Debug.Log($"[Auth] 📝 Đăng ký: {characterName}");
 
@@ -216,7 +224,7 @@ public class AuthManager : MonoBehaviour
             }
         }
 
-        bool success = await firebaseManager.RegisterAsync(email, password, characterName, age);
+        bool success = await firebaseManager.RegisterAsync(email, password, characterName, grade);
         
         if (success)
         {
@@ -332,6 +340,14 @@ public class AuthManager : MonoBehaviour
             {
                 sessionManager.SaveSession(user.UserId, email);
                 Debug.Log("[Auth] 💾 Session saved (24h)");
+            }
+
+            // Restore tiến độ single-player và coins từ Firebase về máy này
+            var cloudSync = DoAnGame.Auth.CloudSyncService.Instance;
+            if (cloudSync != null)
+            {
+                _ = cloudSync.RestoreProgressFromFirebase();
+                Debug.Log("[Auth] 🔄 Đang restore tiến độ từ Firebase...");
             }
 
             NotifyCurrentUserChanged();
@@ -521,7 +537,7 @@ public class AuthManager : MonoBehaviour
 
     private void ClearAllKnownLocalAuthKeys()
     {
-        // Cleanup key cũ và key namespaced để đảm bảo logout sạch giữa các phiên bản.
+        // ── Auth keys ──────────────────────────────────────────────
         PlayerPrefs.DeleteKey(LocalStorageKeyResolver.Key("uid"));
         PlayerPrefs.DeleteKey(LocalStorageKeyResolver.Key("isAnonymous"));
         PlayerPrefs.DeleteKey(LocalStorageKeyResolver.Key("session_token"));
@@ -537,6 +553,37 @@ public class AuthManager : MonoBehaviour
         PlayerPrefs.DeleteKey("last_email");
         PlayerPrefs.DeleteKey("cached_player_data");
         PlayerPrefs.DeleteKey("cached_player_data_timestamp");
+
+        // ── Game progress keys — phải xóa khi đổi tài khoản ───────
+        // Nếu không xóa, acc mới sẽ thấy dữ liệu của acc cũ
+        PlayerPrefs.DeleteKey("UserScore");
+        PlayerPrefs.DeleteKey("UserLevel");
+        PlayerPrefs.DeleteKey("TotalCoins");
+        PlayerPrefs.DeleteKey("Class_HighestLevel");
+        PlayerPrefs.DeleteKey("HighestLevelReached");
+        PlayerPrefs.DeleteKey("Space_HighestLevel");
+
+        // ── Guest data ─────────────────────────────────────────────
+        PlayerPrefs.DeleteKey("GuestPlayerName");
+        PlayerPrefs.DeleteKey("IsGuestMode");
+        PlayerPrefs.DeleteKey("SelectedGrade");
+
+        // ── Shop / Skin keys ───────────────────────────────────────
+        PlayerPrefs.DeleteKey("SelectedClassSkinID");
+        PlayerPrefs.DeleteKey("SelectedSkinID");
+        PlayerPrefs.DeleteKey("SelectedPhaoID");
+        PlayerPrefs.DeleteKey("SelectedShipID");
+
+        // Xóa unlock flags (tối đa 10 skin mỗi loại là đủ)
+        for (int i = 1; i <= 10; i++)
+        {
+            PlayerPrefs.DeleteKey("ClassSkinUnlocked" + i);
+            PlayerPrefs.DeleteKey("SkinUnlocked_" + i);
+            PlayerPrefs.DeleteKey("PhaoUnlocked_" + i);
+            PlayerPrefs.DeleteKey("ShipUnlocked_" + i);
+        }
+
         PlayerPrefs.Save();
+        Debug.Log("[Auth] 🗑️ Đã xóa toàn bộ local data của tài khoản cũ.");
     }
 }

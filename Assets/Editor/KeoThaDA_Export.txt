@@ -1,0 +1,347 @@
+﻿═══════════════════════════════════════════════════════════
+SCENE: KeoThaDA
+Đường dẫn: Assets/Scenes/KeoThaDA.unity
+Thời gian export: 5/5/2026 2:05:05 PM
+═══════════════════════════════════════════════════════════
+
+Tổng số Root GameObjects: 6
+
+Main Camera (Tag: MainCamera)
+   • Camera
+   • AudioListener
+   • UniversalAdditionalCameraData (UnityEngine.Rendering.Universal)
+Global Light 2D [INACTIVE]
+   • Light2D (UnityEngine.Rendering.Universal)
+EventSystem
+   • EventSystem (UnityEngine.EventSystems)
+   • StandaloneInputModule (UnityEngine.EventSystems)
+UiManager
+   • GameUIManager ()
+   • AppQuitting ()
+GamePlay [INACTIVE]
+│├─ DoHoa
+││├─ EnemySpawner
+││   • EnemySpawner ()
+│││├─ D1
+│││├─ D1 (1)
+│││├─ D1 (2)
+││├─ phaoGamePlay
+││   • SpriteRenderer
+│││├─ FirePoint
+│││   • CannonDefenseManager ()
+││├─ meo
+││   • SpriteRenderer
+││├─ tuong1 (Tag: Tuong)
+││   • SpriteRenderer
+││   • BoxCollider2D
+││   • WallHealth ()
+││├─ vanGo
+││   • SpriteRenderer
+││├─ bangGo
+││   • SpriteRenderer
+││├─ cco
+││   • SpriteRenderer
+││├─ Troi
+││   • SpriteRenderer
+│├─ QuesUI
+│   • Canvas (RenderMode: ScreenSpaceCamera)
+│   • CanvasScaler (UnityEngine.UI)
+│   • GraphicRaycaster (UnityEngine.UI)
+││├─ DragQuestionManager [Layer: UI]
+││   • DragQuizManager ()
+││├─ soManTxt [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+││├─ cauhoiText [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+││├─ setting [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ Answer_0 [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • CanvasGroup
+││   • DragAndDrop ()
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ Answer_1 [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • CanvasGroup
+││   • DragAndDrop ()
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ Answer_2 [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • CanvasGroup
+││   • DragAndDrop ()
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ Slot (Tag: Slot) [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ Heal [Layer: UI]
+││   • Slider (UnityEngine.UI)
+│││├─ Background [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││├─ Fill Area [Layer: UI]
+││││├─ Fill [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+│││├─ Handle Slide Area [Layer: UI]
+││││├─ Handle [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+││├─ CoidImage
+││   • SpriteRenderer
+││├─ CoinTxt
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+Ui [Layer: UI]
+   • Canvas (RenderMode: ScreenSpaceCamera)
+   • CanvasScaler (UnityEngine.UI)
+   • GraphicRaycaster (UnityEngine.UI)
+│├─ ShopPanel [Layer: UI]
+│   • CanvasRenderer
+│   • Image (UnityEngine.UI)
+││├─ ShopTxt [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+││├─ Play [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ Back [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+││   • UIButtonScreenNavigator (DoAnGame.UI)
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ MuaBtn [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ CoinTxt [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+││├─ CoinImage [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ meo
+││   • SpriteRenderer
+││├─ Skin_0_Hs [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ NameSkin [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││││├─ TMP SubMeshUI [LiberationSans SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││   • LayoutElement (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • TMP_SubMeshUI (TMPro)
+│││├─ GiaTxt [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││││├─ TMP SubMeshUI [LiberationSans SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││   • LayoutElement (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • TMP_SubMeshUI (TMPro)
+││├─ Skin_1_Ps [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ NameSkin [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││││├─ TMP SubMeshUI [LiberationSans SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││   • LayoutElement (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • TMP_SubMeshUI (TMPro)
+│││├─ GiaTxt [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ Skin_2_Pc [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ NameSkin [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│││├─ GiaTxt [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ phaoGo_0 [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ NameSkin [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││││├─ TMP SubMeshUI [LiberationSans SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││   • LayoutElement (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • TMP_SubMeshUI (TMPro)
+│││├─ GiaTxt [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││││├─ TMP SubMeshUI [LiberationSans SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││   • LayoutElement (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • TMP_SubMeshUI (TMPro)
+││├─ phaoSat_1 [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ NameSkin [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││││├─ TMP SubMeshUI [LiberationSans SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││   • LayoutElement (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • TMP_SubMeshUI (TMPro)
+│││├─ GiaTxt [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ phaoVang_2 [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ NameSkin [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││││├─ TMP SubMeshUI [LiberationSans SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││   • LayoutElement (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • TMP_SubMeshUI (TMPro)
+│││├─ GiaTxt [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ phao
+││   • SpriteRenderer
+││├─ ThongBaoCv [Layer: UI]
+││   • Canvas (RenderMode: ScreenSpaceCamera)
+││   • CanvasScaler (UnityEngine.UI)
+││   • GraphicRaycaster (UnityEngine.UI)
+││   • CanvasGroup
+│││├─ ThongBaoTxt [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│├─ ChonManPanel [INACTIVE] [Layer: UI]
+│   • CanvasRenderer
+│   • Image (UnityEngine.UI)
+││├─ Scroll View [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • ScrollRect (UnityEngine.UI)
+│││├─ Viewport [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Mask (UnityEngine.UI)
+││││├─ Content [Layer: UI]
+│││├─ Scrollbar Horizontal [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Scrollbar (UnityEngine.UI)
+││││├─ Sliding Area [Layer: UI]
+│││││├─ Handle [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+│││├─ Scrollbar Vertical [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Scrollbar (UnityEngine.UI)
+││││├─ Sliding Area [Layer: UI]
+│││││├─ Handle [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+││├─ Back [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│├─ SettingPanel [INACTIVE] [Layer: UI]
+│   • CanvasRenderer
+│   • Image (UnityEngine.UI)
+││├─ STtxt [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+││├─ ShopBtn [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ TiepTucBtn [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│├─ WinPanel [INACTIVE] [Layer: UI]
+│   • CanvasRenderer
+│   • Image (UnityEngine.UI)
+││├─ WinTxt [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+││├─ ShopBtn [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ NextBnt [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│├─ LosePanel [INACTIVE] [Layer: UI]
+│   • CanvasRenderer
+│   • Image (UnityEngine.UI)
+││├─ LoseTxt [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+││├─ ShopBtn [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ RetryBnt [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+
+═══════════════════════════════════════════════════════════
+TỔNG KẾT
+Tổng số GameObjects: 109
+═══════════════════════════════════════════════════════════

@@ -344,15 +344,15 @@ namespace DoAnGame.Audio
 ### 1. **Nhạc Nền (Background Music)**
 | Tên File | Khi Nào Phát | Đặc Điểm |
 |---|---|---|
-| `menu_music.mp3` | Menu chính, Lobby | Nhẹ nhàng, thư giãn |
-| `battle_music.mp3` | Trong trận đấu | Sôi động, căng thẳng |
-| `victory_music.mp3` | Thắng trận | Vui tươi, phấn khích |
-| `defeat_music.mp3` | Thua trận | Buồn bã nhưng động viên |
+| `menu_music.mp3` | Menu chính, Lobby | Nhẹ nhàng, thư giãn |/////////
+| `battle_music.mp3` | Trong trận đấu | Sôi động, căng thẳng |///////////
+| `victory_music.mp3` | Thắng trận | Vui tươi, phấn khích |////////
+| `defeat_music.mp3` | Thua trận | Buồn bã nhưng động viên |/////////
 
 ### 2. **UI Sound Effects**
 | Tên File | Khi Nào Phát | Độ Dài |
 |---|---|---|
-| `button_click.wav` | Click button | ~0.1s |
+| `button_click.wav` | Click button | ~0.1s |/////////////
 | `button_hover.wav` | Hover button | ~0.05s |
 | `panel_open.wav` | Mở panel | ~0.3s |
 | `panel_close.wav` | Đóng panel | ~0.2s |
@@ -360,23 +360,23 @@ namespace DoAnGame.Audio
 ### 3. **Countdown Voice (Quan Trọng!)**
 | Tên File | Khi Nào Phát | Độ Dài |
 |---|---|---|
-| `countdown_3.wav` | Hiển thị "3" | ~0.5s |
-| `countdown_2.wav` | Hiển thị "2" | ~0.5s |
-| `countdown_1.wav` | Hiển thị "1" | ~0.5s |
-| `countdown_ready.wav` | Hiển thị "Ready" | ~0.7s |
-| `countdown_go.wav` | Hiển thị "GO!" | ~0.5s |
+| `countdown_3.wav` | Hiển thị "3" | ~0.5s |////////////
+| `countdown_2.wav` | Hiển thị "2" | ~0.5s |//////////
+| `countdown_1.wav` | Hiển thị "1" | ~0.5s |//////////
+| `countdown_ready.wav` | Hiển thị "Ready" | ~0.7s |////////////
+| `countdown_go.wav` | Hiển thị "GO!" | ~0.5s |///////////
 
 **Lưu ý**: Phát âm thanh **NGAY KHI** hiển thị text, không delay!
 
 ### 4. **Battle Sound Effects**
 | Tên File | Khi Nào Phát | Đặc Điểm |
 |---|---|---|
-| `correct_answer.wav` | Trả lời đúng | Vui tươi, tích cực |
-| `wrong_answer.wav` | Trả lời sai | Tiêu cực nhưng không quá nặng |
+| `correct_answer.wav` | Trả lời đúng | Vui tươi, tích cực |/////////////
+| `wrong_answer.wav` | Trả lời sai | Tiêu cực nhưng không quá nặng |///////////////
 | `timer_tick.wav` | Mỗi giây đếm ngược | Nhẹ, không gây khó chịu |
 | `timer_warning.wav` | Còn 5s | Căng thẳng, cảnh báo |
-| `health_lost.wav` | Mất máu | Đau đớn nhưng ngắn |
-| `match_end.wav` | Kết thúc trận | Trang trọng |
+| `health_lost.wav` | Mất máu | Đau đớn nhưng ngắn |/////////////
+| `match_end.wav` | Kết thúc trận | Trang trọng |////////////////
 
 ---
 

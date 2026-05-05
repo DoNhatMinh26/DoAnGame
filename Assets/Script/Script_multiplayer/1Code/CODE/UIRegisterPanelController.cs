@@ -17,7 +17,7 @@ namespace DoAnGame.UI
         [SerializeField] private TMP_InputField characterNameInput;    // ← Character Name (tên nhân vật)
         [SerializeField] private TMP_InputField passwordInput;
         [SerializeField] private TMP_InputField confirmPasswordInput;
-        [SerializeField] private TMP_Dropdown ageDropdown;
+        [SerializeField] private TMP_Dropdown gradeDropdown;           // ← Chọn Lớp 1–5 (thay thế ageDropdown)
         [SerializeField] private Toggle termsToggle;
 
         [Header("UI Elements")]
@@ -93,7 +93,38 @@ namespace DoAnGame.UI
                 termsToggle.SetIsOnWithoutNotify(false);
             }
 
+            // Khởi tạo dropdown lớp học mỗi khi panel mở
+            InitializeGradeDropdown();
             ClearMessages();
+        }
+
+        /// <summary>
+        /// Khởi tạo dropdown chọn Lớp 1–5
+        /// </summary>
+        private void InitializeGradeDropdown()
+        {
+            if (gradeDropdown == null) return;
+
+            gradeDropdown.ClearOptions();
+            gradeDropdown.AddOptions(new System.Collections.Generic.List<string>
+            {
+                "Lớp 1",
+                "Lớp 2",
+                "Lớp 3",
+                "Lớp 4",
+                "Lớp 5"
+            });
+            gradeDropdown.value = 0;
+            gradeDropdown.RefreshShownValue();
+        }
+
+        /// <summary>
+        /// Đọc grade từ dropdown (1–5). Trả về 1 nếu dropdown chưa gán.
+        /// </summary>
+        private int GetGradeFromDropdown()
+        {
+            if (gradeDropdown == null) return 1;
+            return gradeDropdown.value + 1; // value 0 = Lớp 1, value 4 = Lớp 5
         }
 
         private async Task HandleRegister()
@@ -139,17 +170,7 @@ namespace DoAnGame.UI
                 string characterName = characterNameInput?.text?.Trim();
                 string password = passwordInput?.text;
                 string confirmPassword = confirmPasswordInput?.text;
-                int age = 18;
-
-                if (ageDropdown != null && ageDropdown.options.Count > 0)
-                {
-                    string selectedAge = ageDropdown.options[ageDropdown.value].text?.Trim();
-                    if (!int.TryParse(selectedAge, out age))
-                    {
-                        SetErrorMessage("Tuổi không hợp lệ. Vui lòng chọn số tuổi.");
-                        return;
-                    }
-                }
+                int grade = GetGradeFromDropdown();
 
                 if (string.IsNullOrWhiteSpace(email)
                     || string.IsNullOrWhiteSpace(characterName)
@@ -157,6 +178,12 @@ namespace DoAnGame.UI
                     || string.IsNullOrWhiteSpace(confirmPassword))
                 {
                     SetErrorMessage("Phải điền đầy đủ thông tin mới được đăng ký");
+                    return;
+                }
+
+                if (grade < 1 || grade > 5)
+                {
+                    SetErrorMessage("Vui lòng chọn lớp học (Lớp 1–5).");
                     return;
                 }
 
@@ -206,21 +233,14 @@ namespace DoAnGame.UI
                         SetErrorMessage(matchResult.Message);
                         return;
                     }
-
-                    // Validate age
-                    var ageResult = validationService.ValidateAge(age);
-                    if (!ageResult.IsValid)
-                    {
-                        SetErrorMessage(ageResult.Message);
-                        return;
-                    }
+                    // Grade đã validate ở trên (1–5), không cần validate thêm
                 }
 
                 // === REGISTER (with loading) ===
                 DisableUI(true);
                 ShowLoading("Đang tạo tài khoản...");
 
-                bool success = await authManager.Register(email, password, characterName, age);
+                bool success = await authManager.Register(email, password, characterName, grade);
 
                 if (success)
                 {
@@ -288,8 +308,8 @@ namespace DoAnGame.UI
                 case "invalid_email_format":
                 case "email_invalid":
                     return "Email không hợp lệ.";
-                case "age_out_of_range":
-                    return "Tuổi không hợp lệ (5-100).";
+                case "grade_invalid":
+                    return "Lớp học không hợp lệ (Lớp 1–5).";
                 default:
                     return "Đăng ký thất bại. Kiểm tra lại thông tin và thử lại.";
             }
@@ -333,8 +353,8 @@ namespace DoAnGame.UI
                 passwordInput.interactable = !disabled;
             if (confirmPasswordInput != null)
                 confirmPasswordInput.interactable = !disabled;
-            if (ageDropdown != null)
-                ageDropdown.interactable = !disabled;
+            if (gradeDropdown != null)
+                gradeDropdown.interactable = !disabled;
             if (termsToggle != null)
                 termsToggle.interactable = !disabled;
         }

@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using DoAnGame.Auth;
 
 public class UiSp : MonoBehaviour
 {
@@ -112,21 +113,39 @@ public class UiSp : MonoBehaviour
             ShowShopNotification("Mua thành công: " + ship.shipName + "!");
             UpdateShipShopUI();
             LoadCurrentShip();
+
+            // Sync shop lên Firebase
+            SyncPhiThuyenShop();
         }
         else if (isUnlocked)
         {
-            // Trường hợp nhấn mua khi đã có
             ShowShopNotification("Đã sở hữu");
-
             PlayerPrefs.SetInt("SelectedShipID", pendingShipIndex);
             PlayerPrefs.Save();
             LoadCurrentShip();
+
+            // Sync selected ship lên Firebase
+            SyncPhiThuyenShop();
         }
         else
         {
             int thieu = ship.price - totalCoins;
             ShowShopNotification("Bạn còn thiếu " + thieu + "$ để mua!");
         }
+    }
+
+    private void SyncPhiThuyenShop()
+    {
+        int selected = PlayerPrefs.GetInt("SelectedShipID", 0);
+        var unlocked = new System.Collections.Generic.List<int> { 0 };
+        if (allShips != null)
+        {
+            for (int i = 1; i < allShips.Length; i++)
+            {
+                if (IsShipUnlocked(i)) unlocked.Add(i);
+            }
+        }
+        DoAnGame.Auth.CloudSyncService.Instance?.OnShopPurchased("phithuyen_ship", selected, unlocked.ToArray());
     }
 
     public void LoadCurrentShip()
@@ -168,15 +187,16 @@ public class UiSp : MonoBehaviour
 
     public void AddCoins(int amount)
     {
-        // levelCoins chỉ tăng khi nhặt tiền dương (trong trận), không giảm khi mua đồ
         if (amount > 0) levelCoins += amount;
-
         totalCoins += amount;
 
         PlayerPrefs.SetInt("TotalCoins", totalCoins);
         PlayerPrefs.Save();
+        UpdateCoinUI();
 
-        UpdateCoinUI(); // Cập nhật lại Text hiển thị tiền trên cả Home và Gameplay
+        // Sync coins lên Firebase nếu đã đăng nhập
+        if (amount != 0)
+            DoAnGame.Auth.CloudSyncService.Instance?.OnCoinsChanged(totalCoins);
     }
 
     private void UpdateCoinUI()
@@ -283,7 +303,7 @@ public class UiSp : MonoBehaviour
 
     private IEnumerator ShowWinRoutine(float delay)
     {
-        yield return new WaitForSeconds(delay); // Đợi 2 giây[cite: 8]
+        yield return new WaitForSeconds(delay);
 
         HideAllPanels();
         if (panelWin != null)
@@ -292,7 +312,7 @@ public class UiSp : MonoBehaviour
             Time.timeScale = 0f;
         }
 
-        // Lưu tiến trình
+        // Lưu tiến trình local
         int currentHighest = PlayerPrefs.GetInt("Space_HighestLevel", 1);
         int wonLevel = LevelManager.CurrentLevel;
         if (wonLevel == currentHighest && wonLevel < 100)
@@ -300,6 +320,15 @@ public class UiSp : MonoBehaviour
             PlayerPrefs.SetInt("Space_HighestLevel", wonLevel + 1);
             PlayerPrefs.Save();
         }
+
+        // Sync lên Firebase (nếu đã đăng nhập)
+        DoAnGame.Auth.CloudSyncService.Instance?.OnLevelCompleted(
+            gameMode:    "phithuyen",
+            grade:       UIManager.SelectedGrade,
+            levelNumber: wonLevel,
+            score:       100,  // điểm cố định mỗi màn thắng PhiThuyen
+            coinsEarned: levelCoins
+        );
     }
 
     public void Click_Retry()

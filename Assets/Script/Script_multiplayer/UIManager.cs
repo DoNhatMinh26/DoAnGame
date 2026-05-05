@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
-using System.Net.Sockets;
 using System.Threading.Tasks;
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,7 +12,7 @@ using UnityEngine.UI;
 /// UI 4: Register Panel
 /// UI 5: Main Menu (HUB)
 /// </summary>
-public class UIManager : NetworkBehaviour
+public class UIManager : MonoBehaviour
 {
     public static int SelectedGrade = 1;
 
@@ -30,10 +26,6 @@ public class UIManager : NetworkBehaviour
     public GameObject mainMenuPanel;         // UI 5
     public GameObject lobbyPanel;            // Multiplayer (Room)
     public GameObject gameplayPanel;         // Chơi game
-
-    [Header("════ UI 1: WELCOME SCREEN ════")]
-    public Button playButton;
-    public TMP_Dropdown birthYearDropdown;
 
     [Header("════ UI 2: AUTH CHOICE ════")]
     public Button registrationBtn;
@@ -51,7 +43,7 @@ public class UIManager : NetworkBehaviour
     public TMP_InputField registerEmailInput;
     public TMP_InputField registerPasswordInput;
     public TMP_InputField registerUsernameInput;
-    public TMP_InputField registerAgeInput;
+    // registerAgeInput đã xóa — thay bằng gradeDropdown trong UIRegisterPanelController
     public Button registerSubmitBtn;
     public Button registerBackBtn;
     public TMP_Text registerErrorText;
@@ -73,19 +65,12 @@ public class UIManager : NetworkBehaviour
     public Button hostBtn;
     public Button joinBtn;
 
-    // Network variable
-    private NetworkVariable<bool> isGameStarted = new NetworkVariable<bool>(false, 
-        NetworkVariableReadPermission.Everyone, 
-        NetworkVariableWritePermission.Server);
-
     // Managers
     private AuthManager authManager;
     private RelayManager relayManager;
 
     private bool isBirthYearSelected = false;
-    private string selectedBirthYear = string.Empty;
-
-    private void Awake()
+    private string selectedBirthYear = string.Empty;    private void Awake()
     {
         if (Instance != null && Instance != this)
         {
@@ -97,10 +82,9 @@ public class UIManager : NetworkBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    async void Start()
+    void Start()
     {
         Debug.Log("[UIManager] ✅ Starting...");
-        MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_MANAGER", "Start called");
 
         authManager = AuthManager.Instance;
         relayManager = RelayManager.Instance;
@@ -108,39 +92,16 @@ public class UIManager : NetworkBehaviour
         // Bind buttons
         BindButtons();
 
-        // Initialize birth year choices and Play button state
-        InitializeBirthYearDropdown();
+        // Nút Play trên WELCOMESCREEN luôn enabled (grade chọn ở NhapTen_choiNhanh)
+        UpdatePlayButtonState();
 
         // DISABLED: UIStartupController handles initial panel display
-        // ShowUI(0);
         Debug.Log("[UIManager] Initial panel display handled by UIStartupController");
-
-        // Network
-        isGameStarted.OnValueChanged += (oldVal, newVal) =>
-        {
-            MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_MANAGER", $"isGameStarted changed: {oldVal} -> {newVal}");
-            if (newVal) SwitchToGameplay();
-        };
-
-        await Task.CompletedTask;
     }
 
     void Update()
     {
-        // Cập nhật số người chơi (nếu ở trong Multiplayer Lobby)
-        if (lobbyPanel != null && lobbyPanel.activeSelf && NetworkManager.Singleton != null && (NetworkManager.Singleton.IsClient || NetworkManager.Singleton.IsServer))
-        {
-            int playerCount = NetworkManager.Singleton.ConnectedClientsIds.Count;
-            if (statusText != null)
-            {
-                statusText.text = $"Người chơi: {playerCount}/2";
-            }
-
-            if (startButton != null)
-            {
-                startButton.interactable = (IsServer && playerCount >= 2);
-            }
-        }
+        // Update() giữ lại để tránh lỗi nếu có code khác gọi
     }
 
     private void SetPanelActiveSafe(GameObject panel, bool active, string panelName)
@@ -159,13 +120,6 @@ public class UIManager : NetworkBehaviour
     /// </summary>
     private void BindButtons()
     {
-        // UI 1 - Welcome Screen
-        if (playButton != null)
-            playButton.onClick.AddListener(() => ShowUI(1));
-
-        if (birthYearDropdown != null)
-            birthYearDropdown.onValueChanged.AddListener(OnBirthYearSelectionChanged);
-
         // UI 2 - Auth Choice
         if (registrationBtn != null)
             registrationBtn.onClick.AddListener(() => ShowUI(3));
@@ -194,13 +148,11 @@ public class UIManager : NetworkBehaviour
         if (logoutBtn != null)
             logoutBtn.onClick.AddListener(OnLogoutClick);
 
-        // Multiplayer Lobby
+        // Multiplayer Lobby (legacy)
         if (hostBtn != null)
             hostBtn.onClick.AddListener(OnHostClick);
         if (joinBtn != null)
             joinBtn.onClick.AddListener(OnJoinClick);
-        if (startButton != null)
-            startButton.onClick.AddListener(OnGameStart);
 
         Debug.Log("[UIManager] ✅ Tất cả nút đã được liên kết");
     }
@@ -252,72 +204,14 @@ public class UIManager : NetworkBehaviour
         }
     }
 
-    private void InitializeBirthYearDropdown()
-    {
-        if (birthYearDropdown == null)
-            return;
-
-        birthYearDropdown.ClearOptions();
-        var options = new System.Collections.Generic.List<string>
-        {
-            "Chọn năm sinh",
-            "2019 - Mẫu giáo",
-            "2018 - Lớp 1",
-            "2017 - Lớp 2",
-            "2016 - Lớp 3",
-            "2015 - Lớp 4",
-            "2014 - Lớp 5"
-        };
-
-        birthYearDropdown.AddOptions(options);
-        birthYearDropdown.value = 0;
-        birthYearDropdown.RefreshShownValue();
-        isBirthYearSelected = false;
-        selectedBirthYear = string.Empty;
-        UpdatePlayButtonState();
-    }
-
-    private void OnBirthYearSelectionChanged(int index)
-    {
-        if (birthYearDropdown == null)
-            return;
-
-        isBirthYearSelected = index > 0;
-
-        // --- LOGIC MỚI: Cập nhật SelectedGrade dựa trên Index ---
-        // Index 1: Mẫu giáo -> Lớp 1 (Grade 1)
-        // Index 2: Lớp 1 -> Lớp 1 (Grade 1)
-        // Index 3: Lớp 2 -> Lớp 2 (Grade 2)...
-        if (index == 1 || index == 2) SelectedGrade = 1;
-        else if (index > 2) SelectedGrade = index - 1;
-        else SelectedGrade = 1; // Mặc định là lớp 1 nếu chưa chọn
-
-        selectedBirthYear = isBirthYearSelected ? birthYearDropdown.options[index].text : string.Empty;
-
-        // Lưu grade đã chọn vào PlayerPrefs (cho auto-skip)
-        if (isBirthYearSelected)
-        {
-            DoAnGame.UI.UIQuickPlayNameController.SaveSelectedGrade(SelectedGrade);
-        }
-
-        Debug.Log($"[UIManager] Năm sinh: {selectedBirthYear} -> GradeIndex đã lưu: {SelectedGrade}");
-
-        UpdatePlayButtonState();
-    }
-
     private void UpdatePlayButtonState()
     {
-        if (playButton == null)
-            return;
-
-        if (birthYearDropdown == null)
-        {
-            playButton.interactable = true;
-            return;
-        }
-
-        playButton.interactable = isBirthYearSelected;
+        // Nút Play luôn enabled — grade được chọn ở NhapTen_choiNhanh
+        // (playButton đã bị xóa khỏi WELCOMESCREEN, không cần làm gì)
     }
+
+    // InitializeBirthYearDropdown và OnBirthYearSelectionChanged đã được xóa.
+    // Grade selection chuyển sang UIQuickPlayNameController (NhapTen_choiNhanh panel).
 
     /// <summary>
     /// UI 2: Chơi nhanh (ẩn danh)
@@ -361,18 +255,18 @@ public class UIManager : NetworkBehaviour
     }
 
     /// <summary>
-    /// UI 4: Đăng ký
+    /// UI 4: Đăng ký — legacy, không còn dùng (UIRegisterPanelController xử lý thay)
     /// </summary>
     private async void OnRegisterClick()
     {
-        string email = registerEmailInput.text;
-        string password = registerPasswordInput.text;
-        string username = registerUsernameInput.text;
-        int age = int.TryParse(registerAgeInput.text, out int a) ? a : 0;
+        string email = registerEmailInput != null ? registerEmailInput.text : "";
+        string password = registerPasswordInput != null ? registerPasswordInput.text : "";
+        string username = registerUsernameInput != null ? registerUsernameInput.text : "";
+        int grade = 1; // default — UIRegisterPanelController tự lấy từ gradeDropdown
 
-        Debug.Log($"[UIManager] 📝 Register: {username}");
+        Debug.Log($"[UIManager] 📝 Register (legacy): {username}");
 
-        bool success = await authManager.Register(email, password, username, age);
+        bool success = await authManager.Register(email, password, username, grade);
 
         if (success)
         {
@@ -414,7 +308,7 @@ public class UIManager : NetworkBehaviour
     }
 
     /// <summary>
-    /// Multiplayer: Host
+    /// Multiplayer: Host — legacy, dùng RelayManager trực tiếp thay thế
     /// </summary>
     private async void OnHostClick()
     {
@@ -422,18 +316,18 @@ public class UIManager : NetworkBehaviour
         if (relayManager == null) return;
 
         string code = await relayManager.CreateRelay();
-        if (code != null)
+        if (code != null && codeDisplayText != null)
         {
             codeDisplayText.text = $"Mã phòng: {code}";
         }
     }
 
     /// <summary>
-    /// Multiplayer: Join
+    /// Multiplayer: Join — legacy
     /// </summary>
     private async void OnJoinClick()
     {
-        string code = joinInputField.text;
+        string code = joinInputField != null ? joinInputField.text : "";
         if (string.IsNullOrEmpty(code))
         {
             Debug.LogWarning("[UIManager] ⚠️ Nhập mã phòng!");
@@ -448,50 +342,12 @@ public class UIManager : NetworkBehaviour
     }
 
     /// <summary>
-    /// Multiplayer: Bắt đầu game
-    /// </summary>
-    private void OnGameStart()
-    {
-        Debug.Log("[UIManager] 🚀 Start game!");
-        RequestNetworkGameStart();
-    }
-
-    /// <summary>
-    /// Yêu cầu bắt đầu game qua network variable.
-    /// Dùng cho host sau khi đủ điều kiện bắt đầu phòng.
+    /// RequestNetworkGameStart — không còn dùng NetworkVariable, giữ lại để tương thích
     /// </summary>
     public bool RequestNetworkGameStart()
     {
-        MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_MANAGER", "RequestNetworkGameStart invoked");
-        if (NetworkManager.Singleton == null)
-        {
-            Debug.LogWarning("[UIManager] ⚠️ Không có NetworkManager.Singleton để start game.");
-            MultiplayerDetailedLogger.TraceWarning("UI_MANAGER", "RequestNetworkGameStart aborted: NetworkManager.Singleton null");
-            return false;
-        }
-
-        if (!IsServer)
-        {
-            Debug.LogWarning("[UIManager] ⚠️ Chỉ host/server mới được set start game.");
-            MultiplayerDetailedLogger.TraceWarning("UI_MANAGER", "RequestNetworkGameStart aborted: not server");
-            return false;
-        }
-
-        isGameStarted.Value = true;
-        Debug.Log("[UIManager] ✅ Network game start requested");
-        MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_MANAGER", "RequestNetworkGameStart success: isGameStarted=true");
-        return true;
-    }
-
-    /// <summary>
-    /// Chuyển sang gameplay
-    /// </summary>
-    private void SwitchToGameplay()
-    {
-        SetPanelActiveSafe(lobbyPanel, false, nameof(lobbyPanel));
-        SetPanelActiveSafe(gameplayPanel, true, nameof(gameplayPanel));
-        Debug.Log("[UIManager] 🎮 Chuyển sang Gameplay!");
-        MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_MANAGER", "SwitchToGameplay executed");
+        Debug.LogWarning("[UIManager] RequestNetworkGameStart: UIManager không còn là NetworkBehaviour. Dùng UIMultiplayerRoomController để start game.");
+        return false;
     }
     
 }

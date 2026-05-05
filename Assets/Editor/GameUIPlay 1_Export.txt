@@ -1,7 +1,7 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: GameUIPlay 1
 Đường dẫn: Assets/Scenes/GameUIPlay 1.unity
-Thời gian export: 5/5/2026 12:00:10 PM
+Thời gian export: 5/5/2026 2:04:53 PM
 ═══════════════════════════════════════════════════════════
 
 Tổng số Root GameObjects: 5
@@ -328,14 +328,6 @@ GameUICanvas [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
 │││   • Button (UnityEngine.UI)
-││││├─ Text (TMP) [Layer: UI]
-││││   • CanvasRenderer
-││││   • TextMeshProUGUI (TMPro)
-│││├─ BackBtn [Layer: UI]
-│││   • CanvasRenderer
-│││   • Image (UnityEngine.UI)
-│││   • Button (UnityEngine.UI)
-│││   • UIButtonScreenNavigator (DoAnGame.UI)
 ││││├─ Text (TMP) [Layer: UI]
 ││││   • CanvasRenderer
 ││││   • TextMeshProUGUI (TMPro)
@@ -820,5 +812,5 @@ DataManager [Layer: UI]
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 240
+Tổng số GameObjects: 238
 ═══════════════════════════════════════════════════════════

@@ -1018,6 +1018,9 @@ namespace DoAnGame.Multiplayer
 
             Debug.Log($"[BattleManager] Match ended! Winner: Player {winnerId + 1}");
 
+            // Sync kết quả trận lên Firebase (chỉ Host làm, vì Host có đủ thông tin)
+            SyncMatchResultToFirebase(winnerId);
+
             // ✅ FIX: Invoke event trên Host (ClientRpc không chạy trên Host)
             OnMatchEnded?.Invoke(winnerId, winnerHealth);
 
@@ -1097,6 +1100,116 @@ namespace DoAnGame.Multiplayer
         }
 
         #endregion
+
+        /// <summary>
+        /// Sync kết quả trận multiplayer lên Firebase.
+        /// Chỉ chạy trên Host (Server) vì Host có đủ thông tin cả 2 player.
+        /// Cập nhật: totalScore, gamesPlayed, gamesWon, winRate cho cả 2 player.
+        /// </summary>
+        private void SyncMatchResultToFirebase(int winnerId)
+        {
+            if (player1State == null || player2State == null) return;
+
+            int p1Score = player1State.Score.Value;
+            int p2Score = player2State.Score.Value;
+            bool p1Won  = (winnerId == 0);
+            bool p2Won  = (winnerId == 1);
+
+            // Sync Player 1 (Host)
+            _ = SyncPlayerMatchResult(
+                uid:    GetUidForPlayer(0),
+                score:  p1Score,
+                isWin:  p1Won
+            );
+
+            // Sync Player 2 (Client) — Host biết score của client qua NetworkVariable
+            _ = SyncPlayerMatchResult(
+                uid:    GetUidForPlayer(1),
+                score:  p2Score,
+                isWin:  p2Won
+            );
+        }
+
+        private string GetUidForPlayer(int playerId)
+        {
+            // Player 0 = Host → lấy uid từ AuthManager
+            if (playerId == 0)
+            {
+                var authManager = AuthManager.Instance;
+                if (authManager != null)
+                {
+                    var user = authManager.GetCurrentUser();
+                    if (user != null) return user.UserId;
+                }
+                return PlayerPrefs.GetString("uid", null);
+            }
+
+            // Player 1 = Client → uid được lưu trong NetworkedPlayerState.PlayerName
+            // Hiện tại chưa có uid của client trên Host → bỏ qua (client tự sync)
+            return null;
+        }
+
+        private async System.Threading.Tasks.Task SyncPlayerMatchResult(string uid, int score, bool isWin)
+        {
+            if (string.IsNullOrEmpty(uid)) return;
+
+            try
+            {
+                var firestore = Firebase.Firestore.FirebaseFirestore.DefaultInstance;
+                if (firestore == null) return;
+
+                var docRef = firestore.Collection("playerData").Document(uid);
+                var snap   = await docRef.GetSnapshotAsync();
+
+                int prevScore      = 0;
+                int prevXp         = 0;
+                int prevPlayed     = 0;
+                int prevWon        = 0;
+
+                if (snap.Exists)
+                {
+                    var d = snap.ToDictionary();
+                    prevScore  = GetSafeInt(d, "totalScore", 0);
+                    prevXp     = GetSafeInt(d, "totalXp", 0);
+                    prevPlayed = GetSafeInt(d, "gamesPlayed", 0);
+                    prevWon    = GetSafeInt(d, "gamesWon", 0);
+                }
+
+                int newScore   = prevScore + score;
+                int newXp      = prevXp + (score / 10);
+                int newLevel   = 1 + (newXp / 100);
+                int newPlayed  = prevPlayed + 1;
+                int newWon     = prevWon + (isWin ? 1 : 0);
+                float newWinRate = newPlayed > 0 ? (float)newWon / newPlayed : 0f;
+
+                var update = new System.Collections.Generic.Dictionary<string, object>
+                {
+                    { "totalScore",  newScore },
+                    { "totalXp",     newXp },
+                    { "level",       newLevel },
+                    { "gamesPlayed", newPlayed },
+                    { "gamesWon",    newWon },
+                    { "winRate",     newWinRate },
+                    { "lastUpdated", System.DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() }
+                };
+
+                await docRef.SetAsync(update, Firebase.Firestore.SetOptions.MergeAll);
+                Debug.Log($"[BattleManager] ✅ Synced match result: uid={uid[..8]}... score+{score} won={isWin} winRate={newWinRate:P0}");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[BattleManager] ⚠️ Sync match result thất bại: {ex.Message}");
+            }
+        }
+
+        private static int GetSafeInt(System.Collections.Generic.Dictionary<string, object> map, string key, int fallback)
+        {
+            if (map != null && map.TryGetValue(key, out object value) && value != null)
+            {
+                try { return System.Convert.ToInt32(value); } catch { }
+            }
+            return fallback;
+        }
 
         private void OnDestroy()
         {
