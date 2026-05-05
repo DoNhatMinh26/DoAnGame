@@ -88,6 +88,10 @@ public class SpaceShipPhysics : MonoBehaviour
                 {
                     gateText.color = Color.green;
                     SpaceShipManager.Instance.CountCorrectAnswer();
+                    if (DataManager.Instance != null)
+                    {
+                        DataManager.Instance.AddScore(10); // Cộng 5 điểm khi xuyên qua cổng đúng
+                    }
                 }
                 else
                 {

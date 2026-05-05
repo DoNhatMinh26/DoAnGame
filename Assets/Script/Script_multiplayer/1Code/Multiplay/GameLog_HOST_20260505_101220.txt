@@ -1,0 +1,1753 @@
+=== GAME LOG START (HOST) ===
+Time: 5/5/2026 10:12:20 AM
+Unity Version: 2022.3.62f3
+Platform: WindowsEditor
+Log Path: C:/Users/DELL/Documents/DoAn/unity/DoAnGame/Assets\Script\Script_multiplayer\1Code\Multiplay\GameLog_HOST_20260505_101220.txt
+================================
+
+[10:12:21.140] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:12:21.141] [INFO] [UIRoom] Đã tạo phòng. Độ khó: Lớp 1. Chờ người chơi thứ 2...
+[10:12:21.142] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:12:23.632] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:12:23.954] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:12:23.956] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:12:27.134] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:12:27.443] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:12:27.450] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:12:30.106] [INFO] [UIButtonScreenNavigator:DS Room] Click detected. targetSceneName='', targetScreen='LobbyBrowserPanel'
+[10:12:30.116] [INFO] [UIButtonScreenNavigator:DS Room] Switching UI to 'LobbyBrowserPanel'
+[10:12:30.123] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-fix screensRoot scale to (1,1,1).
+[10:12:30.147] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-normalized panel 'LobbyBrowserPanel' to full-screen.
+[10:12:32.091] [INFO] [UIButtonScreenNavigator:BackButton] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:12:32.091] [INFO] [UIButtonScreenNavigator:BackButton] Switching UI to 'LobbyPanel'
+[10:12:32.092] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-fix screensRoot scale to (1,1,1).
+[10:12:32.096] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:12:32.097] [INFO] [UIButtonScreenNavigator:BackButton] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:12:32.097] [INFO] [UIButtonScreenNavigator:BackButton] Switching UI to 'LobbyPanel'
+[10:12:32.101] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:12:33.378] [INFO] [UIButtonScreenNavigator:DS Room] Click detected. targetSceneName='', targetScreen='LobbyBrowserPanel'
+[10:12:33.380] [INFO] [UIButtonScreenNavigator:DS Room] Switching UI to 'LobbyBrowserPanel'
+[10:12:33.380] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-fix screensRoot scale to (1,1,1).
+[10:12:33.381] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-normalized panel 'LobbyBrowserPanel' to full-screen.
+[10:12:35.261] [INFO] [LobbyBrowser] Đang tải danh sách phòng...
+[10:12:35.609] [INFO] [LobbyBrowser] Tìm thấy 1 phòng.
+[10:12:40.810] [INFO] [UIButtonScreenNavigator:BackButton] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:12:40.824] [INFO] [UIButtonScreenNavigator:BackButton] Switching UI to 'LobbyPanel'
+[10:12:40.835] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-fix screensRoot scale to (1,1,1).
+[10:12:40.865] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:12:40.873] [INFO] [UIButtonScreenNavigator:BackButton] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:12:40.879] [INFO] [UIButtonScreenNavigator:BackButton] Switching UI to 'LobbyPanel'
+[10:12:40.901] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:12:47.693] [INFO] [UIButtonScreenNavigator:DS Room] Click detected. targetSceneName='', targetScreen='LobbyBrowserPanel'
+[10:12:47.694] [INFO] [UIButtonScreenNavigator:DS Room] Switching UI to 'LobbyBrowserPanel'
+[10:12:47.694] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-fix screensRoot scale to (1,1,1).
+[10:12:47.695] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-normalized panel 'LobbyBrowserPanel' to full-screen.
+[10:12:51.533] [INFO] [UIButtonScreenNavigator:BackButton] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:12:51.533] [INFO] [UIButtonScreenNavigator:BackButton] Switching UI to 'LobbyPanel'
+[10:12:51.534] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-fix screensRoot scale to (1,1,1).
+[10:12:51.535] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:12:51.535] [INFO] [UIButtonScreenNavigator:BackButton] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:12:51.536] [INFO] [UIButtonScreenNavigator:BackButton] Switching UI to 'LobbyPanel'
+[10:12:51.537] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:12:53.490] [INFO] [UIButtonScreenNavigator:DS Room] Click detected. targetSceneName='', targetScreen='LobbyBrowserPanel'
+[10:12:53.491] [INFO] [UIButtonScreenNavigator:DS Room] Switching UI to 'LobbyBrowserPanel'
+[10:12:53.491] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-fix screensRoot scale to (1,1,1).
+[10:12:53.492] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-normalized panel 'LobbyBrowserPanel' to full-screen.
+[10:12:56.818] [INFO] [UIButtonScreenNavigator:BackButton] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:12:56.818] [INFO] [UIButtonScreenNavigator:BackButton] Switching UI to 'LobbyPanel'
+[10:12:56.820] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-fix screensRoot scale to (1,1,1).
+[10:12:56.821] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:12:56.822] [INFO] [UIButtonScreenNavigator:BackButton] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:12:56.822] [INFO] [UIButtonScreenNavigator:BackButton] Switching UI to 'LobbyPanel'
+[10:12:56.823] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:13:02.374] [INFO] [UIRoom] Đang rời phòng...
+[10:13:02.659] [INFO] [UIRoom] Marked lobby RF6i4f2kgoQYrobRuz7zxX as abandoned (grace period 30s)
+[10:13:02.663] [INFO] [Relay] Đang ngắt kết nối Relay...
+[10:13:02.666] [INFO] [UIRoom] Mời tạo phòng để chơi.
+[10:13:02.669] [INFO] [UIButtonScreenNavigator:Quit] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:13:02.672] [INFO] [UIButtonScreenNavigator:Quit] Switching UI to 'LobbyPanel'
+[10:13:02.674] [WARNING] [UIButtonScreenNavigator:Quit] Auto-fix screensRoot scale to (1,1,1).
+[10:13:02.679] [WARNING] [UIButtonScreenNavigator:Quit] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:13:04.069] [INFO] [UIRoom] Đang tạo phòng...
+[10:13:04.069] [INFO] [Relay] Đang tạo Allocation...
+[10:13:04.934] [INFO] best region is asia-southeast1
+[10:13:05.796] [INFO] [Relay] Đã cấu hình Transport thành công.
+[10:13:06.004] [INFO] [BattleManager] Server spawned, waiting for initialization...
+[10:13:06.019] [INFO] [Relay] Host đã chạy. Mã: JTGFWB
+[10:13:06.032] [INFO] [UIRoom] Grade đã chọn: Lớp 1
+[10:13:07.093] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:13:07.110] [INFO] [UIRoom] Đã tạo phòng. Độ khó: Lớp 1. Chờ người chơi thứ 2...
+[10:13:07.129] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:13:09.830] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:13:10.162] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:13:10.169] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:13:13.326] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:13:13.613] [INFO] [UIRoom] Người chơi đã sẵn sàng! Có thể bắt đầu.
+[10:13:13.615] [INFO] [UIRoom] Người chơi đã sẵn sàng! Có thể bắt đầu.
+[10:13:16.231] [INFO] [UIRoom] Bắt đầu trận đấu...
+[10:13:16.236] [WARNING] [UIRoom] 🔥 NotifyBattleStarted() CALLED 🔥 isHost=True, receivedStartSignalFromHost=False
+[10:13:16.246] [WARNING] [UIRoom] 🔥 Stack trace:   at System.Environment.get_StackTrace () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at DoAnGame.UI.UIMultiplayerRoomController.NotifyBattleStarted () [0x00025] in C:\Users\DELL\Documents\DoAn\unity\DoAnGame\Assets\Script\Script_multiplayer\1Code\CODE\UIMultiplayerRoomController.cs:1443 
+  at DoAnGame.UI.UIMultiplayerRoomController.HandleStartMatch () [0x0037f] in C:\Users\DELL\Documents\DoAn\unity\DoAnGame\Assets\Script\Script_multiplayer\1Code\CODE\UIMultiplayerRoomController.cs:1018 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Internal.WrappedLobbyService.UpdateLobbyAsync (System.String lobbyId, Unity.Services.Lobbies.UpdateLobbyOptions options) [0x00167] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\SDK\WrappedLobbyService.cs:286 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Internal.WrappedLobbyService.TryCatchRequest[TRequest,TReturn] (System.String api, System.Func`3[T1,T2,TResult] func, TRequest request) [0x001ae] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\SDK\WrappedLobbyService.cs:447 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Apis.Lobby.LobbyApiClient.UpdateLobbyAsync (Unity.Services.Lobbies.Lobby.UpdateLobbyRequest request, Unity.Services.Lobbies.Configuration operationConfiguration) [0x0019e] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\Apis\LobbyApi.cs:668 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Http.HttpClient.MakeRequestAsync (System.String method, System.String url, System.Byte[] body, System.Collections.Generic.Dictionary`2[TKey,TValue] headers, System.Int32 requestTimeout) [0x000b0] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\Http\HttpClient.cs:41 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Http.HttpClient.CreateWebRequestAsync (System.String method, System.String url, System.Byte[] body, System.Collections.Generic.IDictionary`2[TKey,TValue] headers, System.Int32 requestTimeout) [0x000ab] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\Http\HttpClient.cs:56 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Http.HttpClient.CreateHttpClientResponse (System.String method, System.String url, System.Byte[] body, System.Collections.Generic.IDictionary`2[TKey,TValue] headers, System.Int32 requestTimeout) [0x00151] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\Http\HttpClient.cs:84 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncTaskMethodBuilder`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Http.HttpClient+<>c__DisplayClass4_0.<CreateHttpClientResponse>b__0 () [0x0018d] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\Http\HttpClient.cs:81 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.InvokeMoveNext (System.Object stateMachine) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.RunInternal (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.ExecutionContext.Run (System.Threading.ExecutionContext executionContext, System.Threading.ContextCallback callback, System.Object state, System.Boolean preserveSyncCtx) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Runtime.CompilerServices.AsyncMethodBuilderCore+MoveNextRunner.Run () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.InvokeAction (System.Object state) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.AwaitTaskContinuation.RunCallback (System.Threading.ContextCallback callback, System.Object state, System.Threading.Tasks.Task& currentTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation.Run (System.Threading.Tasks.Task ignored, System.Boolean canInlineContinuationTask) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishContinuations () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task.FinishStageThree () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.Task`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.TaskCompletionSource`1[TResult].TrySetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at System.Threading.Tasks.TaskCompletionSource`1[TResult].SetResult (TResult result) [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at Unity.Services.Lobbies.Http.UnityWebRequestHelpers+<>c__DisplayClass0_0.<GetAwaiter>b__0 (UnityEngine.AsyncOperation obj) [0x0000c] in .\Library\PackageCache\com.unity.services.lobby@1.3.0\Runtime\Http\UnityWebRequestHelpers.cs:34 
+  at UnityEngine.AsyncOperation.InvokeCompletionEvent () [0x00000] in <37cc348edc804f4cb176b63962c716e7>:0 
+[10:13:16.248] [WARNING] [UIRoom] 🔥🔥🔥 InitializeMultiplayerBattleImmediate() ENTRY POINT 🔥🔥🔥
+[10:13:16.251] [INFO] [BattleManager] ✅ Initializing battle: Grade 1, Difficulty 1
+[10:13:16.252] [INFO] [BattleManager] 🎮 Spawning player states...
+[10:13:16.254] [INFO] [BattleManager] Player 1 name: minh
+[10:13:16.257] [INFO] [PlayerState] Spawned player 0 on server
+[10:13:16.265] [INFO] [PlayerState] Initialized P0: minh, HP=2
+[10:13:16.266] [INFO] [BattleManager] ✅ Player 1 spawned
+[10:13:16.268] [INFO] [PlayerState] Spawned player 1 on server
+[10:13:16.269] [INFO] [PlayerState] Initialized P1: Player 2, HP=2
+[10:13:16.270] [INFO] [BattleManager] ✅ Player 2 spawned (ClientID: 1)
+[10:13:16.270] [INFO] [BattleManager] Spawned player states: P1=0, P2=1
+[10:13:16.271] [INFO] [BattleManager] ⚔️ Match started!
+[10:13:16.278] [INFO] [BattleManager] 📝 Generating new question (without timer)...
+[10:13:16.283] [INFO] [BattleManager] Generated question (no timer): 10 + 9 = ? = 19
+[10:13:16.285] [INFO] [BattleManager] Client received question: 10 + 9 = ?
+[10:13:16.288] [INFO] [LoadingPanel] 🔄 LoadingRoutine START
+[10:13:16.289] [INFO] [LoadingPanel] Phase 1: Kết nối...
+[10:13:16.732] [INFO] [LoadingPanel] Phase 2: Đồng bộ dữ liệu...
+[10:13:16.732] [INFO] [LoadingPanel] IsNetworkReady: True
+[10:13:16.736] [INFO] [LoadingPanel] ✅ Network ready!
+[10:13:16.736] [INFO] [LoadingPanel] Phase 3: Chuẩn bị trận đấu...
+[10:13:16.737] [INFO] [LoadingPanel] ArePlayerStatesReady: True
+[10:13:16.740] [INFO] [LoadingPanel] ✅ Player states ready!
+[10:13:16.741] [INFO] [LoadingPanel] Waiting 1.49s to reach minLoadingTime...
+[10:13:16.922] [INFO] [BattleManager] Server received name update from client 1: Huynh2333
+[10:13:16.922] [INFO] [BattleManager] Updating Player 2 name (client 1)
+[10:13:16.922] [INFO] [BattleManager] ✅ Updated player name for client 1: Huynh2333
+[10:13:18.232] [INFO] [LoadingPanel] ✅ Loading complete!
+[10:13:18.532] [INFO] [LoadingPanel] ✅ Loading complete, navigating to GameplayPanel
+[10:13:18.533] [INFO] [LoadingPanel] ✅ Found GameplayPanel, showing it...
+[10:13:18.534] [WARNING] [UIButtonScreenNavigator:Quit] Auto-fix screensRoot scale to (1,1,1).
+[10:13:18.536] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0 (1): (-138.14, -309.22)
+[10:13:18.536] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0 (2): (46.16, -309.22)
+[10:13:18.539] [INFO] [BattleController] OnEnable CALLED
+[10:13:18.543] [INFO] [BattleController] ✅ Subscribed to BattleManager events
+[10:13:18.544] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0: (-314.52, -309.22)
+[10:13:18.544] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0 (3): (212.71, -309.22)
+[10:13:18.544] [INFO] [BattleController] ✅ Subscribed to BattleManager events
+[10:13:18.546] [INFO] [BattleController] 🎬 Starting countdown...
+[10:13:18.546] [INFO] [AnswerSummaryUI] ✅ Hidden all UI for countdown
+[10:13:18.546] [INFO] [BattleController] ✅ Hidden all battle UI for countdown
+[10:13:18.547] [INFO] [AnswerSummaryUI] Auto-loaded summary duration from GameRules: 3s
+[10:13:18.548] [INFO] [AnswerSummaryUI] State: Question Time
+[10:13:18.548] [INFO] [AnswerSummaryUI] ✅ Initialized
+[10:13:18.548] [INFO] [BattleController] Start CALLED
+[10:13:18.548] [INFO] [BattleController] ✅ Subscribed to BattleManager events
+[10:13:19.024] [INFO] [BattleController] 🔗 Subscribing to NetworkVariables (IsSpawned=True)
+[10:13:19.025] [INFO] [BattleController] ✅ Subscribed to NetworkVariable changes
+[10:13:19.033] [INFO] [BattleController] Countdown: 3
+[10:13:19.224] [INFO] [BattleController] 🔄 Force initial sync...
+[10:13:19.224] [INFO] [BattleController] 📝 Initial question found: 10 + 9 = ?
+[10:13:19.225] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:19.226] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:19.226] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:19.226] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:19.227] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:19.227] [INFO] [BattleController] ⚔️ Match already started
+[10:13:19.533] [INFO] [HealthUI] Player1State: FOUND
+[10:13:19.534] [INFO] [HealthUI] Player2State: FOUND
+[10:13:19.534] [INFO] [HealthUI] Subscribing to Player1: HP=2/2
+[10:13:19.536] [INFO] [HealthUI] UpdateHealth: TimerFill1 fillAmount=1.00 (2/2), FillMethod=Horizontal, Color=RGBA(0.248, 1.000, 0.000, 1.000)
+[10:13:19.539] [INFO] [HealthUI] Subscribing to Player2: HP=2/2
+[10:13:19.540] [INFO] [HealthUI] UpdateHealth: TimerFill2 fillAmount=1.00 (2/2), FillMethod=Horizontal, Color=RGBA(0.316, 1.000, 0.000, 1.000)
+[10:13:19.540] [INFO] [HealthUI] ✅ Successfully initialized!
+[10:13:20.035] [INFO] [BattleController] Countdown: 2
+[10:13:21.039] [INFO] [BattleController] Countdown: 1
+[10:13:22.041] [INFO] [BattleController] Countdown: Ready
+[10:13:23.043] [INFO] [BattleController] Countdown: GO!
+[10:13:24.048] [INFO] [AnswerSummaryUI] ✅ Shown all UI after countdown
+[10:13:24.048] [INFO] [BattleController] ✅ Shown all battle UI after countdown
+[10:13:24.050] [INFO] [BattleManager] ⏱️ Starting question timer...
+[10:13:24.051] [INFO] [BattleController] ✅ Started BattleManager timer (server-side)
+[10:13:24.052] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[10:13:24.053] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[10:13:24.053] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[10:13:24.053] [INFO] [BattleController] ✅ Countdown complete, battle started!
+[10:13:24.055] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[10:13:24.055] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[10:13:24.056] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[10:13:24.056] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[10:13:26.476] [INFO] [BattleManager] Client 1 submitted answer 19 at 2422ms
+[10:13:26.545] [INFO] [MultiplayerDragAndDrop] OnBeginDrag CALLED for ANSWER_0 (1)
+[10:13:26.545] [INFO]   isLocked: False
+[10:13:26.546] [INFO]   canvasGroup: True
+[10:13:26.546] [INFO]   image: True
+[10:13:26.546] [INFO]   rectTransform: True
+[10:13:26.547] [INFO] [MultiplayerDragAndDrop] ✅ Begin drag: 19
+[10:13:26.583] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(2.00, -3.00), position=(-95.07, -356.82)
+[10:13:26.632] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(3.00, -2.00), position=(-18.00, -431.63)
+[10:13:26.798] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(2.00, -3.00), position=(45.47, -476.97)
+[10:13:26.853] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(2.00, 0.00), position=(99.87, -492.83)
+[10:13:26.967] [INFO] [MultiplayerDragAndDrop] RaycastAll found 1 objects at (467.75, 18.75)
+[10:13:26.968] [INFO]   - ANSWER_0 (1) (tag: Untagged)
+[10:13:26.968] [INFO]     → Bỏ qua (là Answer object)
+[10:13:26.968] [INFO] [MultiplayerDragAndDrop] RaycastAll không tìm thấy, thử tìm trực tiếp...
+[10:13:26.970] [INFO] [MultiplayerDragAndDrop] ✅ Found Slot (direct): Slot
+[10:13:26.972] [INFO] [MultiplayerDragAndDrop] End drag: 19, dropped on: Slot
+[10:13:26.972] [INFO] [MultiplayerDragAndDrop] Player dropped answer: 19
+[10:13:26.975] [INFO] [BattleManager] Client 0 submitted answer 19 at 2924ms
+[10:13:26.975] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:13:26.976] [INFO] [MultiplayerDragAndDrop] Answer submitted: 19
+[10:13:30.047] [INFO] [BattleManager] 🎯 Evaluating answers...
+[10:13:30.047] [INFO] [BattleManager] P1: answer=19, correct=True, time=2924ms
+[10:13:30.047] [INFO] [BattleManager] P2: answer=19, correct=True, time=2422ms
+[10:13:30.047] [INFO] [BattleManager] Both correct! Player 2 faster: 2422ms < 2924ms
+[10:13:30.048] [INFO] [PlayerState] P1 gained 10 points: 10
+[10:13:30.048] [INFO] [PlayerState] P0 gained 5 points: 5
+[10:13:30.049] [INFO] [BattleManager] Both correct! Winner gets 10, loser gets 5 (encouragement)
+[10:13:30.049] [INFO] [BattleManager] Difficulty increased to level 16
+[10:13:30.051] [INFO] [BattleManager] Client received answer result: Winner=1, Correct=True, P1Time=2924ms, P2Time=2422ms, P1Answer=19, P2Answer=19
+[10:13:30.052] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=1, Correct=True, Time=2924ms
+[10:13:30.052] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:13:30.052] [INFO] [BattleController] [HOST] Correct answer: 19
+[10:13:30.053] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:13:30.053] [INFO] [BattleController] [HOST] Answer 0 text: '17'
+[10:13:30.053] [INFO] [BattleController] [HOST] Answer 0: 17 → WRONG → Calling ShowResultForce(False)
+[10:13:30.053] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:13:30.053] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:13:30.055] [INFO] [BattleController] [HOST] Answer 1 text: '19'
+[10:13:30.055] [INFO] [BattleController] [HOST] Answer 1: 19 → CORRECT → Calling ShowResultForce(True)
+[10:13:30.055] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (1)
+[10:13:30.055] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:13:30.055] [INFO] [BattleController] [HOST] Answer 2 text: '14'
+[10:13:30.056] [INFO] [BattleController] [HOST] Answer 2: 14 → WRONG → Calling ShowResultForce(False)
+[10:13:30.056] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:13:30.056] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:13:30.057] [INFO] [BattleController] [HOST] Answer 3 text: '20'
+[10:13:30.057] [INFO] [BattleController] [HOST] Answer 3: 20 → WRONG → Calling ShowResultForce(False)
+[10:13:30.057] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[10:13:30.057] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:13:30.058] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:13:30.058] [INFO] [AnswerSummaryUI] Answer result: Winner=1, Correct=True, P1Time=2924ms, P2Time=2422ms, P1Answer=19, P2Answer=19
+[10:13:30.059] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:13:30.060] [INFO] [AnswerSummaryUI] P1 answer: 19 (2.9240s)
+[10:13:30.061] [INFO] [AnswerSummaryUI] P2 answer: 19 (2.4220s)
+[10:13:30.061] [INFO] [AnswerSummaryUI] Correct answer: 19, P1: 19 (True), P2: 19 (True)
+[10:13:30.062] [INFO] [AnswerSummaryUI] Result: <color=green>Cả 2 đều đúng!</color>
+<color=yellow>Người chơi 2 nhanh hơn!</color>
+[10:13:30.062] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:13:30.062] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=1, Correct=True, Time=2924ms
+[10:13:30.063] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:13:30.063] [INFO] [BattleController] [HOST] Correct answer: 19
+[10:13:30.063] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:13:30.063] [INFO] [BattleController] [HOST] Answer 0 text: '17'
+[10:13:30.064] [INFO] [BattleController] [HOST] Answer 0: 17 → WRONG → Calling ShowResultForce(False)
+[10:13:30.064] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:13:30.064] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:13:30.064] [INFO] [BattleController] [HOST] Answer 1 text: '19'
+[10:13:30.064] [INFO] [BattleController] [HOST] Answer 1: 19 → CORRECT → Calling ShowResultForce(True)
+[10:13:30.065] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (1)
+[10:13:30.065] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:13:30.065] [INFO] [BattleController] [HOST] Answer 2 text: '14'
+[10:13:30.065] [INFO] [BattleController] [HOST] Answer 2: 14 → WRONG → Calling ShowResultForce(False)
+[10:13:30.066] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:13:30.066] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:13:30.066] [INFO] [BattleController] [HOST] Answer 3 text: '20'
+[10:13:30.066] [INFO] [BattleController] [HOST] Answer 3: 20 → WRONG → Calling ShowResultForce(False)
+[10:13:30.066] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[10:13:30.067] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:13:30.067] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:13:30.067] [INFO] [AnswerSummaryUI] Answer result: Winner=1, Correct=True, P1Time=2924ms, P2Time=2422ms, P1Answer=19, P2Answer=19
+[10:13:30.067] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:13:30.067] [INFO] [AnswerSummaryUI] P1 answer: 19 (2.9240s)
+[10:13:30.067] [INFO] [AnswerSummaryUI] P2 answer: 19 (2.4220s)
+[10:13:30.067] [INFO] [AnswerSummaryUI] Correct answer: 19, P1: 19 (True), P2: 19 (True)
+[10:13:30.069] [INFO] [AnswerSummaryUI] Result: <color=green>Cả 2 đều đúng!</color>
+<color=yellow>Người chơi 2 nhanh hơn!</color>
+[10:13:30.069] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:13:33.049] [INFO] [AnswerSummaryUI] State: Question Time
+[10:13:33.049] [INFO] [AnswerSummaryUI] Summary cleared, all texts hidden
+[10:13:33.049] [INFO] [AnswerSummaryUI] Summary ended, ready for next question
+[10:13:33.050] [INFO] [BattleManager] 📝 Generating new question...
+[10:13:33.051] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:33.051] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:33.051] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:33.051] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:33.053] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:33.053] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:33.053] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:33.053] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:33.054] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:33.054] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:33.054] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:33.054] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:33.055] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:33.055] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:33.055] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:33.055] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:33.056] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:33.056] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:33.056] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:33.056] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:33.056] [INFO] [BattleManager] Generated question: 9 + 8 = ? = 17
+[10:13:33.056] [INFO] [BattleManager] Client received question: 9 + 8 = ?
+[10:13:33.057] [INFO] [AnswerSummaryUI] New question generated: 9 + 8 = ?
+[10:13:33.057] [INFO] [AnswerSummaryUI] State: Question Time
+[10:13:33.058] [INFO] [AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController
+[10:13:33.058] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:33.058] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:33.059] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:33.059] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:33.059] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:33.060] [INFO] [BattleManager] ⏱️ Starting question timer...
+[10:13:33.060] [INFO] [BattleController] ✅ Started BattleManager timer (server-side)
+[10:13:33.060] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[10:13:33.061] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[10:13:33.061] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[10:13:35.972] [INFO] [MultiplayerDragAndDrop] OnBeginDrag CALLED for ANSWER_0 (2)
+[10:13:35.973] [INFO]   isLocked: False
+[10:13:35.973] [INFO]   canvasGroup: True
+[10:13:35.973] [INFO]   image: True
+[10:13:35.973] [INFO]   rectTransform: True
+[10:13:35.975] [INFO] [MultiplayerDragAndDrop] ✅ Begin drag: 17
+[10:13:35.997] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(1.00, -3.00), position=(48.42, -347.76)
+[10:13:36.165] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(0.00, -3.00), position=(52.96, -415.76)
+[10:13:36.317] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(0.00, 2.00), position=(48.42, -576.71)
+[10:13:36.368] [INFO] [MultiplayerDragAndDrop] RaycastAll found 1 objects at (438.75, 3.75)
+[10:13:36.369] [INFO]   - ANSWER_0 (2) (tag: Untagged)
+[10:13:36.369] [INFO]     → Bỏ qua (là Answer object)
+[10:13:36.369] [INFO] [MultiplayerDragAndDrop] RaycastAll không tìm thấy, thử tìm trực tiếp...
+[10:13:36.370] [INFO] [MultiplayerDragAndDrop] ❌ No Slot found at pointer position
+[10:13:36.370] [INFO] [MultiplayerDragAndDrop] End drag: 17, dropped on: 
+[10:13:37.733] [INFO] [MultiplayerDragAndDrop] OnBeginDrag CALLED for ANSWER_0 (2)
+[10:13:37.733] [INFO]   isLocked: False
+[10:13:37.735] [INFO]   canvasGroup: True
+[10:13:37.735] [INFO]   image: True
+[10:13:37.735] [INFO]   rectTransform: True
+[10:13:37.735] [INFO] [MultiplayerDragAndDrop] ✅ Begin drag: 17
+[10:13:37.766] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(0.00, -2.00), position=(46.16, -356.82)
+[10:13:37.810] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(0.00, -1.00), position=(46.16, -422.56)
+[10:13:37.856] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(0.00, -1.00), position=(46.16, -461.10)
+[10:13:37.987] [INFO] [MultiplayerDragAndDrop] RaycastAll found 1 objects at (447.75, 10.75)
+[10:13:37.988] [INFO]   - ANSWER_0 (2) (tag: Untagged)
+[10:13:37.988] [INFO]     → Bỏ qua (là Answer object)
+[10:13:37.988] [INFO] [MultiplayerDragAndDrop] RaycastAll không tìm thấy, thử tìm trực tiếp...
+[10:13:37.988] [INFO] [MultiplayerDragAndDrop] ❌ No Slot found at pointer position
+[10:13:37.989] [INFO] [MultiplayerDragAndDrop] End drag: 17, dropped on: 
+[10:13:38.111] [INFO] [BattleManager] Client 1 submitted answer 17 at 5051ms
+[10:13:39.090] [INFO] [BattleManager] 🎯 Evaluating answers...
+[10:13:39.090] [INFO] [BattleManager] P1: answer=-1, correct=False, time=9223372036854775807ms
+[10:13:39.090] [INFO] [BattleManager] P2: answer=17, correct=True, time=5051ms
+[10:13:39.092] [INFO] [BattleManager] Player 2 correct, Player 1 wrong
+[10:13:39.092] [INFO] [PlayerState] P1 gained 10 points: 20
+[10:13:39.092] [INFO] [HealthUI] UpdateHealth: TimerFill1 fillAmount=0.50 (1/2), FillMethod=Horizontal, Color=RGBA(0.000, 1.000, 0.000, 1.000)
+[10:13:39.092] [INFO] [PlayerState] P0 took 1 damage: 2 → 1
+[10:13:39.093] [INFO] [PlayerState] Client received damage notification: -1 HP (now 1)
+[10:13:39.093] [INFO] [BattleManager] Difficulty increased to level 31
+[10:13:39.093] [INFO] [BattleManager] Client received answer result: Winner=1, Correct=True, P1Time=9223372036854775807ms, P2Time=5051ms, P1Answer=-1, P2Answer=17
+[10:13:39.095] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=1, Correct=True, Time=9223372036854775807ms
+[10:13:39.095] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:13:39.095] [INFO] [BattleController] [HOST] Correct answer: 17
+[10:13:39.095] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:13:39.096] [INFO] [BattleController] [HOST] Answer 0 text: '18'
+[10:13:39.096] [INFO] [BattleController] [HOST] Answer 0: 18 → WRONG → Calling ShowResultForce(False)
+[10:13:39.096] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:13:39.096] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:13:39.097] [INFO] [BattleController] [HOST] Answer 1 text: '19'
+[10:13:39.097] [INFO] [BattleController] [HOST] Answer 1: 19 → WRONG → Calling ShowResultForce(False)
+[10:13:39.097] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[10:13:39.097] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:13:39.097] [INFO] [BattleController] [HOST] Answer 2 text: '17'
+[10:13:39.097] [INFO] [BattleController] [HOST] Answer 2: 17 → CORRECT → Calling ShowResultForce(True)
+[10:13:39.098] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (2)
+[10:13:39.098] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:13:39.098] [INFO] [BattleController] [HOST] Answer 3 text: '12'
+[10:13:39.098] [INFO] [BattleController] [HOST] Answer 3: 12 → WRONG → Calling ShowResultForce(False)
+[10:13:39.099] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[10:13:39.099] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:13:39.099] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:13:39.099] [INFO] [AnswerSummaryUI] Answer result: Winner=1, Correct=True, P1Time=9223372036854775807ms, P2Time=5051ms, P1Answer=-1, P2Answer=17
+[10:13:39.099] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:13:39.101] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[10:13:39.101] [INFO] [AnswerSummaryUI] P2 answer: 17 (5.0510s)
+[10:13:39.101] [INFO] [AnswerSummaryUI] Correct answer: 17, P1: -1 (False), P2: 17 (True)
+[10:13:39.102] [INFO] [AnswerSummaryUI] Result: <color=red>Người chơi 1 sai!</color>
+<color=green>Người chơi 2 đúng!</color>
+[10:13:39.102] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:13:39.102] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=1, Correct=True, Time=9223372036854775807ms
+[10:13:39.102] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:13:39.102] [INFO] [BattleController] [HOST] Correct answer: 17
+[10:13:39.103] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:13:39.103] [INFO] [BattleController] [HOST] Answer 0 text: '18'
+[10:13:39.103] [INFO] [BattleController] [HOST] Answer 0: 18 → WRONG → Calling ShowResultForce(False)
+[10:13:39.103] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:13:39.103] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:13:39.103] [INFO] [BattleController] [HOST] Answer 1 text: '19'
+[10:13:39.104] [INFO] [BattleController] [HOST] Answer 1: 19 → WRONG → Calling ShowResultForce(False)
+[10:13:39.104] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[10:13:39.104] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:13:39.104] [INFO] [BattleController] [HOST] Answer 2 text: '17'
+[10:13:39.104] [INFO] [BattleController] [HOST] Answer 2: 17 → CORRECT → Calling ShowResultForce(True)
+[10:13:39.104] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (2)
+[10:13:39.104] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:13:39.104] [INFO] [BattleController] [HOST] Answer 3 text: '12'
+[10:13:39.104] [INFO] [BattleController] [HOST] Answer 3: 12 → WRONG → Calling ShowResultForce(False)
+[10:13:39.105] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[10:13:39.105] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:13:39.105] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:13:39.105] [INFO] [AnswerSummaryUI] Answer result: Winner=1, Correct=True, P1Time=9223372036854775807ms, P2Time=5051ms, P1Answer=-1, P2Answer=17
+[10:13:39.105] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:13:39.105] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[10:13:39.106] [INFO] [AnswerSummaryUI] P2 answer: 17 (5.0510s)
+[10:13:39.106] [INFO] [AnswerSummaryUI] Correct answer: 17, P1: -1 (False), P2: 17 (True)
+[10:13:39.107] [INFO] [AnswerSummaryUI] Result: <color=red>Người chơi 1 sai!</color>
+<color=green>Người chơi 2 đúng!</color>
+[10:13:39.107] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:13:39.348] [INFO] [MultiplayerDragAndDrop] OnBeginDrag CALLED for ANSWER_0 (1)
+[10:13:39.348] [INFO]   isLocked: True
+[10:13:39.350] [INFO]   canvasGroup: True
+[10:13:39.350] [INFO]   image: True
+[10:13:39.350] [INFO]   rectTransform: True
+[10:13:39.350] [WARNING] [MultiplayerDragAndDrop] Drag BLOCKED by lock!
+[10:13:42.088] [INFO] [BattleManager] 📝 Generating new question...
+[10:13:42.088] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:42.090] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:42.090] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:42.090] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:42.090] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:42.090] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:42.090] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:42.091] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:42.092] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:42.092] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:42.092] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:42.092] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:42.092] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:42.092] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:42.092] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:42.092] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:42.094] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:42.094] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:42.094] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:42.094] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:42.094] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:42.094] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:42.095] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:42.095] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:42.095] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:42.095] [INFO] [BattleManager] Generated question: 19 - 11 = ? = 8
+[10:13:42.096] [INFO] [BattleManager] Client received question: 19 - 11 = ?
+[10:13:42.096] [INFO] [AnswerSummaryUI] New question generated: 19 - 11 = ?
+[10:13:42.096] [INFO] [AnswerSummaryUI] State: Question Time
+[10:13:42.097] [INFO] [AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController
+[10:13:42.097] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:42.097] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:42.097] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:42.098] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:42.098] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:42.098] [INFO] [BattleManager] ⏱️ Starting question timer...
+[10:13:42.099] [INFO] [BattleController] ✅ Started BattleManager timer (server-side)
+[10:13:42.100] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[10:13:42.100] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[10:13:42.100] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[10:13:44.201] [INFO] [MultiplayerDragAndDrop] OnBeginDrag CALLED for ANSWER_0 (1)
+[10:13:44.201] [INFO]   isLocked: False
+[10:13:44.201] [INFO]   canvasGroup: True
+[10:13:44.202] [INFO]   image: True
+[10:13:44.202] [INFO]   rectTransform: True
+[10:13:44.202] [INFO] [MultiplayerDragAndDrop] ✅ Begin drag: 8
+[10:13:44.222] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(1.00, -4.00), position=(-129.08, -350.02)
+[10:13:44.275] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(2.00, -4.00), position=(-92.81, -433.90)
+[10:13:44.333] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(1.00, 0.00), position=(-65.61, -467.90)
+[10:13:44.465] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(2.00, 1.00), position=(40.94, -501.90)
+[10:13:44.527] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(0.00, 1.00), position=(72.67, -476.97)
+[10:13:44.689] [INFO] [MultiplayerDragAndDrop] RaycastAll found 1 objects at (458.75, 25.75)
+[10:13:44.690] [INFO]   - ANSWER_0 (1) (tag: Untagged)
+[10:13:44.690] [INFO]     → Bỏ qua (là Answer object)
+[10:13:44.690] [INFO] [MultiplayerDragAndDrop] RaycastAll không tìm thấy, thử tìm trực tiếp...
+[10:13:44.691] [INFO] [MultiplayerDragAndDrop] ✅ Found Slot (direct): Slot
+[10:13:44.691] [INFO] [MultiplayerDragAndDrop] End drag: 8, dropped on: Slot
+[10:13:44.691] [INFO] [MultiplayerDragAndDrop] Player dropped answer: 8
+[10:13:44.692] [INFO] [BattleManager] Client 0 submitted answer 8 at 2594ms
+[10:13:44.693] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:13:44.693] [INFO] [MultiplayerDragAndDrop] Answer submitted: 8
+[10:13:46.466] [INFO] [BattleManager] Client 1 submitted answer 8 at 4364ms
+[10:13:48.451] [INFO] [BattleManager] 🎯 Evaluating answers...
+[10:13:48.454] [INFO] [BattleManager] P1: answer=8, correct=True, time=2594ms
+[10:13:48.458] [INFO] [BattleManager] P2: answer=8, correct=True, time=4364ms
+[10:13:48.462] [INFO] [BattleManager] Both correct! Player 1 faster: 2594ms < 4364ms
+[10:13:48.465] [INFO] [PlayerState] P0 gained 10 points: 15
+[10:13:48.468] [INFO] [PlayerState] P1 gained 5 points: 25
+[10:13:48.471] [INFO] [BattleManager] Both correct! Winner gets 10, loser gets 5 (encouragement)
+[10:13:48.476] [INFO] [BattleManager] Difficulty increased to level 46
+[10:13:48.483] [INFO] [BattleManager] Client received answer result: Winner=0, Correct=True, P1Time=2594ms, P2Time=4364ms, P1Answer=8, P2Answer=8
+[10:13:48.493] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=0, Correct=True, Time=2594ms
+[10:13:48.500] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:13:48.507] [INFO] [BattleController] [HOST] Correct answer: 8
+[10:13:48.514] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:13:48.519] [INFO] [BattleController] [HOST] Answer 0 text: '10'
+[10:13:48.526] [INFO] [BattleController] [HOST] Answer 0: 10 → WRONG → Calling ShowResultForce(False)
+[10:13:48.532] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:13:48.538] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:13:48.543] [INFO] [BattleController] [HOST] Answer 1 text: '8'
+[10:13:48.549] [INFO] [BattleController] [HOST] Answer 1: 8 → CORRECT → Calling ShowResultForce(True)
+[10:13:48.554] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (1)
+[10:13:48.559] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:13:48.563] [INFO] [BattleController] [HOST] Answer 2 text: '11'
+[10:13:48.567] [INFO] [BattleController] [HOST] Answer 2: 11 → WRONG → Calling ShowResultForce(False)
+[10:13:48.571] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:13:48.576] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:13:48.580] [INFO] [BattleController] [HOST] Answer 3 text: '9'
+[10:13:48.591] [INFO] [BattleController] [HOST] Answer 3: 9 → WRONG → Calling ShowResultForce(False)
+[10:13:48.595] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[10:13:48.599] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:13:48.602] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:13:48.606] [INFO] [AnswerSummaryUI] Answer result: Winner=0, Correct=True, P1Time=2594ms, P2Time=4364ms, P1Answer=8, P2Answer=8
+[10:13:48.610] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:13:48.616] [INFO] [AnswerSummaryUI] P1 answer: 8 (2.5940s)
+[10:13:48.622] [INFO] [AnswerSummaryUI] P2 answer: 8 (4.3640s)
+[10:13:48.627] [INFO] [AnswerSummaryUI] Correct answer: 8, P1: 8 (True), P2: 8 (True)
+[10:13:48.632] [INFO] [AnswerSummaryUI] Result: <color=green>Cả 2 đều đúng!</color>
+<color=yellow>Người chơi 1 nhanh hơn!</color>
+[10:13:48.638] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:13:48.642] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=0, Correct=True, Time=2594ms
+[10:13:48.647] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:13:48.650] [INFO] [BattleController] [HOST] Correct answer: 8
+[10:13:48.654] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:13:48.656] [INFO] [BattleController] [HOST] Answer 0 text: '10'
+[10:13:48.660] [INFO] [BattleController] [HOST] Answer 0: 10 → WRONG → Calling ShowResultForce(False)
+[10:13:48.663] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:13:48.667] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:13:48.670] [INFO] [BattleController] [HOST] Answer 1 text: '8'
+[10:13:48.673] [INFO] [BattleController] [HOST] Answer 1: 8 → CORRECT → Calling ShowResultForce(True)
+[10:13:48.677] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (1)
+[10:13:48.685] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:13:48.689] [INFO] [BattleController] [HOST] Answer 2 text: '11'
+[10:13:48.696] [INFO] [BattleController] [HOST] Answer 2: 11 → WRONG → Calling ShowResultForce(False)
+[10:13:48.700] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:13:48.704] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:13:48.708] [INFO] [BattleController] [HOST] Answer 3 text: '9'
+[10:13:48.712] [INFO] [BattleController] [HOST] Answer 3: 9 → WRONG → Calling ShowResultForce(False)
+[10:13:48.716] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[10:13:48.721] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:13:48.726] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:13:48.730] [INFO] [AnswerSummaryUI] Answer result: Winner=0, Correct=True, P1Time=2594ms, P2Time=4364ms, P1Answer=8, P2Answer=8
+[10:13:48.734] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:13:48.740] [INFO] [AnswerSummaryUI] P1 answer: 8 (2.5940s)
+[10:13:48.744] [INFO] [AnswerSummaryUI] P2 answer: 8 (4.3640s)
+[10:13:48.751] [INFO] [AnswerSummaryUI] Correct answer: 8, P1: 8 (True), P2: 8 (True)
+[10:13:48.759] [INFO] [AnswerSummaryUI] Result: <color=green>Cả 2 đều đúng!</color>
+<color=yellow>Người chơi 1 nhanh hơn!</color>
+[10:13:48.763] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:13:51.508] [INFO] [AnswerSummaryUI] State: Question Time
+[10:13:51.510] [INFO] [AnswerSummaryUI] Summary cleared, all texts hidden
+[10:13:51.510] [INFO] [AnswerSummaryUI] Summary ended, ready for next question
+[10:13:51.536] [INFO] [BattleManager] 📝 Generating new question...
+[10:13:51.537] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:51.537] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:51.537] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:51.538] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:51.538] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:51.539] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:51.539] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:51.539] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:51.539] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:51.539] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:51.539] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:51.541] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:51.541] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:51.541] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:51.541] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:51.541] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:51.541] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:51.541] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:51.543] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:51.543] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:51.543] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:51.543] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:51.543] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:51.543] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:51.543] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:51.544] [INFO] [BattleManager] Generated question: 21 + 17 = ? = 38
+[10:13:51.544] [INFO] [BattleManager] Client received question: 21 + 17 = ?
+[10:13:51.544] [INFO] [AnswerSummaryUI] New question generated: 21 + 17 = ?
+[10:13:51.545] [INFO] [AnswerSummaryUI] State: Question Time
+[10:13:51.545] [INFO] [AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController
+[10:13:51.545] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:13:51.545] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:13:51.546] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:13:51.546] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:13:51.546] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:13:51.546] [INFO] [BattleManager] ⏱️ Starting question timer...
+[10:13:51.547] [INFO] [BattleController] ✅ Started BattleManager timer (server-side)
+[10:13:51.547] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[10:13:51.547] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[10:13:51.548] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[10:13:54.110] [INFO] [MultiplayerDragAndDrop] OnBeginDrag CALLED for ANSWER_0 (1)
+[10:13:54.111] [INFO]   isLocked: False
+[10:13:54.111] [INFO]   canvasGroup: True
+[10:13:54.111] [INFO]   image: True
+[10:13:54.111] [INFO]   rectTransform: True
+[10:13:54.111] [INFO] [MultiplayerDragAndDrop] ✅ Begin drag: 38
+[10:13:54.112] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(4.00, -3.00), position=(-138.14, -309.22)
+[10:13:54.163] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(5.00, -3.00), position=(-45.20, -379.49)
+[10:13:54.216] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(4.00, 0.00), position=(9.20, -404.43)
+[10:13:54.270] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(2.00, -1.00), position=(29.60, -418.03)
+[10:13:54.635] [INFO] [MultiplayerDragAndDrop] RaycastAll found 1 objects at (455.75, 33.75)
+[10:13:54.639] [INFO]   - ANSWER_0 (1) (tag: Untagged)
+[10:13:54.642] [INFO]     → Bỏ qua (là Answer object)
+[10:13:54.647] [INFO] [MultiplayerDragAndDrop] RaycastAll không tìm thấy, thử tìm trực tiếp...
+[10:13:54.650] [INFO] [MultiplayerDragAndDrop] ✅ Found Slot (direct): Slot
+[10:13:54.653] [INFO] [MultiplayerDragAndDrop] End drag: 38, dropped on: Slot
+[10:13:54.655] [INFO] [MultiplayerDragAndDrop] Player dropped answer: 38
+[10:13:54.660] [INFO] [BattleManager] Client 0 submitted answer 38 at 3112ms
+[10:13:54.664] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:13:54.667] [INFO] [MultiplayerDragAndDrop] Answer submitted: 38
+[10:13:54.713] [INFO] [BattleManager] Client 1 submitted answer 38 at 3164ms
+[10:13:57.536] [INFO] [BattleManager] 🎯 Evaluating answers...
+[10:13:57.536] [INFO] [BattleManager] P1: answer=38, correct=True, time=3112ms
+[10:13:57.537] [INFO] [BattleManager] P2: answer=38, correct=True, time=3164ms
+[10:13:57.537] [INFO] [BattleManager] Both correct! Player 1 faster: 3112ms < 3164ms
+[10:13:57.537] [INFO] [PlayerState] P0 gained 10 points: 25
+[10:13:57.537] [INFO] [PlayerState] P1 gained 5 points: 30
+[10:13:57.537] [INFO] [BattleManager] Both correct! Winner gets 10, loser gets 5 (encouragement)
+[10:13:57.537] [INFO] [BattleManager] Difficulty increased to level 61
+[10:13:57.537] [INFO] [BattleManager] Client received answer result: Winner=0, Correct=True, P1Time=3112ms, P2Time=3164ms, P1Answer=38, P2Answer=38
+[10:13:57.538] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=0, Correct=True, Time=3112ms
+[10:13:57.538] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:13:57.538] [INFO] [BattleController] [HOST] Correct answer: 38
+[10:13:57.538] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:13:57.539] [INFO] [BattleController] [HOST] Answer 0 text: '36'
+[10:13:57.539] [INFO] [BattleController] [HOST] Answer 0: 36 → WRONG → Calling ShowResultForce(False)
+[10:13:57.540] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:13:57.540] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:13:57.541] [INFO] [BattleController] [HOST] Answer 1 text: '38'
+[10:13:57.541] [INFO] [BattleController] [HOST] Answer 1: 38 → CORRECT → Calling ShowResultForce(True)
+[10:13:57.541] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (1)
+[10:13:57.541] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:13:57.542] [INFO] [BattleController] [HOST] Answer 2 text: '41'
+[10:13:57.542] [INFO] [BattleController] [HOST] Answer 2: 41 → WRONG → Calling ShowResultForce(False)
+[10:13:57.543] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:13:57.543] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:13:57.543] [INFO] [BattleController] [HOST] Answer 3 text: '43'
+[10:13:57.543] [INFO] [BattleController] [HOST] Answer 3: 43 → WRONG → Calling ShowResultForce(False)
+[10:13:57.544] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[10:13:57.544] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:13:57.544] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:13:57.544] [INFO] [AnswerSummaryUI] Answer result: Winner=0, Correct=True, P1Time=3112ms, P2Time=3164ms, P1Answer=38, P2Answer=38
+[10:13:57.544] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:13:57.545] [INFO] [AnswerSummaryUI] P1 answer: 38 (3.1120s)
+[10:13:57.545] [INFO] [AnswerSummaryUI] P2 answer: 38 (3.1640s)
+[10:13:57.545] [INFO] [AnswerSummaryUI] Correct answer: 38, P1: 38 (True), P2: 38 (True)
+[10:13:57.546] [INFO] [AnswerSummaryUI] Result: <color=green>Cả 2 đều đúng!</color>
+<color=yellow>Người chơi 1 nhanh hơn!</color>
+[10:13:57.546] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:13:57.546] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=0, Correct=True, Time=3112ms
+[10:13:57.547] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:13:57.547] [INFO] [BattleController] [HOST] Correct answer: 38
+[10:13:57.548] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:13:57.548] [INFO] [BattleController] [HOST] Answer 0 text: '36'
+[10:13:57.548] [INFO] [BattleController] [HOST] Answer 0: 36 → WRONG → Calling ShowResultForce(False)
+[10:13:57.548] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:13:57.548] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:13:57.548] [INFO] [BattleController] [HOST] Answer 1 text: '38'
+[10:13:57.549] [INFO] [BattleController] [HOST] Answer 1: 38 → CORRECT → Calling ShowResultForce(True)
+[10:13:57.549] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (1)
+[10:13:57.549] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:13:57.549] [INFO] [BattleController] [HOST] Answer 2 text: '41'
+[10:13:57.549] [INFO] [BattleController] [HOST] Answer 2: 41 → WRONG → Calling ShowResultForce(False)
+[10:13:57.549] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:13:57.550] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:13:57.550] [INFO] [BattleController] [HOST] Answer 3 text: '43'
+[10:13:57.550] [INFO] [BattleController] [HOST] Answer 3: 43 → WRONG → Calling ShowResultForce(False)
+[10:13:57.550] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[10:13:57.550] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:13:57.550] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:13:57.550] [INFO] [AnswerSummaryUI] Answer result: Winner=0, Correct=True, P1Time=3112ms, P2Time=3164ms, P1Answer=38, P2Answer=38
+[10:13:57.550] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:13:57.551] [INFO] [AnswerSummaryUI] P1 answer: 38 (3.1120s)
+[10:13:57.551] [INFO] [AnswerSummaryUI] P2 answer: 38 (3.1640s)
+[10:13:57.551] [INFO] [AnswerSummaryUI] Correct answer: 38, P1: 38 (True), P2: 38 (True)
+[10:13:57.551] [INFO] [AnswerSummaryUI] Result: <color=green>Cả 2 đều đúng!</color>
+<color=yellow>Người chơi 1 nhanh hơn!</color>
+[10:13:57.551] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:14:00.536] [INFO] [AnswerSummaryUI] State: Question Time
+[10:14:00.536] [INFO] [AnswerSummaryUI] Summary cleared, all texts hidden
+[10:14:00.536] [INFO] [AnswerSummaryUI] Summary ended, ready for next question
+[10:14:00.538] [INFO] [BattleManager] 📝 Generating new question...
+[10:14:00.538] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:00.538] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:00.538] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:00.538] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:00.538] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:00.539] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:00.539] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:00.539] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:00.539] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:00.540] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:00.540] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:00.540] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:00.540] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:00.541] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:00.541] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:00.541] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:00.541] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:00.542] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:00.542] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:00.543] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:00.543] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:00.543] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:00.543] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:00.543] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:00.543] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:00.543] [INFO] [BattleManager] Generated question: 16 - 16 = ? = 0
+[10:14:00.544] [INFO] [BattleManager] Client received question: 16 - 16 = ?
+[10:14:00.544] [INFO] [AnswerSummaryUI] New question generated: 16 - 16 = ?
+[10:14:00.544] [INFO] [AnswerSummaryUI] State: Question Time
+[10:14:00.545] [INFO] [AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController
+[10:14:00.545] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:00.546] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:00.546] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:00.546] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:00.547] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:00.547] [INFO] [BattleManager] ⏱️ Starting question timer...
+[10:14:00.547] [INFO] [BattleController] ✅ Started BattleManager timer (server-side)
+[10:14:00.548] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[10:14:00.548] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[10:14:00.548] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[10:14:04.015] [INFO] [BattleManager] Client 1 submitted answer 2 at 3464ms
+[10:14:06.773] [INFO] [BattleManager] 🎯 Evaluating answers...
+[10:14:06.773] [INFO] [BattleManager] P1: answer=-1, correct=False, time=9223372036854775807ms
+[10:14:06.773] [INFO] [BattleManager] P2: answer=2, correct=False, time=3464ms
+[10:14:06.773] [INFO] [BattleManager] Both answered incorrectly
+[10:14:06.775] [INFO] [BattleManager] Both players answered incorrectly
+[10:14:06.775] [INFO] [BattleManager] Client received answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=3464ms, P1Answer=-1, P2Answer=2
+[10:14:06.775] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=-1, Correct=False, Time=9223372036854775807ms
+[10:14:06.776] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:14:06.776] [INFO] [BattleController] [HOST] Correct answer: 0
+[10:14:06.777] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:14:06.777] [INFO] [BattleController] [HOST] Answer 0 text: '0'
+[10:14:06.777] [INFO] [BattleController] [HOST] Answer 0: 0 → CORRECT → Calling ShowResultForce(True)
+[10:14:06.777] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0
+[10:14:06.778] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:14:06.778] [INFO] [BattleController] [HOST] Answer 1 text: '2'
+[10:14:06.778] [INFO] [BattleController] [HOST] Answer 1: 2 → WRONG → Calling ShowResultForce(False)
+[10:14:06.778] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[10:14:06.778] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:14:06.779] [INFO] [BattleController] [HOST] Answer 2 text: '3'
+[10:14:06.779] [INFO] [BattleController] [HOST] Answer 2: 3 → WRONG → Calling ShowResultForce(False)
+[10:14:06.779] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:14:06.779] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:14:06.780] [INFO] [BattleController] [HOST] Answer 3 text: '5'
+[10:14:06.780] [INFO] [BattleController] [HOST] Answer 3: 5 → WRONG → Calling ShowResultForce(False)
+[10:14:06.780] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[10:14:06.781] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:14:06.781] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:14:06.781] [INFO] [AnswerSummaryUI] Answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=3464ms, P1Answer=-1, P2Answer=2
+[10:14:06.781] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:14:06.781] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[10:14:06.783] [INFO] [AnswerSummaryUI] P2 answer: 2 (3.4640s)
+[10:14:06.783] [INFO] [AnswerSummaryUI] Correct answer: 0, P1: -1 (False), P2: 2 (False)
+[10:14:06.783] [INFO] [AnswerSummaryUI] Result: <color=red>Cả 2 đều sai!</color>
+[10:14:06.783] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:14:06.783] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=-1, Correct=False, Time=9223372036854775807ms
+[10:14:06.784] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:14:06.784] [INFO] [BattleController] [HOST] Correct answer: 0
+[10:14:06.784] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:14:06.784] [INFO] [BattleController] [HOST] Answer 0 text: '0'
+[10:14:06.784] [INFO] [BattleController] [HOST] Answer 0: 0 → CORRECT → Calling ShowResultForce(True)
+[10:14:06.785] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0
+[10:14:06.785] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:14:06.786] [INFO] [BattleController] [HOST] Answer 1 text: '2'
+[10:14:06.786] [INFO] [BattleController] [HOST] Answer 1: 2 → WRONG → Calling ShowResultForce(False)
+[10:14:06.786] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[10:14:06.786] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:14:06.786] [INFO] [BattleController] [HOST] Answer 2 text: '3'
+[10:14:06.786] [INFO] [BattleController] [HOST] Answer 2: 3 → WRONG → Calling ShowResultForce(False)
+[10:14:06.786] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:14:06.787] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:14:06.787] [INFO] [BattleController] [HOST] Answer 3 text: '5'
+[10:14:06.787] [INFO] [BattleController] [HOST] Answer 3: 5 → WRONG → Calling ShowResultForce(False)
+[10:14:06.787] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[10:14:06.787] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:14:06.788] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:14:06.788] [INFO] [AnswerSummaryUI] Answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=3464ms, P1Answer=-1, P2Answer=2
+[10:14:06.788] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:14:06.788] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[10:14:06.789] [INFO] [AnswerSummaryUI] P2 answer: 2 (3.4640s)
+[10:14:06.789] [INFO] [AnswerSummaryUI] Correct answer: 0, P1: -1 (False), P2: 2 (False)
+[10:14:06.789] [INFO] [AnswerSummaryUI] Result: <color=red>Cả 2 đều sai!</color>
+[10:14:06.789] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:14:09.766] [INFO] [BattleManager] 📝 Generating new question...
+[10:14:09.767] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:09.767] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:09.767] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:09.768] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:09.769] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:09.769] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:09.769] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:09.770] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:09.770] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:09.770] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:09.770] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:09.770] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:09.771] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:09.771] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:09.771] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:09.772] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:09.772] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:09.772] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:09.772] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:09.772] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:09.773] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:09.773] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:09.773] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:09.773] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:09.774] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:09.774] [INFO] [BattleManager] Generated question: ? + 14 = 26 = 12
+[10:14:09.774] [INFO] [BattleManager] Client received question: ? + 14 = 26
+[10:14:09.774] [INFO] [AnswerSummaryUI] New question generated: ? + 14 = 26
+[10:14:09.775] [INFO] [AnswerSummaryUI] State: Question Time
+[10:14:09.775] [INFO] [AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController
+[10:14:09.775] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:09.776] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:09.776] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:09.776] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:09.776] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:09.776] [INFO] [BattleManager] ⏱️ Starting question timer...
+[10:14:09.778] [INFO] [BattleController] ✅ Started BattleManager timer (server-side)
+[10:14:09.778] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[10:14:09.778] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[10:14:09.779] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[10:14:15.909] [INFO] [BattleManager] 🎯 Evaluating answers...
+[10:14:15.911] [INFO] [BattleManager] P1: answer=-1, correct=False, time=9223372036854775807ms
+[10:14:15.915] [INFO] [BattleManager] P2: answer=-1, correct=False, time=9223372036854775807ms
+[10:14:15.917] [INFO] [BattleManager] Both answered incorrectly
+[10:14:15.920] [INFO] [BattleManager] Both players answered incorrectly
+[10:14:15.924] [INFO] [BattleManager] Client received answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=9223372036854775807ms, P1Answer=-1, P2Answer=-1
+[10:14:15.927] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=-1, Correct=False, Time=9223372036854775807ms
+[10:14:15.930] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:14:15.933] [INFO] [BattleController] [HOST] Correct answer: 12
+[10:14:15.935] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:14:15.939] [INFO] [BattleController] [HOST] Answer 0 text: '8'
+[10:14:15.943] [INFO] [BattleController] [HOST] Answer 0: 8 → WRONG → Calling ShowResultForce(False)
+[10:14:15.947] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:14:15.951] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:14:15.954] [INFO] [BattleController] [HOST] Answer 1 text: '12'
+[10:14:15.956] [INFO] [BattleController] [HOST] Answer 1: 12 → CORRECT → Calling ShowResultForce(True)
+[10:14:15.959] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (1)
+[10:14:15.963] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:14:15.965] [INFO] [BattleController] [HOST] Answer 2 text: '14'
+[10:14:15.967] [INFO] [BattleController] [HOST] Answer 2: 14 → WRONG → Calling ShowResultForce(False)
+[10:14:15.970] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:14:15.973] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:14:15.978] [INFO] [BattleController] [HOST] Answer 3 text: '11'
+[10:14:15.982] [INFO] [BattleController] [HOST] Answer 3: 11 → WRONG → Calling ShowResultForce(False)
+[10:14:15.986] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[10:14:15.988] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:14:15.991] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:14:15.994] [INFO] [AnswerSummaryUI] Answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=9223372036854775807ms, P1Answer=-1, P2Answer=-1
+[10:14:15.998] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:14:16.002] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[10:14:16.006] [INFO] [AnswerSummaryUI] P2 answer: (Không trả lời)
+[10:14:16.009] [INFO] [AnswerSummaryUI] Correct answer: 12, P1: -1 (False), P2: -1 (False)
+[10:14:16.012] [INFO] [AnswerSummaryUI] Result: <color=red>Cả 2 đều sai!</color>
+[10:14:16.020] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:14:16.027] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=-1, Correct=False, Time=9223372036854775807ms
+[10:14:16.029] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:14:16.032] [INFO] [BattleController] [HOST] Correct answer: 12
+[10:14:16.034] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:14:16.037] [INFO] [BattleController] [HOST] Answer 0 text: '8'
+[10:14:16.039] [INFO] [BattleController] [HOST] Answer 0: 8 → WRONG → Calling ShowResultForce(False)
+[10:14:16.042] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:14:16.045] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:14:16.050] [INFO] [BattleController] [HOST] Answer 1 text: '12'
+[10:14:16.053] [INFO] [BattleController] [HOST] Answer 1: 12 → CORRECT → Calling ShowResultForce(True)
+[10:14:16.058] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (1)
+[10:14:16.060] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:14:16.063] [INFO] [BattleController] [HOST] Answer 2 text: '14'
+[10:14:16.065] [INFO] [BattleController] [HOST] Answer 2: 14 → WRONG → Calling ShowResultForce(False)
+[10:14:16.069] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:14:16.071] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:14:16.075] [INFO] [BattleController] [HOST] Answer 3 text: '11'
+[10:14:16.078] [INFO] [BattleController] [HOST] Answer 3: 11 → WRONG → Calling ShowResultForce(False)
+[10:14:16.081] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[10:14:16.083] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:14:16.086] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:14:16.090] [INFO] [AnswerSummaryUI] Answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=9223372036854775807ms, P1Answer=-1, P2Answer=-1
+[10:14:16.093] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:14:16.095] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[10:14:16.098] [INFO] [AnswerSummaryUI] P2 answer: (Không trả lời)
+[10:14:16.101] [INFO] [AnswerSummaryUI] Correct answer: 12, P1: -1 (False), P2: -1 (False)
+[10:14:16.104] [INFO] [AnswerSummaryUI] Result: <color=red>Cả 2 đều sai!</color>
+[10:14:16.107] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:14:17.123] [INFO] [MultiplayerDragAndDrop] OnBeginDrag CALLED for ANSWER_0 (1)
+[10:14:17.123] [INFO]   isLocked: True
+[10:14:17.127] [INFO]   canvasGroup: True
+[10:14:17.127] [INFO]   image: True
+[10:14:17.127] [INFO]   rectTransform: True
+[10:14:17.127] [WARNING] [MultiplayerDragAndDrop] Drag BLOCKED by lock!
+[10:14:18.874] [INFO] [AnswerSummaryUI] State: Question Time
+[10:14:18.874] [INFO] [AnswerSummaryUI] Summary cleared, all texts hidden
+[10:14:18.874] [INFO] [AnswerSummaryUI] Summary ended, ready for next question
+[10:14:18.898] [INFO] [BattleManager] 📝 Generating new question...
+[10:14:18.898] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:18.899] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:18.899] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:18.899] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:18.899] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:18.900] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:18.900] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:18.900] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:18.900] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:18.900] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:18.900] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:18.901] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:18.901] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:18.901] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:18.901] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:18.901] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:18.901] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:18.901] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:18.903] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:18.903] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:18.903] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:18.903] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:18.904] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:18.904] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:18.904] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:18.904] [INFO] [BattleManager] Generated question: 26 - 7 = ? = 19
+[10:14:18.905] [INFO] [BattleManager] Client received question: 26 - 7 = ?
+[10:14:18.905] [INFO] [AnswerSummaryUI] New question generated: 26 - 7 = ?
+[10:14:18.905] [INFO] [AnswerSummaryUI] State: Question Time
+[10:14:18.905] [INFO] [AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController
+[10:14:18.906] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:18.906] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:18.906] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:18.906] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:18.906] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:18.906] [INFO] [BattleManager] ⏱️ Starting question timer...
+[10:14:18.908] [INFO] [BattleController] ✅ Started BattleManager timer (server-side)
+[10:14:18.908] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[10:14:18.909] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[10:14:18.909] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[10:14:19.291] [INFO] [BattleManager] Client 1 submitted answer 20 at 384ms
+[10:14:22.366] [INFO] [MultiplayerDragAndDrop] OnBeginDrag CALLED for ANSWER_0 (2)
+[10:14:22.370] [INFO]   isLocked: False
+[10:14:22.374] [INFO]   canvasGroup: True
+[10:14:22.379] [INFO]   image: True
+[10:14:22.386] [INFO]   rectTransform: True
+[10:14:22.390] [INFO] [MultiplayerDragAndDrop] ✅ Begin drag: 24
+[10:14:22.468] [INFO] [MultiplayerDragAndDrop] RaycastAll found 1 objects at (454.75, 66.75)
+[10:14:22.471] [INFO]   - ANSWER_0 (2) (tag: Untagged)
+[10:14:22.476] [INFO]     → Bỏ qua (là Answer object)
+[10:14:22.479] [INFO] [MultiplayerDragAndDrop] RaycastAll không tìm thấy, thử tìm trực tiếp...
+[10:14:22.484] [INFO] [MultiplayerDragAndDrop] ❌ No Slot found at pointer position
+[10:14:22.488] [INFO] [MultiplayerDragAndDrop] End drag: 24, dropped on: 
+[10:14:24.954] [INFO] [BattleManager] 🎯 Evaluating answers...
+[10:14:24.958] [INFO] [BattleManager] P1: answer=-1, correct=False, time=9223372036854775807ms
+[10:14:24.961] [INFO] [BattleManager] P2: answer=20, correct=False, time=384ms
+[10:14:24.965] [INFO] [BattleManager] Both answered incorrectly
+[10:14:24.968] [INFO] [BattleManager] Both players answered incorrectly
+[10:14:24.972] [INFO] [BattleManager] Client received answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=384ms, P1Answer=-1, P2Answer=20
+[10:14:24.978] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=-1, Correct=False, Time=9223372036854775807ms
+[10:14:24.988] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:14:24.995] [INFO] [BattleController] [HOST] Correct answer: 19
+[10:14:25.001] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:14:25.008] [INFO] [BattleController] [HOST] Answer 0 text: '17'
+[10:14:25.014] [INFO] [BattleController] [HOST] Answer 0: 17 → WRONG → Calling ShowResultForce(False)
+[10:14:25.018] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:14:25.020] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:14:25.023] [INFO] [BattleController] [HOST] Answer 1 text: '20'
+[10:14:25.024] [INFO] [BattleController] [HOST] Answer 1: 20 → WRONG → Calling ShowResultForce(False)
+[10:14:25.027] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[10:14:25.027] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:14:25.029] [INFO] [BattleController] [HOST] Answer 2 text: '24'
+[10:14:25.029] [INFO] [BattleController] [HOST] Answer 2: 24 → WRONG → Calling ShowResultForce(False)
+[10:14:25.032] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:14:25.032] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:14:25.034] [INFO] [BattleController] [HOST] Answer 3 text: '19'
+[10:14:25.034] [INFO] [BattleController] [HOST] Answer 3: 19 → CORRECT → Calling ShowResultForce(True)
+[10:14:25.034] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (3)
+[10:14:25.035] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:14:25.036] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:14:25.037] [INFO] [AnswerSummaryUI] Answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=384ms, P1Answer=-1, P2Answer=20
+[10:14:25.040] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:14:25.041] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[10:14:25.044] [INFO] [AnswerSummaryUI] P2 answer: 20 (0.3840s)
+[10:14:25.044] [INFO] [AnswerSummaryUI] Correct answer: 19, P1: -1 (False), P2: 20 (False)
+[10:14:25.046] [INFO] [AnswerSummaryUI] Result: <color=red>Cả 2 đều sai!</color>
+[10:14:25.049] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:14:25.049] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=-1, Correct=False, Time=9223372036854775807ms
+[10:14:25.050] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:14:25.050] [INFO] [BattleController] [HOST] Correct answer: 19
+[10:14:25.051] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:14:25.051] [INFO] [BattleController] [HOST] Answer 0 text: '17'
+[10:14:25.052] [INFO] [BattleController] [HOST] Answer 0: 17 → WRONG → Calling ShowResultForce(False)
+[10:14:25.052] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:14:25.053] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:14:25.053] [INFO] [BattleController] [HOST] Answer 1 text: '20'
+[10:14:25.054] [INFO] [BattleController] [HOST] Answer 1: 20 → WRONG → Calling ShowResultForce(False)
+[10:14:25.054] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[10:14:25.054] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:14:25.055] [INFO] [BattleController] [HOST] Answer 2 text: '24'
+[10:14:25.055] [INFO] [BattleController] [HOST] Answer 2: 24 → WRONG → Calling ShowResultForce(False)
+[10:14:25.056] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:14:25.057] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:14:25.057] [INFO] [BattleController] [HOST] Answer 3 text: '19'
+[10:14:25.057] [INFO] [BattleController] [HOST] Answer 3: 19 → CORRECT → Calling ShowResultForce(True)
+[10:14:25.057] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (3)
+[10:14:25.058] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:14:25.058] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:14:25.059] [INFO] [AnswerSummaryUI] Answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=384ms, P1Answer=-1, P2Answer=20
+[10:14:25.059] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:14:25.059] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[10:14:25.059] [INFO] [AnswerSummaryUI] P2 answer: 20 (0.3840s)
+[10:14:25.061] [INFO] [AnswerSummaryUI] Correct answer: 19, P1: -1 (False), P2: 20 (False)
+[10:14:25.061] [INFO] [AnswerSummaryUI] Result: <color=red>Cả 2 đều sai!</color>
+[10:14:25.061] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:14:27.933] [INFO] [AnswerSummaryUI] State: Question Time
+[10:14:27.933] [INFO] [AnswerSummaryUI] Summary cleared, all texts hidden
+[10:14:27.933] [INFO] [AnswerSummaryUI] Summary ended, ready for next question
+[10:14:27.937] [INFO] [BattleManager] 📝 Generating new question...
+[10:14:27.939] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:27.939] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:27.939] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:27.939] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:27.940] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:27.940] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:27.940] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:27.941] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:27.941] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:27.941] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:27.941] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:27.942] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:27.942] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:27.942] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:27.942] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:27.942] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:27.943] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:27.943] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:27.943] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:27.943] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:27.944] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:27.944] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:27.944] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:27.944] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:27.944] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:27.945] [INFO] [BattleManager] Generated question: 29 + 16 = ? = 45
+[10:14:27.945] [INFO] [BattleManager] Client received question: 29 + 16 = ?
+[10:14:27.945] [INFO] [AnswerSummaryUI] New question generated: 29 + 16 = ?
+[10:14:27.945] [INFO] [AnswerSummaryUI] State: Question Time
+[10:14:27.946] [INFO] [AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController
+[10:14:27.946] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:27.946] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:27.946] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:27.946] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:27.947] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:27.947] [INFO] [BattleManager] ⏱️ Starting question timer...
+[10:14:27.948] [INFO] [BattleController] ✅ Started BattleManager timer (server-side)
+[10:14:27.948] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[10:14:27.948] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[10:14:27.949] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[10:14:34.103] [INFO] [BattleManager] 🎯 Evaluating answers...
+[10:14:34.104] [INFO] [BattleManager] P1: answer=-1, correct=False, time=9223372036854775807ms
+[10:14:34.108] [INFO] [BattleManager] P2: answer=-1, correct=False, time=9223372036854775807ms
+[10:14:34.110] [INFO] [BattleManager] Both answered incorrectly
+[10:14:34.111] [INFO] [BattleManager] Both players answered incorrectly
+[10:14:34.117] [INFO] [BattleManager] Client received answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=9223372036854775807ms, P1Answer=-1, P2Answer=-1
+[10:14:34.121] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=-1, Correct=False, Time=9223372036854775807ms
+[10:14:34.124] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:14:34.129] [INFO] [BattleController] [HOST] Correct answer: 45
+[10:14:34.133] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:14:34.137] [INFO] [BattleController] [HOST] Answer 0 text: '49'
+[10:14:34.142] [INFO] [BattleController] [HOST] Answer 0: 49 → WRONG → Calling ShowResultForce(False)
+[10:14:34.148] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:14:34.152] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:14:34.158] [INFO] [BattleController] [HOST] Answer 1 text: '43'
+[10:14:34.159] [INFO] [BattleController] [HOST] Answer 1: 43 → WRONG → Calling ShowResultForce(False)
+[10:14:34.161] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[10:14:34.162] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:14:34.162] [INFO] [BattleController] [HOST] Answer 2 text: '40'
+[10:14:34.162] [INFO] [BattleController] [HOST] Answer 2: 40 → WRONG → Calling ShowResultForce(False)
+[10:14:34.163] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:14:34.163] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:14:34.164] [INFO] [BattleController] [HOST] Answer 3 text: '45'
+[10:14:34.165] [INFO] [BattleController] [HOST] Answer 3: 45 → CORRECT → Calling ShowResultForce(True)
+[10:14:34.166] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (3)
+[10:14:34.167] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:14:34.168] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:14:34.168] [INFO] [AnswerSummaryUI] Answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=9223372036854775807ms, P1Answer=-1, P2Answer=-1
+[10:14:34.169] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:14:34.170] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[10:14:34.170] [INFO] [AnswerSummaryUI] P2 answer: (Không trả lời)
+[10:14:34.172] [INFO] [AnswerSummaryUI] Correct answer: 45, P1: -1 (False), P2: -1 (False)
+[10:14:34.173] [INFO] [AnswerSummaryUI] Result: <color=red>Cả 2 đều sai!</color>
+[10:14:34.173] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:14:34.174] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=-1, Correct=False, Time=9223372036854775807ms
+[10:14:34.175] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:14:34.178] [INFO] [BattleController] [HOST] Correct answer: 45
+[10:14:34.178] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:14:34.180] [INFO] [BattleController] [HOST] Answer 0 text: '49'
+[10:14:34.180] [INFO] [BattleController] [HOST] Answer 0: 49 → WRONG → Calling ShowResultForce(False)
+[10:14:34.180] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:14:34.181] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:14:34.181] [INFO] [BattleController] [HOST] Answer 1 text: '43'
+[10:14:34.181] [INFO] [BattleController] [HOST] Answer 1: 43 → WRONG → Calling ShowResultForce(False)
+[10:14:34.182] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[10:14:34.182] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:14:34.182] [INFO] [BattleController] [HOST] Answer 2 text: '40'
+[10:14:34.183] [INFO] [BattleController] [HOST] Answer 2: 40 → WRONG → Calling ShowResultForce(False)
+[10:14:34.186] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:14:34.188] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:14:34.191] [INFO] [BattleController] [HOST] Answer 3 text: '45'
+[10:14:34.194] [INFO] [BattleController] [HOST] Answer 3: 45 → CORRECT → Calling ShowResultForce(True)
+[10:14:34.195] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (3)
+[10:14:34.197] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:14:34.197] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:14:34.197] [INFO] [AnswerSummaryUI] Answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=9223372036854775807ms, P1Answer=-1, P2Answer=-1
+[10:14:34.197] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:14:34.198] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[10:14:34.198] [INFO] [AnswerSummaryUI] P2 answer: (Không trả lời)
+[10:14:34.199] [INFO] [AnswerSummaryUI] Correct answer: 45, P1: -1 (False), P2: -1 (False)
+[10:14:34.200] [INFO] [AnswerSummaryUI] Result: <color=red>Cả 2 đều sai!</color>
+[10:14:34.200] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:14:37.068] [INFO] [AnswerSummaryUI] State: Question Time
+[10:14:37.069] [INFO] [AnswerSummaryUI] Summary cleared, all texts hidden
+[10:14:37.069] [INFO] [AnswerSummaryUI] Summary ended, ready for next question
+[10:14:37.085] [INFO] [BattleManager] 📝 Generating new question...
+[10:14:37.085] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:37.086] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:37.086] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:37.086] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:37.086] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:37.087] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:37.087] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:37.087] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:37.087] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:37.087] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:37.088] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:37.088] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:37.088] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:37.088] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:37.088] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:37.089] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:37.089] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:37.090] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:37.090] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:37.090] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:37.090] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:37.090] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:37.091] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:37.091] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:37.091] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:37.091] [INFO] [BattleManager] Generated question: 23 - 12 = ? = 11
+[10:14:37.092] [INFO] [BattleManager] Client received question: 23 - 12 = ?
+[10:14:37.092] [INFO] [AnswerSummaryUI] New question generated: 23 - 12 = ?
+[10:14:37.092] [INFO] [AnswerSummaryUI] State: Question Time
+[10:14:37.093] [INFO] [AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController
+[10:14:37.093] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[10:14:37.093] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[10:14:37.093] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[10:14:37.094] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[10:14:37.094] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[10:14:37.094] [INFO] [BattleManager] ⏱️ Starting question timer...
+[10:14:37.095] [INFO] [BattleController] ✅ Started BattleManager timer (server-side)
+[10:14:37.095] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[10:14:37.095] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[10:14:37.096] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[10:14:41.356] [INFO] [BattleManager] Client 1 submitted answer 11 at 4261ms
+[10:14:41.824] [INFO] [MultiplayerDragAndDrop] OnBeginDrag CALLED for ANSWER_0 (2)
+[10:14:41.825] [INFO]   isLocked: False
+[10:14:41.825] [INFO]   canvasGroup: True
+[10:14:41.825] [INFO]   image: True
+[10:14:41.826] [INFO]   rectTransform: True
+[10:14:41.826] [INFO] [MultiplayerDragAndDrop] ✅ Begin drag: 6
+[10:14:41.860] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(0.00, -4.00), position=(37.09, -340.96)
+[10:14:41.916] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(0.00, -3.00), position=(34.82, -422.56)
+[10:14:41.974] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(0.00, -2.00), position=(43.89, -490.57)
+[10:14:42.123] [INFO] [MultiplayerDragAndDrop] RaycastAll found 1 objects at (454.75, 14.75)
+[10:14:42.124] [INFO]   - ANSWER_0 (2) (tag: Untagged)
+[10:14:42.124] [INFO]     → Bỏ qua (là Answer object)
+[10:14:42.125] [INFO] [MultiplayerDragAndDrop] RaycastAll không tìm thấy, thử tìm trực tiếp...
+[10:14:42.125] [INFO] [MultiplayerDragAndDrop] ✅ Found Slot (direct): Slot
+[10:14:42.125] [INFO] [MultiplayerDragAndDrop] End drag: 6, dropped on: Slot
+[10:14:42.125] [INFO] [MultiplayerDragAndDrop] Player dropped answer: 6
+[10:14:42.126] [INFO] [BattleManager] Client 0 submitted answer 6 at 5032ms
+[10:14:42.126] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:14:42.127] [INFO] [MultiplayerDragAndDrop] Answer submitted: 6
+[10:14:43.099] [INFO] [BattleManager] 🎯 Evaluating answers...
+[10:14:43.099] [INFO] [BattleManager] P1: answer=6, correct=False, time=5032ms
+[10:14:43.099] [INFO] [BattleManager] P2: answer=11, correct=True, time=4261ms
+[10:14:43.100] [INFO] [BattleManager] Player 2 correct, Player 1 wrong
+[10:14:43.100] [INFO] [PlayerState] P1 gained 10 points: 40
+[10:14:43.100] [INFO] [HealthUI] UpdateHealth: TimerFill1 fillAmount=0.00 (0/2), FillMethod=Horizontal, Color=RGBA(1.000, 1.000, 0.000, 1.000)
+[10:14:43.101] [INFO] [PlayerState] P0 took 1 damage: 1 → 0
+[10:14:43.101] [INFO] [PlayerState] Client received damage notification: -1 HP (now 0)
+[10:14:43.101] [INFO] [BattleManager] Difficulty increased to level 76
+[10:14:43.102] [INFO] [BattleManager] Client received answer result: Winner=1, Correct=True, P1Time=5032ms, P2Time=4261ms, P1Answer=6, P2Answer=11
+[10:14:43.103] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=1, Correct=True, Time=5032ms
+[10:14:43.104] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:14:43.105] [INFO] [BattleController] [HOST] Correct answer: 11
+[10:14:43.105] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:14:43.105] [INFO] [BattleController] [HOST] Answer 0 text: '7'
+[10:14:43.105] [INFO] [BattleController] [HOST] Answer 0: 7 → WRONG → Calling ShowResultForce(False)
+[10:14:43.107] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:14:43.107] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:14:43.107] [INFO] [BattleController] [HOST] Answer 1 text: '15'
+[10:14:43.108] [INFO] [BattleController] [HOST] Answer 1: 15 → WRONG → Calling ShowResultForce(False)
+[10:14:43.108] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[10:14:43.109] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:14:43.109] [INFO] [BattleController] [HOST] Answer 2 text: '6'
+[10:14:43.109] [INFO] [BattleController] [HOST] Answer 2: 6 → WRONG → Calling ShowResultForce(False)
+[10:14:43.109] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:14:43.109] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:14:43.110] [INFO] [BattleController] [HOST] Answer 3 text: '11'
+[10:14:43.110] [INFO] [BattleController] [HOST] Answer 3: 11 → CORRECT → Calling ShowResultForce(True)
+[10:14:43.111] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (3)
+[10:14:43.111] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:14:43.112] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:14:43.112] [INFO] [AnswerSummaryUI] Answer result: Winner=1, Correct=True, P1Time=5032ms, P2Time=4261ms, P1Answer=6, P2Answer=11
+[10:14:43.112] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:14:43.113] [INFO] [AnswerSummaryUI] P1 answer: 6 (5.0320s)
+[10:14:43.113] [INFO] [AnswerSummaryUI] P2 answer: 11 (4.2610s)
+[10:14:43.114] [INFO] [AnswerSummaryUI] Correct answer: 11, P1: 6 (False), P2: 11 (True)
+[10:14:43.114] [INFO] [AnswerSummaryUI] Result: <color=red>Người chơi 1 sai!</color>
+<color=green>Người chơi 2 đúng!</color>
+[10:14:43.114] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:14:43.114] [INFO] [BattleController] [HOST] HandleAnswerResult CALLED: Winner=1, Correct=True, Time=5032ms
+[10:14:43.115] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[10:14:43.115] [INFO] [BattleController] [HOST] Correct answer: 11
+[10:14:43.116] [INFO] [BattleController] [HOST] answerChoices.Length: 4
+[10:14:43.116] [INFO] [BattleController] [HOST] Answer 0 text: '7'
+[10:14:43.116] [INFO] [BattleController] [HOST] Answer 0: 7 → WRONG → Calling ShowResultForce(False)
+[10:14:43.116] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[10:14:43.116] [INFO] [BattleController] [HOST] Answer 0: ShowResultForce DONE
+[10:14:43.116] [INFO] [BattleController] [HOST] Answer 1 text: '15'
+[10:14:43.116] [INFO] [BattleController] [HOST] Answer 1: 15 → WRONG → Calling ShowResultForce(False)
+[10:14:43.117] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[10:14:43.117] [INFO] [BattleController] [HOST] Answer 1: ShowResultForce DONE
+[10:14:43.117] [INFO] [BattleController] [HOST] Answer 2 text: '6'
+[10:14:43.117] [INFO] [BattleController] [HOST] Answer 2: 6 → WRONG → Calling ShowResultForce(False)
+[10:14:43.117] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[10:14:43.119] [INFO] [BattleController] [HOST] Answer 2: ShowResultForce DONE
+[10:14:43.119] [INFO] [BattleController] [HOST] Answer 3 text: '11'
+[10:14:43.119] [INFO] [BattleController] [HOST] Answer 3: 11 → CORRECT → Calling ShowResultForce(True)
+[10:14:43.119] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (3)
+[10:14:43.119] [INFO] [BattleController] [HOST] Answer 3: ShowResultForce DONE
+[10:14:43.120] [INFO] [BattleController] [HOST] HandleAnswerResult COMPLETED
+[10:14:43.120] [INFO] [AnswerSummaryUI] Answer result: Winner=1, Correct=True, P1Time=5032ms, P2Time=4261ms, P1Answer=6, P2Answer=11
+[10:14:43.120] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[10:14:43.121] [INFO] [AnswerSummaryUI] P1 answer: 6 (5.0320s)
+[10:14:43.121] [INFO] [AnswerSummaryUI] P2 answer: 11 (4.2610s)
+[10:14:43.121] [INFO] [AnswerSummaryUI] Correct answer: 11, P1: 6 (False), P2: 11 (True)
+[10:14:43.121] [INFO] [AnswerSummaryUI] Result: <color=red>Người chơi 1 sai!</color>
+<color=green>Người chơi 2 đúng!</color>
+[10:14:43.122] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[10:14:43.123] [INFO] [BattleManager] 🏁 Match ended!
+[10:14:43.123] [INFO] [BattleManager] Match ended! Winner: Player 2
+[10:14:43.124] [INFO] [AnswerSummaryUI] Match ended! Winner=1, Health=2
+[10:14:43.124] [INFO] [BattleManager] Client received match result: Winner=1, Health=2
+[10:14:43.126] [INFO] [AnswerSummaryUI] Match ended! Winner=1, Health=2
+[10:14:43.137] [WARNING] The character with Unicode value \u1ED5 was not found in the [LiberationSans SDF] font asset or any potential fallbacks. It was replaced by Unicode character \u25A1 in text object [TimerState ].
+[10:14:45.082] [INFO] [UIButtonScreenNavigator:MatchEndNavigator] Click detected. targetSceneName='', targetScreen='Wins'
+[10:14:45.082] [INFO] [UIButtonScreenNavigator:MatchEndNavigator] Switching UI to 'Wins'
+[10:14:45.082] [WARNING] [UIButtonScreenNavigator:MatchEndNavigator] Auto-fix screensRoot scale to (1,1,1).
+[10:14:45.084] [WARNING] [UIButtonScreenNavigator:MatchEndNavigator] Auto-normalized panel 'Wins' to full-screen.
+[10:14:45.085] [INFO] [UIButtonScreenNavigator:MatchEndNavigator] Click detected. targetSceneName='', targetScreen='Wins'
+[10:14:45.085] [INFO] [UIButtonScreenNavigator:MatchEndNavigator] Switching UI to 'Wins'
+[10:14:45.085] [WARNING] [UIButtonScreenNavigator:MatchEndNavigator] Auto-normalized panel 'Wins' to full-screen.
+[10:14:45.586] [INFO] [UIWinsController] DisplayMatchResult START
+[10:14:45.586] [INFO] [UIWinsController] WinnerId: 1
+[10:14:45.586] [INFO] [UIWinsController] Player1: minh, Score=25, HP=0
+[10:14:45.587] [INFO] [UIWinsController] Player2: Huynh2333, Score=40, HP=2
+[10:14:45.587] [INFO] [UIWinsController] Winner: Huynh2333 (Player 1)
+[10:14:45.587] [INFO] [UIWinsController] Loser: minh (Player 0)
+[10:14:45.587] [INFO] [UIWinsController] IsLocalPlayer check: isHost=True, playerId=1, result=False
+[10:14:45.587] [INFO] [UIWinsController] Is local player winner: False
+[10:14:45.588] [INFO] [UIWinsController] Title set: THUA CUỘC!
+[10:14:45.588] [INFO] [UIWinsController] DisplayWinnerInfo START
+[10:14:45.588] [INFO] [UIWinsController] IsLocalPlayer check: isHost=True, playerId=1, result=False
+[10:14:45.588] [INFO] [UIWinsController] Winner name: Huynh2333
+[10:14:45.588] [INFO] [UIWinsController] Winner score: 40
+[10:14:45.590] [INFO] [UIWinsController] Winner health: 2
+[10:14:45.590] [INFO] [UIWinsController] Winner container activated
+[10:14:45.590] [INFO] [UIWinsController] DisplayLoserInfo START
+[10:14:45.590] [INFO] [UIWinsController] IsLocalPlayer check: isHost=True, playerId=0, result=True
+[10:14:45.590] [INFO] [UIWinsController] Loser name: minh (Bạn)
+[10:14:45.590] [INFO] [UIWinsController] Loser score: 25
+[10:14:45.592] [INFO] [UIWinsController] Loser health: 0
+[10:14:45.592] [INFO] [UIWinsController] Loser container activated
+[10:14:45.592] [INFO] [UIWinsController] Match result displayed successfully
+[10:15:18.078] [INFO] [UIWinsController] NavigateBackToLobby called - Showing LoadingPanel then quitting room
+[10:15:18.084] [INFO] [UIWinsController] OnHide called
+[10:15:18.094] [INFO] [UIWinsController] Found LoadingPanel, showing it with Simple mode...
+[10:15:18.106] [INFO] [LoadingPanel] 🔄 SimpleLoadingRoutine START: Đã hoàn thành trận đấu...
+Đang rời phòng
+[10:15:19.584] [INFO] [LoadingPanel] ✅ Simple loading complete!
+[10:15:19.591] [INFO] [UIWinsController] QuitRoomAfterLoading called
+[10:15:19.599] [INFO] [UIWinsController] Found UIMultiplayerRoomController, calling RequestQuitRoom
+[10:15:19.613] [INFO] [UIRoom] Đang rời phòng...
+[10:15:20.439] [INFO] [UIRoom] Marked lobby HMGePXEkB2NKX7D4tC9zXo as abandoned (grace period 30s)
+[10:15:20.453] [INFO] [Relay] Đang ngắt kết nối Relay...
+[10:15:20.469] [INFO] [UIRoom] Mời tạo phòng để chơi.
+[10:15:20.485] [INFO] [UIButtonScreenNavigator:Quit] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:15:20.500] [INFO] [UIButtonScreenNavigator:Quit] Switching UI to 'LobbyPanel'
+[10:15:20.516] [WARNING] [UIButtonScreenNavigator:Quit] Auto-fix screensRoot scale to (1,1,1).
+[10:15:20.542] [WARNING] [UIButtonScreenNavigator:Quit] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:15:23.794] [INFO] [UIButtonScreenNavigator:Back] Click detected. targetSceneName='GameUIPlay 1', targetScreen='null'
+[10:15:23.810] [INFO] [UIButtonScreenNavigator:Back] ResolveDestinationTargetPanelName: destinationTargetPanelName='ModSelectionPanel', targetScreen=null
+[10:15:23.816] [INFO] [UIButtonScreenNavigator:Back] Using destinationTargetPanelName: 'ModSelectionPanel'
+[10:15:23.821] [INFO] [UIButtonScreenNavigator:Back] QueuePendingSceneUiTargetRequestIfNeeded:
+[10:15:23.826] [INFO]   - destinationTargetPanelName field = 'ModSelectionPanel'
+[10:15:23.831] [INFO]   - targetScreen = null
+[10:15:23.837] [INFO]   - Resolved panelName = 'ModSelectionPanel'
+[10:15:23.842] [INFO] [UIButtonScreenNavigator:Back] Scene navigation với panel đích: 'ModSelectionPanel'
+[10:15:23.849] [INFO] [UIButtonScreenNavigator] Creating DeferredSceneUiResolveRunner BEFORE scene load: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel'
+[10:15:23.868] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.InitializeBeforeSceneLoad: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=41300af2-f9a1-4023-a00f-671efe32beca
+[10:15:23.872] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner created and marked DontDestroyOnLoad.
+[10:15:24.500] [WARNING] [UILoading] Duplicate UILoadingIndicator detected, disabling duplicate component.
+[10:15:24.500] [WARNING] [PlayerData] Duplicate PlayerDataService detected, disabling duplicate component.
+[10:15:24.500] [WARNING] [Session] Duplicate SessionManager detected, disabling duplicate component.
+[10:15:24.500] [WARNING] [Validation] Duplicate UserValidationService detected, disabling duplicate component.
+[10:15:24.501] [WARNING] [Auth] Duplicate AuthManager detected, disabling duplicate component.
+[10:15:24.502] [WARNING] DontDestroyOnLoad only works for root GameObjects or components on root GameObjects.
+[10:15:24.502] [INFO] [UISettingsOpenButton:Setting] Awake | button=Setting | popupController=SettingsPopup | mode=Toggle
+[10:15:24.859] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: scene='GameUIPlay 1', mode=Single, pendingRequest.IsValid=True, pendingRequest.SceneName='GameUIPlay 1'
+[10:15:24.859] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Creating DeferredSceneUiResolveRunner for scene 'GameUIPlay 1'
+[10:15:24.860] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.Initialize: scene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=41300af2-f9a1-4023-a00f-671efe32beca
+[10:15:24.860] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Runner created, pending request cleared.
+[10:15:24.861] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.OnSceneLoaded: Target scene 'GameUIPlay 1' loaded!
+[10:15:24.961] [INFO] [Startup] Firebase user found: donhatminheya@gmail.com
+[10:15:24.961] [INFO] [Startup] Status - LoggedIn: True, Guest: False, HasGrade: False, Name: Guest
+[10:15:24.962] [INFO] [Startup] User logged in → Navigating to MainMenuPanel
+[10:15:24.963] [INFO] [Startup] ShowMainMenuPanel called - mainMenuPanel is null: False
+[10:15:24.965] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-fix screensRoot scale to (1,1,1).
+[10:15:24.965] [INFO] [UISettingsOpenButton:SettingBtn] Awake | button=SettingBtn | popupController=SettingsPopup | mode=Toggle
+[10:15:24.965] [INFO] [Startup] Enabled MainMenuPanel - Active: True
+[10:15:24.966] [INFO] [Startup] Calling FlowPanelController.Show()
+[10:15:24.966] [INFO] [MainMenu] Logged-in user detected, loading player data...
+[10:15:24.966] [INFO] [Startup] Showing MainMenuPanel
+[10:15:24.967] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[10:15:24.968] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[10:15:24.998] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[10:15:25.000] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[10:15:25.000] [INFO] [Startup] Verify after 1 frame - MainMenuPanel Active: True
+[10:15:25.005] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[10:15:25.005] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[10:15:25.011] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[10:15:25.011] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[10:15:25.013] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[10:15:25.014] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[10:15:25.015] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[10:15:25.015] [WARNING] [UIButtonScreenNavigator:multiplayerBtn] Auto-fix screensRoot scale to (1,1,1).
+[10:15:25.016] [INFO] [ModSelection] AuthManager found via Instance
+[10:15:25.016] [INFO] [ModSelection] Popup already assigned: LoginRequiredPopup
+[10:15:25.016] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[10:15:25.016] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[10:15:25.016] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[10:15:25.017] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[10:15:25.017] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[10:15:25.017] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[10:15:25.018] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[10:15:25.068] [INFO] [MainMenu] Firebase user: donhatminheya@gmail.com, DisplayName: minh
+[10:15:25.069] [INFO] [MainMenu] Displaying character name: minh
+[10:15:33.744] [INFO] [ModSelection] Multiplayer button clicked
+[10:15:33.748] [INFO] [ModSelection] IsGuestMode: False
+[10:15:33.754] [INFO] [ModSelection] AuthManager is null: False
+[10:15:33.759] [INFO] [ModSelection] IsLoggedIn: True
+[10:15:33.764] [INFO] [ModSelection] User is logged in, navigating to multiplayer
+[10:15:33.770] [INFO] [ModSelection] Navigating to multiplayer scene: Test_FireBase_multi
+[10:15:34.271] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-fix screensRoot scale to (1,1,1).
+[10:15:34.281] [WARNING] [Relay] Duplicate RelayManager detected, disabling duplicate component.
+[10:15:35.518] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: scene='Test_FireBase_multi', mode=Single, pendingRequest.IsValid=False, pendingRequest.SceneName=''
+[10:15:35.518] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: No pending request, skipping.
+[10:15:35.627] [INFO] [UIRoom] Mời tạo phòng để chơi.
+[10:15:36.801] [INFO] [UIRoom] Đang tạo phòng...
+[10:15:36.801] [INFO] [Relay] Đang tạo Allocation...
+[10:15:37.931] [INFO] best region is asia-southeast1
+[10:15:38.664] [INFO] [Relay] Đã cấu hình Transport thành công.
+[10:15:38.677] [INFO] [BattleManager] Server spawned, waiting for initialization...
+[10:15:38.677] [INFO] [Relay] Host đã chạy. Mã: QLMGGD
+[10:15:38.679] [INFO] [UIRoom] Grade đã chọn: Lớp 1
+[10:15:39.199] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:15:39.558] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:15:39.562] [INFO] [UIRoom] Đã tạo phòng. Độ khó: Lớp 1. Chờ người chơi thứ 2...
+[10:15:39.567] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:15:39.674] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:15:39.676] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[10:15:42.428] [INFO] [UIButtonScreenNavigator:DS Room] Click detected. targetSceneName='', targetScreen='LobbyBrowserPanel'
+[10:15:42.432] [INFO] [UIButtonScreenNavigator:DS Room] Switching UI to 'LobbyBrowserPanel'
+[10:15:42.435] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-fix screensRoot scale to (1,1,1).
+[10:15:42.437] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-normalized panel 'LobbyBrowserPanel' to full-screen.
+[10:15:43.716] [INFO] [LobbyBrowser] Đang tải danh sách phòng...
+[10:15:44.014] [INFO] [LobbyBrowser] Tìm thấy 2 phòng.
+[10:15:47.812] [INFO] [LobbyBrowser] Đang vào phòng 'Math Room'...
+[10:15:48.501] [INFO] [Relay] Đang ngắt kết nối Relay...
+[10:15:49.009] [INFO] [Relay] Đang tham gia phòng...
+[10:15:49.495] [INFO] [Relay] Đã cấu hình Transport thành công.
+[10:15:49.514] [INFO] [Relay] Client đang kết nối...
+[10:15:49.806] [INFO] [UIRoom] Đã vào phòng (2/2). Chờ chủ phòng bắt đầu...
+[10:15:49.812] [INFO] [UIRoom] IsLocalPlayerReady: playerId=mRUpdyG0bX6GltcjFO3ntYRnRZGo, hasKey=false, isReady=false
+[10:15:49.814] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[10:15:50.233] [INFO] [UIRoom] IsLocalPlayerReady: playerId=mRUpdyG0bX6GltcjFO3ntYRnRZGo, hasKey=false, isReady=false
+[10:15:50.234] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[10:15:50.237] [INFO] [UIRoom] IsLocalPlayerReady: playerId=mRUpdyG0bX6GltcjFO3ntYRnRZGo, hasKey=false, isReady=false
+[10:15:50.238] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[10:15:50.515] [INFO] [UIRoom] IsLocalPlayerReady: playerId=mRUpdyG0bX6GltcjFO3ntYRnRZGo, hasKey=false, isReady=false
+[10:15:50.516] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[10:15:50.518] [INFO] [UIRoom] IsLocalPlayerReady: playerId=mRUpdyG0bX6GltcjFO3ntYRnRZGo, hasKey=false, isReady=false
+[10:15:50.518] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[10:15:50.519] [INFO] [UIRoom] IsLocalPlayerReady: playerId=mRUpdyG0bX6GltcjFO3ntYRnRZGo, hasKey=false, isReady=false
+[10:15:50.521] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[10:15:50.522] [INFO] [LobbyBrowser] Đã vào phòng.
+[10:15:50.523] [INFO] [UIRoom] IsLocalPlayerReady: playerId=mRUpdyG0bX6GltcjFO3ntYRnRZGo, hasKey=false, isReady=false
+[10:15:50.524] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[10:15:50.527] [INFO] [UIRoom] IsLocalPlayerReady: playerId=mRUpdyG0bX6GltcjFO3ntYRnRZGo, hasKey=false, isReady=false
+[10:15:50.528] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[10:15:50.529] [INFO] [UIButtonScreenNavigator:BackButton] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:15:50.531] [INFO] [UIButtonScreenNavigator:BackButton] Switching UI to 'LobbyPanel'
+[10:15:50.532] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-fix screensRoot scale to (1,1,1).
+[10:15:50.535] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:15:50.964] [INFO] [BattleManager] Client spawned, waiting for player states...
+[10:15:55.358] [INFO] [UIRoom] 🟢 HandleReadyButtonClick START: isHost=False, isBusy=False
+[10:15:55.365] [INFO] [UIRoom] 🟢 Calling MarkClientReadyAsync...
+[10:15:56.153] [INFO] [UIRoom] Đã sẵn sàng! Chờ chủ phòng bắt đầu...
+[10:15:56.163] [INFO] [UIRoom] IsLocalPlayerReady: playerId=mRUpdyG0bX6GltcjFO3ntYRnRZGo, hasKey=true, value=1, isReady=True
+[10:15:56.178] [INFO] [UIRoom] Đã sẵn sàng! Chờ chủ phòng bắt đầu...
+[10:15:56.195] [INFO] [UIRoom] 🟢 MarkClientReadyAsync completed. UI should stay on LobbyPanel.
+[10:15:56.211] [INFO] [UIRoom] 🟢 HandleReadyButtonClick END: isHost=False, receivedStartSignalFromHost=False
+[10:15:56.222] [WARNING] The character with Unicode value \u2713 was not found in the [Roboto-Bold SDF] font asset or any potential fallbacks. It was replaced by Unicode character \u25A1 in text object [Text (TMP)].
+[10:16:08.723] [INFO] [UIButtonScreenNavigator:DS Room] Click detected. targetSceneName='', targetScreen='LobbyBrowserPanel'
+[10:16:08.724] [INFO] [UIButtonScreenNavigator:DS Room] Switching UI to 'LobbyBrowserPanel'
+[10:16:08.726] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-fix screensRoot scale to (1,1,1).
+[10:16:08.729] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-normalized panel 'LobbyBrowserPanel' to full-screen.
+[10:16:11.487] [INFO] [LobbyBrowser] Đang tải danh sách phòng...
+[10:16:11.826] [INFO] [LobbyBrowser] Tìm thấy 1 phòng.
+[10:16:15.522] [INFO] [UIButtonScreenNavigator:BackButton] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:16:15.523] [INFO] [UIButtonScreenNavigator:BackButton] Switching UI to 'LobbyPanel'
+[10:16:15.523] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-fix screensRoot scale to (1,1,1).
+[10:16:15.526] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:16:15.526] [INFO] [UIButtonScreenNavigator:BackButton] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:16:15.527] [INFO] [UIButtonScreenNavigator:BackButton] Switching UI to 'LobbyPanel'
+[10:16:15.529] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:16:15.532] [WARNING] The character with Unicode value \u2713 was not found in the [Roboto-Bold SDF] font asset or any potential fallbacks. It was replaced by Unicode character \u25A1 in text object [Text (TMP)].
+[10:16:17.884] [INFO] [UIButtonScreenNavigator:DS Room] Click detected. targetSceneName='', targetScreen='LobbyBrowserPanel'
+[10:16:17.890] [INFO] [UIButtonScreenNavigator:DS Room] Switching UI to 'LobbyBrowserPanel'
+[10:16:17.896] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-fix screensRoot scale to (1,1,1).
+[10:16:17.915] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-normalized panel 'LobbyBrowserPanel' to full-screen.
+[10:16:21.190] [INFO] [UIButtonScreenNavigator:BackButton] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:16:21.198] [INFO] [UIButtonScreenNavigator:BackButton] Switching UI to 'LobbyPanel'
+[10:16:21.205] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-fix screensRoot scale to (1,1,1).
+[10:16:21.231] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:16:21.241] [INFO] [UIButtonScreenNavigator:BackButton] Click detected. targetSceneName='', targetScreen='LobbyPanel'
+[10:16:21.247] [INFO] [UIButtonScreenNavigator:BackButton] Switching UI to 'LobbyPanel'
+[10:16:21.274] [WARNING] [UIButtonScreenNavigator:BackButton] Auto-normalized panel 'LobbyPanel' to full-screen.
+[10:16:21.289] [WARNING] The character with Unicode value \u2713 was not found in the [Roboto-Bold SDF] font asset or any potential fallbacks. It was replaced by Unicode character \u25A1 in text object [Text (TMP)].
+[10:16:24.575] [INFO] [UIButtonScreenNavigator:Back] Click detected. targetSceneName='GameUIPlay 1', targetScreen='null'
+[10:16:24.576] [INFO] [UIButtonScreenNavigator:Back] ResolveDestinationTargetPanelName: destinationTargetPanelName='ModSelectionPanel', targetScreen=null
+[10:16:24.576] [INFO] [UIButtonScreenNavigator:Back] Using destinationTargetPanelName: 'ModSelectionPanel'
+[10:16:24.576] [INFO] [UIButtonScreenNavigator:Back] QueuePendingSceneUiTargetRequestIfNeeded:
+[10:16:24.576] [INFO]   - destinationTargetPanelName field = 'ModSelectionPanel'
+[10:16:24.576] [INFO]   - targetScreen = null
+[10:16:24.577] [INFO]   - Resolved panelName = 'ModSelectionPanel'
+[10:16:24.577] [INFO] [UIButtonScreenNavigator:Back] Scene navigation với panel đích: 'ModSelectionPanel'
+[10:16:24.578] [INFO] [UIButtonScreenNavigator] Creating DeferredSceneUiResolveRunner BEFORE scene load: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel'
+[10:16:24.578] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.InitializeBeforeSceneLoad: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=0a5e5c30-7599-48ce-b215-ce93f2c6cd9b
+[10:16:24.578] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner created and marked DontDestroyOnLoad.
+[10:16:24.657] [ERROR] [Netcode] [Invalid Destroy][Player(Clone)][NetworkObjectId:4] Destroy a spawned NetworkObject on a non-host client is not valid. Call Destroy or Despawn on the server/host instead.
+Stack Trace:
+UnityEngine.Debug:LogError (object)
+Unity.Netcode.NetworkLog:LogError (string) (at ./Library/PackageCache/com.unity.netcode.gameobjects@1.12.2/Runtime/Logging/NetworkLog.cs:34)
+Unity.Netcode.NetworkLog:LogServer (string,Unity.Netcode.NetworkLog/LogType) (at ./Library/PackageCache/com.unity.netcode.gameobjects@1.12.2/Runtime/Logging/NetworkLog.cs:91)
+Unity.Netcode.NetworkLog:LogErrorServer (string) (at ./Library/PackageCache/com.unity.netcode.gameobjects@1.12.2/Runtime/Logging/NetworkLog.cs:52)
+Unity.Netcode.NetworkObject:OnDestroy () (at ./Library/PackageCache/com.unity.netcode.gameobjects@1.12.2/Runtime/Core/NetworkObject.cs:744)
+
+[10:16:24.663] [ERROR] [Netcode] [Invalid Destroy][Player(Clone)][NetworkObjectId:1] Destroy a spawned NetworkObject on a non-host client is not valid. Call Destroy or Despawn on the server/host instead.
+Stack Trace:
+UnityEngine.Debug:LogError (object)
+Unity.Netcode.NetworkLog:LogError (string) (at ./Library/PackageCache/com.unity.netcode.gameobjects@1.12.2/Runtime/Logging/NetworkLog.cs:34)
+Unity.Netcode.NetworkLog:LogServer (string,Unity.Netcode.NetworkLog/LogType) (at ./Library/PackageCache/com.unity.netcode.gameobjects@1.12.2/Runtime/Logging/NetworkLog.cs:91)
+Unity.Netcode.NetworkLog:LogErrorServer (string) (at ./Library/PackageCache/com.unity.netcode.gameobjects@1.12.2/Runtime/Logging/NetworkLog.cs:52)
+Unity.Netcode.NetworkObject:OnDestroy () (at ./Library/PackageCache/com.unity.netcode.gameobjects@1.12.2/Runtime/Core/NetworkObject.cs:744)
+
+[10:16:24.667] [WARNING] [UILoading] Duplicate UILoadingIndicator detected, disabling duplicate component.
+[10:16:24.667] [WARNING] [PlayerData] Duplicate PlayerDataService detected, disabling duplicate component.
+[10:16:24.668] [WARNING] [Session] Duplicate SessionManager detected, disabling duplicate component.
+[10:16:24.668] [WARNING] [Validation] Duplicate UserValidationService detected, disabling duplicate component.
+[10:16:24.668] [WARNING] [Auth] Duplicate AuthManager detected, disabling duplicate component.
+[10:16:24.668] [WARNING] DontDestroyOnLoad only works for root GameObjects or components on root GameObjects.
+[10:16:24.668] [INFO] [UISettingsOpenButton:Setting] Awake | button=Setting | popupController=SettingsPopup | mode=Toggle
+[10:16:24.999] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: scene='GameUIPlay 1', mode=Single, pendingRequest.IsValid=True, pendingRequest.SceneName='GameUIPlay 1'
+[10:16:24.999] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Creating DeferredSceneUiResolveRunner for scene 'GameUIPlay 1'
+[10:16:25.000] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.Initialize: scene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=0a5e5c30-7599-48ce-b215-ce93f2c6cd9b
+[10:16:25.000] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Runner created, pending request cleared.
+[10:16:25.000] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.OnSceneLoaded: Target scene 'GameUIPlay 1' loaded!
+[10:16:25.101] [INFO] [Startup] Firebase user found: donhatminheya@gmail.com
+[10:16:25.102] [INFO] [Startup] Status - LoggedIn: True, Guest: False, HasGrade: False, Name: Guest
+[10:16:25.102] [INFO] [Startup] User logged in → Navigating to MainMenuPanel
+[10:16:25.102] [INFO] [Startup] ShowMainMenuPanel called - mainMenuPanel is null: False
+[10:16:25.103] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-fix screensRoot scale to (1,1,1).
+[10:16:25.103] [INFO] [UISettingsOpenButton:SettingBtn] Awake | button=SettingBtn | popupController=SettingsPopup | mode=Toggle
+[10:16:25.103] [INFO] [Startup] Enabled MainMenuPanel - Active: True
+[10:16:25.103] [INFO] [Startup] Calling FlowPanelController.Show()
+[10:16:25.104] [INFO] [MainMenu] Logged-in user detected, loading player data...
+[10:16:25.104] [INFO] [Startup] Showing MainMenuPanel
+[10:16:25.104] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[10:16:25.105] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[10:16:25.139] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[10:16:25.139] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[10:16:25.139] [INFO] [Startup] Verify after 1 frame - MainMenuPanel Active: True
+[10:16:25.146] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[10:16:25.146] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[10:16:25.152] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[10:16:25.152] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[10:16:25.152] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[10:16:25.153] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[10:16:25.153] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[10:16:25.153] [WARNING] [UIButtonScreenNavigator:multiplayerBtn] Auto-fix screensRoot scale to (1,1,1).
+[10:16:25.154] [INFO] [ModSelection] AuthManager found via Instance
+[10:16:25.154] [INFO] [ModSelection] Popup already assigned: LoginRequiredPopup
+[10:16:25.154] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[10:16:25.155] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[10:16:25.155] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[10:16:25.155] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[10:16:25.155] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[10:16:25.156] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[10:16:25.156] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[10:16:25.208] [INFO] [MainMenu] Firebase user: donhatminheya@gmail.com, DisplayName: minh
+[10:16:25.209] [INFO] [MainMenu] Displaying character name: minh
+[10:16:27.013] [INFO] [ModSelection] Multiplayer button clicked
+[10:16:27.014] [INFO] [ModSelection] IsGuestMode: False
+[10:16:27.014] [INFO] [ModSelection] AuthManager is null: False
+[10:16:27.014] [INFO] [ModSelection] IsLoggedIn: True
+[10:16:27.015] [INFO] [ModSelection] User is logged in, navigating to multiplayer
+[10:16:27.015] [INFO] [ModSelection] Navigating to multiplayer scene: Test_FireBase_multi
+[10:16:27.058] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-fix screensRoot scale to (1,1,1).
+[10:16:27.058] [WARNING] [Relay] Duplicate RelayManager detected, disabling duplicate component.
+[10:16:27.378] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: scene='Test_FireBase_multi', mode=Single, pendingRequest.IsValid=False, pendingRequest.SceneName=''
+[10:16:27.379] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: No pending request, skipping.
+[10:16:27.481] [INFO] [UIRoom] Mời tạo phòng để chơi.
+[10:16:46.490] [INFO] [UIButtonScreenNavigator:Back] Click detected. targetSceneName='GameUIPlay 1', targetScreen='null'
+[10:16:46.498] [INFO] [UIButtonScreenNavigator:Back] ResolveDestinationTargetPanelName: destinationTargetPanelName='ModSelectionPanel', targetScreen=null
+[10:16:46.504] [INFO] [UIButtonScreenNavigator:Back] Using destinationTargetPanelName: 'ModSelectionPanel'
+[10:16:46.509] [INFO] [UIButtonScreenNavigator:Back] QueuePendingSceneUiTargetRequestIfNeeded:
+[10:16:46.513] [INFO]   - destinationTargetPanelName field = 'ModSelectionPanel'
+[10:16:46.517] [INFO]   - targetScreen = null
+[10:16:46.521] [INFO]   - Resolved panelName = 'ModSelectionPanel'
+[10:16:46.525] [INFO] [UIButtonScreenNavigator:Back] Scene navigation với panel đích: 'ModSelectionPanel'
+[10:16:46.532] [INFO] [UIButtonScreenNavigator] Creating DeferredSceneUiResolveRunner BEFORE scene load: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel'
+[10:16:46.538] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.InitializeBeforeSceneLoad: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=cf8b017b-f450-4990-ac25-80aa0da7ec1d
+[10:16:46.542] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner created and marked DontDestroyOnLoad.
+[10:16:47.474] [WARNING] [UILoading] Duplicate UILoadingIndicator detected, disabling duplicate component.
+[10:16:47.480] [WARNING] [PlayerData] Duplicate PlayerDataService detected, disabling duplicate component.
+[10:16:47.485] [WARNING] [Session] Duplicate SessionManager detected, disabling duplicate component.
+[10:16:47.489] [WARNING] [Validation] Duplicate UserValidationService detected, disabling duplicate component.
+[10:16:47.491] [WARNING] [Auth] Duplicate AuthManager detected, disabling duplicate component.
+[10:16:47.496] [WARNING] DontDestroyOnLoad only works for root GameObjects or components on root GameObjects.
+[10:16:47.501] [INFO] [UISettingsOpenButton:Setting] Awake | button=Setting | popupController=SettingsPopup | mode=Toggle
+[10:16:48.253] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: scene='GameUIPlay 1', mode=Single, pendingRequest.IsValid=True, pendingRequest.SceneName='GameUIPlay 1'
+[10:16:48.253] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Creating DeferredSceneUiResolveRunner for scene 'GameUIPlay 1'
+[10:16:48.254] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.Initialize: scene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=cf8b017b-f450-4990-ac25-80aa0da7ec1d
+[10:16:48.254] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Runner created, pending request cleared.
+[10:16:48.254] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.OnSceneLoaded: Target scene 'GameUIPlay 1' loaded!
+[10:16:48.356] [INFO] [Startup] Firebase user found: donhatminheya@gmail.com
+[10:16:48.356] [INFO] [Startup] Status - LoggedIn: True, Guest: False, HasGrade: False, Name: Guest
+[10:16:48.356] [INFO] [Startup] User logged in → Navigating to MainMenuPanel
+[10:16:48.356] [INFO] [Startup] ShowMainMenuPanel called - mainMenuPanel is null: False
+[10:16:48.357] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-fix screensRoot scale to (1,1,1).
+[10:16:48.357] [INFO] [UISettingsOpenButton:SettingBtn] Awake | button=SettingBtn | popupController=SettingsPopup | mode=Toggle
+[10:16:48.357] [INFO] [Startup] Enabled MainMenuPanel - Active: True
+[10:16:48.358] [INFO] [Startup] Calling FlowPanelController.Show()
+[10:16:48.358] [INFO] [MainMenu] Logged-in user detected, loading player data...
+[10:16:48.358] [INFO] [Startup] Showing MainMenuPanel
+[10:16:48.359] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[10:16:48.359] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[10:16:48.413] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[10:16:48.414] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[10:16:48.414] [INFO] [Startup] Verify after 1 frame - MainMenuPanel Active: True
+[10:16:48.420] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[10:16:48.420] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[10:16:48.424] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[10:16:48.425] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[10:16:48.425] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[10:16:48.425] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[10:16:48.425] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[10:16:48.426] [WARNING] [UIButtonScreenNavigator:multiplayerBtn] Auto-fix screensRoot scale to (1,1,1).
+[10:16:48.426] [INFO] [ModSelection] AuthManager found via Instance
+[10:16:48.427] [INFO] [ModSelection] Popup already assigned: LoginRequiredPopup
+[10:16:48.427] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[10:16:48.427] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[10:16:48.427] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[10:16:48.428] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[10:16:48.428] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[10:16:48.428] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[10:16:48.429] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[10:16:48.462] [INFO] [MainMenu] Firebase user: donhatminheya@gmail.com, DisplayName: minh
+[10:16:48.462] [INFO] [MainMenu] Displaying character name: minh
+[10:17:07.817] [INFO] [ModSelection] Multiplayer button clicked
+[10:17:07.818] [INFO] [ModSelection] IsGuestMode: False
+[10:17:07.818] [INFO] [ModSelection] AuthManager is null: False
+[10:17:07.818] [INFO] [ModSelection] IsLoggedIn: True
+[10:17:07.819] [INFO] [ModSelection] User is logged in, navigating to multiplayer
+[10:17:07.819] [INFO] [ModSelection] Navigating to multiplayer scene: Test_FireBase_multi
+[10:17:07.848] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-fix screensRoot scale to (1,1,1).
+[10:17:07.849] [WARNING] [Relay] Duplicate RelayManager detected, disabling duplicate component.
+[10:17:08.151] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: scene='Test_FireBase_multi', mode=Single, pendingRequest.IsValid=False, pendingRequest.SceneName=''
+[10:17:08.151] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: No pending request, skipping.
+[10:17:08.248] [INFO] [UIRoom] Mời tạo phòng để chơi.
+[10:17:17.771] [INFO] [UIButtonScreenNavigator:Back] Click detected. targetSceneName='GameUIPlay 1', targetScreen='null'
+[10:17:17.772] [INFO] [UIButtonScreenNavigator:Back] ResolveDestinationTargetPanelName: destinationTargetPanelName='ModSelectionPanel', targetScreen=null
+[10:17:17.772] [INFO] [UIButtonScreenNavigator:Back] Using destinationTargetPanelName: 'ModSelectionPanel'
+[10:17:17.772] [INFO] [UIButtonScreenNavigator:Back] QueuePendingSceneUiTargetRequestIfNeeded:
+[10:17:17.773] [INFO]   - destinationTargetPanelName field = 'ModSelectionPanel'
+[10:17:17.773] [INFO]   - targetScreen = null
+[10:17:17.773] [INFO]   - Resolved panelName = 'ModSelectionPanel'
+[10:17:17.773] [INFO] [UIButtonScreenNavigator:Back] Scene navigation với panel đích: 'ModSelectionPanel'
+[10:17:17.774] [INFO] [UIButtonScreenNavigator] Creating DeferredSceneUiResolveRunner BEFORE scene load: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel'
+[10:17:17.774] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.InitializeBeforeSceneLoad: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=97edf747-8024-4f8e-a979-096a67eee975
+[10:17:17.774] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner created and marked DontDestroyOnLoad.
+[10:17:17.833] [WARNING] [UILoading] Duplicate UILoadingIndicator detected, disabling duplicate component.
+[10:17:17.834] [WARNING] [PlayerData] Duplicate PlayerDataService detected, disabling duplicate component.
+[10:17:17.834] [WARNING] [Session] Duplicate SessionManager detected, disabling duplicate component.
+[10:17:17.834] [WARNING] [Validation] Duplicate UserValidationService detected, disabling duplicate component.
+[10:17:17.834] [WARNING] [Auth] Duplicate AuthManager detected, disabling duplicate component.
+[10:17:17.835] [WARNING] DontDestroyOnLoad only works for root GameObjects or components on root GameObjects.
+[10:17:17.835] [INFO] [UISettingsOpenButton:Setting] Awake | button=Setting | popupController=SettingsPopup | mode=Toggle
+[10:17:18.158] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: scene='GameUIPlay 1', mode=Single, pendingRequest.IsValid=True, pendingRequest.SceneName='GameUIPlay 1'
+[10:17:18.159] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Creating DeferredSceneUiResolveRunner for scene 'GameUIPlay 1'
+[10:17:18.159] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.Initialize: scene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=97edf747-8024-4f8e-a979-096a67eee975
+[10:17:18.160] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Runner created, pending request cleared.
+[10:17:18.160] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.OnSceneLoaded: Target scene 'GameUIPlay 1' loaded!
+[10:17:18.267] [INFO] [Startup] Firebase user found: donhatminheya@gmail.com
+[10:17:18.268] [INFO] [Startup] Status - LoggedIn: True, Guest: False, HasGrade: False, Name: Guest
+[10:17:18.268] [INFO] [Startup] User logged in → Navigating to MainMenuPanel
+[10:17:18.269] [INFO] [Startup] ShowMainMenuPanel called - mainMenuPanel is null: False
+[10:17:18.269] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-fix screensRoot scale to (1,1,1).
+[10:17:18.270] [INFO] [UISettingsOpenButton:SettingBtn] Awake | button=SettingBtn | popupController=SettingsPopup | mode=Toggle
+[10:17:18.270] [INFO] [Startup] Enabled MainMenuPanel - Active: True
+[10:17:18.270] [INFO] [Startup] Calling FlowPanelController.Show()
+[10:17:18.270] [INFO] [MainMenu] Logged-in user detected, loading player data...
+[10:17:18.271] [INFO] [Startup] Showing MainMenuPanel
+[10:17:18.271] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[10:17:18.271] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[10:17:18.299] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[10:17:18.299] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[10:17:18.300] [INFO] [Startup] Verify after 1 frame - MainMenuPanel Active: True
+[10:17:18.307] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[10:17:18.307] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[10:17:18.311] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[10:17:18.311] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[10:17:18.312] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[10:17:18.312] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[10:17:18.312] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[10:17:18.313] [WARNING] [UIButtonScreenNavigator:multiplayerBtn] Auto-fix screensRoot scale to (1,1,1).
+[10:17:18.313] [INFO] [ModSelection] AuthManager found via Instance
+[10:17:18.313] [INFO] [ModSelection] Popup already assigned: LoginRequiredPopup
+[10:17:18.314] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[10:17:18.314] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[10:17:18.314] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[10:17:18.314] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[10:17:18.315] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[10:17:18.315] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[10:17:18.315] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[10:17:18.374] [INFO] [MainMenu] Firebase user: donhatminheya@gmail.com, DisplayName: minh
+[10:17:18.374] [INFO] [MainMenu] Displaying character name: minh
+[10:19:34.340] [WARNING] A meta data file (.meta) exists but its asset 'Assets/Script/Script_multiplayer/1Code/Multiplay/GameLog_HOST_20260504_111702.txt' can't be found. When moving or deleting files outside of Unity, please ensure that the corresponding .meta file is moved or deleted along with it.
+[10:19:36.238] [WARNING] Import Error Code:(4)
+Message: Build asset version error: assets/script/script_multiplayer/1code/multiplay/gamelog_host_20260505_101220.txt in SourceAssetDB has modification time of '2026-05-05T03:17:18.3743237Z' while content on disk has modification time of '2026-05-05T03:19:34.3406458Z'
+
+
+=== GAME LOG END ===
+Time: 5/5/2026 10:20:54 AM
+====================
