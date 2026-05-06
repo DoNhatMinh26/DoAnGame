@@ -43,9 +43,13 @@ namespace DoAnGame.Auth
                 if (!string.IsNullOrEmpty(cachedInstanceId))
                     return cachedInstanceId;
 
-                string source = $"{Application.companyName}|{Application.productName}|{Application.dataPath}";
-                string hash = Sha1Hex(source);
-                string key = $"instance_id_{hash}";
+                // Dùng dataPath đầy đủ (ParrelSync clone có suffix _clone_0, _clone_1)
+                // + process ID để đảm bảo unique kể cả khi chạy nhiều instance cùng lúc
+                string dataPath   = Application.dataPath ?? string.Empty;
+                string processId  = System.Diagnostics.Process.GetCurrentProcess().Id.ToString();
+                string source     = $"{Application.companyName}|{Application.productName}|{dataPath}|pid:{processId}";
+                string hash       = Sha1Hex(source);
+                string key        = $"instance_id_{hash}";
 
                 string existing = PlayerPrefs.GetString(key, null);
                 if (!string.IsNullOrWhiteSpace(existing))
@@ -54,6 +58,7 @@ namespace DoAnGame.Auth
                     return cachedInstanceId;
                 }
 
+                // Tạo ID mới — bao gồm timestamp + random để đảm bảo unique
                 string created = $"inst_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}_{UnityEngine.Random.Range(10000, 99999)}";
                 PlayerPrefs.SetString(key, created);
                 PlayerPrefs.Save();

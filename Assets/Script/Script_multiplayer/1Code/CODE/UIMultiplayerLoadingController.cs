@@ -51,12 +51,14 @@ namespace DoAnGame.UI
         {
             base.OnShow();
             
-            // ✅ Chỉ start Battle loading nếu mode là Battle
-            // Simple mode sẽ tự start từ ShowSimpleLoading()
+            // currentMode đã được set trước khi Show() được gọi:
+            // - ShowSimpleLoading() set Simple trước khi gọi Show()
+            // - NotifyBattleStarted() gọi Show() trực tiếp → currentMode = Battle (đã reset trong OnHide)
             if (currentMode == LoadingMode.Battle)
             {
                 ShowBattleLoading();
             }
+            // Simple mode: ShowSimpleLoading() tự gọi StartSimpleLoading() sau Show()
         }
 
         /// <summary>
@@ -84,6 +86,10 @@ namespace DoAnGame.UI
         {
             base.OnHide();
             StopLoading();
+            // ✅ FIX: Reset mode về Battle sau mỗi lần hide
+            // Tránh currentMode = Simple từ NavigateBackToLobby() còn sót lại
+            // khiến lần chơi tiếp theo LoadingRoutine không chạy
+            currentMode = LoadingMode.Battle;
         }
 
         private void StartLoading()
@@ -265,11 +271,15 @@ namespace DoAnGame.UI
         {
             Debug.Log("[LoadingPanel] ✅ Loading complete, navigating to GameplayPanel");
 
+            // ✅ Reset tất cả state TRƯỚC khi show GameplayPanel
+            // Làm ở đây để khi panel hiện ra mọi thứ đã sẵn sàng, không cần delay
+            ResetGameplayState();
+
             // Ẩn LoadingPanel
             Hide();
 
             // Tìm và hiển thị GameplayPanel
-            var gameplayPanel = FindObjectOfType<UIMultiplayerBattleController>(true); // true = include inactive
+            var gameplayPanel = FindObjectOfType<UIMultiplayerBattleController>(true);
             if (gameplayPanel != null)
             {
                 Debug.Log("[LoadingPanel] ✅ Found GameplayPanel, showing it...");
@@ -278,6 +288,31 @@ namespace DoAnGame.UI
             else
             {
                 Debug.LogError("[LoadingPanel] ❌ GameplayPanel not found! Cannot proceed.");
+            }
+        }
+
+        /// <summary>
+        /// Reset toàn bộ state của GameplayPanel trước khi vào trận mới.
+        /// Gọi ở đây (LoadingPanel) thay vì dùng delay trong từng component,
+        /// để khi GameplayPanel hiện ra mọi thứ đã sẵn sàng ngay lập tức.
+        /// </summary>
+        private void ResetGameplayState()
+        {
+            // 1. Unlock drag-drop (static field có thể còn true từ trận trước)
+            DoAnGame.Multiplayer.MultiplayerDragAndDrop.SetGlobalLock(false);
+            DragAndDrop.SetGlobalLock(false);
+            Debug.Log("[LoadingPanel] ✅ Drag-drop unlocked");
+
+            // 2. Reinit HealthUI với player states mới (không delay vì player states đã ready)
+            var healthUI = FindObjectOfType<MultiplayerHealthUI>(true);
+            if (healthUI != null)
+            {
+                healthUI.ReinitializeNow();
+                Debug.Log("[LoadingPanel] ✅ HealthUI reinitialized");
+            }
+            else
+            {
+                Debug.LogWarning("[LoadingPanel] ⚠️ MultiplayerHealthUI not found");
             }
         }
     }

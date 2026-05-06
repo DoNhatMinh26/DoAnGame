@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.Netcode;
+using Unity.Collections;
 using DoAnGame.Multiplayer;
 
 namespace DoAnGame.UI
@@ -42,12 +44,80 @@ namespace DoAnGame.UI
         private NetworkedPlayerState player1State;
         private NetworkedPlayerState player2State;
         private int initRetryCount = 0;
-        private const int MAX_INIT_RETRIES = 10; // Retry tối đa 10 lần (10 giây)
+        private const int MAX_INIT_RETRIES = 10;
+        // ✅ Dùng đúng delegate type của NGO NetworkVariable
+        private NetworkVariable<int>.OnValueChangedDelegate onP1HealthChanged;
+        private NetworkVariable<int>.OnValueChangedDelegate onP2HealthChanged;
+        private NetworkVariable<int>.OnValueChangedDelegate onP1ScoreChanged;
+        private NetworkVariable<int>.OnValueChangedDelegate onP2ScoreChanged;
+        private NetworkVariable<FixedString64Bytes>.OnValueChangedDelegate onP1NameChanged;
+        private NetworkVariable<FixedString64Bytes>.OnValueChangedDelegate onP2NameChanged;
+        private NetworkVariable<float>.OnValueChangedDelegate onTimeRemainingChanged;
+        private bool isInitialized = false;
 
         private void Start()
         {
             // Delay để đảm bảo NetworkObjects đã spawn
             Invoke(nameof(InitializeUI), 1f);
+        }
+
+        private void OnDisable()
+        {
+            // ✅ Cancel pending Invoke khi panel bị ẩn
+            CancelInvoke(nameof(InitializeUI));
+        }
+
+        private void OnEnable()
+        {
+            // ✅ Reinit mỗi khi GameplayPanel được show lại (lần chơi mới)
+            // Cần unsubscribe cũ và subscribe mới vì player states đã được despawn/respawn
+            CancelInvoke(nameof(InitializeUI));
+            initRetryCount = 0;
+            // Delay nhỏ để đảm bảo player states mới đã spawn và replicate
+            Invoke(nameof(InitializeUI), 1f);
+        }
+
+        /// <summary>
+        /// Reinit ngay lập tức (không delay) — gọi từ LoadingPanel khi player states đã sẵn sàng.
+        /// </summary>
+        public void ReinitializeNow()
+        {
+            CancelInvoke(nameof(InitializeUI));
+            initRetryCount = 0;
+            InitializeUI();
+        }
+
+        private void OnDestroy()
+        {
+            UnsubscribeAll();
+        }
+
+        /// <summary>
+        /// Unsubscribe tất cả NetworkVariable callbacks để tránh memory leak và duplicate updates
+        /// </summary>
+        private void UnsubscribeAll()
+        {
+            if (player1State != null)
+            {
+                if (onP1HealthChanged != null) player1State.CurrentHealth.OnValueChanged -= onP1HealthChanged;
+                if (onP1ScoreChanged != null)  player1State.Score.OnValueChanged         -= onP1ScoreChanged;
+                if (onP1NameChanged != null)   player1State.PlayerName.OnValueChanged    -= onP1NameChanged;
+            }
+            if (player2State != null)
+            {
+                if (onP2HealthChanged != null) player2State.CurrentHealth.OnValueChanged -= onP2HealthChanged;
+                if (onP2ScoreChanged != null)  player2State.Score.OnValueChanged         -= onP2ScoreChanged;
+                if (onP2NameChanged != null)   player2State.PlayerName.OnValueChanged    -= onP2NameChanged;
+            }
+            if (battleManager != null && onTimeRemainingChanged != null)
+            {
+                battleManager.TimeRemaining.OnValueChanged -= onTimeRemainingChanged;
+            }
+            onP1HealthChanged = null; onP2HealthChanged = null;
+            onP1ScoreChanged  = null; onP2ScoreChanged  = null;
+            onP1NameChanged   = null; onP2NameChanged   = null;
+            onTimeRemainingChanged = null;
+            isInitialized = false;
         }
 
         private void InitializeUI()
@@ -87,21 +157,20 @@ namespace DoAnGame.UI
             // Reset retry count
             initRetryCount = 0;
 
-            // Subscribe Player 1
+            // ✅ Unsubscribe cũ trước khi subscribe mới (tránh duplicate lần 2+)
+            UnsubscribeAll();
+
+            // Subscribe Player 1 — dùng named delegates để có thể unsubscribe
             Debug.Log($"[HealthUI] Subscribing to Player1: HP={player1State.CurrentHealth.Value}/{player1State.MaxHealth.Value}");
             
-            player1State.CurrentHealth.OnValueChanged += (old, val) => 
-            {
-                UpdateHealth(player1HealthFill, player1HealthText, val, player1State.MaxHealth.Value);
-            };
-            
-            player1State.Score.OnValueChanged += (old, val) => 
-            {
-                UpdateScore(player1ScoreText, val);
-            };
-            
-            player1State.PlayerName.OnValueChanged += (old, val) => 
-                UpdatePlayerName(player1NameText, val.ToString(), "Player 1", player1State);
+            var p1 = player1State; // capture local để tránh closure issue
+            onP1HealthChanged = (old, val) => UpdateHealth(player1HealthFill, player1HealthText, val, p1.MaxHealth.Value);
+            onP1ScoreChanged  = (old, val) => UpdateScore(player1ScoreText, val);
+            onP1NameChanged   = (old, val) => UpdatePlayerName(player1NameText, val.ToString(), "Player 1", p1);
+
+            player1State.CurrentHealth.OnValueChanged += onP1HealthChanged;
+            player1State.Score.OnValueChanged         += onP1ScoreChanged;
+            player1State.PlayerName.OnValueChanged    += onP1NameChanged;
 
             // Initial update Player 1
             UpdateHealth(player1HealthFill, player1HealthText, player1State.CurrentHealth.Value, player1State.MaxHealth.Value);
@@ -111,18 +180,14 @@ namespace DoAnGame.UI
             // Subscribe Player 2
             Debug.Log($"[HealthUI] Subscribing to Player2: HP={player2State.CurrentHealth.Value}/{player2State.MaxHealth.Value}");
             
-            player2State.CurrentHealth.OnValueChanged += (old, val) => 
-            {
-                UpdateHealth(player2HealthFill, player2HealthText, val, player2State.MaxHealth.Value);
-            };
-            
-            player2State.Score.OnValueChanged += (old, val) => 
-            {
-                UpdateScore(player2ScoreText, val);
-            };
-            
-            player2State.PlayerName.OnValueChanged += (old, val) => 
-                UpdatePlayerName(player2NameText, val.ToString(), "Player 2", player2State);
+            var p2 = player2State;
+            onP2HealthChanged = (old, val) => UpdateHealth(player2HealthFill, player2HealthText, val, p2.MaxHealth.Value);
+            onP2ScoreChanged  = (old, val) => UpdateScore(player2ScoreText, val);
+            onP2NameChanged   = (old, val) => UpdatePlayerName(player2NameText, val.ToString(), "Player 2", p2);
+
+            player2State.CurrentHealth.OnValueChanged += onP2HealthChanged;
+            player2State.Score.OnValueChanged         += onP2ScoreChanged;
+            player2State.PlayerName.OnValueChanged    += onP2NameChanged;
 
             // Initial update Player 2
             UpdateHealth(player2HealthFill, player2HealthText, player2State.CurrentHealth.Value, player2State.MaxHealth.Value);
@@ -130,11 +195,10 @@ namespace DoAnGame.UI
             UpdatePlayerName(player2NameText, player2State.PlayerName.Value.ToString(), "Player 2", player2State);
 
             // Subscribe Timer
-            if (battleManager != null)
-            {
-                battleManager.TimeRemaining.OnValueChanged += (old, val) => UpdateTimer(val);
-            }
+            onTimeRemainingChanged = (old, val) => UpdateTimer(val);
+            battleManager.TimeRemaining.OnValueChanged += onTimeRemainingChanged;
 
+            isInitialized = true;
             Debug.Log("[HealthUI] ✅ Successfully initialized!");
         }
 

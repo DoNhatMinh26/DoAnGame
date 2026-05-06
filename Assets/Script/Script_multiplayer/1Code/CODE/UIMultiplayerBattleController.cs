@@ -22,8 +22,6 @@ namespace DoAnGame.UI
         [SerializeField] private GameObject answerSlot; // Slot để thả đáp án
         [SerializeField] private MultiplayerDragAndDrop[] answerChoices; // 3-4 đáp án kéo được (MULTIPLAYER)
 
-
-
         [Header("Session End Handling")]
         [SerializeField] private UIMultiplayerRoomController roomController;
         [SerializeField] private bool resetRoomStateOnSessionEnded = true;
@@ -44,6 +42,16 @@ namespace DoAnGame.UI
         protected override void OnShow()
         {
             base.OnShow();
+            
+            // ✅ Reset flag để có thể xử lý match end cho trận mới
+            hasHandledMatchEnd = false;
+            
+            // ✅ Force unlock drag-drop khi vào GameplayPanel
+            // isLocked là static field — có thể còn true từ lần chơi trước
+            // nếu child objects không bị disable/enable (OnEnable không được gọi)
+            DoAnGame.Multiplayer.MultiplayerDragAndDrop.SetGlobalLock(false);
+            DragAndDrop.SetGlobalLock(false);
+            
             HandlePanelActivated();
             
             // ✅ Bắt đầu countdown "3, 2, 1, Ready, GO!" khi panel hiển thị
@@ -435,9 +443,7 @@ namespace DoAnGame.UI
         /// </summary>
         private void UnsubscribeBattleEvents()
         {
-            if (battleManager == null)
-                return;
-
+            if (battleManager == null) return;
             battleManager.OnQuestionGenerated -= HandleQuestionGenerated;
             battleManager.OnAnswerResult -= HandleAnswerResult;
             battleManager.OnMatchEnded -= HandleMatchEnded;
@@ -634,51 +640,222 @@ namespace DoAnGame.UI
         }
 
         /// <summary>
-        /// Xử lý khi trận đấu kết thúc
+        /// Xử lý khi trận đấu kết thúc (hết máu hoặc đối thủ bỏ cuộc).
+        /// Người bỏ cuộc đã tự về LobbyPanel rồi — chỉ người còn lại mới nhận event này.
+        /// 
+        /// ✅ FIX: Guard để tránh duplicate call (event + ClientRpc)
         /// </summary>
+        private bool hasHandledMatchEnd = false;
+        
         private void HandleMatchEnded(int winnerId, int winnerHealth)
         {
-            Log($"Match ended: Winner={winnerId}, Health={winnerHealth}");
-
-            // Disable dragging
-            DragAndDrop.SetGlobalLock(true);
-
-            // Client tự sync kết quả của mình lên Firebase
-            SyncOwnMatchResult(winnerId);
-
-            // Hiển thị kết quả tạm thời
-            if (battleStatusText != null)
+            // ✅ Guard: Chỉ xử lý 1 lần duy nhất
+            if (hasHandledMatchEnd)
             {
                 var net = NetworkManager.Singleton;
-                bool isLocalWinner = net != null && ((net.IsHost && winnerId == 0) || (!net.IsHost && winnerId == 1));
+                string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+                GameLogger.Log($"[BattleController] [{role}] HandleMatchEnded IGNORED - already handled");
+                return;
+            }
+            hasHandledMatchEnd = true;
+            
+            Log($"Match ended: Winner={winnerId}, Health={winnerHealth}");
+            
+            var net2 = NetworkManager.Singleton;
+            string role2 = (net2 != null && net2.IsServer) ? "HOST" : "CLIENT";
+            int localPlayerId = (net2 != null && net2.IsHost) ? 0 : 1;
+            bool isAbandoned = battleManager != null && battleManager.IsAbandoned.Value;
+            int abandonedPlayerId = battleManager != null ? battleManager.AbandonedPlayerId.Value : -1;
+            
+            GameLogger.Log($"[BattleController] [{role2}] HandleMatchEnded RECEIVED - winnerId={winnerId}, winnerHealth={winnerHealth}");
+            GameLogger.Log($"[BattleController] [{role2}] LocalPlayerId={localPlayerId}, IsAbandoned={isAbandoned}, AbandonedPlayerId={abandonedPlayerId}");
 
-                if (isLocalWinner)
-                {
-                    battleStatusText.text = "<color=green><size=40>CHIẾN THẮNG!</size></color>";
-                }
-                else
-                {
-                    battleStatusText.text = "<color=red><size=40>THUA CUỘC!</size></color>";
-                }
+            DragAndDrop.SetGlobalLock(true);
+
+            // Push data vào WinsController cache NGAY BÂY GIỜ, trước khi player states bị destroy
+            GameLogger.Log($"[BattleController] [{role2}] Pushing match result to WinsController...");
+            PushMatchResultToWinsController(winnerId, localPlayerId);
+
+            // Sync Firebase phía client (uid của client chỉ client biết)
+            if (!isAbandoned)
+            {
+                GameLogger.Log($"[BattleController] [{role2}] Syncing own match result to Firebase...");
+                SyncOwnMatchResult(winnerId);
+            }
+            else
+            {
+                GameLogger.Log($"[BattleController] [{role2}] Match abandoned - skipping Firebase sync");
             }
 
-            // Navigate to Wins panel sau 2 giây (cho người chơi thấy kết quả)
+            bool isLocalWinner = (winnerId == localPlayerId);
+            if (battleStatusText != null)
+            {
+                battleStatusText.text = isLocalWinner
+                    ? "<color=green><size=40>CHIẾN THẮNG!</size></color>"
+                    : "<color=red><size=40>THUA CUỘC!</size></color>";
+            }
+            
+            GameLogger.Log($"[BattleController] [{role2}] IsLocalWinner={isLocalWinner}, navigating to WinsPanel in 2s...");
             Invoke(nameof(NavigateToWinsPanel), 2f);
         }
 
         /// <summary>
-        /// Navigate to Wins panel
+        /// Push thông tin trận đấu vào UIWinsController.LastResult NGAY KHI nhận OnMatchEnded,
+        /// trước khi NetworkedPlayerState bị destroy do disconnect.
+        /// </summary>
+        private void PushMatchResultToWinsController(int winnerId, int localPlayerId)
+        {
+            if (battleManager == null) 
+            {
+                GameLogger.Log("[BattleController] PushMatchResult: battleManager is NULL - cannot push data");
+                return;
+            }
+
+            var p1 = battleManager.GetPlayer1State();
+            var p2 = battleManager.GetPlayer2State();
+
+            if (p1 == null || p2 == null)
+            {
+                // ✅ FIX: Player states null khi forfeit — build result từ NetworkVariables trực tiếp
+                // (NetworkVariables vẫn còn giá trị dù player state object bị destroy)
+                GameLogger.Log($"[BattleController] ⚠️ PushMatchResult: Player states NULL (p1={p1 != null}, p2={p2 != null}) — building from NetworkVariables");
+                PushMatchResultFromNetworkVariables(winnerId, localPlayerId);
+                return;
+            }
+
+            var winner = (winnerId == 0) ? p1 : p2;
+            var loser  = (winnerId == 0) ? p2 : p1;
+
+            UIWinsController.LastResult = new UIWinsController.MatchResultData
+            {
+                IsValid           = true,
+                WinnerId          = winnerId,
+                LocalPlayerId     = localPlayerId,
+                IsAbandoned       = battleManager.IsAbandoned.Value,
+                AbandonedPlayerId = battleManager.AbandonedPlayerId.Value,
+                WinnerName        = winner.PlayerName.Value.ToString(),
+                WinnerScore       = winner.Score.Value,
+                WinnerHealth      = winner.CurrentHealth.Value,
+                LoserName         = loser.PlayerName.Value.ToString(),
+                LoserScore        = loser.Score.Value,
+                LoserHealth       = loser.CurrentHealth.Value,
+            };
+
+            Log($"PushMatchResult: winner={UIWinsController.LastResult.WinnerName}, loser={UIWinsController.LastResult.LoserName}");
+            GameLogger.Log($"[BattleController] ✅ PushMatchResult SUCCESS:");
+            GameLogger.Log($"  - Winner: {UIWinsController.LastResult.WinnerName} (Score:{UIWinsController.LastResult.WinnerScore}, HP:{UIWinsController.LastResult.WinnerHealth})");
+            GameLogger.Log($"  - Loser: {UIWinsController.LastResult.LoserName} (Score:{UIWinsController.LastResult.LoserScore}, HP:{UIWinsController.LastResult.LoserHealth})");
+            GameLogger.Log($"  - IsAbandoned: {UIWinsController.LastResult.IsAbandoned}, AbandonedPlayerId: {UIWinsController.LastResult.AbandonedPlayerId}");
+        }
+
+        /// <summary>
+        /// Fallback: build MatchResultData từ NetworkVariables của BattleManager khi player states đã null.
+        /// Dùng cho trường hợp forfeit — người quit disconnect trước khi người thắng đọc được player state.
+        /// </summary>
+        private void PushMatchResultFromNetworkVariables(int winnerId, int localPlayerId)
+        {
+            if (battleManager == null) return;
+
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+
+            // Lấy tên từ AuthManager cho local player
+            string localName = "Người chơi";
+            var authMgr = AuthManager.Instance;
+            if (authMgr != null)
+            {
+                string charName = authMgr.GetCharacterName();
+                if (!string.IsNullOrWhiteSpace(charName) && charName != "Unknown")
+                    localName = charName;
+            }
+
+            // Xác định tên đối thủ — khi forfeit, đối thủ đã disconnect nên dùng placeholder
+            string opponentName = "Đối thủ";
+
+            // Xác định winner/loser name dựa trên localPlayerId
+            string winnerName = (winnerId == localPlayerId) ? localName : opponentName;
+            string loserName  = (winnerId == localPlayerId) ? opponentName : localName;
+
+            // Score: lấy từ NetworkVariable nếu còn, fallback 0
+            int winnerScore = 0;
+            int loserScore  = 0;
+            int winnerHealth = 0;
+            int loserHealth  = 0;
+
+            // Thử lấy từ player states một lần nữa (có thể đã được re-found)
+            var p1 = battleManager.GetPlayer1State();
+            var p2 = battleManager.GetPlayer2State();
+            if (p1 != null && p2 != null)
+            {
+                var winner = (winnerId == 0) ? p1 : p2;
+                var loser  = (winnerId == 0) ? p2 : p1;
+                winnerScore  = winner.Score.Value;
+                loserScore   = loser.Score.Value;
+                winnerHealth = winner.CurrentHealth.Value;
+                loserHealth  = loser.CurrentHealth.Value;
+                winnerName   = winner.PlayerName.Value.ToString();
+                loserName    = loser.PlayerName.Value.ToString();
+                GameLogger.Log($"[BattleController] [{role}] ✅ Re-found player states on retry");
+            }
+            else
+            {
+                GameLogger.Log($"[BattleController] [{role}] ⚠️ Player states still null — using name fallback, score=0");
+            }
+
+            UIWinsController.LastResult = new UIWinsController.MatchResultData
+            {
+                IsValid           = true,
+                WinnerId          = winnerId,
+                LocalPlayerId     = localPlayerId,
+                IsAbandoned       = battleManager.IsAbandoned.Value,
+                AbandonedPlayerId = battleManager.AbandonedPlayerId.Value,
+                WinnerName        = winnerName,
+                WinnerScore       = winnerScore,
+                WinnerHealth      = winnerHealth,
+                LoserName         = loserName,
+                LoserScore        = loserScore,
+                LoserHealth       = loserHealth,
+            };
+
+            GameLogger.Log($"[BattleController] [{role}] ✅ PushMatchResult (fallback) SUCCESS:");
+            GameLogger.Log($"  - Winner: {UIWinsController.LastResult.WinnerName} (Score:{UIWinsController.LastResult.WinnerScore}, HP:{UIWinsController.LastResult.WinnerHealth})");
+            GameLogger.Log($"  - Loser: {UIWinsController.LastResult.LoserName} (Score:{UIWinsController.LastResult.LoserScore}, HP:{UIWinsController.LastResult.LoserHealth})");
+            GameLogger.Log($"  - IsAbandoned: {UIWinsController.LastResult.IsAbandoned}, AbandonedPlayerId: {UIWinsController.LastResult.AbandonedPlayerId}");
+        }
+
+        /// <summary>
+        /// Navigate to Wins panel — dùng Show() trực tiếp thay vì navigator.NavigateNow()
+        /// vì UIButtonScreenNavigator dùng SetActive() không trigger OnShow() → DisplayMatchResult() không chạy.
         /// </summary>
         private void NavigateToWinsPanel()
         {
-            if (matchEndNavigator != null)
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+            GameLogger.Log($"[BattleController] [{role}] NavigateToWinsPanel called");
+
+            // ✅ Tìm WinsController và gọi Show() để OnShow() → DisplayMatchResult() được trigger
+            var winsController = FindObjectOfType<UIWinsController>(true);
+            if (winsController != null)
             {
-                Log("Navigating to Wins panel");
+                GameLogger.Log($"[BattleController] [{role}] Found WinsController, calling Show()...");
+                
+                // Ẩn GameplayPanel trước
+                Hide();
+                
+                // Hiện WinsPanel qua Show() để OnShow() được gọi
+                winsController.Show();
+                GameLogger.Log($"[BattleController] [{role}] ✅ WinsController.Show() called");
+            }
+            else if (matchEndNavigator != null)
+            {
+                // Fallback: dùng navigator nếu không tìm thấy WinsController
+                GameLogger.Log($"[BattleController] [{role}] WinsController not found, fallback to matchEndNavigator");
                 matchEndNavigator.NavigateNow();
             }
             else
             {
-                Debug.LogWarning("[BattleController] matchEndNavigator is not assigned! Cannot navigate to Wins panel.");
+                Debug.LogWarning("[BattleController] matchEndNavigator is not assigned and WinsController not found!");
+                GameLogger.Log($"[BattleController] [{role}] ❌ Cannot navigate to WinsPanel - no navigator or controller found");
             }
         }
 

@@ -4185,6 +4185,7 @@ GameObject:
   - component: {fileID: 341235300}
   - component: {fileID: 341235305}
   - component: {fileID: 341235306}
+  - component: {fileID: 341235307}
   m_Layer: 0
   m_Name: AuthServices
   m_TagString: Untagged
@@ -4284,6 +4285,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a2597ffc2b80374d824648140cdc747, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &341235307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 341235299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d32ced9b435c4f643be7a8685a0e169d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentUid: 
+  mySessionId: 
+  isGuarding: 0
 --- !u!1 &346740167
 GameObject:
   m_ObjectHideFlags: 0

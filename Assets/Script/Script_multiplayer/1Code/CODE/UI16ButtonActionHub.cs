@@ -16,6 +16,8 @@ namespace DoAnGame.UI
         [Header("Controllers")]
         [SerializeField] private UIMultiplayerRoomController roomController;
         [SerializeField] private SettingsPopupController settingsPopupController;
+        [Tooltip("Popup xác nhận quit trong battle — nếu gán thì hiện popup thay vì quit thẳng")]
+        [SerializeField] private UIBattleQuitConfirmPopup battleQuitConfirmPopup;
 
         [Header("Navigation")]
         [SerializeField] private UIButtonScreenNavigator backToRoomNavigator;
@@ -229,6 +231,19 @@ namespace DoAnGame.UI
 
         public void OnClickQuitRoom()
         {
+            Debug.Log($"[UI16Hub] OnClickQuitRoom called. battleQuitConfirmPopup={(battleQuitConfirmPopup != null ? battleQuitConfirmPopup.gameObject.name : "NULL")}");
+
+            // Nếu có popup xác nhận quit (trong battle) → hiện popup, không quit thẳng
+            // onAnyActionTriggered/onQuitTriggered sẽ được invoke khi người dùng xác nhận trong popup
+            if (battleQuitConfirmPopup != null)
+            {
+                Debug.Log("[UI16Hub] ✅ Showing BattleQuitConfirmPopup");
+                battleQuitConfirmPopup.Show();
+                return;
+            }
+
+            // Không có popup → quit thẳng (LobbyPanel hoặc ngoài battle)
+            Debug.LogWarning("[UI16Hub] battleQuitConfirmPopup is NULL → quitting directly. Assign it in Inspector on GameplayPanel → UI16ButtonActionHub.");
             onAnyActionTriggered?.Invoke();
             onQuitTriggered?.Invoke();
             Log("OnClickQuitRoom invoked");

@@ -11,16 +11,34 @@ namespace DoAnGame.UI
     /// UI Controller cho Wins Panel - Hiển thị kết quả trận đấu
     /// 
     /// LOGIC:
-    /// - Subscribe vào NetworkedMathBattleManager.OnMatchEnded
-    /// - Lấy thông tin từ NetworkedPlayerState (tên, điểm, máu)
-    /// - Xác định winner/loser từ WinnerId.Value
-    /// - Hiển thị thông tin đúng cho Host và Client
-    /// - Có nút "Tiếp tục" để quay về LobbyPanel
+    /// - UIMultiplayerBattleController push MatchResultData trước khi navigate
+    /// - WinsController đọc từ cache (không phụ thuộc NetworkedPlayerState còn sống không)
     /// </summary>
     public class UIWinsController : BasePanelController
     {
+        // ─── Cache data (push từ UIMultiplayerBattleController trước khi navigate) ───
+        public struct MatchResultData
+        {
+            public bool IsValid;
+            public int  WinnerId;       // 0 hoặc 1
+            public int  LocalPlayerId;  // 0 = Host, 1 = Client
+            public bool IsAbandoned;
+            public int  AbandonedPlayerId;
+
+            public string WinnerName;
+            public int    WinnerScore;
+            public int    WinnerHealth;
+
+            public string LoserName;
+            public int    LoserScore;
+            public int    LoserHealth;
+        }
+
+        // Static để tồn tại qua panel hide/show
+        public static MatchResultData LastResult;
+
         [Header("=== TITLE ===")]
-        [SerializeField] private TextMeshProUGUI trangThaiText; // "CHIẾN THẮNG!" / "THUA CUỘC!"
+        [SerializeField] private TextMeshProUGUI trangThaiText;
         
         [Header("=== WINNER SECTION ===")]
         [SerializeField] private GameObject winContainer;
@@ -47,30 +65,20 @@ namespace DoAnGame.UI
 
         private void Start()
         {
-            // Auto-resolve BattleManager nếu chưa gán
+            // Auto-resolve BattleManager nếu chưa gán (dùng cho fallback)
             if (battleManager == null)
-            {
                 battleManager = NetworkedMathBattleManager.Instance;
-                if (battleManager != null)
-                {
-                    Log($"Auto-resolved BattleManager: {battleManager.name}");
-                }
-                else
-                {
-                    Debug.LogWarning("[WinsController] BattleManager not found in Start");
-                }
-            }
-            
-            // ✅ FIX: Delay để đảm bảo NetworkVariables đã sync
-            Invoke(nameof(DisplayMatchResult), 0.5f);
         }
 
         protected override void OnShow()
         {
             base.OnShow();
-            Log("OnShow called");
             
-            // Hiển thị kết quả trận đấu
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+            GameLogger.Log($"[WinsController] [{role}] OnShow called");
+            
+            Log("OnShow called");
             DisplayMatchResult();
         }
 
@@ -81,284 +89,179 @@ namespace DoAnGame.UI
         }
 
         /// <summary>
-        /// Hiển thị kết quả trận đấu
+        /// Hiển thị kết quả từ LastResult cache (push bởi UIMultiplayerBattleController).
+        /// Không phụ thuộc NetworkedPlayerState còn sống hay không.
         /// </summary>
         private void DisplayMatchResult()
         {
             try
             {
+                var net = NetworkManager.Singleton;
+                string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+                
+                GameLogger.Log($"[WinsController] [{role}] DisplayMatchResult START");
                 Log("DisplayMatchResult START");
 
-                // Tìm BattleManager nếu chưa có
-                if (battleManager == null)
+                if (!LastResult.IsValid)
                 {
-                    battleManager = NetworkedMathBattleManager.Instance;
+                    // Fallback: thử đọc từ BattleManager nếu cache chưa có
+                    GameLogger.Log($"[WinsController] [{role}] LastResult not valid, trying BattleManager fallback...");
+                    Log("LastResult not valid, trying BattleManager fallback...");
+                    if (!TryBuildResultFromBattleManager())
+                    {
+                        GameLogger.Log($"[WinsController] [{role}] ❌ Fallback failed - no data available");
+                        SetErrorState("Không tìm thấy thông tin người chơi.");
+                        return;
+                    }
+                    GameLogger.Log($"[WinsController] [{role}] ✅ Fallback success - data loaded from BattleManager");
                 }
 
-                if (battleManager == null)
-                {
-                    Debug.LogError("[WinsController] BattleManager is null! Cannot display match result.");
-                    SetErrorState("Không thể tải kết quả trận đấu.");
-                    return;
-                }
+                var r = LastResult;
+                GameLogger.Log($"[WinsController] [{role}] Data: WinnerId={r.WinnerId}, LocalPlayerId={r.LocalPlayerId}, IsAbandoned={r.IsAbandoned}");
+                GameLogger.Log($"[WinsController] [{role}] Winner: {r.WinnerName} (Score:{r.WinnerScore}, HP:{r.WinnerHealth})");
+                GameLogger.Log($"[WinsController] [{role}] Loser: {r.LoserName} (Score:{r.LoserScore}, HP:{r.LoserHealth})");
+                Log($"WinnerId={r.WinnerId}, LocalPlayerId={r.LocalPlayerId}, IsAbandoned={r.IsAbandoned}");
 
-                // ✅ Kiểm tra match đã kết thúc chưa
-                if (!battleManager.MatchEnded.Value)
-                {
-                    Debug.LogWarning("[WinsController] Match has not ended yet! Retrying in 0.5s...");
-                    Invoke(nameof(DisplayMatchResult), 0.5f);
-                    return;
-                }
+                bool isLocalWinner = (r.WinnerId == r.LocalPlayerId);
 
-                // Lấy winnerId
-                int winnerId = battleManager.WinnerId.Value;
-                Log($"WinnerId: {winnerId}");
-
-                // ✅ Kiểm tra winnerId hợp lệ
-                if (winnerId < 0 || winnerId > 1)
-                {
-                    Debug.LogError($"[WinsController] Invalid WinnerId: {winnerId}");
-                    SetErrorState("Kết quả trận đấu không hợp lệ.");
-                    return;
-                }
-
-                // Tìm player states
-                var player1State = battleManager.GetPlayer1State();
-                var player2State = battleManager.GetPlayer2State();
-
-                if (player1State == null || player2State == null)
-                {
-                    Debug.LogError("[WinsController] Cannot find player states!");
-                    SetErrorState("Không tìm thấy thông tin người chơi.");
-                    return;
-                }
-
-                Log($"Player1: {player1State.PlayerName.Value}, Score={player1State.Score.Value}, HP={player1State.CurrentHealth.Value}");
-                Log($"Player2: {player2State.PlayerName.Value}, Score={player2State.Score.Value}, HP={player2State.CurrentHealth.Value}");
-
-                // Xác định winner và loser
-                NetworkedPlayerState winner = (winnerId == 0) ? player1State : player2State;
-                NetworkedPlayerState loser = (winnerId == 0) ? player2State : player1State;
-
-                Log($"Winner: {winner.PlayerName.Value} (Player {winnerId})");
-                Log($"Loser: {loser.PlayerName.Value} (Player {(winnerId == 0 ? 1 : 0)})");
-
-                // Kiểm tra xem local player có phải winner không
-                bool isLocalWinner = IsLocalPlayer(winner);
-                Log($"Is local player winner: {isLocalWinner}");
-
-                // Hiển thị title
+                // Title
                 if (trangThaiText != null)
                 {
-                    trangThaiText.text = isLocalWinner ? "CHIẾN THẮNG!" : "THUA CUỘC!";
+                    trangThaiText.text  = isLocalWinner ? "CHIẾN THẮNG!" : "THUA CUỘC!";
                     trangThaiText.color = isLocalWinner ? Color.green : Color.red;
-                    Log($"Title set: {trangThaiText.text}");
+                    GameLogger.Log($"[WinsController] [{role}] ✅ Set title: {trangThaiText.text}");
                 }
                 else
                 {
-                    Debug.LogWarning("[WinsController] trangThaiText is NULL!");
+                    GameLogger.Log($"[WinsController] [{role}] ⚠️ trangThaiText is NULL");
                 }
 
-                // Hiển thị thông tin winner
-                DisplayWinnerInfo(winner);
+                // Winner section
+                string winnerDisplay = r.WinnerName;
+                if (r.WinnerId == r.LocalPlayerId) winnerDisplay += " (Bạn)";
+                GameLogger.Log($"[WinsController] [{role}] Displaying winner section: {winnerDisplay}");
+                DisplaySection(winContainer, winnerNameText, winnerScoreText, winnerHealthText,
+                               winnerDisplay, r.WinnerScore, r.WinnerHealth);
 
-                // Hiển thị thông tin loser
-                DisplayLoserInfo(loser);
+                // Loser section
+                string loserDisplay = r.LoserName;
+                int    loserId      = (r.WinnerId == 0) ? 1 : 0;
+                if (loserId == r.LocalPlayerId) loserDisplay += " (Bạn)";
+                if (r.IsAbandoned && r.AbandonedPlayerId == loserId) loserDisplay += " (Đã Rời Trận)";
+                GameLogger.Log($"[WinsController] [{role}] Displaying loser section: {loserDisplay}");
+                DisplaySection(lostContainer, loserNameText, loserScoreText, loserHealthText,
+                               loserDisplay, r.LoserScore, r.LoserHealth);
 
+                GameLogger.Log($"[WinsController] [{role}] ✅ DisplayMatchResult COMPLETE");
                 Log("Match result displayed successfully");
             }
             catch (System.Exception ex)
             {
-                Debug.LogError($"[WinsController] Error displaying match result: {ex.Message}\n{ex.StackTrace}");
+                var net = NetworkManager.Singleton;
+                string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+                Debug.LogError($"[WinsController] Error: {ex.Message}\n{ex.StackTrace}");
+                GameLogger.Log($"[WinsController] [{role}] ❌ ERROR: {ex.Message}");
                 SetErrorState("Có lỗi xảy ra khi hiển thị kết quả.");
             }
         }
 
-        /// <summary>
-        /// Hiển thị thông tin người thắng
-        /// </summary>
-        private void DisplayWinnerInfo(NetworkedPlayerState winner)
+        private void DisplaySection(GameObject container, TextMeshProUGUI nameText,
+                                    TextMeshProUGUI scoreText, TextMeshProUGUI healthText,
+                                    string name, int score, int health)
         {
-            if (winner == null)
-            {
-                Debug.LogWarning("[WinsController] Winner state is null");
-                return;
-            }
-
-            Log("DisplayWinnerInfo START");
-
-            // Kiểm tra xem winner có phải local player không
-            bool isLocalPlayer = IsLocalPlayer(winner);
-
-            // Hiển thị tên
-            if (winnerNameText != null)
-            {
-                string winnerName = winner.PlayerName.Value.ToString();
-                if (string.IsNullOrEmpty(winnerName))
-                {
-                    winnerName = "Player";
-                }
-
-                // Thêm "(Bạn)" nếu là local player
-                if (isLocalPlayer)
-                {
-                    winnerName += " (Bạn)";
-                }
-
-                winnerNameText.text = winnerName;
-                Log($"Winner name: {winnerNameText.text}");
-            }
-            else
-            {
-                Debug.LogWarning("[WinsController] winnerNameText is NULL!");
-            }
-
-            // Hiển thị điểm số
-            if (winnerScoreText != null)
-            {
-                winnerScoreText.text = $"Điểm Số: {winner.Score.Value}";
-                Log($"Winner score: {winner.Score.Value}");
-            }
-            else
-            {
-                Debug.LogWarning("[WinsController] winnerScoreText is NULL!");
-            }
-
-            // Hiển thị máu còn lại
-            if (winnerHealthText != null)
-            {
-                winnerHealthText.text = $"Số Máu Còn Lại: {winner.CurrentHealth.Value}";
-                Log($"Winner health: {winner.CurrentHealth.Value}");
-            }
-            else
-            {
-                Debug.LogWarning("[WinsController] winnerHealthText is NULL!");
-            }
-
-            // Hiển thị container
-            if (winContainer != null)
-            {
-                winContainer.SetActive(true);
-                Log("Winner container activated");
-            }
-            else
-            {
-                Debug.LogWarning("[WinsController] winContainer is NULL!");
-            }
-        }
-
-        /// <summary>
-        /// Hiển thị thông tin người thua
-        /// </summary>
-        private void DisplayLoserInfo(NetworkedPlayerState loser)
-        {
-            if (loser == null)
-            {
-                Debug.LogWarning("[WinsController] Loser state is null");
-                return;
-            }
-
-            Log("DisplayLoserInfo START");
-
-            // Kiểm tra xem loser có phải local player không
-            bool isLocalPlayer = IsLocalPlayer(loser);
-
-            // Hiển thị tên
-            if (loserNameText != null)
-            {
-                string loserName = loser.PlayerName.Value.ToString();
-                if (string.IsNullOrEmpty(loserName))
-                {
-                    loserName = "Player";
-                }
-
-                // Thêm "(Bạn)" nếu là local player
-                if (isLocalPlayer)
-                {
-                    loserName += " (Bạn)";
-                }
-
-                loserNameText.text = loserName;
-                Log($"Loser name: {loserNameText.text}");
-            }
-            else
-            {
-                Debug.LogWarning("[WinsController] loserNameText is NULL!");
-            }
-
-            // Hiển thị điểm số
-            if (loserScoreText != null)
-            {
-                loserScoreText.text = $"Điểm Số: {loser.Score.Value}";
-                Log($"Loser score: {loser.Score.Value}");
-            }
-            else
-            {
-                Debug.LogWarning("[WinsController] loserScoreText is NULL!");
-            }
-
-            // Hiển thị máu còn lại
-            if (loserHealthText != null)
-            {
-                loserHealthText.text = $"Số Máu Còn Lại: {loser.CurrentHealth.Value}";
-                Log($"Loser health: {loser.CurrentHealth.Value}");
-            }
-            else
-            {
-                Debug.LogWarning("[WinsController] loserHealthText is NULL!");
-            }
-
-            // Hiển thị container
-            if (lostContainer != null)
-            {
-                lostContainer.SetActive(true);
-                Log("Loser container activated");
-            }
-            else
-            {
-                Debug.LogWarning("[WinsController] lostContainer is NULL!");
-            }
-        }
-
-        /// <summary>
-        /// Kiểm tra xem player có phải local player không
-        /// </summary>
-        private bool IsLocalPlayer(NetworkedPlayerState state)
-        {
-            if (state == null)
-                return false;
-
-            var nm = NetworkManager.Singleton;
-            if (nm == null)
-                return false;
-
-            // Host = Player 0, Client = Player 1
-            bool isHost = nm.IsHost;
-            int playerId = state.PlayerId.Value;
-
-            bool result = (isHost && playerId == 0) || (!isHost && playerId == 1);
-            Log($"IsLocalPlayer check: isHost={isHost}, playerId={playerId}, result={result}");
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
             
-            return result;
+            if (container != null)
+            {
+                container.SetActive(true);
+                GameLogger.Log($"[WinsController] [{role}] ✅ Activated container: {container.name}");
+            }
+            else
+            {
+                GameLogger.Log($"[WinsController] [{role}] ⚠️ Container is NULL");
+            }
+            
+            if (nameText != null)
+            {
+                nameText.text = name;
+                GameLogger.Log($"[WinsController] [{role}] ✅ Set name: {name}");
+            }
+            else
+            {
+                GameLogger.Log($"[WinsController] [{role}] ⚠️ nameText is NULL");
+            }
+            
+            if (scoreText != null)
+            {
+                scoreText.text = $"Điểm Số: {score}";
+                GameLogger.Log($"[WinsController] [{role}] ✅ Set score: {score}");
+            }
+            else
+            {
+                GameLogger.Log($"[WinsController] [{role}] ⚠️ scoreText is NULL");
+            }
+            
+            if (healthText != null)
+            {
+                healthText.text = $"Số Máu Còn Lại: {health}";
+                GameLogger.Log($"[WinsController] [{role}] ✅ Set health: {health}");
+            }
+            else
+            {
+                GameLogger.Log($"[WinsController] [{role}] ⚠️ healthText is NULL");
+            }
         }
 
         /// <summary>
-        /// Hiển thị trạng thái lỗi
+        /// Fallback: đọc từ BattleManager nếu cache chưa được push
+        /// (trường hợp trận kết thúc bình thường, không phải forfeit)
         /// </summary>
+        private bool TryBuildResultFromBattleManager()
+        {
+            if (battleManager == null)
+                battleManager = NetworkedMathBattleManager.Instance;
+
+            if (battleManager == null || !battleManager.MatchEnded.Value)
+                return false;
+
+            var p1 = battleManager.GetPlayer1State();
+            var p2 = battleManager.GetPlayer2State();
+            if (p1 == null || p2 == null) return false;
+
+            var net = NetworkManager.Singleton;
+            int localId = (net != null && net.IsHost) ? 0 : 1;
+            int winnerId = battleManager.WinnerId.Value;
+
+            NetworkedPlayerState winner = (winnerId == 0) ? p1 : p2;
+            NetworkedPlayerState loser  = (winnerId == 0) ? p2 : p1;
+
+            LastResult = new MatchResultData
+            {
+                IsValid           = true,
+                WinnerId          = winnerId,
+                LocalPlayerId     = localId,
+                IsAbandoned       = battleManager.IsAbandoned.Value,
+                AbandonedPlayerId = battleManager.AbandonedPlayerId.Value,
+                WinnerName        = winner.PlayerName.Value.ToString(),
+                WinnerScore       = winner.Score.Value,
+                WinnerHealth      = winner.CurrentHealth.Value,
+                LoserName         = loser.PlayerName.Value.ToString(),
+                LoserScore        = loser.Score.Value,
+                LoserHealth       = loser.CurrentHealth.Value,
+            };
+            return true;
+        }
+
         private void SetErrorState(string errorMessage)
         {
             if (trangThaiText != null)
             {
-                trangThaiText.text = errorMessage;
+                trangThaiText.text  = errorMessage;
                 trangThaiText.color = Color.red;
             }
-
-            // Ẩn các container
-            if (winContainer != null)
-                winContainer.SetActive(false);
-            
-            if (lostContainer != null)
-                lostContainer.SetActive(false);
+            if (winContainer  != null) winContainer.SetActive(false);
+            if (lostContainer != null) lostContainer.SetActive(false);
         }
 
         /// <summary>

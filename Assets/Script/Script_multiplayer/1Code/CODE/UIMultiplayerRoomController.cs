@@ -13,6 +13,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using DoAnGame.Multiplayer;
 
 namespace DoAnGame.UI
 {
@@ -1251,25 +1252,45 @@ namespace DoAnGame.UI
         {
             MultiplayerDetailedLogger.TraceUserAction("UIRoom", "HandleQuitRoom", "quitRoomButton");
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "HandleQuitRoom invoked");
+            
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+            GameLogger.Log($"[UIRoom] [{role}] HandleQuitRoom START");
+            
             if (isBusy)
+            {
+                GameLogger.Log($"[UIRoom] [{role}] HandleQuitRoom: isBusy=true, returning early");
                 return;
+            }
 
             isBusy = true;
             isQuitting = true;
             suppressAutoBattleStart = true;
             SetActionButtonsInteractable(false);
             SetStatus("Đang rời phòng...");
+            
+            GameLogger.Log($"[UIRoom] [{role}] Set isBusy=true, isQuitting=true, suppressAutoBattleStart=true");
 
             StopRoutines();
+            GameLogger.Log($"[UIRoom] [{role}] Stopped all routines");
+            
+            // ✅ FIX: Null currentLobby NGAY sau StopRoutines để polling không tiếp tục
+            // gọi UpdateReadyButtonState() với data cũ trong khi đang reset
+            var lobbyToLeave = currentLobby;
+            bool wasHost = isHost;
+            currentLobby = null;
+            isHost = false;
+            GameLogger.Log($"[UIRoom] [{role}] Cleared currentLobby/isHost early to stop stale UI updates");
             
             // FIX 2: Don't delete lobby immediately - mark as abandoned for 30s grace period
             // This allows clients to rejoin if host disconnects momentarily
-            if (isHost && currentLobby != null)
+            if (wasHost && lobbyToLeave != null)
             {
+                GameLogger.Log($"[UIRoom] [{role}] Is HOST - marking lobby as abandoned (lobbyId={lobbyToLeave.Id})");
                 try
                 {
                     // Mark as abandoned instead of deleting
-                    await LobbyService.Instance.UpdateLobbyAsync(currentLobby.Id,
+                    await LobbyService.Instance.UpdateLobbyAsync(lobbyToLeave.Id,
                         new UpdateLobbyOptions
                         {
                             IsPrivate = true,  // Lock from new joins
@@ -1279,56 +1300,249 @@ namespace DoAnGame.UI
                                 { "AbandonedTime", new DataObject(DataObject.VisibilityOptions.Public, System.DateTime.UtcNow.Ticks.ToString()) }
                             }
                         });
-                    Debug.Log($"[UIRoom] Marked lobby {currentLobby.Id} as abandoned (grace period 30s)");
-                    MultiplayerDetailedLogger.Trace("UI_ROOM", $"HandleQuitRoom host marked lobby abandoned: lobbyId={currentLobby.Id}");
+                    Debug.Log($"[UIRoom] Marked lobby {lobbyToLeave.Id} as abandoned (grace period 30s)");
+                    GameLogger.Log($"[UIRoom] [{role}] ✅ Lobby marked as abandoned successfully");
+                    MultiplayerDetailedLogger.Trace("UI_ROOM", $"HandleQuitRoom host marked lobby abandoned: lobbyId={lobbyToLeave.Id}");
                 }
                 catch (Exception ex)
                 {
                     Debug.LogWarning($"[UIRoom] Failed to mark abandoned: {ex.Message}, fallback to delete");
-                    // Fallback to delete if mark fails
-                    _ = LeaveLobbySafe();
-                    MultiplayerDetailedLogger.TraceException("UI_ROOM", ex, "HandleQuitRoom mark-abandoned failed, fallback LeaveLobbySafe");
+                    GameLogger.Log($"[UIRoom] [{role}] ⚠️ Failed to mark abandoned: {ex.Message} - fallback to LeaveLobbySafe");
+                    // Fallback: delete lobby directly
+                    try { await LobbyService.Instance.DeleteLobbyAsync(lobbyToLeave.Id); } catch { }
+                    MultiplayerDetailedLogger.TraceException("UI_ROOM", ex, "HandleQuitRoom mark-abandoned failed, fallback delete");
                 }
             }
             else
             {
                 // Client: just remove self from lobby
-                await LeaveLobbySafe();
+                GameLogger.Log($"[UIRoom] [{role}] Is CLIENT - removing self from lobby");
+                if (lobbyToLeave != null && AuthenticationService.Instance != null && AuthenticationService.Instance.IsSignedIn)
+                {
+                    try
+                    {
+                        await LobbyService.Instance.RemovePlayerAsync(lobbyToLeave.Id, AuthenticationService.Instance.PlayerId);
+                        GameLogger.Log($"[UIRoom] [{role}] ✅ Removed self from lobby");
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogWarning($"[UIRoom] RemovePlayer lỗi: {ex.Message}");
+                        GameLogger.Log($"[UIRoom] [{role}] ⚠️ RemovePlayer failed: {ex.Message}");
+                    }
+                }
             }
 
             // Disconnect Relay
+            GameLogger.Log($"[UIRoom] [{role}] Disconnecting Relay...");
             RelayManager.Instance.Disconnect();
+            GameLogger.Log($"[UIRoom] [{role}] ✅ Relay disconnected");
 
+            GameLogger.Log($"[UIRoom] [{role}] Calling ResetRoomSessionState...");
             ResetRoomSessionState(DefaultIdleStatus);
+            GameLogger.Log($"[UIRoom] [{role}] ✅ ResetRoomSessionState completed");
 
             onQuitRoom?.Invoke();
             if (quitRoomNavigator != null)
             {
+                GameLogger.Log($"[UIRoom] [{role}] Calling quitRoomNavigator.NavigateNow()...");
                 quitRoomNavigator.NavigateNow();
+                GameLogger.Log($"[UIRoom] [{role}] ✅ Navigation completed");
+            }
+            else
+            {
+                GameLogger.Log($"[UIRoom] [{role}] ⚠️ quitRoomNavigator is NULL - cannot navigate");
             }
 
             isBusy = false;
             isQuitting = false;
             SetActionButtonsInteractable(true);
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "HandleQuitRoom completed");
+            GameLogger.Log($"[UIRoom] [{role}] HandleQuitRoom COMPLETE - isBusy=false, isQuitting=false");
         }
 
         private void ResetRoomSessionState(string status)
         {
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+            GameLogger.Log($"[UIRoom] [{role}] ResetRoomSessionState START");
+            
             currentLobby = null;
             isHost = false;
             battleStartNotified = false;
             receivedStartSignalFromHost = false; // Reset flag khi rời phòng
             nextLobbyReadAt = 0f;
             
+            GameLogger.Log($"[UIRoom] [{role}] Reset flags: currentLobby=null, isHost=false, battleStartNotified=false, receivedStartSignalFromHost=false");
+            
             // ✅ FIX: Unlock dropdown khi rời phòng
             if (gradeDropdown != null)
             {
                 gradeDropdown.interactable = true;
+                GameLogger.Log($"[UIRoom] [{role}] ✅ Unlocked grade dropdown");
             }
             
+            // ✅ FIX: Ẩn tất cả battle panels để LobbyPanel hiển thị đúng
+            GameLogger.Log($"[UIRoom] [{role}] Calling HideAllBattlePanels...");
+            HideAllBattlePanels();
+            
+            // ✅ FIX: Reset WinsPanel state để tránh hiển thị data cũ
+            GameLogger.Log($"[UIRoom] [{role}] Calling ResetWinsPanelState...");
+            ResetWinsPanelState();
+            
+            // ✅ FIX: Reset BattleManager state để tránh conflict trận mới
+            GameLogger.Log($"[UIRoom] [{role}] Calling ResetBattleManagerState...");
+            ResetBattleManagerState();
+            
+            GameLogger.Log($"[UIRoom] [{role}] Calling ApplyIdleVisualState...");
             ApplyIdleVisualState(status);
             roomCodeInput?.SetTextWithoutNotify(string.Empty);
+            
+            GameLogger.Log($"[UIRoom] [{role}] ResetRoomSessionState COMPLETE");
+        }
+
+        /// <summary>
+        /// Ẩn tất cả battle panels (GameplayPanel, WinsPanel, LoadingPanel, QuitPopup)
+        /// để đảm bảo LobbyPanel hiển thị đúng khi quit room
+        /// </summary>
+        private void HideAllBattlePanels()
+        {
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+            
+            try
+            {
+                // Ẩn GameplayPanel
+                var gameplayPanel = FindObjectOfType<UIMultiplayerBattleController>(true);
+                if (gameplayPanel != null)
+                {
+                    gameplayPanel.Hide();
+                    Debug.Log("[UIRoom] ✅ Hidden GameplayPanel");
+                    GameLogger.Log($"[UIRoom] [{role}] ✅ Hidden GameplayPanel");
+                }
+                else
+                {
+                    GameLogger.Log($"[UIRoom] [{role}] GameplayPanel not found");
+                }
+
+                // Ẩn WinsPanel
+                var winsPanel = FindObjectOfType<UIWinsController>(true);
+                if (winsPanel != null)
+                {
+                    winsPanel.Hide();
+                    Debug.Log("[UIRoom] ✅ Hidden WinsPanel");
+                    GameLogger.Log($"[UIRoom] [{role}] ✅ Hidden WinsPanel");
+                }
+                else
+                {
+                    GameLogger.Log($"[UIRoom] [{role}] WinsPanel not found");
+                }
+
+                // Ẩn LoadingPanel
+                var loadingPanel = FindObjectOfType<UIMultiplayerLoadingController>(true);
+                if (loadingPanel != null)
+                {
+                    loadingPanel.Hide();
+                    Debug.Log("[UIRoom] ✅ Hidden LoadingPanel");
+                    GameLogger.Log($"[UIRoom] [{role}] ✅ Hidden LoadingPanel");
+                }
+                else
+                {
+                    GameLogger.Log($"[UIRoom] [{role}] LoadingPanel not found");
+                }
+
+                // Ẩn QuitPopup
+                var quitPopup = FindObjectOfType<UIBattleQuitConfirmPopup>(true);
+                if (quitPopup != null)
+                {
+                    quitPopup.Hide();
+                    Debug.Log("[UIRoom] ✅ Hidden QuitPopup");
+                    GameLogger.Log($"[UIRoom] [{role}] ✅ Hidden QuitPopup");
+                }
+                else
+                {
+                    GameLogger.Log($"[UIRoom] [{role}] QuitPopup not found");
+                }
+
+                // Hiển thị LobbyPanel
+                Show();
+                Debug.Log("[UIRoom] ✅ Shown LobbyPanel");
+                GameLogger.Log($"[UIRoom] [{role}] ✅ Shown LobbyPanel");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[UIRoom] Failed to hide battle panels: {ex.Message}");
+                GameLogger.Log($"[UIRoom] [{role}] ❌ ERROR in HideAllBattlePanels: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Reset WinsPanel state để tránh hiển thị data cũ khi quay lại LobbyPanel
+        /// </summary>
+        private void ResetWinsPanelState()
+        {
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+            
+            try
+            {
+                // Reset static cache của WinsPanel
+                UIWinsController.LastResult = new UIWinsController.MatchResultData
+                {
+                    IsValid = false
+                };
+                Debug.Log("[UIRoom] ✅ Reset WinsPanel state");
+                GameLogger.Log($"[UIRoom] [{role}] ✅ Reset WinsPanel.LastResult (IsValid=false)");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[UIRoom] Failed to reset WinsPanel state: {ex.Message}");
+                GameLogger.Log($"[UIRoom] [{role}] ❌ ERROR in ResetWinsPanelState: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Reset BattleManager state để tránh conflict khi tạo trận mới
+        /// </summary>
+        private void ResetBattleManagerState()
+        {
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+            
+            try
+            {
+                var battleManager = NetworkedMathBattleManager.Instance;
+                if (battleManager != null)
+                {
+                    // Nếu là server, reset NetworkVariables
+                    if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer)
+                    {
+                        battleManager.MatchStarted.Value = false;
+                        battleManager.MatchEnded.Value = false;
+                        battleManager.WinnerId.Value = -1;
+                        battleManager.IsAbandoned.Value = false;
+                        battleManager.AbandonedPlayerId.Value = -1;
+                        battleManager.CurrentQuestion.Value = default;
+                        battleManager.CorrectAnswer.Value = 0;
+                        battleManager.TimeRemaining.Value = 0f;
+                        Debug.Log("[UIRoom] ✅ Reset BattleManager NetworkVariables (Server)");
+                        GameLogger.Log($"[UIRoom] [{role}] ✅ Reset BattleManager NetworkVariables (Server)");
+                    }
+                    else
+                    {
+                        Debug.Log("[UIRoom] ⚠️ Not server, skipping BattleManager NetworkVariable reset");
+                        GameLogger.Log($"[UIRoom] [{role}] ⚠️ Not server, skipping BattleManager NetworkVariable reset");
+                    }
+                }
+                else
+                {
+                    GameLogger.Log($"[UIRoom] [{role}] BattleManager not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[UIRoom] Failed to reset BattleManager state: {ex.Message}");
+                GameLogger.Log($"[UIRoom] [{role}] ❌ ERROR in ResetBattleManagerState: {ex.Message}");
+            }
         }
 
         private void ApplyIdleVisualState(string status)

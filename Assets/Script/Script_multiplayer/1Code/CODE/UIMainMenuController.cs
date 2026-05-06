@@ -113,6 +113,11 @@ namespace DoAnGame.UI
                 UpdatePlayerInfo();
             }
         }
+
+        protected override void OnHide()
+        {
+            base.OnHide();
+        }
         
         private async void LoadPlayerDataAsync()
         {

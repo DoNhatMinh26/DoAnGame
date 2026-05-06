@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using DoAnGame.Auth;
@@ -16,9 +17,19 @@ public class AuthManager : MonoBehaviour
     private PlayerDataService playerDataService;
     private UserValidationService validationService;
     private PlayerData currentPlayerData;
+
+    // ── Session Guard ──────────────────────────────────────────────
+    private const string FIELD_SESSION_ID      = "activeSessionId";
+    private const float  SESSION_POLL_INTERVAL = 5f; // Kiểm tra mỗi 5 giây
+    private string  mySessionId;
+    private string  guardedUid;
+    private bool    isGuarding;
+    private bool    kickHandled;
+    private Coroutine sessionPollRoutine;
+    // ──────────────────────────────────────────────────────────────
     
     // Events
-    public System.Action<PlayerData> OnLoginDataLoaded;  // invoked sau khi load player data
+    public System.Action<PlayerData> OnLoginDataLoaded;
     public System.Action<Firebase.Auth.FirebaseUser> OnCurrentUserChanged;
 
     private void Awake()
@@ -350,6 +361,9 @@ public class AuthManager : MonoBehaviour
                 Debug.Log("[Auth] 🔄 Đang restore tiến độ từ Firebase...");
             }
 
+            // Bắt đầu bảo vệ phiên (kick nếu máy khác đăng nhập cùng tài khoản)
+            _ = StartSessionGuard(user.UserId);
+
             NotifyCurrentUserChanged();
         }
 
@@ -436,6 +450,10 @@ public class AuthManager : MonoBehaviour
         
         currentPlayerData = null;
         Debug.Log("[Auth] 👋 Đã đăng xuất + session cleared");
+
+        // Dừng bảo vệ phiên
+        StopSessionGuard();
+
         NotifyCurrentUserChanged();
     }
 
@@ -535,8 +553,7 @@ public class AuthManager : MonoBehaviour
         playerDataService.SavePlayerDataLocal(currentPlayerData);
     }
 
-    private void ClearAllKnownLocalAuthKeys()
-    {
+    private void ClearAllKnownLocalAuthKeys()    {
         // ── Auth keys ──────────────────────────────────────────────
         PlayerPrefs.DeleteKey(LocalStorageKeyResolver.Key("uid"));
         PlayerPrefs.DeleteKey(LocalStorageKeyResolver.Key("isAnonymous"));
@@ -585,5 +602,261 @@ public class AuthManager : MonoBehaviour
 
         PlayerPrefs.Save();
         Debug.Log("[Auth] 🗑️ Đã xóa toàn bộ local data của tài khoản cũ.");
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // SESSION GUARD — chỉ cho phép 1 thiết bị đăng nhập cùng lúc
+    // ─────────────────────────────────────────────────────────────
+
+    private async Task StartSessionGuard(string uid)
+    {
+        if (string.IsNullOrEmpty(uid)) return;
+
+        StopSessionGuard();
+
+        guardedUid  = uid;
+        mySessionId = DoAnGame.Auth.RuntimeInstanceContext.InstanceId;
+        kickHandled = false;
+
+        // Ghi sessionId lên Firestore — máy cũ sẽ phát hiện bị kick
+        await WriteSessionIdAsync(uid, mySessionId);
+
+        isGuarding = true;
+        if (isActiveAndEnabled && gameObject.activeInHierarchy)
+        {
+            sessionPollRoutine = StartCoroutine(SessionPollRoutine());
+        }
+
+        string uidP = uid.Length > 8 ? uid[..8] : uid;
+        string sidP = mySessionId.Length > 12 ? mySessionId[..12] : mySessionId;
+        Debug.Log($"[Auth] 🔒 Session guard started: uid={uidP}... sid={sidP}...");
+    }
+
+    private void StopSessionGuard()
+    {
+        isGuarding  = false;
+        kickHandled = false;
+
+        if (sessionPollRoutine != null)
+        {
+            StopCoroutine(sessionPollRoutine);
+            sessionPollRoutine = null;
+        }
+
+        guardedUid  = null;
+        mySessionId = null;
+    }
+
+    private async Task WriteSessionIdAsync(string uid, string sessionId)
+    {
+        try
+        {
+            var fs = Firebase.Firestore.FirebaseFirestore.DefaultInstance;
+            if (fs == null) return;
+
+            var update = new System.Collections.Generic.Dictionary<string, object>
+            {
+                { FIELD_SESSION_ID, sessionId }
+            };
+            await fs.Collection("users").Document(uid).SetAsync(update, Firebase.Firestore.SetOptions.MergeAll);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"[Auth] ⚠️ Không ghi được sessionId: {ex.Message}");
+        }
+    }
+
+    private IEnumerator SessionPollRoutine()
+    {
+        while (isGuarding)
+        {
+            yield return new WaitForSeconds(SESSION_POLL_INTERVAL);
+            if (!isGuarding) yield break;
+            _ = CheckSessionAsync();
+        }
+    }
+
+    private async Task CheckSessionAsync()
+    {
+        if (!isGuarding || string.IsNullOrEmpty(guardedUid)) return;
+
+        try
+        {
+            var fs = Firebase.Firestore.FirebaseFirestore.DefaultInstance;
+            if (fs == null) return;
+
+            var snap = await fs.Collection("users").Document(guardedUid).GetSnapshotAsync();
+            if (!snap.Exists) return;
+
+            var d = snap.ToDictionary();
+            string firestoreSid = d.ContainsKey(FIELD_SESSION_ID) ? d[FIELD_SESSION_ID]?.ToString() : null;
+
+            if (string.IsNullOrEmpty(firestoreSid)) return;
+
+            if (firestoreSid != mySessionId)
+            {
+                Debug.LogWarning("[Auth] ⚠️ Phát hiện đăng nhập từ thiết bị khác!");
+                HandleSessionKicked();
+            }
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"[Auth] ⚠️ Lỗi kiểm tra session: {ex.Message}");
+        }
+    }
+
+    private void HandleSessionKicked()
+    {
+        if (kickHandled) return;
+        kickHandled = true;
+
+        StopSessionGuard();
+
+        // Kiểm tra xem có đang trong trận multiplayer không
+        // Nếu có → đợi trận kết thúc rồi mới kick (tránh crash NGO)
+        bool inMultiplayerBattle = IsInMultiplayerBattle();
+
+        if (inMultiplayerBattle)
+        {
+            Debug.LogWarning("[Auth] ⚠️ Bị kick nhưng đang trong trận multiplayer — sẽ đăng xuất sau khi trận kết thúc.");
+            StartCoroutine(WaitForBattleEndThenKick());
+            return;
+        }
+
+        // Không trong trận → kick ngay
+        ExecuteKick();
+    }
+
+    private bool IsInMultiplayerBattle()
+    {
+        // Kiểm tra NetworkManager đang chạy (đang trong multiplayer session)
+        var nm = Unity.Netcode.NetworkManager.Singleton;
+        return nm != null && nm.IsListening;
+    }
+
+    private IEnumerator WaitForBattleEndThenKick()
+    {
+        // Hiện thông báo nhỏ không chặn gameplay
+        var warningOverlay = CreateKickedWarningOverlay();
+
+        // Đợi cho đến khi trận kết thúc (NetworkManager ngừng lắng nghe)
+        while (IsInMultiplayerBattle())
+        {
+            yield return new UnityEngine.WaitForSeconds(5f);
+        }
+
+        Debug.Log("[Auth] ✅ Trận kết thúc, tiến hành đăng xuất.");
+
+        if (warningOverlay != null) Destroy(warningOverlay);
+        ExecuteKick();
+    }
+
+    private void ExecuteKick()
+    {
+        // Shutdown NGO trước để tránh crash khi reload scene
+        var nm = Unity.Netcode.NetworkManager.Singleton;
+        if (nm != null && nm.IsListening)
+        {
+            Debug.Log("[Auth] 🔌 Shutdown NetworkManager trước khi kick...");
+            nm.Shutdown();
+        }
+
+        Logout();
+
+        if (isActiveAndEnabled && gameObject.activeInHierarchy)
+        {
+            StartCoroutine(ShowKickedOverlayAndReload());
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(
+                UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+        }
+    }
+
+    /// <summary>
+    /// Overlay cảnh báo nhỏ ở góc màn hình — không chặn gameplay.
+    /// Hiển thị khi đang trong trận và bị kick.
+    /// </summary>
+    private UnityEngine.GameObject CreateKickedWarningOverlay()
+    {
+        try
+        {
+            var go     = new UnityEngine.GameObject("[KickedWarning]");
+            var canvas = go.AddComponent<UnityEngine.Canvas>();
+            canvas.renderMode   = UnityEngine.RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 9998;
+            go.AddComponent<UnityEngine.UI.CanvasScaler>();
+
+            var textGo = new UnityEngine.GameObject("Msg");
+            textGo.transform.SetParent(go.transform, false);
+            var text   = textGo.AddComponent<TMPro.TextMeshProUGUI>();
+            text.text      = "⚠️ Tài khoản đăng nhập từ thiết bị khác.\nSẽ đăng xuất sau khi trận kết thúc.";
+            text.fontSize  = 20;
+            text.alignment = TMPro.TextAlignmentOptions.BottomRight;
+            text.color     = new UnityEngine.Color(1f, 0.8f, 0f, 1f); // Vàng
+
+            var textRect = textGo.GetComponent<UnityEngine.RectTransform>();
+            textRect.anchorMin = UnityEngine.Vector2.zero;
+            textRect.anchorMax = UnityEngine.Vector2.one;
+            textRect.offsetMin = new UnityEngine.Vector2(10f, 10f);
+            textRect.offsetMax = new UnityEngine.Vector2(-10f, -10f);
+
+            return go;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private IEnumerator ShowKickedOverlayAndReload()
+    {
+        var overlay = CreateKickedOverlay();
+        yield return new WaitForSecondsRealtime(3f);
+        if (overlay != null) Destroy(overlay);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(
+            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+    }
+
+    private UnityEngine.GameObject CreateKickedOverlay()
+    {
+        try
+        {
+            var go     = new UnityEngine.GameObject("[KickedOverlay]");
+            var canvas = go.AddComponent<UnityEngine.Canvas>();
+            canvas.renderMode   = UnityEngine.RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 9999;
+            go.AddComponent<UnityEngine.UI.CanvasScaler>();
+            go.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+
+            var bgGo  = new UnityEngine.GameObject("BG");
+            bgGo.transform.SetParent(go.transform, false);
+            var bgImg = bgGo.AddComponent<UnityEngine.UI.Image>();
+            bgImg.color = new UnityEngine.Color(0f, 0f, 0f, 0.85f);
+            var bgRect  = bgGo.GetComponent<UnityEngine.RectTransform>();
+            bgRect.anchorMin = bgRect.offsetMin = UnityEngine.Vector2.zero;
+            bgRect.anchorMax = UnityEngine.Vector2.one;
+            bgRect.offsetMax = UnityEngine.Vector2.zero;
+
+            var textGo = new UnityEngine.GameObject("Msg");
+            textGo.transform.SetParent(go.transform, false);
+            var text   = textGo.AddComponent<TMPro.TextMeshProUGUI>();
+            text.text      = "⚠️ Tài khoản của bạn\nvừa được đăng nhập\ntừ thiết bị khác.\n\nĐang đăng xuất...";
+            text.fontSize  = 36;
+            text.alignment = TMPro.TextAlignmentOptions.Center;
+            text.color     = UnityEngine.Color.white;
+            var textRect   = textGo.GetComponent<UnityEngine.RectTransform>();
+            textRect.anchorMin = textRect.offsetMin = UnityEngine.Vector2.zero;
+            textRect.anchorMax = UnityEngine.Vector2.one;
+            textRect.offsetMax = UnityEngine.Vector2.zero;
+
+            return go;
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"[Auth] Không tạo được overlay: {ex.Message}");
+            return null;
+        }
     }
 }

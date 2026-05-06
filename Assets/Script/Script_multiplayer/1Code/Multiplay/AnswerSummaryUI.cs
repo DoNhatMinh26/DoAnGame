@@ -76,6 +76,33 @@ namespace DoAnGame.UI
             InitializeUI();
         }
 
+        private void OnEnable()
+        {
+            // ✅ Reset state mỗi khi GameplayPanel được show lại (lần chơi mới)
+            matchHasEnded = false;
+            isSummaryActive = false;
+            isQuestionActive = false;
+            
+            // Re-subscribe nếu battleManager đã có
+            if (battleManager != null)
+            {
+                battleManager.OnAnswerResultReceived -= HandleAnswerResult;
+                battleManager.OnQuestionGenerated    -= HandleQuestionGenerated;
+                battleManager.OnMatchEnded           -= HandleMatchEnded;
+                battleManager.OnAnswerResultReceived += HandleAnswerResult;
+                battleManager.OnQuestionGenerated    += HandleQuestionGenerated;
+                battleManager.OnMatchEnded           += HandleMatchEnded;
+            }
+        }
+
+        private void OnDisable()
+        {
+            // ✅ Cancel pending Invoke và stop coroutines khi panel bị ẩn
+            CancelInvoke(nameof(InitializeUI));
+            if (summaryCoroutine != null)     { StopCoroutine(summaryCoroutine);     summaryCoroutine = null; }
+            if (questionTimerCoroutine != null){ StopCoroutine(questionTimerCoroutine); questionTimerCoroutine = null; }
+        }
+
         private void InitializeUI()
         {
             battleManager = NetworkedMathBattleManager.Instance;

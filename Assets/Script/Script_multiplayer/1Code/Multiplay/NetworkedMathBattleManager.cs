@@ -85,6 +85,24 @@ namespace DoAnGame.Multiplayer
             NetworkVariableWritePermission.Server
         );
 
+        /// <summary>
+        /// true nếu trận kết thúc do 1 người bỏ cuộc (không phải hết máu)
+        /// </summary>
+        public NetworkVariable<bool> IsAbandoned = new NetworkVariable<bool>(
+            false,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
+        /// <summary>
+        /// PlayerId của người bỏ cuộc (-1 nếu không có ai bỏ)
+        /// </summary>
+        public NetworkVariable<int> AbandonedPlayerId = new NetworkVariable<int>(
+            -1,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
         [Header("=== ANSWER CHOICES ===")]
         public NetworkVariable<int> Choice1 = new NetworkVariable<int>(
             0,
@@ -278,6 +296,10 @@ namespace DoAnGame.Multiplayer
                 return;
             }
 
+            // ✅ FIX: Despawn player states cũ trước khi spawn mới
+            // Tránh trường hợp scene có nhiều player states → HealthUI subscribe nhầm
+            DespawnOldPlayerStates();
+
             Debug.Log("[BattleManager] 🎮 Spawning player states...");
 
             // Lấy tên người chơi từ AuthManager
@@ -329,6 +351,72 @@ namespace DoAnGame.Multiplayer
             Debug.Log($"[BattleManager] ✅ Player 2 spawned (ClientID: {clientId})");
 
             Debug.Log($"[BattleManager] Spawned player states: P1={player1State.OwnerClientId}, P2={player2State.OwnerClientId}");
+        }
+
+        /// <summary>
+        /// Despawn tất cả player states cũ còn sót lại trong scene.
+        /// Gọi trước SpawnPlayerStates() để tránh duplicate player states.
+        /// </summary>
+        private void DespawnOldPlayerStates()
+        {
+            if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsServer) return;
+
+            // Despawn player states đang được track
+            if (player1State != null)
+            {
+                try
+                {
+                    if (player1State.IsSpawned)
+                    {
+                        player1State.NetworkObject.Despawn(true);
+                        Debug.Log("[BattleManager] ✅ Despawned old Player1State");
+                        GameLogger.Log("[BattleManager] [SERVER] ✅ Despawned old Player1State");
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogWarning($"[BattleManager] Failed to despawn Player1State: {ex.Message}");
+                }
+                player1State = null;
+            }
+
+            if (player2State != null)
+            {
+                try
+                {
+                    if (player2State.IsSpawned)
+                    {
+                        player2State.NetworkObject.Despawn(true);
+                        Debug.Log("[BattleManager] ✅ Despawned old Player2State");
+                        GameLogger.Log("[BattleManager] [SERVER] ✅ Despawned old Player2State");
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogWarning($"[BattleManager] Failed to despawn Player2State: {ex.Message}");
+                }
+                player2State = null;
+            }
+
+            // Tìm và despawn bất kỳ player state nào còn sót lại trong scene
+            var allStates = FindObjectsOfType<NetworkedPlayerState>();
+            foreach (var state in allStates)
+            {
+                if (state == null) continue;
+                try
+                {
+                    if (state.IsSpawned)
+                    {
+                        state.NetworkObject.Despawn(true);
+                        Debug.Log($"[BattleManager] ✅ Despawned stale PlayerState (PlayerId={state.PlayerId.Value})");
+                        GameLogger.Log($"[BattleManager] [SERVER] ✅ Despawned stale PlayerState (PlayerId={state.PlayerId.Value})");
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogWarning($"[BattleManager] Failed to despawn stale PlayerState: {ex.Message}");
+                }
+            }
         }
 
         /// <summary>
@@ -453,12 +541,40 @@ namespace DoAnGame.Multiplayer
             // Kiểm tra NetworkManager thay vì IsServer
             if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsServer) return;
 
+            // ✅ FIX: Không generate câu hỏi mới nếu trận đã kết thúc hoặc bị abandon
+            if (MatchEnded.Value)
+            {
+                Debug.LogWarning("[BattleManager] GenerateQuestion: match already ended, skipping.");
+                GameLogger.Log("[BattleManager] [SERVER] ⚠️ GenerateQuestion called but match ended - skipping");
+                return;
+            }
+
             Debug.Log("[BattleManager] 📝 Generating new question...");
 
+            // ✅ FIX: Null-safe reset answer state
             // Reset answer tracking
             playerAnswers.Clear();
-            player1State?.ResetAnswerState();
-            player2State?.ResetAnswerState();
+            
+            // Chỉ reset nếu player state còn tồn tại
+            if (player1State != null && player1State.IsSpawned)
+            {
+                player1State.ResetAnswerState();
+            }
+            else
+            {
+                Debug.LogWarning("[BattleManager] Player1State is null or not spawned, skipping reset");
+                GameLogger.Log("[BattleManager] [SERVER] ⚠️ Player1State unavailable, skipping reset");
+            }
+            
+            if (player2State != null && player2State.IsSpawned)
+            {
+                player2State.ResetAnswerState();
+            }
+            else
+            {
+                Debug.LogWarning("[BattleManager] Player2State is null or not spawned, skipping reset");
+                GameLogger.Log("[BattleManager] [SERVER] ⚠️ Player2State unavailable, skipping reset");
+            }
 
             // Lấy config từ LevelGenerate
             var config = levelData.GetConfigForLevel(CurrentGrade.Value, CurrentDifficulty.Value);
@@ -1027,6 +1143,133 @@ namespace DoAnGame.Multiplayer
             // Notify clients
             ShowMatchResultClientRpc(winnerId, winnerHealth);
         }
+
+        #region ABANDON MATCH
+
+        /// <summary>
+        /// Người chơi gọi khi xác nhận rời trận qua popup.
+        /// Server kết thúc trận ngay, tính đối thủ thắng.
+        /// Người gọi sẽ tự về LobbyPanel (qua RequestQuitRoom).
+        /// Người còn lại nhận OnMatchEnded bình thường → WinsPanel.
+        /// Firebase chỉ sync cho người thắng.
+        /// </summary>
+        [ServerRpc(RequireOwnership = false)]
+        public void RequestForfeitServerRpc(ServerRpcParams rpcParams = default)
+        {
+            if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsServer) return;
+
+            if (MatchEnded.Value)
+            {
+                Debug.LogWarning("[BattleManager] RequestForfeitServerRpc: match already ended, ignoring.");
+                GameLogger.Log("[BattleManager] [SERVER] ⚠️ RequestForfeitServerRpc called but match already ended - ignoring");
+                return;
+            }
+
+            ulong senderClientId = rpcParams.Receive.SenderClientId;
+            // Người gọi bỏ cuộc → đối thủ thắng
+            int forfeitPlayerId = (senderClientId == 0) ? 0 : 1;
+            int winnerId        = (forfeitPlayerId == 0) ? 1 : 0;
+
+            Debug.Log($"[BattleManager] 🏳️ Player {forfeitPlayerId} forfeited. Winner = Player {winnerId}");
+            GameLogger.Log($"[BattleManager] [SERVER] 🏳️ FORFEIT RECEIVED from ClientID:{senderClientId} (Player {forfeitPlayerId})");
+            GameLogger.Log($"[BattleManager] [SERVER] Winner = Player {winnerId}");
+
+            // ✅ FIX: Cancel tất cả pending Invoke (GenerateQuestion, etc.)
+            CancelInvoke();
+            GameLogger.Log($"[BattleManager] [SERVER] ✅ Cancelled all pending Invoke calls");
+
+            // Dừng timer
+            if (timerRoutine != null) 
+            { 
+                StopCoroutine(timerRoutine); 
+                timerRoutine = null;
+                GameLogger.Log($"[BattleManager] [SERVER] ✅ Timer stopped");
+            }
+
+            // Đánh dấu abandon để WinsController hiển thị "(Đã Rời Trận)"
+            IsAbandoned.Value      = true;
+            AbandonedPlayerId.Value = forfeitPlayerId;
+            GameLogger.Log($"[BattleManager] [SERVER] ✅ Set IsAbandoned=true, AbandonedPlayerId={forfeitPlayerId}");
+
+            // ✅ FIX: Đảm bảo player states còn tồn tại trước khi kết thúc trận
+            // Delay nhỏ để client có thời gian đọc data trước khi disconnect
+            GameLogger.Log($"[BattleManager] [SERVER] Starting 0.5s delay before EndMatchWithWinner...");
+            StartCoroutine(EndMatchAfterDelay(winnerId, 0.5f));
+        }
+
+        /// <summary>
+        /// Delay nhỏ trước khi kết thúc trận để client có thời gian đọc player states
+        /// </summary>
+        private IEnumerator EndMatchAfterDelay(int winnerId, float delay)
+        {
+            GameLogger.Log($"[BattleManager] [SERVER] Waiting {delay}s for clients to read player states...");
+            yield return new WaitForSeconds(delay);
+            GameLogger.Log($"[BattleManager] [SERVER] Delay complete - calling EndMatchWithWinner(winnerId={winnerId})");
+            EndMatchWithWinner(winnerId);
+        }
+
+        /// <summary>
+        /// Kết thúc trận với winner chỉ định (dùng cho forfeit).
+        /// Sync Firebase chỉ cho winner, notify clients.
+        /// </summary>
+        private void EndMatchWithWinner(int winnerId)
+        {
+            if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsServer) return;
+
+            GameLogger.Log($"[BattleManager] [SERVER] EndMatchWithWinner START - winnerId={winnerId}");
+
+            MatchEnded.Value = true;
+            WinnerId.Value   = winnerId;
+
+            NetworkedPlayerState winnerState = (winnerId == 0) ? player1State : player2State;
+            int winnerHealth = winnerState != null ? winnerState.CurrentHealth.Value : 0;
+
+            Debug.Log($"[BattleManager] EndMatchWithWinner: winner={winnerId}, health={winnerHealth}");
+            GameLogger.Log($"[BattleManager] [SERVER] ✅ Set MatchEnded=true, WinnerId={winnerId}, WinnerHealth={winnerHealth}");
+
+            // Log player states
+            if (player1State != null)
+            {
+                GameLogger.Log($"[BattleManager] [SERVER] Player1State: Name={player1State.PlayerName.Value}, Score={player1State.Score.Value}, Health={player1State.CurrentHealth.Value}");
+            }
+            else
+            {
+                GameLogger.Log($"[BattleManager] [SERVER] ⚠️ Player1State is NULL");
+            }
+
+            if (player2State != null)
+            {
+                GameLogger.Log($"[BattleManager] [SERVER] Player2State: Name={player2State.PlayerName.Value}, Score={player2State.Score.Value}, Health={player2State.CurrentHealth.Value}");
+            }
+            else
+            {
+                GameLogger.Log($"[BattleManager] [SERVER] ⚠️ Player2State is NULL");
+            }
+
+            // Sync Firebase chỉ cho winner (người bỏ cuộc không được lưu)
+            string winnerUid   = GetUidForPlayer(winnerId);
+            int    winnerScore = winnerState != null ? winnerState.Score.Value : 0;
+            GameLogger.Log($"[BattleManager] [SERVER] Syncing Firebase for winner: uid={winnerUid}, score={winnerScore}");
+            _ = SyncPlayerMatchResult(uid: winnerUid, score: winnerScore, isWin: true);
+
+            // Notify clients (dùng lại ClientRpc có sẵn)
+            GameLogger.Log($"[BattleManager] [SERVER] Invoking OnMatchEnded event (Host)...");
+            OnMatchEnded?.Invoke(winnerId, winnerHealth);          // Host
+            
+            GameLogger.Log($"[BattleManager] [SERVER] Sending ShowMatchResultClientRpc to clients...");
+            ShowMatchResultClientRpc(winnerId, winnerHealth);      // Clients
+            
+            GameLogger.Log($"[BattleManager] [SERVER] EndMatchWithWinner COMPLETE");
+        }
+
+        // ─── Legacy AbandonMatchServerRpc (giữ lại để tương thích, delegate sang RequestForfeitServerRpc) ───
+        [ServerRpc(RequireOwnership = false)]
+        public void AbandonMatchServerRpc(ServerRpcParams rpcParams = default)
+        {
+            RequestForfeitServerRpc(rpcParams);
+        }
+
+        #endregion
 
         #region CLIENT RPCs
 

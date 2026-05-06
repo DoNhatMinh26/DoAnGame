@@ -1,7 +1,7 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: Test_FireBase_multi
 Đường dẫn: Assets/Scenes/Test_FireBase_multi.unity
-Thời gian export: 5/5/2026 2:05:25 PM
+Thời gian export: 5/6/2026 6:03:00 AM
 ═══════════════════════════════════════════════════════════
 
 Tổng số Root GameObjects: 8
@@ -193,7 +193,6 @@ Canvas [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-││   • UIButtonScreenNavigator (DoAnGame.UI)
 │││├─ Text (TMP) [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
@@ -437,6 +436,38 @@ Canvas [Layer: UI]
 │││├─ AnimatedDots [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
+│├─ BattleQuitConfirmPopup [INACTIVE] [Layer: UI]
+│   • CanvasRenderer
+│   • Image (UnityEngine.UI)
+│   • UIBattleQuitConfirmPopup (DoAnGame.UI)
+││├─ Overlay [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ ContentPanel [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+│││├─ TitleText [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│││├─ MessageText [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│││├─ ButtonContainer [Layer: UI]
+│││   • HorizontalLayoutGroup (UnityEngine.UI)
+││││├─ confirmQuitButton [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+││││   • Button (UnityEngine.UI)
+│││││├─ Text (TMP) [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • TextMeshProUGUI (TMPro)
+││││├─ CancelButton [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+││││   • Button (UnityEngine.UI)
+│││││├─ Text (TMP) [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • TextMeshProUGUI (TMPro)
 EventSystem
    • EventSystem (UnityEngine.EventSystems)
    • StandaloneInputModule (UnityEngine.EventSystems)
@@ -448,5 +479,5 @@ MatchEndNavigator
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 139
+Tổng số GameObjects: 149
 ═══════════════════════════════════════════════════════════
