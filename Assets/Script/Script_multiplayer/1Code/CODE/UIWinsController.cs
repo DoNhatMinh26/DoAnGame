@@ -63,6 +63,10 @@ namespace DoAnGame.UI
         [Header("=== SETTINGS ===")]
         [SerializeField] private bool enableDebugLogs = true;
 
+        [Header("=== AVATAR CHARACTERS ===")]
+        [SerializeField] private AvatarCharacterDisplay winnerCharacter;  // Win_image_animation
+        [SerializeField] private AvatarCharacterDisplay loserCharacter;   // Lost_image_animation
+
         private void Start()
         {
             // Auto-resolve BattleManager nếu chưa gán (dùng cho fallback)
@@ -154,6 +158,9 @@ namespace DoAnGame.UI
 
                 GameLogger.Log($"[WinsController] [{role}] ✅ DisplayMatchResult COMPLETE");
                 Log("Match result displayed successfully");
+
+                // Set avatar và trigger animation Happy/Sad
+                SetWinsPanelAvatars(r);
             }
             catch (System.Exception ex)
             {
@@ -251,6 +258,55 @@ namespace DoAnGame.UI
                 LoserHealth       = loser.CurrentHealth.Value,
             };
             return true;
+        }
+
+        /// <summary>
+        /// Set avatar đúng nhân vật và trigger Happy/Sad cho Wins panel.
+        /// Winner → Happy, Loser → Sad.
+        /// </summary>
+        private void SetWinsPanelAvatars(MatchResultData r)
+        {
+            if (winnerCharacter == null && loserCharacter == null) return;
+
+            int winnerAvatarId = 0;
+            int loserAvatarId  = 0;
+
+            // Lấy avatarId từ NetworkedPlayerState nếu còn sống
+            if (battleManager != null)
+            {
+                var p1 = battleManager.GetPlayer1State();
+                var p2 = battleManager.GetPlayer2State();
+
+                var winnerState = (r.WinnerId == 0) ? p1 : p2;
+                var loserState  = (r.WinnerId == 0) ? p2 : p1;
+
+                if (winnerState != null) winnerAvatarId = winnerState.AvatarId.Value;
+                if (loserState  != null) loserAvatarId  = loserState.AvatarId.Value;
+            }
+
+            // Fallback: local player dùng AvatarManager
+            bool isLocalWinner = (r.WinnerId == r.LocalPlayerId);
+            int localAvatarId  = AvatarManager.Instance?.GetCurrentAvatarId() ?? 0;
+
+            if (isLocalWinner)
+                winnerAvatarId = localAvatarId;
+            else
+                loserAvatarId = localAvatarId;
+
+            // Apply avatar + animation
+            if (winnerCharacter != null)
+            {
+                winnerCharacter.SetAvatar(winnerAvatarId);
+                winnerCharacter.TriggerHappy();
+            }
+
+            if (loserCharacter != null)
+            {
+                loserCharacter.SetAvatar(loserAvatarId);
+                loserCharacter.TriggerSad();
+            }
+
+            Log($"SetWinsPanelAvatars: winner avatarId={winnerAvatarId}, loser avatarId={loserAvatarId}");
         }
 
         private void SetErrorState(string errorMessage)

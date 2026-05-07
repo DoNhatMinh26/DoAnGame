@@ -281,6 +281,9 @@ namespace DoAnGame.Auth
             await RestoreShop(uid, "keothada_phao",  "PhaoUnlocked_",     "SelectedPhaoID");
             await RestoreShop(uid, "phithuyen_ship", "ShipUnlocked_",     "SelectedShipID");
 
+            // Restore avatar đã chọn
+            await RestoreAvatar(uid);
+
             Debug.Log("[CloudSync] ✅ Restore hoàn tất.");
         }
 
@@ -520,6 +523,42 @@ namespace DoAnGame.Auth
             catch (System.Exception ex)
             {
                 Debug.LogWarning($"[CloudSync] ⚠️ Restore grade thất bại: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Restore avatarId từ Firestore users/{uid} về AvatarManager và PlayerPrefs.
+        /// </summary>
+        private async Task RestoreAvatar(string uid)
+        {
+            if (firestore == null) return;
+            try
+            {
+                var snap = await firestore.Collection("users").Document(uid).GetSnapshotAsync();
+                if (!snap.Exists) return;
+
+                var dict = snap.ToDictionary();
+
+                if (!dict.ContainsKey("avatarId"))
+                {
+                    // Tài khoản cũ chưa có avatarId → ghi mặc định = 0 lên Firebase
+                    await firestore.Collection("users").Document(uid)
+                        .SetAsync(new Dictionary<string, object> { { "avatarId", 0 } },
+                                  SetOptions.MergeAll);
+                    Debug.Log("[CloudSync] ✅ Ghi avatarId=0 mặc định cho tài khoản cũ");
+                    return;
+                }
+
+                int cloudAvatarId = GetInt(dict, "avatarId", 0);
+
+                // Áp dụng vào AvatarManager (tự lưu PlayerPrefs + fire event)
+                AvatarManager.Instance?.RestoreFromFirebase(cloudAvatarId);
+
+                Debug.Log($"[CloudSync] ✅ Restored avatarId: {cloudAvatarId}");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[CloudSync] ⚠️ Restore avatar thất bại: {ex.Message}");
             }
         }
 

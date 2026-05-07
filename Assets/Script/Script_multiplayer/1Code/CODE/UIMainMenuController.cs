@@ -19,9 +19,13 @@ namespace DoAnGame.UI
         [SerializeField] private TMP_Text levelText;
         [SerializeField] private TMP_Text scoreText;
         [SerializeField] private TMP_Text characterNameText;
+        [SerializeField] private TMP_Text gradeText;  // ✅ Thêm Grade
 
         [Header("Logout Confirm Popup")]
         [SerializeField] private UIConfirmPopupController logoutConfirmPopup;
+
+        [Header("Avatar")]
+        [SerializeField] private Image avatarImage;  // MainMenuPanel/Avatar
 
         [SerializeField] private UIFlowManager flowManager;
 
@@ -69,6 +73,18 @@ namespace DoAnGame.UI
                     }
                 }
             }
+
+            // Auto-find Avatar image nếu chưa gán trong Inspector
+            if (avatarImage == null)
+            {
+                Transform avatarNode = transform.Find("Avatar");
+                if (avatarNode != null)
+                    avatarImage = avatarNode.GetComponent<Image>();
+            }
+
+            // Subscribe AvatarManager event để tự refresh khi avatar thay đổi
+            if (AvatarManager.Instance != null)
+                AvatarManager.Instance.OnAvatarChanged += OnAvatarChanged;
 
             if (logoutButton != null)
             {
@@ -151,10 +167,38 @@ namespace DoAnGame.UI
         {
             base.OnDestroy();
             logoutButton?.onClick.RemoveAllListeners();
+            if (AvatarManager.Instance != null)
+                AvatarManager.Instance.OnAvatarChanged -= OnAvatarChanged;
         }
 
-        private void UpdatePlayerInfo()
+        /// <summary>
+        /// Callback từ AvatarManager khi avatar thay đổi — tự refresh image.
+        /// </summary>
+        private void OnAvatarChanged(AvatarData newAvatar)
         {
+            RefreshAvatarImage();
+        }
+
+        /// <summary>
+        /// Cập nhật avatar image từ AvatarManager.
+        /// </summary>
+        private void RefreshAvatarImage()
+        {
+            if (avatarImage == null || AvatarManager.Instance == null) return;
+            Sprite sprite = AvatarManager.Instance.GetCurrentFullAvatar();
+            if (sprite != null)
+                avatarImage.sprite = sprite;
+        }
+
+        public void UpdatePlayerInfo()
+        {
+            // ✅ DEBUG: Log trạng thái
+            Debug.Log($"[MainMenu] ========== UPDATE PLAYER INFO ==========");
+            Debug.Log($"[MainMenu] IsGuestMode: {UIQuickPlayNameController.IsGuestMode()}");
+            Debug.Log($"[MainMenu] GuestName: '{UIQuickPlayNameController.GetGuestName()}'");
+            Debug.Log($"[MainMenu] SelectedGrade: {UIManager.SelectedGrade}");
+            Debug.Log($"[MainMenu] ==========================================");
+            
             // Kiểm tra nếu đang ở chế độ khách
             if (UIQuickPlayNameController.IsGuestMode())
             {
@@ -164,43 +208,29 @@ namespace DoAnGame.UI
                 // ✅ Đọc từ đúng key cho guest mode
                 int guestScore = PlayerPrefs.GetInt("LocalGuestScore", 0);
                 int guestLevel = PlayerPrefs.GetInt("LocalGuestLevel", 1);
+                int guestGrade = UIManager.SelectedGrade;
                 
                 levelText?.SetText($"Lv: {guestLevel}");
                 scoreText?.SetText($"Score: {guestScore}");
+                gradeText?.SetText($"Lớp: {guestGrade}");
                 
-                Debug.Log($"[MainMenu] Guest mode: {guestName}, Level: {guestLevel}, Score: {guestScore}");
+                Debug.Log($"[MainMenu] Guest mode: {guestName}, Level: {guestLevel}, Score: {guestScore}, Grade: {guestGrade}");
+
+                // Cập nhật avatar
+                RefreshAvatarImage();
                 return;
             }
 
             // Người chơi đã đăng nhập
             var data = authManager?.GetCurrentPlayerData();
 
-            string characterName = data?.characterName;
-            if (string.IsNullOrWhiteSpace(characterName))
+            // ✅ Nếu không có player data, hiển thị từ PlayerPrefs và return
+            if (data == null)
             {
-                characterName = authManager?.GetCharacterName();
-            }
-
-            if (string.IsNullOrWhiteSpace(characterName) || characterName == "Unknown")
-            {
-                var firebaseUser = FirebaseManager.Instance?.GetCurrentUser();
-                if (firebaseUser != null)
-                {
-                    if (!string.IsNullOrWhiteSpace(firebaseUser.DisplayName))
-                    {
-                        characterName = firebaseUser.DisplayName;
-                    }
-                    else if (!string.IsNullOrWhiteSpace(firebaseUser.Email))
-                    {
-                        // Fallback: Use email as name
-                        characterName = firebaseUser.Email.Split('@')[0]; // Get part before @
-                    }
-                }
-            }
-            
-            // Last fallback: Try Firebase Auth directly
-            if (string.IsNullOrWhiteSpace(characterName) || characterName == "Unknown")
-            {
+                Debug.LogWarning("[MainMenu] No player data available, showing from PlayerPrefs");
+                
+                // Hiển thị tên từ Firebase Auth
+                string characterName = "Unknown";
                 var currentUser = Firebase.Auth.FirebaseAuth.DefaultInstance?.CurrentUser;
                 if (currentUser != null)
                 {
@@ -212,15 +242,78 @@ namespace DoAnGame.UI
                     {
                         characterName = currentUser.Email.Split('@')[0];
                     }
+                }
+                
+                if (!string.IsNullOrWhiteSpace(characterName) && characterName != "Unknown")
+                {
+                    characterNameText?.SetText($"Tên Nhân Vật: {characterName}");
+                }
+                else
+                {
+                    characterNameText?.SetText("Tên Nhân Vật: -----");
+                }
+                
+                // Hiển thị score, level, grade từ PlayerPrefs
+                int score = PlayerPrefs.GetInt("UserScore", 0);
+                int level = PlayerPrefs.GetInt("UserLevel", 1);
+                int grade = UIManager.SelectedGrade;
+                levelText?.SetText($"Lv: {level}");
+                scoreText?.SetText($"Score: {score}");
+                gradeText?.SetText($"Lớp: {grade}");
+                
+                Debug.Log($"[MainMenu] Logged-in (no data): {characterName}, Level: {level}, Score: {score}, Grade: {grade}");
+
+                // Cập nhật avatar
+                RefreshAvatarImage();
+                return;  // ✅ QUAN TRỌNG: Return để không chạy code phía dưới
+            }
+
+            // ✅ Có player data - hiển thị từ Firebase
+            string finalCharacterName = data.characterName;
+            if (string.IsNullOrWhiteSpace(finalCharacterName))
+            {
+                finalCharacterName = authManager?.GetCharacterName();
+            }
+
+            if (string.IsNullOrWhiteSpace(finalCharacterName) || finalCharacterName == "Unknown")
+            {
+                var firebaseUser = FirebaseManager.Instance?.GetCurrentUser();
+                if (firebaseUser != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(firebaseUser.DisplayName))
+                    {
+                        finalCharacterName = firebaseUser.DisplayName;
+                    }
+                    else if (!string.IsNullOrWhiteSpace(firebaseUser.Email))
+                    {
+                        finalCharacterName = firebaseUser.Email.Split('@')[0];
+                    }
+                }
+            }
+            
+            // Last fallback: Try Firebase Auth directly
+            if (string.IsNullOrWhiteSpace(finalCharacterName) || finalCharacterName == "Unknown")
+            {
+                var currentUser = Firebase.Auth.FirebaseAuth.DefaultInstance?.CurrentUser;
+                if (currentUser != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(currentUser.DisplayName))
+                    {
+                        finalCharacterName = currentUser.DisplayName;
+                    }
+                    else if (!string.IsNullOrWhiteSpace(currentUser.Email))
+                    {
+                        finalCharacterName = currentUser.Email.Split('@')[0];
+                    }
                     
-                    Debug.Log($"[MainMenu] Using Firebase Auth user: {characterName}");
+                    Debug.Log($"[MainMenu] Using Firebase Auth user: {finalCharacterName}");
                 }
             }
 
-            if (!string.IsNullOrWhiteSpace(characterName) && characterName != "Unknown")
+            if (!string.IsNullOrWhiteSpace(finalCharacterName) && finalCharacterName != "Unknown")
             {
-                characterNameText?.SetText($"Tên Nhân Vật: {characterName}");
-                Debug.Log($"[MainMenu] Displaying character name: {characterName}");
+                characterNameText?.SetText($"Tên Nhân Vật: {finalCharacterName}");
+                Debug.Log($"[MainMenu] Displaying character name: {finalCharacterName}");
             }
             else
             {
@@ -228,22 +321,15 @@ namespace DoAnGame.UI
                 Debug.LogWarning("[MainMenu] Could not load character name!");
             }
 
-            if (data == null)
-            {
-                // ✅ Đọc từ đúng key cho logged-in mode
-                int score = PlayerPrefs.GetInt("UserScore", 0);
-                int level = PlayerPrefs.GetInt("UserLevel", 1);
-                levelText?.SetText($"Lv: {level}");
-                scoreText?.SetText($"Score: {score}");
-                Debug.LogWarning("[MainMenu] No player data available, showing from PlayerPrefs");
-                return;
-            }
-
-            // Hiển thị level và score từ Firebase
+            // Hiển thị level, score và grade từ Firebase
             levelText?.SetText($"Lv: {data.level}");
             scoreText?.SetText($"Score: {data.totalScore}");
+            gradeText?.SetText($"Lớp: {UIManager.SelectedGrade}");
             
-            Debug.Log($"[MainMenu] Logged-in user: {characterName}, Level: {data.level}, Score: {data.totalScore}");
+            Debug.Log($"[MainMenu] Logged-in user: {finalCharacterName}, Level: {data.level}, Score: {data.totalScore}, Grade: {UIManager.SelectedGrade}");
+
+            // Cập nhật avatar
+            RefreshAvatarImage();
         }
 
         /// <summary>

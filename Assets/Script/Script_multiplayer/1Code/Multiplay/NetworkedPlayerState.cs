@@ -19,6 +19,13 @@ namespace DoAnGame.Multiplayer
         [Tooltip("Tên hiển thị của player")]
         public NetworkVariable<FixedString64Bytes> PlayerName = new NetworkVariable<FixedString64Bytes>();
 
+        [Tooltip("ID avatar đã chọn — sync qua NGO để cả 2 phía thấy đúng nhân vật")]
+        public NetworkVariable<int> AvatarId = new NetworkVariable<int>(
+            0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner
+        );
+
         [Header("=== HEALTH SYSTEM ===")]
         [Tooltip("Máu hiện tại của player")]
         public NetworkVariable<int> CurrentHealth = new NetworkVariable<int>();
@@ -86,6 +93,14 @@ namespace DoAnGame.Multiplayer
             {
                 // Giá trị sẽ được set bởi NetworkedMathBattleManager
                 Debug.Log($"[PlayerState] Spawned player {OwnerClientId} on server");
+            }
+
+            // Owner tự set AvatarId của mình ngay khi spawn
+            if (IsOwner)
+            {
+                int myAvatarId = AvatarManager.Instance?.GetCurrentAvatarId() ?? 0;
+                AvatarId.Value = myAvatarId;
+                Debug.Log($"[PlayerState] Owner set AvatarId={myAvatarId}");
             }
         }
 

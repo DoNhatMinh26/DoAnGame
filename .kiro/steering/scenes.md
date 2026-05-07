@@ -44,22 +44,76 @@ Dùng làm tài liệu tham chiếu khi làm việc với UI, thêm tính năng,
 | `RegisterPanel` | `UIRegisterPanelController` | Inactive | Form đăng ký: email, tên nhân vật, password, tuổi, điều khoản |
 | `ChonMan_` | *(không có controller riêng)* | Inactive | Chọn chế độ chơi: Lớp Học (ChonDA), Phòng Thủ (KeoThaDA), Phi Thuyền, Kéo Thả |
 | `LoadingIndicator` | `UILoadingIndicator` | Inactive | Spinner loading dùng chung cho Login/Register |
-| `MainMenuPanel` | `UIMainMenuController` | **Active** | Menu chính sau đăng nhập: hiển thị tên, level, score, avatar. Nút Play, BXH, Hồ Sơ, Settings, Đăng Xuất. Chứa `LogoutConfirmPopup` |
+| `MainMenuPanel` | `UIMainMenuController` | **Active** | Menu chính sau đăng nhập: hiển thị tên, level, score, **grade (lớp)**, avatar. Nút Play, BXH, Hồ Sơ, Settings, Đăng Xuất. Chứa `LogoutConfirmPopup`. Dữ liệu đồng bộ cho cả guest và logged-in users |
 | `BangXepHang` | `UILeaderboardPanelController` | Inactive | Bảng xếp hạng từ Firebase (top theo totalScore) |
 | `LoginRequiredPopup` | `UILoginRequiredPopupController` | Inactive | Popup yêu cầu đăng nhập khi guest cố vào Multiplayer |
 | `SettingsPopup` | `SettingsPopupController` | Inactive | Popup cài đặt: volume slider, thoát game |
-| `Profile` | `ProfileUI` (legacy) | **Active** | Hiển thị thống kê người chơi từ PlayerPrefs |
+| `Profile` | `ProfileUI` | **Active** | Hiển thị thống kê người chơi: level, score, grade, tiến độ 3 chế độ, coins. **Tính năng mới:** Xóa tài khoản + Đổi độ khó (lớp 1-5) |
 
 ### Lưu ý quan trọng — GameUIPlay 1
 
 - `UIStartupController` trên `GameUICanvas` quyết định panel nào hiển thị đầu tiên (WELCOMESCREEN / WellcomePanel / MainMenuPanel) dựa trên trạng thái session.
 - `UIManager` (legacy) gán **trực tiếp trên `WELCOMESCREEN`** — chứa `SelectedGrade` static field dùng khắp dự án. `ChonTuoi` (TMP_Dropdown chọn năm sinh) đã bị xóa khỏi scene — grade selection chuyển sang `NhapTen_choiNhanh`.
 - `NhapTen_choiNhanh` chỉ có **1 lần** `UIQuickPlayNameController` (bug gán 2 lần đã được sửa).
-- `MainMenuPanel` chứa `LogoutConfirmPopup` (con trực tiếp) với `UIConfirmPopupController`.
+- `MainMenuPanel` chứa `LogoutConfirmPopup` (con trực tiếp) với `UIConfirmPopupController`. Hiển thị **Grade (Lớp)** cho cả guest và logged-in users.
 - `WELCOMESCREEN`, `WellcomePanel`, `MainMenuPanel` đều có `UISettingsOpenButton` trên nút Setting.
-- `Profile` dùng `ProfileUI` (legacy, đọc PlayerPrefs) thay vì `UIProfilePanelController` (mới, đọc Firebase).
+- `Profile` có 2 tính năng mới:
+  - **Xóa tài khoản** (`DeleteAccountBtn` + `DeleteAccountPopup`): Xóa Firestore → Firebase Auth → Local data → Logout → WELCOMESCREEN
+  - **Đổi độ khó** (`DifficultySection` + `ChangeDifficultyPopup`): Chọn lớp 1-5 → Reset tiến độ 3 chế độ → Sync Firebase → Auto-refresh MainMenuPanel
 - Nút Play trên `WELCOMESCREEN` luôn enabled (không còn bị disable chờ chọn năm sinh).
 - `CloudSyncService` và `SessionGuardService` là services mới thêm vào `AuthServices`.
+- **Guest mode data preservation**: Khi reset game data, guest mode flag + name + score + level được bảo toàn (không bị xóa)
+
+### Profile Panel — Chi tiết tính năng mới
+
+#### 1. Xóa Tài Khoản (Delete Account)
+
+**Thành phần:**
+- `DeleteAccountBtn`: Nút xóa tài khoản (chỉ hiển thị khi đã đăng nhập bằng email)
+- `DeleteAccountPopup`: Popup xác nhận (Canvas: ScreenSpaceOverlay)
+
+**Flow:**
+1. Click `DeleteAccountBtn` → Hiện popup xác nhận
+2. Click `ConfirmDeleteBtn` → Thực hiện xóa:
+   - Xóa Firestore documents (playerData, users, gameModeProgress, playerShop)
+   - Xóa Firebase Auth user
+   - Xóa toàn bộ local data (PlayerPrefs.DeleteAll)
+   - Reset grade về 1
+   - Logout + clear session
+   - Điều hướng về WELCOMESCREEN
+
+**Lưu ý:**
+- Chỉ hiển thị cho email users (không phải guest)
+- Nếu session hết hạn → yêu cầu đăng nhập lại
+- Không block UI nếu Firestore xóa thất bại (local đã xóa rồi)
+
+#### 2. Đổi Độ Khó (Change Difficulty)
+
+**Thành phần:**
+- `DifficultySection`: Dropdown chọn lớp 1-5 + nút Áp Dụng
+- `ChangeDifficultyPopup`: Popup xác nhận (Canvas: ScreenSpaceOverlay)
+
+**Flow:**
+1. Chọn lớp từ Dropdown → Click `ApplyDifficultyBtn`
+2. Nếu lớp khác hiện tại → Hiện popup xác nhận
+3. Click `ConfirmChangeBtn` → Thực hiện đổi:
+   - Cập nhật `UIManager.SelectedGrade`
+   - Lưu grade vào PlayerPrefs (`SelectedGrade`)
+   - Reset tiến độ 3 chế độ về màn 1 (local):
+     - `Class_HighestLevel` = 1
+     - `HighestLevelReached` = 1
+     - `Space_HighestLevel` = 1
+   - **Giữ nguyên:** level, score, coins
+   - Sync Firebase (nếu đã đăng nhập):
+     - `users/{uid}.grade` = newGrade
+     - `gameModeProgress/{uid}_{mode}_{newGrade}` reset về màn 1 (3 chế độ)
+   - **Auto-refresh MainMenuPanel** → Hiển thị grade mới
+
+**Lưu ý:**
+- Áp dụng cho cả guest và logged-in users
+- Chỉ reset tiến độ, không reset score/level/coins
+- Nếu lớp không thay đổi → Hiện thông báo "Đây là lớp hiện tại"
+- Popup có Canvas ScreenSpaceOverlay để click được button
 
 ---
 

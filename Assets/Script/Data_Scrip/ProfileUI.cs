@@ -33,6 +33,18 @@ public class ProfileUI : MonoBehaviour
     public TextMeshProUGUI statusText;
 
     // ─────────────────────────────────────────────────────────────
+    // FIELDS — Chọn Avatar / Nhân Vật
+    // ─────────────────────────────────────────────────────────────
+
+    [Header("Chọn Avatar / Nhân Vật")]
+    public Image avatarDisplayImage;            // AvatarSection/AvatarImage — ảnh lớn đang chọn
+    public Button chonNhanVatBtn;               // AvatarSection/ChonNhanVatBtn
+    public GameObject avatarSelectionPopup;     // AvatarSelectionPopup (Canvas ScreenSpaceOverlay)
+    public Transform avatarItemContainer;       // Content bên trong ScrollView của popup
+    public GameObject avatarItemPrefab;         // Prefab AvatarItem
+    public Button closeAvatarPopupBtn;          // Nút Đóng trong popup
+
+    // ─────────────────────────────────────────────────────────────
     // FIELDS — Xoá Tài Khoản
     // ─────────────────────────────────────────────────────────────
 
@@ -69,6 +81,17 @@ public class ProfileUI : MonoBehaviour
 
     private void Start()
     {
+        // Gán sự kiện — Chọn avatar
+        if (chonNhanVatBtn != null)
+            chonNhanVatBtn.onClick.AddListener(HandleOpenAvatarSelection);
+        if (closeAvatarPopupBtn != null)
+            closeAvatarPopupBtn.onClick.AddListener(HideAvatarSelectionPopup);
+        avatarSelectionPopup?.SetActive(false);
+
+        // Subscribe AvatarManager event để tự refresh khi avatar thay đổi từ nơi khác
+        if (AvatarManager.Instance != null)
+            AvatarManager.Instance.OnAvatarChanged += OnAvatarChangedExternal;
+
         // Gán sự kiện — Xoá tài khoản
         if (deleteAccountBtn != null)
             deleteAccountBtn.onClick.AddListener(HandleDeleteAccountClick);
@@ -112,6 +135,8 @@ public class ProfileUI : MonoBehaviour
         // Unsubscribe để tránh memory leak
         if (AuthManager.Instance != null)
             AuthManager.Instance.OnLoginDataLoaded -= OnLoginDataRestored;
+        if (AvatarManager.Instance != null)
+            AvatarManager.Instance.OnAvatarChanged -= OnAvatarChangedExternal;
     }
 
     /// <summary>
@@ -135,6 +160,7 @@ public class ProfileUI : MonoBehaviour
         // Đảm bảo popup luôn ẩn khi mở lại Profile
         deleteAccountPopup?.SetActive(false);
         changeDifficultyPopup?.SetActive(false);
+        avatarSelectionPopup?.SetActive(false);
 
         // Reset busy state phòng trường hợp bị kẹt
         isBusy = false;
@@ -170,14 +196,122 @@ public class ProfileUI : MonoBehaviour
             phongThuLevelTxt.text = PlayerPrefs.GetInt("HighestLevelReached", 1).ToString();
         if (phiThuyenLevelTxt != null)
             phiThuyenLevelTxt.text = PlayerPrefs.GetInt("Space_HighestLevel", 1).ToString();
+
+        // Cập nhật ảnh avatar hiện tại
+        RefreshAvatarDisplay();
         
-        Debug.Log($"[ProfileUI] Updated display: level={PlayerPrefs.GetInt(levelKey, 1)}, score={PlayerPrefs.GetInt(scoreKey, 0)} (keys: {levelKey}, {scoreKey})");
+        Debug.Log($"[ProfileUI] Updated display: level={PlayerPrefs.GetInt(levelKey, 1)}, score={PlayerPrefs.GetInt(scoreKey, 0)}, grade={UIManager.SelectedGrade} (keys: {levelKey}, {scoreKey})");
     }
 
     private void SetStatusText(string message)
     {
         if (statusText != null)
             statusText.SetText(message);
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // CHỌN AVATAR — Logic
+    // ─────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Cập nhật ảnh avatar hiển thị theo avatar đang chọn trong AvatarManager.
+    /// </summary>
+    private void RefreshAvatarDisplay()
+    {
+        if (avatarDisplayImage == null || AvatarManager.Instance == null) return;
+
+        Sprite sprite = AvatarManager.Instance.GetCurrentFullAvatar();
+        if (sprite != null)
+            avatarDisplayImage.sprite = sprite;
+    }
+
+    /// <summary>
+    /// Callback từ AvatarManager.OnAvatarChanged — tự refresh khi avatar thay đổi từ nơi khác.
+    /// </summary>
+    private void OnAvatarChangedExternal(AvatarData newAvatar)
+    {
+        RefreshAvatarDisplay();
+    }
+
+    /// <summary>
+    /// Nhấn "Chọn Nhân Vật" → sinh danh sách avatar và mở popup.
+    /// </summary>
+    private void HandleOpenAvatarSelection()
+    {
+        if (isBusy || AvatarManager.Instance == null) return;
+
+        BuildAvatarList();
+
+        avatarSelectionPopup?.SetActive(true);
+        avatarSelectionPopup?.transform.SetAsLastSibling();
+        EnsureGraphicRaycaster(avatarSelectionPopup);
+    }
+
+    private void HideAvatarSelectionPopup()
+    {
+        avatarSelectionPopup?.SetActive(false);
+    }
+
+    /// <summary>
+    /// Sinh lại toàn bộ danh sách AvatarItem trong popup.
+    /// Xoá items cũ trước để tránh duplicate.
+    /// </summary>
+    private void BuildAvatarList()
+    {
+        if (avatarItemContainer == null || avatarItemPrefab == null)
+        {
+            Debug.LogWarning("[ProfileUI] avatarItemContainer hoặc avatarItemPrefab chưa được gán!");
+            return;
+        }
+
+        // Xoá items cũ
+        foreach (Transform child in avatarItemContainer)
+            Destroy(child.gameObject);
+
+        int currentId = AvatarManager.Instance.GetCurrentAvatarId();
+        AvatarData[] allAvatars = AvatarManager.Instance.GetAllAvatars();
+
+        if (allAvatars == null || allAvatars.Length == 0)
+        {
+            Debug.LogWarning("[ProfileUI] Không có AvatarData nào trong Resources/Avatars/");
+            return;
+        }
+
+        foreach (AvatarData avatarData in allAvatars)
+        {
+            GameObject item = Instantiate(avatarItemPrefab, avatarItemContainer);
+            AvatarItemUI itemUI = item.GetComponent<AvatarItemUI>();
+            if (itemUI != null)
+                itemUI.Setup(avatarData, avatarData.avatarId == currentId, OnAvatarItemSelected);
+        }
+    }
+
+    /// <summary>
+    /// Callback khi người dùng chọn 1 avatar trong danh sách.
+    /// </summary>
+    private void OnAvatarItemSelected(int avatarId)
+    {
+        if (AvatarManager.Instance == null) return;
+
+        // Lưu local ngay lập tức (AvatarManager cũng fire OnAvatarChanged → RefreshAvatarDisplay)
+        AvatarManager.Instance.SelectAvatar(avatarId);
+
+        // Rebuild danh sách để cập nhật selectedIndicator
+        BuildAvatarList();
+
+        // Sync Firebase background (chỉ khi đã đăng nhập bằng email)
+        bool isEmailUser = AuthManager.Instance != null && AuthManager.Instance.HasEmail();
+        if (isEmailUser)
+            _ = AvatarManager.Instance.SyncToFirebaseAsync(avatarId);
+
+        // Cập nhật MainMenuPanel
+        var mainMenu = FindObjectOfType<UIMainMenuController>(true);
+        mainMenu?.UpdatePlayerInfo();
+
+        HideAvatarSelectionPopup();
+
+        string name = AvatarManager.Instance.GetCurrentAvatar()?.avatarName ?? "Nhân vật";
+        SetStatusText($"Đã chọn: {name}");
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -454,6 +588,14 @@ public class ProfileUI : MonoBehaviour
             // Bước 4: Refresh toàn bộ UI Profile (grade mới đã được set ở Bước 1)
             UpdateProfileDisplay();
             SyncDropdownToCurrentGrade(); // Sync dropdown về grade mới
+            
+            // ✅ Bước 5: Refresh MainMenuPanel nếu nó đang hiển thị
+            var mainMenuController = FindObjectOfType<UIMainMenuController>(true);
+            if (mainMenuController != null)
+            {
+                mainMenuController.UpdatePlayerInfo();
+                Debug.Log($"[ProfileUI] ✅ Refreshed MainMenuPanel after grade change");
+            }
 
             SetStatusText($"Đã chuyển sang Lớp {newGrade}. Chúc bạn chơi vui!");
             Debug.Log($"[ProfileUI] ✅ Đổi độ khó thành công: Lớp {newGrade}");

@@ -35,6 +35,10 @@ namespace DoAnGame.UI
         [Header("Match End Navigation")]
         [SerializeField] private UIButtonScreenNavigator matchEndNavigator; // Navigate to Wins panel
 
+        [Header("Avatar Characters")]
+        [SerializeField] private AvatarCharacterDisplay player1Character; // Player1Character trong GameplayPanel
+        [SerializeField] private AvatarCharacterDisplay player2Character; // Player2Character trong GameplayPanel
+
         private bool hadTwoPlayersInSession;
         private bool sessionEndedHandled;
         private float nextSessionCheckAt;
@@ -124,6 +128,9 @@ namespace DoAnGame.UI
             // ✅ FIX: Subscribe battle events mỗi khi panel được activate
             // Vì Start() chỉ gọi 1 lần, nhưng OnEnable() gọi mỗi lần panel active
             EnsureBattleManagerAndSubscribe();
+
+            // Khởi tạo avatar characters cho cả 2 player
+            InitAvatarCharacters();
             
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_BATTLE", "HandlePanelActivated done");
         }
@@ -472,6 +479,41 @@ namespace DoAnGame.UI
         }
 
         /// <summary>
+        /// Khởi tạo avatar characters cho cả 2 player dựa trên AvatarId từ NetworkedPlayerState.
+        /// Gọi trong HandlePanelActivated() — delay nhỏ để đảm bảo player states đã spawn.
+        /// </summary>
+        private void InitAvatarCharacters()
+        {
+            if (player1Character == null && player2Character == null) return;
+
+            // Delay để đảm bảo NetworkedPlayerState đã spawn và AvatarId đã sync
+            Invoke(nameof(ApplyAvatarCharacters), 0.8f);
+        }
+
+        private void ApplyAvatarCharacters()
+        {
+            if (battleManager == null) return;
+
+            var p1 = battleManager.GetPlayer1State();
+            var p2 = battleManager.GetPlayer2State();
+
+            if (p1 != null && player1Character != null)
+            {
+                player1Character.SetAvatar(p1.AvatarId.Value);
+                // Subscribe để update nếu AvatarId sync muộn
+                p1.AvatarId.OnValueChanged += (_, newId) => player1Character.SetAvatar(newId);
+            }
+
+            if (p2 != null && player2Character != null)
+            {
+                player2Character.SetAvatar(p2.AvatarId.Value);
+                p2.AvatarId.OnValueChanged += (_, newId) => player2Character.SetAvatar(newId);
+            }
+
+            Debug.Log($"[BattleController] ✅ Avatar characters initialized: P1={p1?.AvatarId.Value}, P2={p2?.AvatarId.Value}");
+        }
+
+        /// <summary>
         /// Xử lý khi có câu hỏi mới
         /// </summary>
         private void HandleQuestionGenerated(string question, int[] choices)
@@ -512,6 +554,10 @@ namespace DoAnGame.UI
             // ✅ CRITICAL FIX: Start timer cho câu hỏi mới
             // Gọi StartQuestionTimer() để bắt đầu đếm ngược cho câu hỏi này
             StartQuestionTimer();
+
+            // Reset animation về Idle khi câu hỏi mới bắt đầu
+            player1Character?.TriggerIdle();
+            player2Character?.TriggerIdle();
         }
 
         /// <summary>
@@ -637,6 +683,27 @@ namespace DoAnGame.UI
             }
 
             Debug.Log($"[BattleController] [{role}] HandleAnswerResult COMPLETED");
+
+            // Trigger animation theo kết quả câu trả lời
+            // winnerId: 0 = Player1 thắng, 1 = Player2 thắng, -1 = cả 2 sai
+            if (winnerId == -1)
+            {
+                // Cả 2 sai → Idle
+                player1Character?.TriggerIdle();
+                player2Character?.TriggerIdle();
+            }
+            else if (winnerId == 0)
+            {
+                // Player1 thắng câu
+                player1Character?.TriggerHappy();
+                player2Character?.TriggerSad();
+            }
+            else
+            {
+                // Player2 thắng câu
+                player1Character?.TriggerSad();
+                player2Character?.TriggerHappy();
+            }
         }
 
         /// <summary>

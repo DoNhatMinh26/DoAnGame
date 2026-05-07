@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baff38e592cf6644695a41d02156338b, type: 3}
+  m_Name: AVA_M3 1
+  m_EditorClassIdentifier: 
+  avatarId: 2
+  avatarName: "M\xE8o 3"
+  isDefault: 0
+  thumbnail: {fileID: 21300000, guid: b200cc72dea26134a9443530132d9ba2, type: 3}
+  fullAvatar: {fileID: 21300000, guid: b200cc72dea26134a9443530132d9ba2, type: 3}
+  animatorController: {fileID: 0}

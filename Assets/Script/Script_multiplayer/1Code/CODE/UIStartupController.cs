@@ -53,6 +53,14 @@ namespace DoAnGame.UI
         /// </summary>
         private async System.Threading.Tasks.Task CheckAndRouteAsync()
         {
+            // ✅ DEBUG: Log tất cả keys để xác định trạng thái
+            Debug.Log($"[Startup] ========== DEBUG KEYS ==========");
+            Debug.Log($"[Startup] IsGuestMode key (IS_GUEST_KEY): {PlayerPrefs.GetInt("IsGuestMode", -1)}");
+            Debug.Log($"[Startup] GuestName key (GUEST_NAME_KEY): '{PlayerPrefs.GetString("GuestPlayerName", "NOT_FOUND")}'");
+            Debug.Log($"[Startup] SelectedGrade key (SELECTED_GRADE_KEY): {PlayerPrefs.GetInt("SelectedGrade", -1)}");
+            Debug.Log($"[Startup] SessionToken: '{PlayerPrefs.GetString("SessionToken", "NOT_FOUND")}'");
+            Debug.Log($"[Startup] ====================================");
+            
             // Bước 1: Kiểm tra session email (24h auto-login) — nhanh, local only
             bool hasValidEmailSession = SessionManager.Instance != null && SessionManager.Instance.IsSessionValid();
             
@@ -70,7 +78,8 @@ namespace DoAnGame.UI
             bool isGuestMode = UIQuickPlayNameController.IsGuestMode();
             string guestName = UIQuickPlayNameController.GetGuestName();
             int savedGrade = UIQuickPlayNameController.GetSelectedGrade();
-            bool hasGuestData = isGuestMode && !string.IsNullOrEmpty(guestName) && guestName != "Guest" && savedGrade > 0;
+            // ✅ FIX: Chỉ cần kiểm tra IsGuestMode() + savedGrade, không cần kiểm tra guestName != "Guest"
+            bool hasGuestData = isGuestMode && savedGrade > 0;
 
             Debug.Log($"[Startup] ========== STARTUP ROUTING (OPTIMIZED) ==========");
             Debug.Log($"[Startup] HasValidEmailSession: {hasValidEmailSession}");

@@ -558,6 +558,7 @@ public class FirebaseManager : MonoBehaviour
                 { "characterName", userData.characterName },
                 { "grade", userData.grade },    // ← grade thay age
                 { "avatar", userData.avatar ?? string.Empty },
+                { "avatarId", 0 },              // ← avatar mặc định khi đăng ký mới
                 { "createdAt", userData.createdAt },
                 { "lastLogin", userData.lastLogin },
                 { "isActive", userData.isActive },
