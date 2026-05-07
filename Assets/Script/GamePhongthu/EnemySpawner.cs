@@ -32,7 +32,11 @@ public class EnemySpawner : MonoBehaviour
             nextSpawnTime = Time.time + spawnRate;
         }
     }
-
+    public int GetMaxEnemies()
+    {
+        var settings = difficultyConfig.GetDifficulty(UIManager.SelectedGrade, LevelManager.CurrentLevel);
+        return settings.count;
+    }
     void SpawnEnemy()
     {
         int randomIndex = Random.Range(0, spawnPoints.Length);

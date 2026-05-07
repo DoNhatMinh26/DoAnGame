@@ -53,6 +53,10 @@ public class EnemyMovement : MonoBehaviour
         {
             SpawnCoins();
         }
+        if (biTieuDietBoiNguoiChoi && GameUIManager.Instance != null)
+        {
+            GameUIManager.Instance.OnEnemyKilled();
+        }
     }
 
     void SpawnCoins()

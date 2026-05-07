@@ -21,11 +21,21 @@ public class UiClass : MonoBehaviour
     public GameObject panelChonBai;
     public GameObject panelGameplay;
     public GameObject panelSetting;
+    public Button settingButton;
 
     [Header("Quản lý Kết Thúc")]
     public GameObject panelWin;
     public GameObject panelLose;
     public bool isGameOver = false;
+
+    [Header("UI Bảng Win")]
+    public TextMeshProUGUI winRewardTxt;   // Hiện số tiền thưởng (Ví dụ: +10$)
+    public TextMeshProUGUI winScoreTxt;    // Hiện số điểm trong màn (Ví dụ: +100 Điểm)
+    public TextMeshProUGUI winLevelInfoTxt; // Hiện "Hoàn thành Màn X"
+    [Header("UI Bảng Lose")]
+    public TextMeshProUGUI loseRewardTxt; // Hiện tiền nhặt được khi thua
+    public TextMeshProUGUI loseScoreTxt;  // Hiện điểm nhặt được khi thua
+    public TextMeshProUGUI loseProgressTxt; // Hiện "Số câu đúng: X/Y"
 
     [Header("Quản lý Tiền & Phần thưởng")]
     public TextMeshProUGUI totalCoinTxt; // Text hiển thị ở Menu
@@ -33,6 +43,8 @@ public class UiClass : MonoBehaviour
     public Transform coinTarget;        // Vị trí icon tiền để tiền bay về
     private int totalCoins = 0;
     private int levelCoins = 0;
+    public TextMeshProUGUI levelScoreGameplayTxt; // Text hiển thị điểm TRONG trận đấu
+    private int levelScore = 0;
     [Header("Cấu hình hiệu ứng tiền")]
     public GameObject coinPrefab; // Kéo Prefab hình đồng xu vào đây
     public Transform coinSpawnPoint; // Kéo Empty Object (vị trí sinh tiền) vào đây
@@ -57,7 +69,9 @@ public class UiClass : MonoBehaviour
     public Image[] skinButtonImages;     // Hình ảnh hiển thị trên các nút chọn
     public TextMeshProUGUI[] skinPriceTexts; // Text hiển thị giá tiền
     public SpriteRenderer shopMascotPreview;
-    public SpriteRenderer gameplayMascotRenderer; // Hình ảnh linh vật mèo trong trận đấu
+    public SpriteRenderer gameplayMascotRenderer;
+    public TextMeshProUGUI shopLevelTxt; // Kéo Text hiển thị Level vào đây
+    public TextMeshProUGUI shopScoreTxt; // Kéo Text hiển thị Điểm vào đây// Hình ảnh linh vật mèo trong trận đấu
 
     private int pendingSkinIndex = -1;
     private void Awake()
@@ -68,6 +82,7 @@ public class UiClass : MonoBehaviour
     private void Start()
     {
         InitSkinShop();
+        UpdateShopProfileUI();
         LoadCoins(); // Tự nạp tiền từ PlayerPrefs[cite: 9]
         GenerateLevelButtons(); // Tự sinh danh sách nút[cite: 9]
         ShowHome();
@@ -80,6 +95,36 @@ public class UiClass : MonoBehaviour
         {
             // Hiển thị theo định dạng: Số câu đúng : Hiện tại / Mục tiêu[cite: 15, 17]
             progressTxt.text = $"Số câu đúng : {currentCorrectCount}/{targetCorrectAnswers}";
+        }
+    }
+    public void UpdateShopProfileUI()
+    {
+        // Lấy dữ liệu từ máy
+        int currentScore = PlayerPrefs.GetInt("UserScore", 0);
+
+        // Tính toán Level theo công thức đồng bộ với DataManager
+        // level = 1 + (totalScore / 10 / 100)
+        int currentLevel = 1 + (currentScore / 10 / 100);
+
+        if (shopLevelTxt != null)
+            shopLevelTxt.text = "LV: " + currentLevel;
+
+        if (shopScoreTxt != null)
+            shopScoreTxt.text = "Điểm: " + currentScore;
+    }
+    private void SetSettingButtonInteractable(bool state)
+    {
+        if (settingButton != null)
+        {
+            settingButton.interactable = state;
+        }
+    }
+    public void AddLevelScore(int amount)
+    {
+        levelScore += amount;
+        if (levelScoreGameplayTxt != null)
+        {
+            levelScoreGameplayTxt.text = "Điểm: +" + levelScore.ToString();
         }
     }
     #region QUẢN LÝ SHOP
@@ -346,7 +391,42 @@ public class UiClass : MonoBehaviour
 
         if (panelWin != null) panelWin.SetActive(false);
     }
-    
+    public void Click_ThoatNgayLapTuc()
+    {
+        if (isGameOver) return;
+        isGameOver = true;
+        if (panelSetting != null)
+        {
+            panelSetting.SetActive(false);
+        }
+        // 1. Dừng thời gian game ngay lập tức
+        Time.timeScale = 0f;
+
+        // 2. Khóa các tương tác khác
+        SetSettingButtonInteractable(false);
+
+        // 3. Gán dữ liệu ngay lập tức cho các Text ở bảng Lose
+        if (loseRewardTxt != null)
+            loseRewardTxt.text = "+" + levelCoins.ToString();
+
+        if (loseScoreTxt != null)
+            loseScoreTxt.text = "Điểm: +" + levelScore.ToString();
+
+        if (loseProgressTxt != null)
+        {
+            // currentCorrectCount: số câu đã làm đúng hiện tại
+            // targetCorrectAnswers: tổng số câu cần để thắng
+            loseProgressTxt.text = $"Số câu đúng: {currentCorrectCount}/{targetCorrectAnswers}";
+        }
+
+        // 4. Hiện bảng thua ngay lập tức (không delay)
+        if (panelLose != null)
+        {
+            panelLose.SetActive(true);
+        }
+
+        Debug.Log("Đã thoát nhanh: Hiện bảng thua.");
+    }
     #endregion
     #region LOGIC SINH NÚT MÀN CHƠI
     public void GenerateLevelButtons()
@@ -397,8 +477,11 @@ public class UiClass : MonoBehaviour
     {
         LevelManager.CurrentLevel = levelIndex;
         levelCoins = 0;
+        levelScore = 0;
+        if (levelScoreGameplayTxt != null) levelScoreGameplayTxt.text = "Điểm: 0";
         UpdateCoinUI();
         isGameOver = false;
+        SetSettingButtonInteractable(true);
         ResetHealth();
         ShowGameplay();
         MathManager math = FindObjectOfType<MathManager>();
@@ -412,6 +495,7 @@ public class UiClass : MonoBehaviour
     #region QUẢN LÝ PANEL (Tự động hóa hoàn toàn)
     public void ShowHome()
     {
+        UpdateShopProfileUI();
         UpdateSkinShopUI();
         LoadCurrentSkin();
         DeactivateAll();
@@ -422,6 +506,7 @@ public class UiClass : MonoBehaviour
     public void ShowGameplay()
     {
         DeactivateAll();
+        
         if (panelGameplay != null) panelGameplay.SetActive(true);
         Time.timeScale = 1f;
     }
@@ -463,7 +548,7 @@ public class UiClass : MonoBehaviour
     {
         if (isGameOver) return;
         isGameOver = true;
-
+        SetSettingButtonInteractable(false);
         // Lưu tiến trình local
         int highestLevel = PlayerPrefs.GetInt("Class_HighestLevel", 1);
         if (LevelManager.CurrentLevel >= highestLevel)
@@ -488,6 +573,20 @@ public class UiClass : MonoBehaviour
     IEnumerator ShowWinPanelWithDelay()
     {
         yield return new WaitForSeconds(delayTime); // Đợi 1 khoảng thời gian[cite: 17]
+        if (winRewardTxt != null)
+            winRewardTxt.text = "+" + levelCoins.ToString();
+
+        // 2. Hiển thị Điểm nhặt được
+        if (winScoreTxt != null)
+            winScoreTxt.text = "Điểm: +" + levelScore.ToString() ;
+
+
+        // 3. Chỉ giữ lại thông tin Hoàn thành màn chơi
+        if (winLevelInfoTxt != null)
+        {
+            // LevelManager.CurrentLevel là biến lưu số màn bạn đang chơi
+            winLevelInfoTxt.text = "Hoàn thành Màn " + LevelManager.CurrentLevel;
+        }
         if (panelWin != null) panelWin.SetActive(true);
     }
     public void ResetHealth()
@@ -523,7 +622,7 @@ public class UiClass : MonoBehaviour
     {
         if (isGameOver) return;
         isGameOver = true;
-        
+        SetSettingButtonInteractable(false);
         // Chạy Coroutine chờ rồi mới hiện bảng Lose[cite: 17]
         StartCoroutine(ShowLosePanelWithDelay());
     }
@@ -533,7 +632,19 @@ public class UiClass : MonoBehaviour
         
         yield return new WaitForSeconds(delayTime); // Đợi 1 khoảng thời gian[cite: 17]
         Time.timeScale = 0f; // Tạm dừng game sau khi bảng hiện lên[cite: 17]
-       
+        if (loseRewardTxt != null)
+            loseRewardTxt.text = "+" + levelCoins.ToString();
+
+        // 2. Hiển thị Điểm nhặt được (levelScore)
+        if (loseScoreTxt != null)
+            loseScoreTxt.text = "Điểm: +" + levelScore.ToString();
+
+        // 3. Hiển thị số câu đúng/mục tiêu (currentCorrectCount/targetCorrectAnswers)
+        if (loseProgressTxt != null)
+        {
+            loseProgressTxt.text = $"Số câu đúng: {currentCorrectCount}/{targetCorrectAnswers}";
+        }
+
         if (panelLose != null) panelLose.SetActive(true);
     }
     private void DeactivateAll()

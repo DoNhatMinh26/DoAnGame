@@ -56,10 +56,17 @@ public class DataManager : MonoBehaviour
             PlayerPrefs.SetInt("UserLevel", newLevel);
             Debug.Log($"[DataManager] Thăng cấp! {currentLevel} → {newLevel}, thưởng {50 * levelsGained} tiền");
         }
-
+       
         PlayerPrefs.SetInt("UserScore", currentScore);
         PlayerPrefs.Save();
-
+        if (UiClass.Instance != null)
+        {
+            UiClass.Instance.UpdateShopProfileUI();
+        }
+        if (UiClass.Instance != null)
+        {
+            UiClass.Instance.AddLevelScore(amount);
+        }
         // Sync score + level lên Firebase nếu đã đăng nhập
         CloudSyncService.Instance?.OnScoreChanged(currentScore, newLevel);
     }

@@ -53,6 +53,10 @@ public class GameUIManager : MonoBehaviour
     [Header("Thông báo Shop")]
     public TextMeshProUGUI shopNotificationTxt;
     public CanvasGroup notificationCanvasGroup;
+    [Header("Quản lý Kẻ địch")]
+    public TextMeshProUGUI enemyCounterTxt; // Kéo Text (TMP) hiển thị "0/0" vào đây
+    private int killedEnemies = 0;
+    private int totalEnemiesInLevel = 0;
     private void Awake()
     {
         if (Instance == null)
@@ -149,6 +153,21 @@ public class GameUIManager : MonoBehaviour
         // 4. Ẩn hẳn đối tượng khi đã mờ hết
         notificationCanvasGroup.alpha = 0f;
         notificationCanvasGroup.gameObject.SetActive(false);
+    }
+    // Hàm cập nhật chữ hiển thị lên UI
+    public void UpdateEnemyCounterUI()
+    {
+        if (enemyCounterTxt != null)
+        {
+            enemyCounterTxt.text = killedEnemies + "/" + totalEnemiesInLevel;
+        }
+    }
+
+    // Hàm để gọi từ bên ngoài khi kẻ địch bị tiêu diệt
+    public void OnEnemyKilled()
+    {
+        killedEnemies++;
+        UpdateEnemyCounterUI();
     }
     #region LOGIC skin Meo
     public void LoadCurrentSkin()
@@ -764,7 +783,9 @@ public class GameUIManager : MonoBehaviour
         LoadCurrentPhao();
         LoadCurrentSkin();
         levelCoins = 0;
+        killedEnemies = 0;  
         UpdateCoinUI();
+
         // Luôn ưu tiên mở khóa và chạy lại thời gian đầu tiên
         Time.timeScale = 1f;
         DragAndDrop.ReleaseAllLocks();
@@ -788,6 +809,7 @@ public class GameUIManager : MonoBehaviour
         {
             spawner.enabled = true;
             spawner.ResetSpawner();
+            totalEnemiesInLevel = spawner.GetMaxEnemies();
         }
 
         if (WallHealth.Instance != null)
@@ -797,6 +819,7 @@ public class GameUIManager : MonoBehaviour
 
         DragQuizManager qm = FindObjectOfType<DragQuizManager>();
         if (qm != null) qm.UpdateDifficulty();
+        UpdateEnemyCounterUI();
     }
     
     #endregion
