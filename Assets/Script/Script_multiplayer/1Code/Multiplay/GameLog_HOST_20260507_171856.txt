@@ -1,0 +1,27 @@
+=== GAME LOG START (HOST) ===
+Time: 5/7/2026 5:18:56 PM
+Unity Version: 2022.3.62f3
+Platform: WindowsEditor
+Log Path: D:/app/GameDoan/DoAnGame/Assets\Script\Script_multiplayer\1Code\Multiplay\GameLog_HOST_20260507_171856.txt
+================================
+
+[17:18:57.414] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[17:18:57.416] [INFO] [UIRoom]   Player 1: VVGDS_Giang (chủ phòng) (ID: WeuQoy7ZZ3gbXo8b9OdvjeNkGvJe)
+[17:18:57.417] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[17:18:57.418] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[17:18:57.419] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[17:18:57.532] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[17:18:57.533] [INFO] [UIRoom]   Player 1: VVGDS_Giang (chủ phòng) (ID: WeuQoy7ZZ3gbXo8b9OdvjeNkGvJe)
+[17:18:57.533] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[17:18:57.534] [INFO] [UIRoom] Đã tạo phòng. Độ khó: Lớp 1. Chờ người chơi thứ 2...
+[17:18:57.534] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[17:18:57.535] [INFO] [UIRoom]   Player 1: VVGDS_Giang (chủ phòng) (ID: WeuQoy7ZZ3gbXo8b9OdvjeNkGvJe)
+[17:18:57.535] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[17:18:57.536] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[17:18:57.541] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[17:18:59.263] [WARNING] Directly calling `UnityTransport.Shutdown()` results in unexpected shutdown behaviour. All pending events will be lost. Use `NetworkManager.Shutdown()` instead.
+[17:18:59.280] [INFO] [UIRoom] 🔔 Client 0 disconnected! Force refreshing lobby...
+
+=== GAME LOG END ===
+Time: 5/7/2026 5:18:59 PM
+====================

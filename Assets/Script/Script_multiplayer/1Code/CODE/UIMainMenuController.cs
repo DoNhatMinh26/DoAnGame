@@ -108,10 +108,10 @@ namespace DoAnGame.UI
                 Debug.Log("[MainMenu] Logged-in user detected, loading player data...");
                 LoadPlayerDataAsync();
             }
-            else
-            {
-                UpdatePlayerInfo();
-            }
+            
+            // ✅ Luôn gọi UpdatePlayerInfo() để hiển thị dữ liệu mới nhất
+            // (Cho cả guest lẫn logged-in user)
+            UpdatePlayerInfo();
         }
 
         protected override void OnHide()
@@ -160,10 +160,15 @@ namespace DoAnGame.UI
             {
                 string guestName = UIQuickPlayNameController.GetGuestName();
                 characterNameText?.SetText($"Khách: {guestName}");
-                levelText?.SetText("Lv: 1");
-                scoreText?.SetText("Score: 0");
                 
-                Debug.Log($"[MainMenu] Guest mode: {guestName}");
+                // ✅ Đọc từ đúng key cho guest mode
+                int guestScore = PlayerPrefs.GetInt("LocalGuestScore", 0);
+                int guestLevel = PlayerPrefs.GetInt("LocalGuestLevel", 1);
+                
+                levelText?.SetText($"Lv: {guestLevel}");
+                scoreText?.SetText($"Score: {guestScore}");
+                
+                Debug.Log($"[MainMenu] Guest mode: {guestName}, Level: {guestLevel}, Score: {guestScore}");
                 return;
             }
 
@@ -225,13 +230,20 @@ namespace DoAnGame.UI
 
             if (data == null)
             {
-                levelText?.SetText("Lv: 1");
-                scoreText?.SetText("Score: 0");
+                // ✅ Đọc từ đúng key cho logged-in mode
+                int score = PlayerPrefs.GetInt("UserScore", 0);
+                int level = PlayerPrefs.GetInt("UserLevel", 1);
+                levelText?.SetText($"Lv: {level}");
+                scoreText?.SetText($"Score: {score}");
+                Debug.LogWarning("[MainMenu] No player data available, showing from PlayerPrefs");
                 return;
             }
 
+            // Hiển thị level và score từ Firebase
             levelText?.SetText($"Lv: {data.level}");
             scoreText?.SetText($"Score: {data.totalScore}");
+            
+            Debug.Log($"[MainMenu] Logged-in user: {characterName}, Level: {data.level}, Score: {data.totalScore}");
         }
 
         /// <summary>

@@ -9,9 +9,9 @@ Dùng làm tài liệu tham chiếu khi làm việc với UI, thêm tính năng,
 
 | Scene | File | Mục đích | Số GameObject |
 |---|---|---|---|
-| `GameUIPlay 1` | `Assets/Scenes/GameUIPlay 1.unity` | Hub chính: Auth, Menu, Profile, BXH | 238 |
-| `Test_FireBase_multi` | `Assets/Scenes/Test_FireBase_multi.unity` | Multiplayer battle (Lobby → Battle → Kết quả) | 139 |
-| `ChonDA` | `Assets/Scenes/ChonDA.unity` | Mini-game Chọn Đáp Án (single-player) | 85 |
+| `GameUIPlay 1` | `Assets/Scenes/GameUIPlay 1.unity` | Hub chính: Auth, Menu, Profile, BXH | 258 |
+| `Test_FireBase_multi` | `Assets/Scenes/Test_FireBase_multi.unity` | Multiplayer battle (Lobby → Battle → Kết quả) | 149 |
+| `ChonDA` | `Assets/Scenes/ChonDA.unity` | Mini-game Chọn Đáp Án (single-player) | 202 |
 | `KeoThaDA` | `Assets/Scenes/KeoThaDA.unity` | Mini-game Kéo Thả Đáp Án + Phòng Thủ | 109 |
 | `PhiThuyen` | `Assets/Scenes/PhiThuyen.unity` | Mini-game Phi Thuyền (Space shooter) | 78 |
 
@@ -26,37 +26,40 @@ Dùng làm tài liệu tham chiếu khi làm việc với UI, thêm tính năng,
 | GameObject | Script(s) gán | Ghi chú |
 |---|---|---|
 | `Main Camera` | `Camera`, `AudioListener`, `UniversalAdditionalCameraData` | Camera chính |
-| `AuthServices` | `UserValidationService`, `SessionManager`, `PlayerDataService`, `UILoadingIndicator`, `AuthManager` | **DontDestroyOnLoad** — singleton services cho auth |
+| `AuthServices` | `UserValidationService`, `SessionManager`, `PlayerDataService`, `UILoadingIndicator`, `AuthManager`, `CloudSyncService`, `SessionGuardService` | **DontDestroyOnLoad** — singleton services cho auth |
 | `GameUICanvas` | `Canvas`, `CanvasScaler`, `GraphicRaycaster`, `UIStartupController` | Canvas chính chứa toàn bộ UI panels |
 | `EventSystem` | `EventSystem`, `StandaloneInputModule` | Input system |
-| `DataManager` | `DataManager`, `ButtonHandler` | **DontDestroyOnLoad** — quản lý điểm số local |
+| `DataManager` | `DataManager`, `ButtonHandler` | Quản lý điểm số local |
 
 ### Panels trong GameUICanvas (con của GameUICanvas)
 
 | Panel (GameObject) | Script Controller | Trạng thái mặc định | Mô tả |
 |---|---|---|---|
-| `WELCOMESCREEN` | `UIManager` (legacy, trên `ChonTuoi`) | **Active** | Màn chọn năm sinh / lớp học. Hiển thị đầu tiên cho user mới |
+| `WELCOMESCREEN` | `UIManager` (legacy, gán trực tiếp trên WELCOMESCREEN) | **Inactive** | Màn chọn lớp học. Hiển thị đầu tiên cho user mới (quyết định bởi `UIStartupController`) |
 | `WellcomePanel` | `UIWelcomeIntroController` | Inactive | Màn chào cho returning user. Có nút Chơi Tiếp, Chơi Mới, Đăng Ký, Đăng Nhập |
-| `NhapTen_choiNhanh` | `UIQuickPlayNameController` (×2 — bug: gán 2 lần) | Inactive | Nhập tên + **chọn Lớp 1–5** (guest mode). Dropdown grade thay thế ChonTuoi cũ trên WELCOMESCREEN |
+| `NhapTen_choiNhanh` | `UIQuickPlayNameController` | Inactive | Nhập tên + **chọn Lớp 1–5** (guest mode). Có Dropdown grade, nút BatDau, ContinueButton |
 | `ModSelectionPanel` | `UIModSelectionPanelController` | Inactive | Chọn chế độ: Chơi Đơn hoặc Multiplayer. Kiểm tra login trước khi vào Multiplayer |
 | `LoginPanel` | `UILoginPanelController` | Inactive | Form đăng nhập email/password |
 | `ForgotPasswordPanel` | `UIForgotPasswordController` | Inactive | Quên mật khẩu — gửi email reset qua Firebase |
 | `RegisterPanel` | `UIRegisterPanelController` | Inactive | Form đăng ký: email, tên nhân vật, password, tuổi, điều khoản |
-| `ChonMan_` | *(không có controller riêng)* | Inactive | Chọn chế độ chơi: Lớp Học, Phòng Thủ, Phi Thuyền, Kéo Thả |
+| `ChonMan_` | *(không có controller riêng)* | Inactive | Chọn chế độ chơi: Lớp Học (ChonDA), Phòng Thủ (KeoThaDA), Phi Thuyền, Kéo Thả |
 | `LoadingIndicator` | `UILoadingIndicator` | Inactive | Spinner loading dùng chung cho Login/Register |
-| `MainMenuPanel` | `UIMainMenuController` | Inactive | Menu chính sau đăng nhập: hiển thị tên, level, score. Nút Play, BXH, Hồ Sơ, Settings, Đăng Xuất |
-| `BangXepHang` | `UILeaderboardPanelController` | Inactive | Bảng xếp hạng từ Firebase Firestore (top 50 theo totalScore) |
+| `MainMenuPanel` | `UIMainMenuController` | **Active** | Menu chính sau đăng nhập: hiển thị tên, level, score, avatar. Nút Play, BXH, Hồ Sơ, Settings, Đăng Xuất. Chứa `LogoutConfirmPopup` |
+| `BangXepHang` | `UILeaderboardPanelController` | Inactive | Bảng xếp hạng từ Firebase (top theo totalScore) |
 | `LoginRequiredPopup` | `UILoginRequiredPopupController` | Inactive | Popup yêu cầu đăng nhập khi guest cố vào Multiplayer |
 | `SettingsPopup` | `SettingsPopupController` | Inactive | Popup cài đặt: volume slider, thoát game |
-| `Profile` | `ProfileUI` (legacy) | Inactive | Hiển thị thống kê người chơi từ PlayerPrefs |
+| `Profile` | `ProfileUI` (legacy) | **Active** | Hiển thị thống kê người chơi từ PlayerPrefs |
 
 ### Lưu ý quan trọng — GameUIPlay 1
 
 - `UIStartupController` trên `GameUICanvas` quyết định panel nào hiển thị đầu tiên (WELCOMESCREEN / WellcomePanel / MainMenuPanel) dựa trên trạng thái session.
-- `UIManager` (legacy) gán trên `ChonTuoi` (con của WELCOMESCREEN) — chứa `SelectedGrade` static field dùng khắp dự án. **`ChonTuoi` (TMP_Dropdown chọn năm sinh) đã bị xóa** — grade selection chuyển sang `NhapTen_choiNhanh`.
-- `NhapTen_choiNhanh` bị gán `UIQuickPlayNameController` **2 lần** — đây là bug cần sửa trong Inspector.
+- `UIManager` (legacy) gán **trực tiếp trên `WELCOMESCREEN`** — chứa `SelectedGrade` static field dùng khắp dự án. `ChonTuoi` (TMP_Dropdown chọn năm sinh) đã bị xóa khỏi scene — grade selection chuyển sang `NhapTen_choiNhanh`.
+- `NhapTen_choiNhanh` chỉ có **1 lần** `UIQuickPlayNameController` (bug gán 2 lần đã được sửa).
+- `MainMenuPanel` chứa `LogoutConfirmPopup` (con trực tiếp) với `UIConfirmPopupController`.
+- `WELCOMESCREEN`, `WellcomePanel`, `MainMenuPanel` đều có `UISettingsOpenButton` trên nút Setting.
 - `Profile` dùng `ProfileUI` (legacy, đọc PlayerPrefs) thay vì `UIProfilePanelController` (mới, đọc Firebase).
 - Nút Play trên `WELCOMESCREEN` luôn enabled (không còn bị disable chờ chọn năm sinh).
+- `CloudSyncService` và `SessionGuardService` là services mới thêm vào `AuthServices`.
 
 ---
 
@@ -68,7 +71,7 @@ Dùng làm tài liệu tham chiếu khi làm việc với UI, thêm tính năng,
 
 | GameObject | Script(s) gán | Ghi chú |
 |---|---|---|
-| `Main Camera` | `Camera`, `AudioListener` | Camera chính |
+| `Main Camera` | `Camera`, `AudioListener` | Camera chính (không có UniversalAdditionalCameraData) |
 | `NetworkManager` | `NetworkManager`, `UnityTransport` | NGO NetworkManager — quản lý kết nối Relay |
 | `RelayManager` | `RelayManager` | **DontDestroyOnLoad** — tạo/join Relay allocation |
 | `BattleManager` | `NetworkObject`, `NetworkedMathBattleManager` | **NetworkBehaviour** — server-authoritative, quản lý trận đấu |
@@ -81,27 +84,36 @@ Dùng làm tài liệu tham chiếu khi làm việc với UI, thêm tính năng,
 
 | Panel (GameObject) | Script Controller | Trạng thái mặc định | Mô tả |
 |---|---|---|---|
-| `LobbyPanel` | `UIMultiplayerRoomController` | **Active** | Phòng chờ: tạo phòng, quick join, join by code, danh sách người chơi, nút Sẵn Sàng / Bắt Đầu |
-| `GameplayPanel` | `UI16ButtonActionHub`, `UIMultiplayerBattleController`, `AnswerSummaryUI`, `BasePanelController` | Inactive | Màn chơi battle: câu hỏi, 4 đáp án kéo thả, thanh máu, timer |
+| `LobbyPanel` | `UIMultiplayerRoomController` | **Active** | Phòng chờ: tạo phòng, quick join, join by code, danh sách người chơi, nút `SanSangButton` (client) / `StartButton` (host) |
+| `GameplayPanel` | `UI16ButtonActionHub`, `UIMultiplayerBattleController`, `AnswerSummaryUI`, `BasePanelController` | Inactive | Màn chơi battle: câu hỏi, 4 đáp án kéo thả, thanh máu, timer, nút Quit |
 | `Wins` | `UIWinsController` | Inactive | Kết quả trận: hiển thị Winner/Loser với tên, điểm, máu còn lại |
 | `LobbyBrowserPanel` | `UILobbyBrowserController` | Inactive | Danh sách phòng đang mở (auto-refresh 2s) |
 | `LoadingPanel` | `UIMultiplayerLoadingController`, `BasePanelController` | Inactive | Loading bar khi chờ kết nối và player states spawn |
+| `BattleQuitConfirmPopup` | `UIBattleQuitConfirmPopup` | Inactive | Popup xác nhận thoát trận — có nút `confirmQuitButton` và `CancelButton` |
 
 ### Cấu trúc GameplayPanel (chi tiết)
 
 ```
 GameplayPanel
 ├── Slot (Tag: Slot)                    — Vùng thả đáp án
-├── ANSWER_0..3                         — MultiplayerDragAndDrop × 4
+├── ANSWER_0                            — MultiplayerDragAndDrop
+├── ANSWER_0 (1)                        — MultiplayerDragAndDrop
+├── ANSWER_0 (2)                        — MultiplayerDragAndDrop
+├── ANSWER_0 (3)                        — MultiplayerDragAndDrop
 ├── cauhoiText                          — TMP_Text hiển thị câu hỏi
 ├── Text (TMP) TrangThai                — TMP_Text trạng thái battle
+├── Quit                                — Button thoát trận (mở BattleQuitConfirmPopup)
 ├── TrangThaiWin                        — TMP_Text kết quả (đúng/sai)
 └── HealthBarContainer                  — MultiplayerHealthUI
     ├── Player1HealthBar
-    │   ├── NamePL1, Player1Score, healText1, healFill1
+    │   ├── NamePL1, Player1Score, healText1
+    │   ├── healFill1
+    │   │   └── TimerFill1              — Image fill timer P1
     │   └── TextTrangThaiDapAn1         — Đáp án P1 (ẩn trong Question Time)
     ├── Player2HealthBar
-    │   ├── NamePL2, Player2Score, healText2, healFill2
+    │   ├── NamePL2, Player2Score, healText2
+    │   ├── healFill2
+    │   │   └── TimerFill2              — Image fill timer P2
     │   └── TextTrangThaiDapAn2         — Đáp án P2 (ẩn trong Question Time)
     └── TimerPanel
         ├── TimerState                  — Text trạng thái timer
@@ -115,6 +127,10 @@ GameplayPanel
 - `AnswerSummaryUI` gán trên `GameplayPanel` (cùng GameObject với `UIMultiplayerBattleController`).
 - `MatchEndNavigator` là GameObject riêng ở root — không phải con của Canvas.
 - `LobbyPanel` có `Dropdown` để chọn lớp (Lớp 1–5) → `UIMultiplayerRoomController.GetSelectedGrade()`.
+- Tên button thực tế trong Inspector: **`SanSangButton`** (client ready) và **`StartButton`** (host start) — không phải `readyButton`/`startMatchButton`.
+- `LobbyPanel` có thêm `RefreshButton` riêng (ngoài `DS Room` button dẫn sang `LobbyBrowserPanel`).
+- `BattleQuitConfirmPopup` xử lý forfeit/thoát giữa trận — cần gán trong Inspector của `UIMultiplayerBattleController`.
+- `Main Camera` trong scene này **không có** `UniversalAdditionalCameraData`.
 
 ---
 
@@ -129,8 +145,10 @@ GameplayPanel
 | `Main Camera` | `Camera`, `AudioListener`, `UniversalAdditionalCameraData` | Camera chính |
 | `EventSystem` | `EventSystem`, `StandaloneInputModule` | Input system |
 | `UIClassManager` | `UiClass` | Manager chính: quản lý panel, tiền, skin mèo, sinh nút màn |
-| `GamePlay` | *(không có script trực tiếp)* | Inactive — chứa gameplay objects |
-| `Ui` | `Canvas` | Canvas chứa Shop, ChonMan, Setting, Win, Lose panels |
+| `Character Meo` | `Animator` | Root GO nhân vật mèo (happy) — 4 skin (mascost1–4) + skeleton bones |
+| `Character Meo_Sad` | `Animator` | Root GO nhân vật mèo (sad) — 4 skin + skeleton bones |
+| `GamePlay` | *(không có script trực tiếp)* | Chứa gameplay objects (DoHoa + QuesUi) |
+| `Ui` | `Canvas` | **Inactive** — Canvas chứa Shop, ChonMan, Setting, Win, Lose panels |
 
 ### Cấu trúc GamePlay (khi active)
 
@@ -139,10 +157,11 @@ GamePlay
 ├── DoHoa                               — Sprites (Background, Bang, mèo, tim×3, coinSpawn)
 └── QuesUi (Canvas ScreenSpaceCamera)
     ├── questionManager                 — MathManager (sinh câu hỏi, check đáp án)
+    ├── soManTxt                        — TMP_Text số màn
     ├── quesTionTxt                     — TMP_Text câu hỏi
     ├── oTrongRect                      — RectTransform ô trống (đè lên dấu ?)
     │   ├── dapAnImage                  — Image ô trống (xanh/đỏ khi đúng/sai)
-    │   └── DapAnTxt                    — TMP_Text hiển thị đáp án đã chọn
+    │   └── DapAnTxt (1)                — TMP_Text hiển thị đáp án đã chọn
     ├── bnt1, bnt2, bnt3                — Button đáp án × 3
     ├── StBnt                           — UIButtonScreenNavigator (nút Setting)
     ├── SoCauWinTxt                     — TMP_Text tiến độ (X/Y câu đúng)
@@ -153,7 +172,7 @@ GamePlay
 
 | Panel | Mô tả |
 |---|---|
-| `ShopPanel` | Shop skin mèo (3 skin). Nút Play → vào gameplay, Back → về GameUIPlay 1 |
+| `ShopPanel` | Shop skin mèo (3 skin: meoT1Bnt, meoV2Bnt, meoC3Bnt). Nút Play → vào gameplay, Back → về GameUIPlay 1, MuaBtn → mua skin |
 | `ChonManPanel` | Chọn màn (ScrollView, sinh nút bởi `UiClass`) |
 | `SettingPanel` | Tạm dừng: nút Shop, Tiếp Tục |
 | `WinPanel` | Thắng: nút Shop, Next |
@@ -193,13 +212,16 @@ GamePlay
 │   │   └── FirePoint                  — CannonDefenseManager (bắn đạn)
 │   ├── meo                             — SpriteRenderer mèo
 │   ├── tuong1 (Tag: Tuong)             — SpriteRenderer + BoxCollider2D + WallHealth
-│   └── ...sprites khác
+│   └── ...sprites khác (vanGo, bangGo, cco, Troi)
 └── QuesUI (Canvas ScreenSpaceCamera)
     ├── DragQuestionManager             — DragQuizManager (sinh câu hỏi kéo thả)
+    ├── soManTxt                        — TMP_Text số màn
     ├── cauhoiText                      — TMP_Text câu hỏi
+    ├── setting                         — Button Setting (không có UIButtonScreenNavigator)
     ├── Answer_0, Answer_1, Answer_2    — DragAndDrop × 3 (kéo thả đáp án)
     ├── Slot (Tag: Slot)                — Vùng thả đáp án
-    └── Heal                            — Slider thanh máu tường
+    ├── Heal                            — Slider thanh máu tường
+    └── CoinTxt                         — TMP_Text số coin
 ```
 
 ### Panels trong Ui Canvas
@@ -313,16 +335,20 @@ ChonDA / KeoThaDA / PhiThuyen (Mini-games)
 | `SessionManager` | GameUIPlay 1 | `DoAnGame.Auth` |
 | `PlayerDataService` | GameUIPlay 1 | `DoAnGame.Auth` |
 | `UserValidationService` | GameUIPlay 1 | `DoAnGame.Auth` |
+| `CloudSyncService` | GameUIPlay 1 | `DoAnGame.Auth` |
+| `SessionGuardService` | GameUIPlay 1 | `DoAnGame.Auth` |
 | `UIStartupController` | GameUIPlay 1 | `DoAnGame.UI` |
 | `UIWelcomeIntroController` | GameUIPlay 1 | `DoAnGame.UI` |
 | `UILoginPanelController` | GameUIPlay 1 | `DoAnGame.UI` |
 | `UIRegisterPanelController` | GameUIPlay 1 | `DoAnGame.UI` |
 | `UIForgotPasswordController` | GameUIPlay 1 | `DoAnGame.UI` |
 | `UIMainMenuController` | GameUIPlay 1 | `DoAnGame.UI` |
+| `UIConfirmPopupController` | GameUIPlay 1 | `DoAnGame.UI` |
 | `UILeaderboardPanelController` | GameUIPlay 1 | `DoAnGame.UI` |
 | `UIModSelectionPanelController` | GameUIPlay 1 | `DoAnGame.UI` |
 | `UIQuickPlayNameController` | GameUIPlay 1 | `DoAnGame.UI` |
 | `UILoginRequiredPopupController` | GameUIPlay 1 | `DoAnGame.UI` |
+| `UISettingsOpenButton` | GameUIPlay 1 | `DoAnGame.UI` |
 | `SettingsPopupController` | GameUIPlay 1 | `DoAnGame.UI` |
 | `ProfileUI` | GameUIPlay 1 | global (legacy) |
 | `UIManager` | GameUIPlay 1 | global (legacy) |
@@ -337,6 +363,7 @@ ChonDA / KeoThaDA / PhiThuyen (Mini-games)
 | `UI16ButtonActionHub` | Test_FireBase_multi | `DoAnGame.UI` |
 | `MultiplayerHealthUI` | Test_FireBase_multi | `DoAnGame.UI` |
 | `AnswerSummaryUI` | Test_FireBase_multi | `DoAnGame.UI` |
+| `UIBattleQuitConfirmPopup` | Test_FireBase_multi | `DoAnGame.UI` |
 | `MultiplayerDragAndDrop` | Test_FireBase_multi | `DoAnGame.Multiplayer` |
 | `NetworkedPlayerState` | Test_FireBase_multi (spawn runtime) | `DoAnGame.Multiplayer` |
 | `GameLogger` | Test_FireBase_multi | `DoAnGame.Multiplayer` |

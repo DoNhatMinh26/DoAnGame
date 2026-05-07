@@ -203,8 +203,8 @@ public class AuthManager : MonoBehaviour
         var cloudSyncAuto = DoAnGame.Auth.CloudSyncService.Instance;
         if (cloudSyncAuto != null)
         {
-            _ = cloudSyncAuto.RestoreProgressFromFirebase();
-            Debug.Log("[Auth] 🔄 Auto-login: đang restore tiến độ từ Firebase...");
+            await cloudSyncAuto.RestoreProgressFromFirebase();
+            Debug.Log("[Auth] ✅ Auto-login: restore tiến độ từ Firebase hoàn tất.");
         }
 
         Debug.Log($"[Auth] ✅ Auto-load account thành công: {currentPlayerData.characterName}");
@@ -357,8 +357,8 @@ public class AuthManager : MonoBehaviour
             var cloudSync = DoAnGame.Auth.CloudSyncService.Instance;
             if (cloudSync != null)
             {
-                _ = cloudSync.RestoreProgressFromFirebase();
-                Debug.Log("[Auth] 🔄 Đang restore tiến độ từ Firebase...");
+                await cloudSync.RestoreProgressFromFirebase();
+                Debug.Log("[Auth] ✅ Restore tiến độ từ Firebase hoàn tất.");
             }
 
             // Bắt đầu bảo vệ phiên (kick nếu máy khác đăng nhập cùng tài khoản)

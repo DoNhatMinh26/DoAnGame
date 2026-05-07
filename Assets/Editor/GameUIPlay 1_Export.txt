@@ -1,7 +1,7 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: GameUIPlay 1
 Đường dẫn: Assets/Scenes/GameUIPlay 1.unity
-Thời gian export: 5/5/2026 2:04:53 PM
+Thời gian export: 5/7/2026 5:13:09 PM
 ═══════════════════════════════════════════════════════════
 
 Tổng số Root GameObjects: 5
@@ -16,6 +16,8 @@ AuthServices
    • PlayerDataService (DoAnGame.Auth)
    • UILoadingIndicator (DoAnGame.UI)
    • AuthManager ()
+   • CloudSyncService (DoAnGame.Auth)
+   • SessionGuardService (DoAnGame.Auth)
 GameUICanvas [Layer: UI]
    • Canvas (RenderMode: ScreenSpaceOverlay)
    • CanvasScaler (UnityEngine.UI)
@@ -25,6 +27,7 @@ GameUICanvas [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 │   • Button (UnityEngine.UI)
+│   • UIManager ()
 ││├─ Backgroud [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -38,50 +41,6 @@ GameUICanvas [Layer: UI]
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
 ││   • UISettingsOpenButton (DoAnGame.UI)
-││├─ ChonTuoi [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • TMP_Dropdown (TMPro)
-││   • NetworkObject (Unity.Netcode)
-││   • UIManager ()
-│││├─ Label [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [LiberationSans SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
-│││├─ Arrow [Layer: UI]
-│││   • CanvasRenderer
-│││   • Image (UnityEngine.UI)
-│││├─ Template [INACTIVE] [Layer: UI]
-│││   • CanvasRenderer
-│││   • Image (UnityEngine.UI)
-│││   • ScrollRect (UnityEngine.UI)
-││││├─ Viewport [Layer: UI]
-││││   • Mask (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • Image (UnityEngine.UI)
-│││││├─ Content [Layer: UI]
-││││││├─ Item [Layer: UI]
-││││││   • Toggle (UnityEngine.UI)
-│││││││├─ Item Background [Layer: UI]
-│││││││   • CanvasRenderer
-│││││││   • Image (UnityEngine.UI)
-│││││││├─ Item Checkmark [Layer: UI]
-│││││││   • CanvasRenderer
-│││││││   • Image (UnityEngine.UI)
-│││││││├─ Item Label [Layer: UI]
-│││││││   • CanvasRenderer
-│││││││   • TextMeshProUGUI (TMPro)
-││││├─ Scrollbar [Layer: UI]
-││││   • CanvasRenderer
-││││   • Image (UnityEngine.UI)
-││││   • Scrollbar (UnityEngine.UI)
-│││││├─ Sliding Area [Layer: UI]
-││││││├─ Handle [Layer: UI]
-││││││   • CanvasRenderer
-││││││   • Image (UnityEngine.UI)
 ││├─ Image [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -149,7 +108,6 @@ GameUICanvas [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 │   • UIQuickPlayNameController (DoAnGame.UI)
-│   • UIQuickPlayNameController (DoAnGame.UI)
 ││├─ Nhapten [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
@@ -184,7 +142,7 @@ GameUICanvas [Layer: UI]
 │││├─ Text (TMP) [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││├─ StatusText [INACTIVE] [Layer: UI]
+││├─ StatusText [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
 ││├─ ContinueButton [INACTIVE] [Layer: UI]
@@ -194,6 +152,47 @@ GameUICanvas [Layer: UI]
 │││├─ Text (TMP) [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
+││├─ TextChonLop [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+││├─ Dropdown [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • TMP_Dropdown (TMPro)
+│││├─ Label [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│││├─ Arrow [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││├─ Template [INACTIVE] [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • ScrollRect (UnityEngine.UI)
+││││├─ Viewport [Layer: UI]
+││││   • Mask (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+│││││├─ Content [Layer: UI]
+││││││├─ Item [Layer: UI]
+││││││   • Toggle (UnityEngine.UI)
+│││││││├─ Item Background [Layer: UI]
+│││││││   • CanvasRenderer
+│││││││   • Image (UnityEngine.UI)
+│││││││├─ Item Checkmark [Layer: UI]
+│││││││   • CanvasRenderer
+│││││││   • Image (UnityEngine.UI)
+│││││││├─ Item Label [Layer: UI]
+│││││││   • CanvasRenderer
+│││││││   • TextMeshProUGUI (TMPro)
+││││├─ Scrollbar [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+││││   • Scrollbar (UnityEngine.UI)
+│││││├─ Sliding Area [Layer: UI]
+││││││├─ Handle [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • Image (UnityEngine.UI)
 │├─ ModSelectionPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -428,7 +427,7 @@ GameUICanvas [Layer: UI]
 ││├─ LogoAge [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││├─ AgeDropdown [Layer: UI]
+││├─ Dropdown [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • TMP_Dropdown (TMPro)
@@ -590,6 +589,38 @@ GameUICanvas [Layer: UI]
 │││├─ Text (TMP) [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
+││├─ LogoutConfirmPopup    [INACTIVE] [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • UIConfirmPopupController (DoAnGame.UI)
+│││├─ Overlay [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││├─ ContentPanel [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+││││├─ TitleText [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ MessageText [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ ButtonContainer [Layer: UI]
+││││   • HorizontalLayoutGroup (UnityEngine.UI)
+│││││├─ ConfirmButton [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+│││││   • Button (UnityEngine.UI)
+││││││├─ Text (TMP) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • TextMeshProUGUI (TMPro)
+│││││├─ CancelButton [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+│││││   • Button (UnityEngine.UI)
+││││││├─ Text (TMP) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • TextMeshProUGUI (TMPro)
 │├─ BangXepHang [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -739,6 +770,72 @@ GameUICanvas [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 │   • ProfileUI ()
+││├─ ChangeDifficultyPopup [INACTIVE] [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Canvas (RenderMode: WorldSpace)
+││   • GraphicRaycaster (UnityEngine.UI)
+│││├─ Overlay [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││├─ ContentPanel [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+││││├─ TitleText [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ MessageText [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ ButtonContainer [Layer: UI]
+││││   • HorizontalLayoutGroup (UnityEngine.UI)
+│││││├─ ConfirmChangeBtn [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+│││││   • Button (UnityEngine.UI)
+││││││├─ Text (TMP) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • TextMeshProUGUI (TMPro)
+│││││├─ CancelButton [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+│││││   • Button (UnityEngine.UI)
+││││││├─ Text (TMP) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • TextMeshProUGUI (TMPro)
+││├─ DeleteAccountPopup [INACTIVE] [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Canvas (RenderMode: WorldSpace)
+││   • GraphicRaycaster (UnityEngine.UI)
+│││├─ Overlay [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││├─ ContentPanel [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+││││├─ TitleText [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ MessageText [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ ButtonContainer [Layer: UI]
+││││   • HorizontalLayoutGroup (UnityEngine.UI)
+│││││├─ ConfirmDeleteBtn [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+│││││   • Button (UnityEngine.UI)
+││││││├─ Text (TMP) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • TextMeshProUGUI (TMPro)
+│││││├─ CancelButton [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+│││││   • Button (UnityEngine.UI)
+││││││├─ Text (TMP) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • TextMeshProUGUI (TMPro)
 ││├─ DuLieuTxt [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
@@ -803,6 +900,67 @@ GameUICanvas [Layer: UI]
 │││├─ Text (TMP) [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
+││├─ DeleteAccountBtn [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+││   • ButtonHandler ()
+│││├─ Text (TMP) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ DifficultySection [Layer: UI]
+│││├─ DifficultyLabel [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│││├─ GradeDropdown [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • TMP_Dropdown (TMPro)
+││││├─ Label [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ Arrow [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+││││├─ Template [INACTIVE] [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+││││   • ScrollRect (UnityEngine.UI)
+│││││├─ Viewport [Layer: UI]
+│││││   • Mask (UnityEngine.UI)
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+││││││├─ Content [Layer: UI]
+│││││││├─ Item [Layer: UI]
+│││││││   • Toggle (UnityEngine.UI)
+││││││││├─ Item Background [Layer: UI]
+││││││││   • CanvasRenderer
+││││││││   • Image (UnityEngine.UI)
+││││││││├─ Item Checkmark [Layer: UI]
+││││││││   • CanvasRenderer
+││││││││   • Image (UnityEngine.UI)
+││││││││├─ Item Label [Layer: UI]
+││││││││   • CanvasRenderer
+││││││││   • TextMeshProUGUI (TMPro)
+│││││├─ Scrollbar [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+│││││   • Scrollbar (UnityEngine.UI)
+││││││├─ Sliding Area [Layer: UI]
+│││││││├─ Handle [Layer: UI]
+│││││││   • CanvasRenderer
+│││││││   • Image (UnityEngine.UI)
+│││├─ ApplyDifficultyBtn [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Button (UnityEngine.UI)
+│││   • ButtonHandler ()
+││││├─ Text (TMP) [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││├─ StatusText [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
 EventSystem
    • EventSystem (UnityEngine.EventSystems)
    • StandaloneInputModule (UnityEngine.EventSystems)
@@ -812,5 +970,5 @@ DataManager [Layer: UI]
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 238
+Tổng số GameObjects: 288
 ═══════════════════════════════════════════════════════════

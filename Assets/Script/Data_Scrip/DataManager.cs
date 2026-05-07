@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using DoAnGame.Auth;
+using DoAnGame.UI;
 
 public class DataManager : MonoBehaviour
 {
@@ -34,11 +35,15 @@ public class DataManager : MonoBehaviour
 
     public void AddScore(int amount)
     {
-        int currentScore = PlayerPrefs.GetInt("UserScore", 0);
-        int currentLevel = PlayerPrefs.GetInt("UserLevel", 1);
+        // ✅ Đọc từ đúng key tuỳ theo chế độ
+        string scoreKey = UIQuickPlayNameController.IsGuestMode() ? "LocalGuestScore" : "UserScore";
+        string levelKey = UIQuickPlayNameController.IsGuestMode() ? "LocalGuestLevel" : "UserLevel";
+        
+        int currentScore = PlayerPrefs.GetInt(scoreKey, 0);
+        int currentLevel = PlayerPrefs.GetInt(levelKey, 1);
 
         currentScore += amount;
-        Debug.Log("Diem hien tai: " + currentScore);
+        Debug.Log($"[DataManager] Diem hien tai: {currentScore} (key: {scoreKey})");
 
         // Tính level từ tổng score (nhất quán với công thức Firebase)
         // totalXp = totalScore / 10
@@ -53,12 +58,17 @@ public class DataManager : MonoBehaviour
             {
                 UiClass.Instance.AddCoins(50 * levelsGained);
             }
-            PlayerPrefs.SetInt("UserLevel", newLevel);
+            PlayerPrefs.SetInt(levelKey, newLevel);
             Debug.Log($"[DataManager] Thăng cấp! {currentLevel} → {newLevel}, thưởng {50 * levelsGained} tiền");
         }
        
-        PlayerPrefs.SetInt("UserScore", currentScore);
+        // ✅ Ghi vào đúng key
+        PlayerPrefs.SetInt(scoreKey, currentScore);
+        PlayerPrefs.SetInt(levelKey, newLevel);
         PlayerPrefs.Save();
+        
+        Debug.Log($"[DataManager] Saved to PlayerPrefs: {scoreKey}={currentScore}, {levelKey}={newLevel}");
+        
         if (UiClass.Instance != null)
         {
             UiClass.Instance.UpdateShopProfileUI();
@@ -67,7 +77,9 @@ public class DataManager : MonoBehaviour
         {
             UiClass.Instance.AddLevelScore(amount);
         }
-        // Sync score + level lên Firebase nếu đã đăng nhập
+        
+        // ✅ Sync score + level lên Firebase nếu đã đăng nhập
+        // CloudSyncService sẽ cập nhật PlayerPrefs trước khi sync Firebase
         CloudSyncService.Instance?.OnScoreChanged(currentScore, newLevel);
     }
 

@@ -223,7 +223,7 @@ namespace DoAnGame.UI
                 return;
             }
 
-            // Lưu tên người chơi khách
+            // ✅ Lưu guest session (tên + grade)
             PlayerPrefs.SetString(GUEST_NAME_KEY, playerName);
             PlayerPrefs.SetInt(IS_GUEST_KEY, 1); // Đánh dấu là chế độ khách
             PlayerPrefs.Save();
@@ -232,7 +232,14 @@ namespace DoAnGame.UI
             UIManager.SelectedGrade = grade;
             SaveSelectedGrade(grade);
 
-            Debug.Log($"[QuickPlay] Saved guest name: {playerName}, Grade: {grade}");
+            // ✅ DEBUG: Verify dữ liệu đã lưu
+            Debug.Log($"[QuickPlay] ✅ Saved guest session:");
+            Debug.Log($"[QuickPlay]   - Name: '{PlayerPrefs.GetString(GUEST_NAME_KEY, "NOT_FOUND")}'");
+            Debug.Log($"[QuickPlay]   - IsGuest: {PlayerPrefs.GetInt(IS_GUEST_KEY, 0)}");
+            Debug.Log($"[QuickPlay]   - Grade: {PlayerPrefs.GetInt(SELECTED_GRADE_KEY, 0)}");
+            Debug.Log($"[QuickPlay]   - IsGuestMode(): {IsGuestMode()}");
+            Debug.Log($"[QuickPlay]   - GetGuestName(): '{GetGuestName()}'");
+            Debug.Log($"[QuickPlay]   - GetSelectedGrade(): {GetSelectedGrade()}");
 
             // Chuyển sang MainMenuPanel
             NavigateToMainMenu();

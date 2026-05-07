@@ -19,7 +19,7 @@ namespace DoAnGame.UI
         [Header("Settings")]
         [SerializeField] private bool enableAutoSkip = true;    // Bật/tắt auto-skip
 
-        private void Start()
+        private async void Start()
         {
             if (!enableAutoSkip)
             {
@@ -30,122 +30,87 @@ namespace DoAnGame.UI
 
             try
             {
-                CheckAndRoute();
+                await CheckAndRouteAsync();
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"[Startup] Error in CheckAndRoute: {e.Message}\n{e.StackTrace}");
+                Debug.LogError($"[Startup] Error in CheckAndRouteAsync: {e.Message}\n{e.StackTrace}");
                 // Fallback: Show WELCOMESCREEN
                 ShowWelcomeScreen();
             }
         }
 
         /// <summary>
-        /// Kiểm tra trạng thái user và route đến panel phù hợp
+        /// Kiểm tra trạng thái user và route đến panel phù hợp.
+        /// TỐI ƯU: Kiểm tra session local TRƯỚC, chỉ gọi Firebase nếu cần.
+        /// Giảm delay startup bằng cách skip Firebase nếu session local còn hạn.
+        /// 
+        /// FLOW:
+        /// 1. Kiểm tra session email (24h auto-login) → MainMenuPanel
+        /// 2. Kiểm tra guest session (chơi nhanh) → MainMenuPanel
+        /// 3. Gọi Firebase auto-login → MainMenuPanel
+        /// 4. Mới user → WELCOMESCREEN
         /// </summary>
-        private void CheckAndRoute()
+        private async System.Threading.Tasks.Task CheckAndRouteAsync()
         {
-            // Kiểm tra đã đăng nhập chưa
-            bool isLoggedIn = CheckIfLoggedIn();
+            // Bước 1: Kiểm tra session email (24h auto-login) — nhanh, local only
+            bool hasValidEmailSession = SessionManager.Instance != null && SessionManager.Instance.IsSessionValid();
             
-            // Kiểm tra là guest và đã chọn lớp chưa
-            bool isGuest = UIQuickPlayNameController.IsGuestMode();
-            bool hasSelectedGrade = UIQuickPlayNameController.HasSelectedGrade();
-            string guestName = UIQuickPlayNameController.GetGuestName();
-
-            Debug.Log($"[Startup] Status - LoggedIn: {isLoggedIn}, Guest: {isGuest}, HasGrade: {hasSelectedGrade}, Name: {guestName}");
-
-            // CASE 1: Đã đăng nhập → Skip thẳng đến MainMenuPanel
-            if (isLoggedIn)
+            if (hasValidEmailSession)
             {
-                Debug.Log("[Startup] User logged in → Navigating to MainMenuPanel");
+                Debug.Log("[Startup] ✅ CASE 1: Valid email session found → Navigating to MainMenuPanel");
+                ShowMainMenuPanel();
+                
+                // Gọi Firebase async ở background để restore grade (không block UI)
+                _ = AuthManager.Instance?.CheckAndAutoLogin();
+                return;
+            }
+
+            // Bước 2: Kiểm tra guest session (chơi nhanh) — nhanh, local only
+            bool isGuestMode = UIQuickPlayNameController.IsGuestMode();
+            string guestName = UIQuickPlayNameController.GetGuestName();
+            int savedGrade = UIQuickPlayNameController.GetSelectedGrade();
+            bool hasGuestData = isGuestMode && !string.IsNullOrEmpty(guestName) && guestName != "Guest" && savedGrade > 0;
+
+            Debug.Log($"[Startup] ========== STARTUP ROUTING (OPTIMIZED) ==========");
+            Debug.Log($"[Startup] HasValidEmailSession: {hasValidEmailSession}");
+            Debug.Log($"[Startup] IsGuestMode: {isGuestMode}");
+            Debug.Log($"[Startup] GuestName: '{guestName}'");
+            Debug.Log($"[Startup] SavedGrade: {savedGrade}");
+            Debug.Log($"[Startup] HasGuestData: {hasGuestData}");
+            Debug.Log($"[Startup] ====================================================");
+
+            if (hasGuestData)
+            {
+                Debug.Log($"[Startup] ✅ CASE 2: Valid guest session found ('{guestName}', Grade {savedGrade}) → Navigating to MainMenuPanel");
+                
+                // Restore guest state
+                UIManager.SelectedGrade = savedGrade;
+                
                 ShowMainMenuPanel();
                 return;
             }
 
-            // CASE 2: Guest mode + đã có tên + đã chọn lớp → Skip to WellcomePanel
-            if (isGuest && !string.IsNullOrEmpty(guestName) && guestName != "Guest" && hasSelectedGrade)
+            // Bước 3: Không có session local → Gọi Firebase để kiểm tra auto-login
+            Debug.Log("[Startup] ⚠️ CASE 3: No local session → Checking Firebase auto-login...");
+            
+            bool autoLoginSuccess = false;
+            if (AuthManager.Instance != null)
             {
-                Debug.Log($"[Startup] Returning guest '{guestName}' with grade {UIQuickPlayNameController.GetSelectedGrade()} → Navigating to WellcomePanel");
-                
-                // Restore SelectedGrade vào UIManager
-                int savedGrade = UIQuickPlayNameController.GetSelectedGrade();
-                UIManager.SelectedGrade = savedGrade;
-                
-                ShowWellcomePanel();
+                autoLoginSuccess = await AuthManager.Instance.CheckAndAutoLogin();
+                Debug.Log($"[Startup] AuthManager.CheckAndAutoLogin() result: {autoLoginSuccess}");
+            }
+
+            if (autoLoginSuccess)
+            {
+                Debug.Log("[Startup] ✅ CASE 3a: Firebase auto-login success → Navigating to MainMenuPanel");
+                ShowMainMenuPanel();
                 return;
             }
 
-            // CASE 3: New user hoặc chưa chọn lớp → Show WELCOMESCREEN
-            Debug.Log("[Startup] New user or no grade selected → Showing WELCOMESCREEN");
+            // CASE 4: Không có session, không auto-login → WELCOMESCREEN
+            Debug.Log("[Startup] ⚠️ CASE 4: New user or no valid session → Showing WELCOMESCREEN");
             ShowWelcomeScreen();
-        }
-
-        /// <summary>
-        /// Kiểm tra xem user đã đăng nhập chưa
-        /// </summary>
-        private bool CheckIfLoggedIn()
-        {
-            try
-            {
-                // Kiểm tra Firebase Auth
-                if (Firebase.Auth.FirebaseAuth.DefaultInstance != null)
-                {
-                    var currentUser = Firebase.Auth.FirebaseAuth.DefaultInstance.CurrentUser;
-                    if (currentUser != null)
-                    {
-                        Debug.Log($"[Startup] Firebase user found: {currentUser.Email}");
-                        return true;
-                    }
-                    else
-                    {
-                        Debug.Log("[Startup] Firebase Auth: No current user");
-                    }
-                }
-                else
-                {
-                    Debug.Log("[Startup] Firebase Auth: DefaultInstance is null");
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogWarning($"[Startup] Error checking Firebase auth: {e.Message}");
-            }
-
-            // Kiểm tra session token (24h auto-login)
-            string sessionToken = PlayerPrefs.GetString("SessionToken", "");
-            if (!string.IsNullOrEmpty(sessionToken))
-            {
-                Debug.Log($"[Startup] Found session token: {sessionToken.Substring(0, System.Math.Min(10, sessionToken.Length))}...");
-                
-                // Kiểm tra token còn hạn không
-                string expiryStr = PlayerPrefs.GetString("SessionExpiry", "0");
-                if (long.TryParse(expiryStr, out long sessionExpiry))
-                {
-                    long currentTime = System.DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                    
-                    if (currentTime < sessionExpiry)
-                    {
-                        Debug.Log("[Startup] Valid session token found");
-                        return true;
-                    }
-                    else
-                    {
-                        Debug.Log("[Startup] Session token expired");
-                        // Clear expired token
-                        PlayerPrefs.DeleteKey("SessionToken");
-                        PlayerPrefs.DeleteKey("SessionExpiry");
-                        PlayerPrefs.Save();
-                    }
-                }
-            }
-            else
-            {
-                Debug.Log("[Startup] No session token found");
-            }
-
-            Debug.Log("[Startup] User is NOT logged in");
-            return false;
         }
 
         /// <summary>

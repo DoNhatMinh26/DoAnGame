@@ -47,15 +47,16 @@ namespace DoAnGame.Auth
         #region Score Management
         
         /// <summary>
-        /// Lưu điểm số
+        /// Lưu điểm số (cộng thêm vào điểm hiện tại)
+        /// Gọi từ DataManager.AddScore() khi chế độ khách
         /// </summary>
-        public void SaveScore(int score)
+        public void SaveScore(int scoreToAdd)
         {
             int currentScore = GetScore();
-            int newScore = currentScore + score;
+            int newScore = currentScore + scoreToAdd;
             PlayerPrefs.SetInt(LOCAL_SCORE_KEY, newScore);
             PlayerPrefs.Save();
-            Debug.Log($"[LocalProgress] Saved score: {newScore} (added {score})");
+            Debug.Log($"[LocalProgress] Saved score: {newScore} (added {scoreToAdd})");
         }
 
         /// <summary>

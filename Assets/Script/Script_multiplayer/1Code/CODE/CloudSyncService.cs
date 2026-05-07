@@ -203,10 +203,25 @@ namespace DoAnGame.Auth
         }
         public void OnScoreChanged(int newScore, int newLevel)
         {
+            // ✅ Cập nhật PlayerPrefs ngay lập tức (cho UI hiển thị đúng)
+            // Chỉ ghi vào UserScore/UserLevel (dùng cho logged-in user)
+            // Guest mode không gọi hàm này (không có uid)
+            PlayerPrefs.SetInt("UserScore", newScore);
+            PlayerPrefs.SetInt("UserLevel", newLevel);
+            PlayerPrefs.Save();
+            
+            Debug.Log($"[CloudSync] 💾 Updated PlayerPrefs: UserScore={newScore}, UserLevel={newLevel}");
+            
+            // Sau đó sync Firebase (async, có thể delay)
             string uid = GetCurrentUid();
             if (!string.IsNullOrEmpty(uid))
             {
+                Debug.Log($"[CloudSync] Syncing to Firebase for uid: {uid}");
                 _ = SyncScoreAsync(uid, newScore, newLevel);
+            }
+            else
+            {
+                Debug.LogWarning($"[CloudSync] No uid found, skipping Firebase sync");
             }
         }
 
