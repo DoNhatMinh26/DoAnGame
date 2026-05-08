@@ -8,7 +8,9 @@ using DoAnGame.Auth;
 public class UiSp : MonoBehaviour
 {
     public static UiSp Instance;
-
+    [Header("Quản lý Animation")]
+    public Animator gameplayAnimator;
+    public Animator spaceshipAnimator;
     [Header("Cấu hình Danh sách Màn chơi")]
     public GameObject levelButtonPrefab;
     public RectTransform contentParent;
@@ -120,15 +122,20 @@ public class UiSp : MonoBehaviour
         if (shopShipRenderer != null)
             shopShipRenderer.sprite = allShips[index].shipSprite;
 
-        // 2. Kiểm tra trạng thái sở hữu
+        // 2. Cho chạy Animation xem thử (Kể cả chưa mua vẫn xem được animation bay)
+        if (spaceshipAnimator != null)
+        {
+            spaceshipAnimator.Play("Ship_" + index); // Nhảy thẳng đến animation của phi thuyền đang chọn
+        }
+        if (gameplayAnimator != null) gameplayAnimator.Play("Ship_" + index);
+        // 3. Kiểm tra trạng thái sở hữu để Trang bị
         if (IsShipUnlocked(index))
         {
             PlayerPrefs.SetInt("SelectedShipID", index);
             PlayerPrefs.Save();
 
-            // Nếu đã sở hữu, cập nhật luôn hình ảnh cho cả phi thuyền trong trận
-            if (gameplayShipRenderer != null)
-                gameplayShipRenderer.sprite = allShips[index].shipSprite;
+            // Cập nhật lại toàn bộ (bao gồm cả renderer trong gameplay)
+            LoadCurrentShip();
 
             ShowShopNotification("Đã trang bị: " + allShips[index].shipName);
         }
@@ -208,6 +215,12 @@ public class UiSp : MonoBehaviour
             if (shopShipRenderer != null) shopShipRenderer.sprite = currentSprite;
             if (gameplayShipRenderer != null) gameplayShipRenderer.sprite = currentSprite;
         }
+        if (spaceshipAnimator != null) spaceshipAnimator.Play("Ship_" + id);
+       
+        if (gameplayAnimator != null) gameplayAnimator.Play("Ship_" + id);
+
+
+
     }
 
     private bool IsShipUnlocked(int index) => index == 0 || PlayerPrefs.GetInt("ShipUnlocked_" + index, 0) == 1;

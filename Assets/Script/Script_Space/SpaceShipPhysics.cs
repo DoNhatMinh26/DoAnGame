@@ -33,7 +33,33 @@ public class SpaceShipPhysics : MonoBehaviour
             transform.position = new Vector3(transform.position.x, newY, 0);
         }
     }
+    private IEnumerator HitGateScaleEffect(float duration)
+    {
+        Vector3 originalScale = Vector3.one; // Hoặc dùng transform.localScale nếu mặc định không phải 1
+        Vector3 shrunkScale = originalScale * 0.5f; // Thu nhỏ còn 80%
 
+        float elapsed = 0f;
+
+        // Giai đoạn 1: Thu nhỏ lại
+        while (elapsed < duration / 2)
+        {
+            elapsed += Time.deltaTime;
+            transform.localScale = Vector3.Lerp(originalScale, shrunkScale, elapsed / (duration / 2));
+            yield return null;
+        }
+
+        elapsed = 0f;
+
+        // Giai đoạn 2: Trở lại bình thường
+        while (elapsed < duration / 2)
+        {
+            elapsed += Time.deltaTime;
+            transform.localScale = Vector3.Lerp(shrunkScale, originalScale, elapsed / (duration / 2));
+            yield return null;
+        }
+
+        transform.localScale = originalScale; // Đảm bảo trả về đúng kích thước gốc
+    }
     void ApplyMagnetEffect()
     {
         GameObject[] gates = GameObject.FindGameObjectsWithTag(gateTag);
@@ -74,6 +100,7 @@ public class SpaceShipPhysics : MonoBehaviour
         if (canMove && other.CompareTag(gateTag))
         {
             canMove = false;
+            StartCoroutine(HitGateScaleEffect(1.5f));
             lastHitGate = other.transform.parent.gameObject; // Lưu lại để xóa
 
             TextMeshProUGUI gateText = other.GetComponentInChildren<TextMeshProUGUI>();
