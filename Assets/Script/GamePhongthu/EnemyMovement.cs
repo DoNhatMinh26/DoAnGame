@@ -56,6 +56,8 @@ public class EnemyMovement : MonoBehaviour
         if (biTieuDietBoiNguoiChoi && GameUIManager.Instance != null)
         {
             GameUIManager.Instance.OnEnemyKilled();
+            GameUIManager.Instance.AddScore(10);
+
         }
     }
 

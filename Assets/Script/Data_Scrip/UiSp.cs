@@ -21,7 +21,7 @@ public class UiSp : MonoBehaviour
     public GameObject panelChonMan;
     public GameObject panelGameplay;
     public GameObject panelSetting;
-
+    public Button settingButton;
     [Header("Quản lý Panel Kết Thúc")]
     public GameObject panelWin;
     public GameObject panelLose;
@@ -44,18 +44,66 @@ public class UiSp : MonoBehaviour
     public TextMeshProUGUI[] shipPriceTexts;
     public SpriteRenderer shopShipRenderer;
     public SpriteRenderer gameplayShipRenderer; // Renderer của phi thuyền trong trận
+    [Header("Giao diện Shop & Profile")]
+    public TextMeshProUGUI shopScoreTxt; // 1. Hiện điểm ở Shop
+    public TextMeshProUGUI shopLevelTxt; // 2. Hiện Level ở Shop
+
+    [Header("Giao diện Gameplay")]
+    public TextMeshProUGUI gameplayScoreRewardTxt; // 3. Điểm thưởng trong trận
+    private int levelScore = 0; // Biến lưu điểm tạm thời của màn chơi
+
+    [Header("Quản lý Panel Kết Thúc (6 Text)")]
+    public TextMeshProUGUI winScoreTxt;    // 4. Điểm bảng Thắng
+    public TextMeshProUGUI winRewardTxt;   // 5. Tiền bảng Thắng
+    public TextMeshProUGUI winLevelInfoTxt; // 6. Thông tin màn (VD: Màn 1)
+
+    public TextMeshProUGUI loseScoreTxt;   // 7. Điểm bảng Thua
+    public TextMeshProUGUI loseRewardTxt;  // 8. Tiền bảng Thua
+    public TextMeshProUGUI loseProgressTxt;// 9. Tiến trình (VD: 50%)
 
     private int pendingShipIndex = -1;
     private void Awake() => Instance = this;
 
     private void Start()
     {
+        UpdateShopProfileUI();
         LoadCoins();
         InitShipShop();
         GenerateLevelButtons();
         ShowHome();
     }
     #region QUẢN LÝ SHOP
+    public void UpdateShopProfileUI()
+    {
+        string scoreKey = DoAnGame.UI.UIQuickPlayNameController.IsGuestMode() ? "LocalGuestScore" : "UserScore";
+        string levelKey = DoAnGame.UI.UIQuickPlayNameController.IsGuestMode() ? "LocalGuestLevel" : "UserLevel";
+
+        int score = PlayerPrefs.GetInt(scoreKey, 0);
+        int level = PlayerPrefs.GetInt(levelKey, 1);
+
+        if (shopScoreTxt != null) shopScoreTxt.text = "Điểm: +" + score.ToString();
+        if (shopLevelTxt != null) shopLevelTxt.text = "Level" + level.ToString();
+    }
+
+    // Cộng điểm trong khi chơi
+    public void AddScore(int amount)
+    {
+        if (isGameOver) return;
+
+        // 1. Cộng vào biến tạm trong màn để hiện bảng Win/Lose
+        levelScore += amount;
+
+        // 2. Cập nhật Text hiển thị trong lúc chơi
+        if (gameplayScoreRewardTxt != null)
+            gameplayScoreRewardTxt.text = "Điểm: +" + levelScore.ToString();
+
+        // 3. Gọi DataManager để lưu tổng điểm và đồng bộ Firebase
+        if (DataManager.Instance != null)
+        {
+            DataManager.Instance.AddScore(amount);
+            
+        }
+    }
     public void InitShipShop()
     {
         LoadCurrentShip();
@@ -287,6 +335,17 @@ public class UiSp : MonoBehaviour
 
     public void ShowLose()
     {
+        if (isGameOver) return; // Chống hiện bảng nhiều lần
+        isGameOver = true;
+        if (settingButton != null) settingButton.interactable = false;
+        if (loseScoreTxt != null) loseScoreTxt.text = "Điểm: +" + levelScore;
+        if (loseRewardTxt != null) loseRewardTxt.text = "+" + levelCoins;
+        if (loseProgressTxt != null && SpaceShipManager.Instance != null)
+        {
+            int passed = SpaceShipManager.Instance.CorrectAnswersCount;
+            int total = SpaceShipManager.Instance.TotalGatesToWin;
+            loseProgressTxt.text = "Hoàn thành: " + passed + "/" + total + " Cổng";
+        } // Có thể tính theo quãng đường bay
         HideAllPanels();
         if (panelLose != null)
         {
@@ -294,7 +353,19 @@ public class UiSp : MonoBehaviour
             Time.timeScale = 0f;
         }
     }
+    public void Click_ThoatNgayLapTuc()
+    {
+        if (isGameOver) return;
 
+        if (panelSetting != null) panelSetting.SetActive(false);
+
+        // Khóa các nút điều khiển phi thuyền nếu cần
+        // SpaceShipPhysics.SetLock(true); 
+
+        ShowLose();
+    }
+
+    
     // Tối ưu: Chuyển ShowWin thành Coroutine để đợi vài giây trước khi hiện bảng[cite: 8]
     public void ShowWin()
     {
@@ -303,8 +374,11 @@ public class UiSp : MonoBehaviour
 
     private IEnumerator ShowWinRoutine(float delay)
     {
+        if (settingButton != null) settingButton.interactable = false;
         yield return new WaitForSeconds(delay);
-
+        if (winScoreTxt != null) winScoreTxt.text = "Điểm: +" + levelScore;
+        if (winRewardTxt != null) winRewardTxt.text = "+" + levelCoins;
+        if (winLevelInfoTxt != null) winLevelInfoTxt.text = "Hoàn thành Màn " + LevelManager.CurrentLevel;
         HideAllPanels();
         if (panelWin != null)
         {
@@ -414,6 +488,11 @@ public class UiSp : MonoBehaviour
 
     public void BatDauChoiSpace(int levelIndex)
     {
+        if (settingButton != null) settingButton.interactable = true;
+        levelScore = 0; // Reset điểm về 0 khi bắt đầu
+        if (gameplayScoreRewardTxt != null) gameplayScoreRewardTxt.text = "Điểm: +0";
+
+        UpdateShopProfileUI(); // Cập nhật lại UI shop
         // Đảm bảo Reset kẻ địch khi chơi lại[cite: 8]
         if (Enemy.Instance != null) Enemy.Instance.ResetPosition();
 

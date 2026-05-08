@@ -90,10 +90,7 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
                 {
                     CannonDefenseManager.Instance.FireAtClosestEnemy();
                 }
-                if (DataManager.Instance != null)
-                {
-                    DataManager.Instance.AddScore(10); // Cộng 5 điểm ngay lập tức vào Profile
-                }
+                
                 rectTransform.anchoredPosition = droppedOn.GetComponent<RectTransform>().anchoredPosition;
                 StartCoroutine(ResetQuestionAfterDelay());
             }
@@ -166,7 +163,13 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         image.color = originalColor;
         rectTransform.anchoredPosition = originalPosition;
         qm.UpdateDifficulty();
-        isLocked = false;
+        if (GameUIManager.Instance != null &&
+        !GameUIManager.Instance.panelWin.activeSelf &&
+        !GameUIManager.Instance.panelLose.activeSelf &&
+        !GameUIManager.Instance.panelSetting.activeSelf)
+        {
+            isLocked = false;
+        }
     }
 
     public static void ReleaseAllLocks()

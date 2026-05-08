@@ -1,7 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using DoAnGame.Auth;
+using DoAnGame.UI;
 using TMPro;
-using DoAnGame.Auth;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -19,12 +20,27 @@ public class GameUIManager : MonoBehaviour
     public GameObject panelChonMan;
     public GameObject panelGameplay;
     public GameObject panelSetting;
-
+    public Button settingButton;
     [Header("Quản lý Panel Kết Thúc")]
     public GameObject panelWin;   // Kéo Panel chiến thắng vào đây
     public GameObject panelLose;  // Kéo Panel thất bại vào đây
     private bool isGameOver = false;
+    [Header("Giao diện Shop & Profile")]
+    public TextMeshProUGUI shopScoreTxt; // Text hiện điểm ở Shop
+    public TextMeshProUGUI shopLevelTxt; // Text hiện Level ở Shop
 
+    [Header("Giao diện Gameplay")]
+    public TextMeshProUGUI gameplayScoreRewardTxt; // Text hiện điểm thưởng tạm thời khi đang chơi
+
+    [Header("Quản lý Panel Kết Thúc (Bổ sung)")]
+    public TextMeshProUGUI winLevelInfoTxt;
+    public TextMeshProUGUI winScoreTxt;    // Điểm hiện trên bảng Win
+    public TextMeshProUGUI winRewardTxt;   // Tiền hiện trên bảng Win (đã có levelCoinTxt nhưng nên tách riêng nếu cần)
+    public TextMeshProUGUI loseScoreTxt;   // Điểm hiện trên bảng Lose
+    public TextMeshProUGUI loseRewardTxt;  // Tiền hiện trên bảng Lose
+    public TextMeshProUGUI loseProgressTxt; // Hiện số câu đúng/số quái đã giết
+
+    private int levelScore = 0; // Điểm tích lũy riêng trong màn này
     [Header("Quản lý Tiền")]
     public TextMeshProUGUI totalCoinTxt; // Text hiển thị ở Shop/Menu
     public TextMeshProUGUI levelCoinTxt; // Text hiển thị trong trận đấu (Gameplay)
@@ -69,13 +85,18 @@ public class GameUIManager : MonoBehaviour
             return;
         }
     }
-
+    void UpdateGameplayScoreUI()
+    {
+        if (gameplayScoreRewardTxt != null)
+            gameplayScoreRewardTxt.text = "Score: " + levelScore.ToString();
+    }
     private void Start()
     {
         // Tải tiền tổng từ máy
         totalCoins = PlayerPrefs.GetInt("TotalCoins", 0);
 
         // Tải và mặc skin đã lưu
+        UpdateShopProfileUI();
         LoadCurrentSkin();
         UpdateShopUI();
         UpdateCoinUI();
@@ -95,6 +116,43 @@ public class GameUIManager : MonoBehaviour
         if (panelGameplay.activeSelf && !isGameOver)
         {
             CheckWinCondition();
+        }
+    }
+    public void SetSettingButtonInteractable(bool state)
+    {
+        if (settingButton != null)
+        {
+            settingButton.interactable = state;
+        }
+    }
+    public void UpdateShopProfileUI()
+    {
+
+        bool isGuest = UIQuickPlayNameController.IsGuestMode();
+        string scoreKey = isGuest ? "LocalGuestScore" : "UserScore";
+        string levelKey = isGuest ? "LocalGuestLevel" : "UserLevel";
+
+        int score = PlayerPrefs.GetInt(scoreKey, 0);
+        int level = PlayerPrefs.GetInt(levelKey, 1);
+
+        if (shopScoreTxt != null) shopScoreTxt.text = score.ToString();
+        if (shopLevelTxt != null) shopLevelTxt.text = "LV." + level.ToString();
+    }
+    public void AddScore(int amount)
+    {
+        levelScore += amount; // Lưu vào biến tạm để hiện bảng Win/Lose
+
+        // Hiển thị điểm nhảy số trong lúc chơi
+        if (gameplayScoreRewardTxt != null)
+            gameplayScoreRewardTxt.text = "Điểm: +" + levelScore.ToString();
+
+        // Gửi điểm sang DataManager để lưu vào máy (PlayerPrefs) và đồng bộ Firebase
+        if (DataManager.Instance != null)
+        {
+            DataManager.Instance.AddScore(amount);
+
+            // Cập nhật luôn Text ở Shop để đồng bộ số liệu ngay lập tức
+            UpdateShopProfileUI();
         }
     }
     void UpdateCoinUI()
@@ -529,8 +587,20 @@ public class GameUIManager : MonoBehaviour
     #region HÀM XỬ LÝ THẮNG / THUA / SETTING
     public void ShowWin()
     {
+
         if (panelWin != null)
         {
+            SetSettingButtonInteractable(false);
+            if (winLevelInfoTxt != null)
+            {
+                // LevelManager.CurrentLevel thường bắt đầu từ 0, nên +1 để hiển thị cho người dùng
+                winLevelInfoTxt.text = "Hoàn thành Màn " + (LevelManager.CurrentLevel).ToString();
+            }
+            if (winScoreTxt != null)
+                winScoreTxt.text = "Điểm: +" + levelScore.ToString();
+
+            if (winRewardTxt != null)
+                winRewardTxt.text = "+" + levelCoins.ToString() ;
             panelWin.SetActive(true);
             Time.timeScale = 0f;
             DragAndDrop.SetGlobalLock(true);
@@ -556,29 +626,59 @@ public class GameUIManager : MonoBehaviour
             );
         }
     }
+
     // Hàm đợi 3 giây trước khi hiện bảng thắng để tiền kịp nạp vào
     private System.Collections.IEnumerator WaitAndShowWin()
     {
+        DragAndDrop.SetGlobalLock(true);
         // Đợi 3 giây thực tế (không bị ảnh hưởng bởi Time.timeScale nếu bạn muốn)
-        yield return new WaitForSecondsRealtime(2f);
+        yield return new WaitForSecondsRealtime(3f);
 
         // Gọi hàm hiện bảng thắng gốc của bạn
         ShowWin();
     }
     public void ShowLose()
     {
+        
+        // Không hiện panel ngay, mà gọi Coroutine để đợi
+        StartCoroutine(WaitAndShowLose());
+    }
+
+    // Hàm Coroutine tạo độ trễ
+    private System.Collections.IEnumerator WaitAndShowLose()
+    {
+        DragAndDrop.SetGlobalLock(true);
+
+        // 2. Khóa nút Setting ngay lập tức
+        SetSettingButtonInteractable(false);
+
+        
+        // Đợi 1.5 giây thực tế (giống bảng Win)
+        yield return new WaitForSecondsRealtime(3f);
+        isGameOver = true;
+        // Sau khi đợi xong mới thực hiện logic hiện bảng thua
         if (panelLose != null)
         {
-            panelLose.SetActive(true);
-            Time.timeScale = 0f; // Tạm dừng game khi thua
-            DragAndDrop.SetGlobalLock(true); // KHÓA kéo thả khi thắng
-        }
+            // Gán dữ liệu trước khi hiện
+            if (loseScoreTxt != null) loseScoreTxt.text = "Điểm: +" + levelScore;
+            if (loseRewardTxt != null) loseRewardTxt.text = "Tiền: +" + levelCoins;
 
+            if (loseProgressTxt != null)
+            {
+                loseProgressTxt.text = $"Tiến trình: {killedEnemies}/{totalEnemiesInLevel}";
+            }
+
+            panelLose.SetActive(true);
+            Time.timeScale = 0f; // Dừng game
+            DragAndDrop.SetGlobalLock(true);
+        }
     }
+
 
     public void Click_Retry()
     {
         Time.timeScale = 1f;
+        levelScore = 0;
         DragAndDrop.ReleaseAllLocks();
         BatDauChoiMan(LevelManager.CurrentLevel);
         if (panelWin != null) panelWin.SetActive(false);
@@ -588,6 +688,7 @@ public class GameUIManager : MonoBehaviour
     public void Click_Next()
     {
         Time.timeScale = 1f;
+        DragAndDrop.ReleaseAllLocks();
         int nextLevel = LevelManager.CurrentLevel + 1;
         if (nextLevel > 100) nextLevel = 100;
 
@@ -619,7 +720,25 @@ public class GameUIManager : MonoBehaviour
             }
         }
     }
+    public void Click_ThoatNgayLapTuc()
+    {
+        Time.timeScale = 1f;
+        if (panelSetting != null) panelSetting.SetActive(false);
 
+        // 1. Dừng mọi hành động nạp câu hỏi mới đang chờ
+        DragAndDrop[] allAnswers = FindObjectsOfType<DragAndDrop>();
+        foreach (DragAndDrop answer in allAnswers)
+        {
+            answer.StopAllCoroutines(); // Hủy các hàm ResetQuestionAfterDelay
+        }
+
+        // 2. Khóa cứng trạng thái
+        DragAndDrop.SetGlobalLock(true);
+        SetSettingButtonInteractable(false);
+
+        // 3. Chạy chờ hiện bảng
+        StartCoroutine(WaitAndShowLose());
+    }
 
     private void CheckPunishmentStatus()
     {
@@ -780,6 +899,10 @@ public class GameUIManager : MonoBehaviour
 
     public void BatDauChoiMan(int levelIndex)
     {
+        levelScore = 0;
+        UpdateGameplayScoreUI();// Reset điểm về 0
+        SetSettingButtonInteractable(true);
+        UpdateShopProfileUI(); // Cập nhật lại chỉ số ở Shop
         LoadCurrentPhao();
         LoadCurrentSkin();
         levelCoins = 0;

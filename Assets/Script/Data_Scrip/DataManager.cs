@@ -72,12 +72,17 @@ public class DataManager : MonoBehaviour
         if (UiClass.Instance != null)
         {
             UiClass.Instance.UpdateShopProfileUI();
-        }
-        if (UiClass.Instance != null)
-        {
             UiClass.Instance.AddLevelScore(amount);
         }
-        
+     
+        if (GameUIManager.Instance != null)
+        {
+            GameUIManager.Instance.UpdateShopProfileUI();
+        }
+        if (UiSp.Instance != null)
+        {
+            UiSp.Instance.UpdateShopProfileUI();
+        }
         // ✅ Sync score + level lên Firebase nếu đã đăng nhập
         // CloudSyncService sẽ cập nhật PlayerPrefs trước khi sync Firebase
         CloudSyncService.Instance?.OnScoreChanged(currentScore, newLevel);
