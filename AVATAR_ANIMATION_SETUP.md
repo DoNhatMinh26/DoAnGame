@@ -2,132 +2,145 @@
 
 ## Tổng quan
 
-Bạn đã có sẵn:
-- `Assets/Animation/Character/Idle.anim`
-- `Assets/Animation/Character/Happy.anim`
-- `Assets/Animation/Character/Sad.anim`
+Nhân vật mèo gồm **3 PSB riêng biệt**, mỗi PSB có bộ xương riêng và AnimatorController riêng — không thể dùng chung controller vì xương khác nhau.
 
-Cần tạo **1 AnimatorController cho mỗi avatar** dùng chung 3 clip này, rồi gán vào `AvatarData` và setup GameObject trong scene.
+Bên trong mỗi PSB có 4 skin dùng chung xương của PSB đó.
+
+| PSB | Controller | Animation |
+|---|---|---|
+| `Character Meo.psb` | `Character Meo.controller` | Idle + Happy (1 controller) |
+| `Character Meo_Sad.psb` | `Character Meo_Sad.controller` | Sad |
+| `MeoGoc34 Fix.psb` | `MeoGoc34 Fix.controller` | Attack (góc 3/4) |
 
 ---
 
-## Phần 1: Tạo AnimatorController
+## Phần 1: Setup AnimatorController
 
-> Mỗi avatar cần 1 controller riêng. Nếu bạn có 4 avatar thì tạo 4 controller.
-> Tất cả dùng chung 3 animation clip trên — chỉ khác nhau ở sprite/skin nếu có.
+### 1.1 — Character Meo.controller (Idle + Happy)
 
-### Bước 1.1 — Tạo controller
+File có sẵn tại: `Assets/TaiNguyen/Character/Animation/Character/Character Meo.controller`
 
-1. Vào `Assets/Animation/Character/`
-2. Right-click → **Create → Animator Controller**
-3. Đặt tên: `Avatar_0.controller` (làm tương tự cho Avatar_1, Avatar_2, Avatar_3)
-
-### Bước 1.2 — Mở Animator window
-
-1. Double-click vào `Avatar_0.controller` để mở **Animator window**
-2. Hoặc vào menu **Window → Animation → Animator**
-
-### Bước 1.3 — Thêm Parameters
-
-Trong Animator window, click tab **Parameters** (góc trái) → nhấn dấu **+** → chọn **Trigger**:
-
-Tạo đúng 3 trigger với tên chính xác (phân biệt hoa thường):
+1. Double-click `Character Meo.controller` → mở **Animator window**
+2. Tab **Parameters** (góc trái) → nhấn **+** → **Trigger**, tạo 2 trigger:
 
 | Tên | Loại |
 |---|---|
 | `TriggerIdle` | Trigger |
 | `TriggerHappy` | Trigger |
-| `TriggerSad` | Trigger |
 
-### Bước 1.4 — Tạo States
+3. Kéo `Idle.anim` từ Project vào Animator graph → right-click state `Idle` → **Set as Layer Default State** (chuyển màu cam)
+4. Kéo `Happy.anim` vào graph
 
-Trong Animator window (vùng graph):
+5. Tạo transitions từ **Any State**:
 
-1. **Kéo** `Idle.anim` từ Project window vào Animator graph → Unity tự tạo state `Idle`
-2. **Kéo** `Happy.anim` vào → tạo state `Happy`
-3. **Kéo** `Sad.anim` vào → tạo state `Sad`
-4. Right-click state `Idle` → **Set as Layer Default State** → state này chuyển màu cam (default)
+**Any State → Idle:**
+- Right-click `Any State` → Make Transition → kéo đến `Idle`
+- Inspector: `Has Exit Time` = **bỏ tick**, `Transition Duration` = `0.1`
+- Conditions: nhấn **+** → chọn `TriggerIdle`
 
-Kết quả:
-```
-[Entry] → [Idle] (cam — default)
-          [Happy]
-          [Sad]
-[Any State]
-```
+**Any State → Happy:**
+- Right-click `Any State` → Make Transition → kéo đến `Happy`
+- Inspector: `Has Exit Time` = **bỏ tick**, `Transition Duration` = `0.1`
+- Conditions: nhấn **+** → chọn `TriggerHappy`
 
-### Bước 1.5 — Tạo Transitions từ Any State
-
-Right-click vào **Any State** → **Make Transition** → kéo đến `Idle`:
-
-**Transition: Any State → Idle**
-- Click vào mũi tên transition vừa tạo
-- Trong Inspector:
-  - `Has Exit Time`: **bỏ tick** (unchecked)
-  - `Transition Duration`: `0.1`
-  - Phần **Conditions**: nhấn **+** → chọn `TriggerIdle`
-
-Lặp lại tương tự:
-
-**Transition: Any State → Happy**
-- `Has Exit Time`: bỏ tick
-- `Transition Duration`: `0.1`
-- Condition: `TriggerHappy`
-
-**Transition: Any State → Sad**
-- `Has Exit Time`: bỏ tick
-- `Transition Duration`: `0.1`
-- Condition: `TriggerSad`
-
-### Bước 1.6 — Kiểm tra
-
-Animator graph phải trông như sau:
+Kết quả graph:
 ```
 [Any State] ──TriggerIdle──→  [Idle] ← default (cam)
 [Any State] ──TriggerHappy──→ [Happy]
-[Any State] ──TriggerSad──→   [Sad]
 ```
 
-### Bước 1.7 — Lặp lại cho các avatar còn lại
+---
 
-Duplicate `Avatar_0.controller` (Ctrl+D) → đổi tên thành `Avatar_1.controller`, `Avatar_2.controller`, `Avatar_3.controller`.
+### 1.2 — Character Meo_Sad.controller (Sad)
 
-> Vì tất cả dùng chung 3 clip, chỉ cần duplicate — không cần tạo lại từ đầu.
+File có sẵn tại: `Assets/TaiNguyen/Character/Animation/Character/Character Meo_Sad.controller`
+
+1. Double-click `Character Meo_Sad.controller` → mở **Animator window**
+2. Tab **Parameters** → nhấn **+** → **Trigger**:
+
+| Tên | Loại |
+|---|---|
+| `TriggerSad` | Trigger |
+
+3. Kéo `Sad.anim` vào graph → right-click → **Set as Layer Default State**
+4. Tạo transition:
+
+**Any State → Sad:**
+- `Has Exit Time` = **bỏ tick**, `Transition Duration` = `0.1`
+- Condition: `TriggerSad`
+
+Kết quả graph:
+```
+[Any State] ──TriggerSad──→ [Sad] ← default (cam)
+```
 
 ---
 
-## Phần 2: Gán vào AvatarData
+### 1.3 — MeoGoc34 Fix.controller (Attack)
 
-1. Mở từng asset trong `Assets/Resources/Avatars/`
-2. Gán field `Animator Controller`:
-   - `Avatar_0_...` → `Avatar_0.controller`
-   - `Avatar_1_...` → `Avatar_1.controller`
-   - v.v.
+File có sẵn tại: `Assets/TaiNguyen/Character/Animation/Character 3_4/MeoGoc34 Fix.controller`
+
+*(Setup tương tự — tính sau khi implement phần Attack)*
 
 ---
 
-## Phần 3: Setup trong scene Test_FireBase_multi
+## Phần 2: Gán controller vào PSB trong scene
 
-### 3.1 — Tạo Player1Character trong GameplayPanel
+Sau khi setup controller xong, gán vào Animator của từng PSB:
 
 1. Mở scene `Test_FireBase_multi`
-2. Tìm `Canvas/GameplayPanel` trong Hierarchy
-3. Right-click `GameplayPanel` → **Create Empty** → đặt tên `Player1Character`
-4. Trên `Player1Character`, thêm components:
-   - **Add Component → Animator**
-   - **Add Component → Avatar Character Display** (script của bạn)
-5. Trong Inspector của `AvatarCharacterDisplay`:
-   - `Character Animator` → kéo component **Animator** trên cùng GameObject vào
-   - `Character Sprite` → để trống (nếu không dùng SpriteRenderer)
-6. Đặt vị trí phù hợp trên màn hình (bên trái — Player 1)
+2. Tìm `Canvas/GameplayPanel/Player1Character`
+3. Chọn child `Character Meo` → component **Animator** → kéo `Character Meo.controller` vào field **Controller**
+4. Chọn child `Character Meo_Sad` → component **Animator** → kéo `Character Meo_Sad.controller` vào field **Controller**
+5. Chọn child `MeoGoc34 Fix` → component **Animator** → kéo `MeoGoc34 Fix.controller` vào field **Controller**
+6. Lặp lại cho `Player2Character`
 
-### 3.2 — Tạo Player2Character
+---
 
-1. Duplicate `Player1Character` (Ctrl+D) → đổi tên thành `Player2Character`
-2. Đặt vị trí bên phải — Player 2
-3. References trong `AvatarCharacterDisplay` đã tự copy — kiểm tra lại cho chắc
+## Phần 3: Kéo PSB vào scene
 
-### 3.3 — Gán vào UIMultiplayerBattleController
+1. Mở scene `Test_FireBase_multi`
+2. Tìm `Canvas/GameplayPanel`
+3. Tạo Empty GameObject con của `GameplayPanel`, đặt tên `Player1Character`
+4. Kéo 3 PSB từ `Assets/TaiNguyen/Character/` vào làm con của `Player1Character`:
+   - `Character Meo.psb`
+   - `Character Meo_Sad.psb`
+   - `MeoGoc34 Fix.psb`
+5. Đặt vị trí phù hợp (bên trái — Player 1)
+6. Duplicate `Player1Character` → đổi tên `Player2Character`, đặt bên phải
+
+---
+
+## Phần 4: Gán AvatarCharacterDisplay
+
+1. Chọn `Player1Character` → **Add Component → AvatarCharacterDisplay**
+2. Trong Inspector gán:
+   - `Character Meo` → child `Character Meo`
+   - `Character Meo Sad` → child `Character Meo_Sad`
+   - `Meo Goc34 Fix` → child `MeoGoc34 Fix`
+3. Lặp lại cho `Player2Character`
+
+---
+
+## Phần 5: Kiểm tra tên skin con
+
+Mở từng PSB trong Hierarchy và xác nhận tên con:
+
+**Character Meo** và **Character Meo_Sad:**
+```
+mascost1, mascost2, mascost3, mascost4, root
+```
+
+**MeoGoc34 Fix:**
+```
+Meo1, Meo2, Meo3, Meo4, Root
+```
+
+> Tên phải khớp chính xác (phân biệt hoa thường) với `SkinNames` trong `AvatarCharacterDisplay.cs`.
+
+---
+
+## Phần 6: Gán vào UIMultiplayerBattleController
 
 1. Chọn `GameplayPanel` → component **UIMultiplayerBattleController**
 2. Gán:
@@ -136,90 +149,54 @@ Duplicate `Avatar_0.controller` (Ctrl+D) → đổi tên thành `Avatar_1.contro
 
 ---
 
-## Phần 4: Setup trong Wins panel
+## Phần 7: Setup Wins panel
 
-### 4.1 — Tạo WinnerCharacter
-
-1. Tìm `Canvas/Wins` trong Hierarchy
-2. Tìm (hoặc tạo) GameObject `Win_image_animation` — đây là chỗ hiển thị nhân vật người thắng
-3. Thêm components lên `Win_image_animation`:
-   - **Animator**
-   - **AvatarCharacterDisplay**
-4. Gán `Character Animator` trong Inspector
-
-### 4.2 — Tạo LoserCharacter
-
-1. Tìm (hoặc tạo) `Lost_image_animation` trong `Wins`
-2. Thêm **Animator** + **AvatarCharacterDisplay**
-3. Gán references
-
-### 4.3 — Gán vào UIWinsController
-
-1. Chọn `Wins` → component **UIWinsController**
-2. Gán:
-   - `Winner Character` → `Win_image_animation`
-   - `Loser Character` → `Lost_image_animation`
+1. Tìm `Canvas/Wins`
+2. Tạo Empty GameObject `WinnerCharacter`, kéo 3 PSB vào làm con, gán controller như Phần 2
+3. Tạo Empty GameObject `LoserCharacter`, kéo 3 PSB vào làm con, gán controller như Phần 2
+4. Gán `AvatarCharacterDisplay` lên cả 2, gán 3 PSB vào Inspector
+5. Chọn `Wins` → **UIWinsController** → gán `Winner Character` và `Loser Character`
 
 ---
 
-## Phần 5: Kiểm tra hoạt động
+## Phần 8: Tạo AvatarData assets
 
-### Test nhanh trong Play Mode
+1. Vào `Assets/Resources/Avatars/`
+2. Right-click → **Create → Game → AvatarData**
+3. Tạo 4 assets:
 
-1. Chạy scene `Test_FireBase_multi`
-2. Vào Profile → chọn avatar khác nhau cho 2 máy (dùng ParrelSync)
-3. Vào battle → quan sát:
-   - Khi câu hỏi xuất hiện → cả 2 nhân vật chạy **Idle**
-   - Khi có người trả lời đúng → người thắng **Happy**, người thua **Sad**
-   - Khi câu hỏi mới → reset về **Idle**
-4. Khi trận kết thúc → Wins panel:
-   - Người thắng → **Happy**
-   - Người thua → **Sad**
+| Asset | avatarId | avatarName | isDefault |
+|---|---|---|---|
+| `Avatar_0` | 0 | Mèo 1 | ✅ true |
+| `Avatar_1` | 1 | Mèo 2 | false |
+| `Avatar_2` | 2 | Mèo 3 | false |
+| `Avatar_3` | 3 | Mèo 4 | false |
 
-### Kiểm tra Console
+4. Gán `thumbnail` và `fullAvatar` từ `Assets/TaiNguyen/Character/Avatar/`:
+   - `AVA_M1.png` → Avatar_0, `AVA_M2.png` → Avatar_1, v.v.
 
-Tìm các log sau để xác nhận hoạt động đúng:
-```
-[AvatarManager] ✅ Loaded X avatars. Current: ...
-[PlayerState] Owner set AvatarId=X
-[BattleController] ✅ Avatar characters initialized: P1=X, P2=X
-[AvatarCharacterDisplay] ✅ Set avatar: ... trên Player1Character
-```
+> **Không có field `animatorController`** — controller gán trực tiếp vào Animator của PSB trong scene.
 
 ---
 
-## Tóm tắt cấu trúc file sau khi hoàn thành
+## Phần 9: Kiểm tra
 
+1. Chạy Play Mode
+2. Gọi `player1Character.SetAvatar(0)` → `mascost1` / `Meo1` bật, còn lại tắt
+3. Gọi `player1Character.TriggerHappy()` → `Character Meo` chạy animation Happy
+
+Console log khi đúng:
 ```
-Assets/
-├── Animation/
-│   └── Character/
-│       ├── Idle.anim          ← dùng chung cho tất cả avatar
-│       ├── Happy.anim         ← dùng chung
-│       ├── Sad.anim           ← dùng chung
-│       ├── Avatar_0.controller  ← controller cho avatar 0
-│       ├── Avatar_1.controller  ← controller cho avatar 1
-│       ├── Avatar_2.controller  ← controller cho avatar 2
-│       └── Avatar_3.controller  ← controller cho avatar 3
-├── Resources/
-│   └── Avatars/
-│       ├── Avatar_0_xxx.asset   ← animatorController = Avatar_0.controller
-│       ├── Avatar_1_xxx.asset   ← animatorController = Avatar_1.controller
-│       ├── Avatar_2_xxx.asset
-│       └── Avatar_3_xxx.asset
-└── Script/
-    └── Avatar/
-        ├── AvatarData.cs
-        ├── AvatarManager.cs
-        ├── AvatarItemUI.cs
-        └── AvatarCharacterDisplay.cs  ← gán lên Player1/2Character và Win/Lost
+[AvatarCharacterDisplay] ✅ Set avatar id=0 trên Player1Character
 ```
 
 ---
 
 ## Lưu ý quan trọng
 
-- **Tên parameter phải chính xác:** `TriggerIdle`, `TriggerHappy`, `TriggerSad` — phân biệt hoa thường
-- **Has Exit Time phải bỏ tick** trên tất cả transitions — nếu không animation sẽ không chuyển ngay lập tức
-- **Any State → mỗi state** (không phải Idle → Happy → Sad) — để có thể trigger từ bất kỳ trạng thái nào
-- Nếu `AvatarManager` chưa load xong khi `OnNetworkSpawn()` chạy → `AvatarId.Value` sẽ là 0 (default) — `OnValueChanged` sẽ tự cập nhật sau khi sync
+- **3 PSB có 3 bộ xương khác nhau** → mỗi PSB có controller riêng, không dùng chung
+- `Character Meo.controller` chứa **cả Idle lẫn Happy** trong 1 controller — dùng `TriggerIdle` / `TriggerHappy` để chuyển state
+- `Character Meo_Sad.controller` chỉ có **Sad** — dùng `TriggerSad`
+- Tên trigger phải khớp chính xác: `TriggerIdle`, `TriggerHappy`, `TriggerSad` (phân biệt hoa thường)
+- Tên skin con phải khớp: `mascost1` (không phải `Mascost1`), `Meo1` (không phải `meo1`)
+- Phần logic PSB nào hiển thị theo sự kiện (Idle/Happy/Sad/Attack) sẽ bổ sung sau

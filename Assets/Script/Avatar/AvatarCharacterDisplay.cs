@@ -2,93 +2,111 @@ using UnityEngine;
 
 /// <summary>
 /// Gán lên Player1Character / Player2Character trong GameplayPanel
-/// và Win_image_animation / Lost_image_animation trong Wins panel.
+/// và WinnerCharacter / LoserCharacter trong Wins panel.
 ///
-/// Nhận avatarId → load AvatarData từ AvatarManager → set AnimatorController + Sprite.
-/// Expose TriggerIdle / TriggerHappy / TriggerSad để BattleController và WinsController gọi.
+/// Nhận avatarId → bật đúng skin con trên cả 3 PSB, tắt 3 skin còn lại.
+/// TriggerIdle/Happy/Sad → gọi trigger trên Animator của từng PSB đang active.
+///
+/// 3 PSB có 3 bộ xương riêng biệt — không swap AnimatorController.
+/// Controller đã gán sẵn trong từng PSB khi import.
+///
+/// Skin con:
+///   Character Meo / Character Meo_Sad : mascost1–mascost4
+///   MeoGoc34 Fix                      : Meo1–Meo4
+/// avatarId 0 → skin index 0 (mascost1/Meo1), avatarId 1 → index 1, ...
 /// </summary>
 public class AvatarCharacterDisplay : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private Animator characterAnimator;
-    [SerializeField] private SpriteRenderer characterSprite; // optional — nếu dùng SpriteRenderer
+    [Header("3 PSB GameObjects")]
+    [SerializeField] private GameObject characterMeo;       // Character Meo (Idle + Happy)
+    [SerializeField] private GameObject characterMeoSad;    // Character Meo_Sad (Sad)
+    [SerializeField] private GameObject meoGoc34Fix;        // MeoGoc34 Fix (Attack 3/4)
 
-    // Hash các parameter để tránh string lookup mỗi frame
+    // Tên skin con theo thứ tự avatarId
+    private static readonly string[] SkinNamesMeo    = { "mascost1", "mascost2", "mascost3", "mascost4" };
+    private static readonly string[] SkinNamesMeoSad = { "mascost1", "mascost2", "mascost3", "mascost4" };
+    private static readonly string[] SkinNamesMeo34  = { "Meo1",     "Meo2",     "Meo3",     "Meo4"     };
+
+    // Hash trigger parameters
     private static readonly int HashIdle  = Animator.StringToHash("TriggerIdle");
     private static readonly int HashHappy = Animator.StringToHash("TriggerHappy");
     private static readonly int HashSad   = Animator.StringToHash("TriggerSad");
 
     private int currentAvatarId = -1;
 
+    // Cache Animator của từng PSB
+    private Animator animMeo;
+    private Animator animMeoSad;
+    private Animator animMeo34;
+
     private void Awake()
     {
-        if (characterAnimator == null)
-            characterAnimator = GetComponent<Animator>();
+        if (characterMeo    != null) animMeo    = characterMeo.GetComponent<Animator>();
+        if (characterMeoSad != null) animMeoSad = characterMeoSad.GetComponent<Animator>();
+        if (meoGoc34Fix     != null) animMeo34  = meoGoc34Fix.GetComponent<Animator>();
     }
 
     // ─────────────────────────────────────────────────────────────
-    // PUBLIC API
+    // PUBLIC API — Skin selection
     // ─────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Load AvatarData theo id và apply AnimatorController + Sprite.
-    /// Tự động reset về Idle sau khi set.
+    /// Bật đúng skin tương ứng avatarId trên cả 3 PSB, tắt các skin còn lại.
     /// </summary>
     public void SetAvatar(int avatarId)
     {
-        if (avatarId == currentAvatarId) return; // Không set lại nếu đã đúng
+        if (avatarId == currentAvatarId) return;
 
-        if (AvatarManager.Instance == null)
-        {
-            Debug.LogWarning("[AvatarCharacterDisplay] AvatarManager chưa sẵn sàng.");
-            return;
-        }
-
-        AvatarData data = AvatarManager.Instance.GetById(avatarId);
-        if (data == null)
-        {
-            // Fallback về default nếu không tìm thấy
-            data = AvatarManager.Instance.GetCurrentAvatar();
-            if (data == null)
-            {
-                Debug.LogWarning($"[AvatarCharacterDisplay] Không tìm thấy AvatarData id={avatarId}");
-                return;
-            }
-        }
-
-        // Gán AnimatorController
-        if (characterAnimator != null && data.animatorController != null)
-        {
-            characterAnimator.runtimeAnimatorController = data.animatorController;
-        }
-
-        // Gán sprite (nếu dùng SpriteRenderer)
-        if (characterSprite != null && data.fullAvatar != null)
-        {
-            characterSprite.sprite = data.fullAvatar;
-        }
+        ApplySkin(characterMeo,    SkinNamesMeo,    avatarId);
+        ApplySkin(characterMeoSad, SkinNamesMeoSad, avatarId);
+        ApplySkin(meoGoc34Fix,     SkinNamesMeo34,  avatarId);
 
         currentAvatarId = avatarId;
-        TriggerIdle();
-
-        Debug.Log($"[AvatarCharacterDisplay] ✅ Set avatar: {data.avatarName} (id={avatarId}) trên {gameObject.name}");
+        Debug.Log($"[AvatarCharacterDisplay] ✅ Set avatar id={avatarId} trên {gameObject.name}");
     }
 
-    public void TriggerIdle()
+    public int GetCurrentAvatarId() => currentAvatarId;
+
+    // ─────────────────────────────────────────────────────────────
+    // PUBLIC API — Animation triggers
+    // Gọi trigger trên tất cả Animator của 3 PSB.
+    // PSB nào active sẽ phản hồi animation — logic show/hide PSB theo sự kiện tính sau.
+    // ─────────────────────────────────────────────────────────────
+
+    public void TriggerIdle()  => SetTriggerAll(HashIdle);
+    public void TriggerHappy() => SetTriggerAll(HashHappy);
+    public void TriggerSad()   => SetTriggerAll(HashSad);
+
+    // ─────────────────────────────────────────────────────────────
+    // PRIVATE
+    // ─────────────────────────────────────────────────────────────
+
+    private void ApplySkin(GameObject parent, string[] skinNames, int avatarId)
     {
-        if (characterAnimator != null && characterAnimator.runtimeAnimatorController != null)
-            characterAnimator.SetTrigger(HashIdle);
+        if (parent == null) return;
+
+        int index = Mathf.Clamp(avatarId, 0, skinNames.Length - 1);
+
+        for (int i = 0; i < skinNames.Length; i++)
+        {
+            Transform skin = parent.transform.Find(skinNames[i]);
+            if (skin != null)
+                skin.gameObject.SetActive(i == index);
+            else
+                Debug.LogWarning($"[AvatarCharacterDisplay] Không tìm thấy '{skinNames[i]}' trong '{parent.name}'");
+        }
     }
 
-    public void TriggerHappy()
+    private void SetTriggerAll(int hash)
     {
-        if (characterAnimator != null && characterAnimator.runtimeAnimatorController != null)
-            characterAnimator.SetTrigger(HashHappy);
+        TrySetTrigger(animMeo,    hash);
+        TrySetTrigger(animMeoSad, hash);
+        TrySetTrigger(animMeo34,  hash);
     }
 
-    public void TriggerSad()
+    private void TrySetTrigger(Animator anim, int hash)
     {
-        if (characterAnimator != null && characterAnimator.runtimeAnimatorController != null)
-            characterAnimator.SetTrigger(HashSad);
+        if (anim != null && anim.runtimeAnimatorController != null)
+            anim.SetTrigger(hash);
     }
 }

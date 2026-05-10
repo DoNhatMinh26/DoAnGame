@@ -70,8 +70,8 @@ public class AvatarManager : MonoBehaviour
 
     public Sprite GetCurrentFullAvatar() => currentAvatar?.fullAvatar;
 
-    public RuntimeAnimatorController GetCurrentAnimatorController()
-        => currentAvatar?.animatorController;
+    // GetCurrentAnimatorController() đã bỏ —
+    // 3 PSB có 3 bộ xương riêng, controller gán sẵn trong PSB, không swap từ code.
 
     public AvatarData GetById(int id)
         => allAvatars?.FirstOrDefault(a => a.avatarId == id);
