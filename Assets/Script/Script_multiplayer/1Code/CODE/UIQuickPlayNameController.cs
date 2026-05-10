@@ -23,9 +23,10 @@ namespace DoAnGame.UI
         [Header("Navigation")]
         [SerializeField] private string targetPanelName = "MainMenuPanel";
 
-        private const string GUEST_NAME_KEY = "GuestPlayerName";
-        private const string IS_GUEST_KEY = "IsGuestMode";
-        private const string SELECTED_GRADE_KEY = "SelectedGrade"; // Lưu lớp đã chọn
+        // Dùng LocalStorageKeyResolver để main/clone không đụng chung PlayerPrefs
+        private static string GUEST_NAME_KEY    => DoAnGame.Auth.LocalStorageKeyResolver.GuestName;
+        private static string IS_GUEST_KEY      => DoAnGame.Auth.LocalStorageKeyResolver.IsGuestMode;
+        private static string SELECTED_GRADE_KEY => DoAnGame.Auth.LocalStorageKeyResolver.SelectedGrade;
         private bool isReturningUser = false;
 
         private void Start()
@@ -450,8 +451,11 @@ namespace DoAnGame.UI
             PlayerPrefs.DeleteKey(GUEST_NAME_KEY);
             PlayerPrefs.DeleteKey(IS_GUEST_KEY);
             PlayerPrefs.DeleteKey(SELECTED_GRADE_KEY);
+            // Xóa điểm/level guest để không lẫn khi vào lại chơi nhanh với tên mới
+            PlayerPrefs.DeleteKey(DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestScore);
+            PlayerPrefs.DeleteKey(DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestLevel);
             PlayerPrefs.Save();
-            Debug.Log("[QuickPlay] Cleared guest data");
+            Debug.Log("[QuickPlay] Cleared guest data (including score/level)");
         }
 
         /// <summary>

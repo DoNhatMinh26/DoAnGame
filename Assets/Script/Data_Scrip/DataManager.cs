@@ -35,9 +35,14 @@ public class DataManager : MonoBehaviour
 
     public void AddScore(int amount)
     {
-        // ✅ Đọc từ đúng key tuỳ theo chế độ
-        string scoreKey = UIQuickPlayNameController.IsGuestMode() ? "LocalGuestScore" : "UserScore";
-        string levelKey = UIQuickPlayNameController.IsGuestMode() ? "LocalGuestLevel" : "UserLevel";
+        // ✅ Dùng LocalStorageKeyResolver để main/clone không đụng chung PlayerPrefs
+        bool isGuest = UIQuickPlayNameController.IsGuestMode();
+        string scoreKey = isGuest
+            ? DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestScore
+            : DoAnGame.Auth.LocalStorageKeyResolver.UserScore;
+        string levelKey = isGuest
+            ? DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestLevel
+            : DoAnGame.Auth.LocalStorageKeyResolver.UserLevel;
         
         int currentScore = PlayerPrefs.GetInt(scoreKey, 0);
         int currentLevel = PlayerPrefs.GetInt(levelKey, 1);
@@ -45,12 +50,9 @@ public class DataManager : MonoBehaviour
         currentScore += amount;
         Debug.Log($"[DataManager] Diem hien tai: {currentScore} (key: {scoreKey})");
 
-        // Tính level từ tổng score (nhất quán với công thức Firebase)
-        // totalXp = totalScore / 10
-        // level   = 1 + (totalXp / 100)
-        int newLevel = 1 + (currentScore / 10 / 100); // = 1 + (currentScore / 1000)
+        // ✅ Tính level: dùng pointsPerLevel để có thể thay đổi từ Inspector
+        int newLevel = 1 + (currentScore / pointsPerLevel);
 
-        // Thăng cấp → thưởng tiền (chỉ khi level thực sự tăng) 
         if (newLevel > currentLevel)
         {
             int levelsGained = newLevel - currentLevel;
@@ -62,19 +64,17 @@ public class DataManager : MonoBehaviour
             Debug.Log($"[DataManager] Thăng cấp! {currentLevel} → {newLevel}, thưởng {50 * levelsGained} tiền");
         }
        
-        // ✅ Ghi vào đúng key
         PlayerPrefs.SetInt(scoreKey, currentScore);
         PlayerPrefs.SetInt(levelKey, newLevel);
         PlayerPrefs.Save();
         
-        Debug.Log($"[DataManager] Saved to PlayerPrefs: {scoreKey}={currentScore}, {levelKey}={newLevel}");
+        Debug.Log($"[DataManager] Saved: {scoreKey}={currentScore}, {levelKey}={newLevel}");
         
         if (UiClass.Instance != null)
         {
             UiClass.Instance.UpdateShopProfileUI();
             UiClass.Instance.AddLevelScore(amount);
         }
-     
         if (GameUIManager.Instance != null)
         {
             GameUIManager.Instance.UpdateShopProfileUI();
@@ -83,9 +83,12 @@ public class DataManager : MonoBehaviour
         {
             UiSp.Instance.UpdateShopProfileUI();
         }
-        // ✅ Sync score + level lên Firebase nếu đã đăng nhập
-        // CloudSyncService sẽ cập nhật PlayerPrefs trước khi sync Firebase
-        CloudSyncService.Instance?.OnScoreChanged(currentScore, newLevel);
+
+        // Chỉ sync Firebase khi đã đăng nhập (không phải guest)
+        if (!isGuest)
+        {
+            CloudSyncService.Instance?.OnScoreChanged(currentScore, newLevel);
+        }
     }
 
 }

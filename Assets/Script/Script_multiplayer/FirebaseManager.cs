@@ -358,6 +358,9 @@ public class FirebaseManager : MonoBehaviour
             // Update lastLogin timestamp
             await UpdateLastLogin(currentUser.UserId);
 
+            // ✅ Kiểm tra và tái tạo dữ liệu thiếu (nếu playerData bị xoá)
+            await EnsurePlayerDataExistsAsync(currentUser.UserId);
+
             // Lưu UID vào local
             PlayerPrefs.SetString(LocalStorageKeyResolver.Key("uid"), currentUser.UserId);
             PlayerPrefs.Save();
@@ -936,54 +939,156 @@ public class FirebaseManager : MonoBehaviour
     {
         try
         {
-            if (firestore == null)
+            if (firestore == null) return 1;
+
+            var userDoc = await firestore.Collection("users").Document(uid).GetSnapshotAsync();
+            if (!userDoc.Exists) return 1;
+
+            var userData = userDoc.ToDictionary();
+            int age = GetInt(userData, "age", -1);
+            int grade = GetInt(userData, "grade", -1);
+
+            // Nếu đã có grade thì không cần migrate
+            if (grade > 0) return grade;
+
+            // Nếu có age thì convert sang grade
+            if (age > 0)
             {
-                Debug.LogWarning("[Firebase] ⚠️ Firestore chưa sẵn sàng để migrate.");
-                return -1;
+                grade = ConvertAgeToGrade(age);
+                await firestore.Collection("users").Document(uid).UpdateAsync("grade", grade);
+                Debug.Log($"[Firebase] ✅ Migrated age={age} → grade={grade}");
+                return grade;
             }
 
-            var docRef = firestore.Collection("users").Document(uid);
-            var snapshot = await docRef.GetSnapshotAsync();
-
-            if (!snapshot.Exists)
-            {
-                Debug.LogWarning($"[Firebase] ⚠️ Không tìm thấy user document: {uid}");
-                return -1;
-            }
-
-            var data = snapshot.ToDictionary();
-
-            // Đã có field "grade" → không cần migrate
-            if (data.ContainsKey("grade") && data["grade"] != null)
-            {
-                int existingGrade = GetInt(data, "grade", 0);
-                if (existingGrade >= 1 && existingGrade <= 5)
-                {
-                    Debug.Log($"[Firebase] ℹ️ User {uid} đã có grade={existingGrade}, bỏ qua migration.");
-                    return existingGrade;
-                }
-            }
-
-            // Chưa có "grade" → đọc "age" và convert
-            int age = GetInt(data, "age", 0);
-            int grade = ConvertAgeToGrade(age);
-
-            Debug.Log($"[Firebase] 🔄 Migrating user {uid}: age={age} → grade={grade}");
-
-            // Ghi "grade" vào Firestore, giữ nguyên "age" để không mất dữ liệu cũ
-            var updatePayload = new Dictionary<string, object>
-            {
-                { "grade", grade }
-            };
-            await docRef.SetAsync(updatePayload, SetOptions.MergeAll);
-
-            Debug.Log($"[Firebase] ✅ Migration hoàn tất: uid={uid}, grade={grade}");
-            return grade;
+            return 1; // Default
         }
         catch (Exception ex)
         {
-            Debug.LogWarning($"[Firebase] ⚠️ Lỗi migration age→grade: {ex.Message}");
-            return 1; // fallback Lớp 1
+            Debug.LogWarning($"[Firebase] ⚠️ Migration failed: {ex.Message}");
+            return 1;
+        }
+    }
+
+    /// <summary>
+    /// Kiểm tra xem playerData có tồn tại không.
+    /// Nếu không → tái tạo tự động (gọi khi đăng nhập).
+    /// </summary>
+    private async Task EnsurePlayerDataExistsAsync(string uid)
+    {
+        try
+        {
+            if (firestore == null) return;
+
+            // Kiểm tra playerData/{uid} có tồn tại không
+            var playerDataDoc = await firestore.Collection("playerData").Document(uid).GetSnapshotAsync();
+            
+            if (playerDataDoc.Exists)
+            {
+                // ✅ playerData tồn tại → không cần làm gì
+                Debug.Log($"[Firebase] ℹ️ playerData/{uid} đã tồn tại");
+                return;
+            }
+
+            // ❌ playerData không tồn tại → tái tạo
+            Debug.LogWarning($"[Firebase] ⚠️ playerData/{uid} không tồn tại! Đang tái tạo...");
+            bool success = await RecreatePlayerDataAsync(uid);
+            
+            if (success)
+            {
+                Debug.Log($"[Firebase] ✅ Tái tạo playerData thành công!");
+            }
+            else
+            {
+                Debug.LogWarning($"[Firebase] ⚠️ Tái tạo playerData thất bại!");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"[Firebase] ⚠️ Lỗi kiểm tra playerData: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Khôi phục dữ liệu Firestore nếu bị xoá nhầm.
+    /// Tái tạo playerData + 15 gameModeProgress records.
+    /// Giữ nguyên playerShop (nếu có).
+    /// </summary>
+    public async Task<bool> RecreatePlayerDataAsync(string uid)
+    {
+        try
+        {
+            if (firestore == null)
+            {
+                Debug.LogWarning("[Firebase] ⚠️ Firestore chưa sẵn sàng để khôi phục dữ liệu.");
+                return false;
+            }
+
+            Debug.Log($"[Firebase] 🔄 Đang khôi phục dữ liệu cho uid={uid}...");
+
+            // Bước 1: Lấy thông tin user từ users/{uid}
+            var userDoc = await firestore.Collection("users").Document(uid).GetSnapshotAsync();
+            if (!userDoc.Exists)
+            {
+                Debug.LogWarning($"[Firebase] ⚠️ User {uid} không tồn tại trong users collection.");
+                return false;
+            }
+
+            var userData = userDoc.ToDictionary();
+            string characterName = GetString(userData, "characterName", "Player");
+            int grade = GetInt(userData, "grade", 1);
+
+            // Bước 2: Tái tạo playerData/{uid}
+            var playerData = new Dictionary<string, object>
+            {
+                { "uid", uid },
+                { "characterName", characterName },
+                { "level", 1 },
+                { "totalXp", 0 },
+                { "totalScore", 0 },
+                { "rank", 0 },
+                { "gamesPlayed", 0 },
+                { "gamesWon", 0 },
+                { "winRate", 0f },
+                { "lastUpdated", DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() }
+            };
+            await firestore.Collection("playerData").Document(uid).SetAsync(playerData, SetOptions.MergeAll);
+            Debug.Log($"[Firebase] ✅ Tái tạo playerData/{uid}");
+
+            // Bước 3: Tái tạo 15 gameModeProgress records (3 chế độ × 5 lớp)
+            string[] gameModes = { "chonda", "keothada", "phithuyen" };
+            int[] grades = { 1, 2, 3, 4, 5 };
+
+            foreach (string gameMode in gameModes)
+            {
+                foreach (int g in grades)
+                {
+                    string progressId = $"{uid}_{gameMode}_{g}";
+                    
+                    var progressData = new Dictionary<string, object>
+                    {
+                        { "progressId", progressId },
+                        { "uid", uid },
+                        { "gameMode", gameMode },
+                        { "grade", g },
+                        { "currentLevel", 1 },
+                        { "maxLevelUnlocked", 1 },
+                        { "totalScore", 0 },
+                        { "bestScore", 0 },
+                        { "lastPlayed", null }
+                    };
+
+                    await firestore.Collection("gameModeProgress").Document(progressId).SetAsync(progressData, SetOptions.MergeAll);
+                }
+            }
+            Debug.Log($"[Firebase] ✅ Tái tạo 15 gameModeProgress records");
+
+            Debug.Log($"[Firebase] ✅ Khôi phục dữ liệu thành công cho uid={uid}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Firebase] ❌ Lỗi khôi phục dữ liệu: {ex.Message}");
+            return false;
         }
     }
 

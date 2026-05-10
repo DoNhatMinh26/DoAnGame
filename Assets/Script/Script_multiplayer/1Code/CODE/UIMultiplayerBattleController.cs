@@ -793,6 +793,45 @@ namespace DoAnGame.UI
             var winner = (winnerId == 0) ? p1 : p2;
             var loser  = (winnerId == 0) ? p2 : p1;
 
+            // ✅ FIX: Đọc HP từ cache (gửi qua ClientRpc) thay vì từ NetworkVariable (có thể chưa sync)
+            int winnerHealth = -1;
+            int loserHealth  = -1;
+            
+            var net = NetworkManager.Singleton;
+            bool isHost = (net != null && net.IsHost);
+            
+            if (isHost)
+            {
+                // Host đọc trực tiếp từ player states (đã sync)
+                winnerHealth = winner.CurrentHealth.Value;
+                loserHealth  = loser.CurrentHealth.Value;
+                GameLogger.Log($"[BattleController] HOST reading HP from player states: Winner={winnerHealth}, Loser={loserHealth}");
+            }
+            else
+            {
+                // Client đọc từ cache (gửi qua ClientRpc)
+                int p1Health = battleManager.cachedPlayer1Health;
+                int p2Health = battleManager.cachedPlayer2Health;
+                
+                if (p1Health == -1 || p2Health == -1)
+                {
+                    // Fallback: cache chưa có → đọc từ player states (có thể sai)
+                    GameLogger.Log($"[BattleController] ⚠️ CLIENT cache not ready (P1={p1Health}, P2={p2Health}), falling back to player states");
+                    winnerHealth = winner.CurrentHealth.Value;
+                    loserHealth  = loser.CurrentHealth.Value;
+                }
+                else
+                {
+                    // Đọc từ cache
+                    winnerHealth = (winnerId == 0) ? p1Health : p2Health;
+                    loserHealth  = (winnerId == 0) ? p2Health : p1Health;
+                    GameLogger.Log($"[BattleController] CLIENT reading HP from cache: Winner={winnerHealth}, Loser={loserHealth}");
+                }
+            }
+
+            // ✅ DEBUG: Log loser's health before reading
+            GameLogger.Log($"[BattleController] DEBUG: Loser ({loser.PlayerName.Value}) FinalHealth={loserHealth}, CurrentHealth.Value={loser.CurrentHealth.Value}, MaxHealth.Value={loser.MaxHealth.Value}, IsAlive={loser.IsAlive()}");
+
             UIWinsController.LastResult = new UIWinsController.MatchResultData
             {
                 IsValid           = true,
@@ -802,10 +841,10 @@ namespace DoAnGame.UI
                 AbandonedPlayerId = battleManager.AbandonedPlayerId.Value,
                 WinnerName        = winner.PlayerName.Value.ToString(),
                 WinnerScore       = winner.Score.Value,
-                WinnerHealth      = winner.CurrentHealth.Value,
+                WinnerHealth      = winnerHealth,
                 LoserName         = loser.PlayerName.Value.ToString(),
                 LoserScore        = loser.Score.Value,
-                LoserHealth       = loser.CurrentHealth.Value,
+                LoserHealth       = loserHealth,
             };
 
             Log($"PushMatchResult: winner={UIWinsController.LastResult.WinnerName}, loser={UIWinsController.LastResult.LoserName}");
@@ -941,19 +980,39 @@ namespace DoAnGame.UI
             int  localPlayer = isHost ? 0 : 1;
             bool isWin       = (winnerId == localPlayer);
 
+            string role = isHost ? "HOST" : "CLIENT";
+            GameLogger.Log($"[BattleController] [{role}] SyncOwnMatchResult START - localPlayer={localPlayer}, winnerId={winnerId}, isWin={isWin}");
+
             // Lấy điểm của local player từ NetworkedPlayerState
             int score = 0;
             if (battleManager != null)
             {
                 var state = isHost ? battleManager.GetPlayer1State() : battleManager.GetPlayer2State();
-                if (state != null) score = state.Score.Value;
+                if (state != null)
+                {
+                    score = state.Score.Value;
+                    GameLogger.Log($"[BattleController] [{role}] Read score from PlayerState: {score}");
+                }
+                else
+                {
+                    GameLogger.Log($"[BattleController] [{role}] ⚠️ PlayerState is NULL!");
+                }
+            }
+            else
+            {
+                GameLogger.Log($"[BattleController] [{role}] ⚠️ BattleManager is NULL!");
             }
 
             // Sync lên Firebase qua CloudSyncService
             var cloudSync = DoAnGame.Auth.CloudSyncService.Instance;
             if (cloudSync != null)
             {
+                GameLogger.Log($"[BattleController] [{role}] Calling CloudSyncService.OnMultiplayerMatchCompleted(score={score}, isWin={isWin})");
                 cloudSync.OnMultiplayerMatchCompleted(score, isWin);
+            }
+            else
+            {
+                GameLogger.Log($"[BattleController] [{role}] ⚠️ CloudSyncService is NULL!");
             }
         }
 

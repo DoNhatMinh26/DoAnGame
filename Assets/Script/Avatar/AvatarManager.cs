@@ -13,7 +13,10 @@ public class AvatarManager : MonoBehaviour
 {
     public static AvatarManager Instance { get; private set; }
 
-    private const string PREFS_KEY = "SelectedAvatarID";
+    private const string PREFS_KEY = "SelectedAvatarID"; // legacy fallback
+
+    // Dùng LocalStorageKeyResolver để main/clone không đụng chung
+    private static string AvatarPrefsKey => DoAnGame.Auth.LocalStorageKeyResolver.SelectedAvatarID;
 
     private AvatarData[] allAvatars;
     private AvatarData currentAvatar;
@@ -50,7 +53,7 @@ public class AvatarManager : MonoBehaviour
         // Sắp xếp theo avatarId để thứ tự nhất quán
         System.Array.Sort(allAvatars, (a, b) => a.avatarId.CompareTo(b.avatarId));
 
-        int savedId = PlayerPrefs.GetInt(PREFS_KEY, 0);
+        int savedId = PlayerPrefs.GetInt(AvatarPrefsKey, PlayerPrefs.GetInt(PREFS_KEY, 0));
         currentAvatar = GetById(savedId) ?? GetDefault();
 
         Debug.Log($"[AvatarManager] ✅ Loaded {allAvatars.Length} avatars. Current: {currentAvatar?.avatarName} (id={currentAvatar?.avatarId})");
@@ -97,7 +100,7 @@ public class AvatarManager : MonoBehaviour
         }
 
         currentAvatar = avatar;
-        PlayerPrefs.SetInt(PREFS_KEY, avatarId);
+        PlayerPrefs.SetInt(AvatarPrefsKey, avatarId);
         PlayerPrefs.Save();
 
         OnAvatarChanged?.Invoke(currentAvatar);
@@ -161,7 +164,7 @@ public class AvatarManager : MonoBehaviour
         }
 
         currentAvatar = avatar;
-        PlayerPrefs.SetInt(PREFS_KEY, avatarId);
+        PlayerPrefs.SetInt(AvatarPrefsKey, avatarId);
         PlayerPrefs.Save();
 
         OnAvatarChanged?.Invoke(currentAvatar);

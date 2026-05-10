@@ -18,7 +18,7 @@ Bên trong mỗi PSB có 4 skin dùng chung xương của PSB đó.
 
 ### 1.1 — Character Meo.controller (Idle + Happy)
 
-File có sẵn tại: `Assets/TaiNguyen/Character/Animation/Character/Character Meo.controller`
+File có sẵn tại: `Assets/Script/Script_multiplayer/1Code/Multiplay/Animation_Multiplayer/Character/Character Meo.controller`
 
 1. Double-click `Character Meo.controller` → mở **Animator window**
 2. Tab **Parameters** (góc trái) → nhấn **+** → **Trigger**, tạo 2 trigger:
@@ -53,7 +53,7 @@ Kết quả graph:
 
 ### 1.2 — Character Meo_Sad.controller (Sad)
 
-File có sẵn tại: `Assets/TaiNguyen/Character/Animation/Character/Character Meo_Sad.controller`
+File có sẵn tại: `Assets/Script/Script_multiplayer/1Code/Multiplay/Animation_Multiplayer/Character/Character Meo_Sad.controller`
 
 1. Double-click `Character Meo_Sad.controller` → mở **Animator window**
 2. Tab **Parameters** → nhấn **+** → **Trigger**:
@@ -78,7 +78,7 @@ Kết quả graph:
 
 ### 1.3 — MeoGoc34 Fix.controller (Attack)
 
-File có sẵn tại: `Assets/TaiNguyen/Character/Animation/Character 3_4/MeoGoc34 Fix.controller`
+File có sẵn tại: `Assets/Script/Script_multiplayer/1Code/Multiplay/Animation_Multiplayer/Character 3_4/MeoGoc34 Fix.controller`
 
 *(Setup tương tự — tính sau khi implement phần Attack)*
 
@@ -102,7 +102,7 @@ Sau khi setup controller xong, gán vào Animator của từng PSB:
 1. Mở scene `Test_FireBase_multi`
 2. Tìm `Canvas/GameplayPanel`
 3. Tạo Empty GameObject con của `GameplayPanel`, đặt tên `Player1Character`
-4. Kéo 3 PSB từ `Assets/TaiNguyen/Character/` vào làm con của `Player1Character`:
+4. Kéo 3 PSB từ `Assets/Script/Script_multiplayer/1Code/Multiplay/Animation_Multiplayer/` vào làm con của `Player1Character`:
    - `Character Meo.psb`
    - `Character Meo_Sad.psb`
    - `MeoGoc34 Fix.psb`

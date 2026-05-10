@@ -103,6 +103,13 @@ namespace DoAnGame.Multiplayer
             NetworkVariableWritePermission.Server
         );
 
+        /// <summary>
+        /// ✅ Cache HP values từ ClientRpc để tránh race condition với NetworkVariable sync.
+        /// Client sẽ đọc từ đây thay vì từ player states (có thể chưa sync).
+        /// </summary>
+        public int cachedPlayer1Health = -1;
+        public int cachedPlayer2Health = -1;
+
         [Header("=== ANSWER CHOICES ===")]
         public NetworkVariable<int> Choice1 = new NetworkVariable<int>(
             0,
@@ -1132,16 +1139,27 @@ namespace DoAnGame.Multiplayer
 
             WinnerId.Value = winnerId;
 
+            // ✅ DEBUG: Log both players' health when match ends
+            if (player1State != null)
+                Debug.Log($"[BattleManager] EndMatch DEBUG: P1 HP={player1State.CurrentHealth.Value}/{player1State.MaxHealth.Value}, IsAlive={player1State.IsAlive()}");
+            if (player2State != null)
+                Debug.Log($"[BattleManager] EndMatch DEBUG: P2 HP={player2State.CurrentHealth.Value}/{player2State.MaxHealth.Value}, IsAlive={player2State.IsAlive()}");
+
             Debug.Log($"[BattleManager] Match ended! Winner: Player {winnerId + 1}");
 
-            // Sync kết quả trận lên Firebase (chỉ Host làm, vì Host có đủ thông tin)
-            SyncMatchResultToFirebase(winnerId);
+            // ✅ FIX: KHÔNG sync Firebase ở đây - để mỗi client tự sync trong HandleMatchEnded()
+            // Lý do: Server không biết uid của client, và sync 2 lần gây duplicate
+            // SyncMatchResultToFirebase(winnerId); ← XÓA
 
             // ✅ FIX: Invoke event trên Host (ClientRpc không chạy trên Host)
             OnMatchEnded?.Invoke(winnerId, winnerHealth);
 
+            // ✅ FIX: Gửi HP của CẢ 2 PLAYER qua ClientRpc
+            int p1Health = player1State != null ? player1State.CurrentHealth.Value : 0;
+            int p2Health = player2State != null ? player2State.CurrentHealth.Value : 0;
+            
             // Notify clients
-            ShowMatchResultClientRpc(winnerId, winnerHealth);
+            ShowMatchResultClientRpc(winnerId, winnerHealth, p1Health, p2Health);
         }
 
         #region ABANDON MATCH
@@ -1247,17 +1265,22 @@ namespace DoAnGame.Multiplayer
             }
 
             // Sync Firebase chỉ cho winner (người bỏ cuộc không được lưu)
-            string winnerUid   = GetUidForPlayer(winnerId);
-            int    winnerScore = winnerState != null ? winnerState.Score.Value : 0;
-            GameLogger.Log($"[BattleManager] [SERVER] Syncing Firebase for winner: uid={winnerUid}, score={winnerScore}");
-            _ = SyncPlayerMatchResult(uid: winnerUid, score: winnerScore, isWin: true);
+            // ✅ FIX: KHÔNG sync ở đây - để mỗi client tự sync trong HandleMatchEnded()
+            // string winnerUid   = GetUidForPlayer(winnerId);
+            // int    winnerScore = winnerState != null ? winnerState.Score.Value : 0;
+            // GameLogger.Log($"[BattleManager] [SERVER] Syncing Firebase for winner: uid={winnerUid}, score={winnerScore}");
+            // _ = SyncPlayerMatchResult(uid: winnerUid, score: winnerScore, isWin: true);
 
             // Notify clients (dùng lại ClientRpc có sẵn)
             GameLogger.Log($"[BattleManager] [SERVER] Invoking OnMatchEnded event (Host)...");
             OnMatchEnded?.Invoke(winnerId, winnerHealth);          // Host
             
+            // ✅ FIX: Gửi HP của CẢ 2 PLAYER qua ClientRpc
+            int p1Health = player1State != null ? player1State.CurrentHealth.Value : 0;
+            int p2Health = player2State != null ? player2State.CurrentHealth.Value : 0;
+            
             GameLogger.Log($"[BattleManager] [SERVER] Sending ShowMatchResultClientRpc to clients...");
-            ShowMatchResultClientRpc(winnerId, winnerHealth);      // Clients
+            ShowMatchResultClientRpc(winnerId, winnerHealth, p1Health, p2Health);      // Clients
             
             GameLogger.Log($"[BattleManager] [SERVER] EndMatchWithWinner COMPLETE");
         }
@@ -1288,10 +1311,20 @@ namespace DoAnGame.Multiplayer
             OnAnswerResultReceived?.Invoke(winnerId, correct, player1ResponseTimeMs, player2ResponseTimeMs, player1Answer, player2Answer);
         }
 
+        /// <summary>
+        /// Gửi kết quả trận đấu đến clients.
+        /// ✅ FIX: Gửi HP của CẢ 2 PLAYER qua RPC để tránh race condition với NetworkVariable sync.
+        /// </summary>
         [ClientRpc]
-        private void ShowMatchResultClientRpc(int winnerId, int winnerHealth)
+        private void ShowMatchResultClientRpc(int winnerId, int winnerHealth, int player1Health, int player2Health)
         {
-            Debug.Log($"[BattleManager] Client received match result: Winner={winnerId}, Health={winnerHealth}");
+            Debug.Log($"[BattleManager] Client received match result: Winner={winnerId}, WinnerHealth={winnerHealth}, P1HP={player1Health}, P2HP={player2Health}");
+            GameLogger.Log($"[BattleManager] [CLIENT] ShowMatchResultClientRpc: Winner={winnerId}, WinnerHP={winnerHealth}, P1HP={player1Health}, P2HP={player2Health}");
+            
+            // ✅ Cache HP values để UIMultiplayerBattleController có thể đọc
+            cachedPlayer1Health = player1Health;
+            cachedPlayer2Health = player2Health;
+            
             OnMatchEnded?.Invoke(winnerId, winnerHealth);
         }
 

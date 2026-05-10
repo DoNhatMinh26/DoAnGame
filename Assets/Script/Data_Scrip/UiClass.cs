@@ -101,7 +101,9 @@ public class UiClass : MonoBehaviour
     public void UpdateShopProfileUI()
     {
         // CẬP NHẬT: Kiểm tra chế độ Guest/User để lấy đúng Key dữ liệu
-        string scoreKey = UIQuickPlayNameController.IsGuestMode() ? "LocalGuestScore" : "UserScore";
+        string scoreKey = UIQuickPlayNameController.IsGuestMode()
+            ? DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestScore
+            : DoAnGame.Auth.LocalStorageKeyResolver.UserScore;
 
         // Lấy dữ liệu từ máy dựa trên đúng Key
         int currentScore = PlayerPrefs.GetInt(scoreKey, 0);
@@ -183,7 +185,7 @@ public class UiClass : MonoBehaviour
         if (IsSkinUnlocked(index))
         {
             // Nếu đã có, trang bị ngay lập tức
-            PlayerPrefs.SetInt("SelectedClassSkinID", index);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedClassSkinID, index);
             PlayerPrefs.Save();
 
             // Cập nhật hình ảnh linh vật trong trận[cite: 20]
@@ -215,8 +217,8 @@ public class UiClass : MonoBehaviour
         if (!isUnlocked && totalCoins >= skin.price)
         {
             AddCoins(-skin.price); // Trừ tiền bằng hàm có sẵn
-            PlayerPrefs.SetInt("ClassSkinUnlocked" + pendingSkinIndex, 1);
-            PlayerPrefs.SetInt("SelectedClassSkinID", pendingSkinIndex);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.ClassSkinUnlockedKey(pendingSkinIndex), 1);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedClassSkinID, pendingSkinIndex);
             PlayerPrefs.Save();
 
             ShowClassNotification("Mua thành công: " + skin.shipName + "!"); 
@@ -229,7 +231,7 @@ public class UiClass : MonoBehaviour
         else if (isUnlocked)
         {
             ShowClassNotification("Đã sở hữu trang phục này"); 
-            PlayerPrefs.SetInt("SelectedClassSkinID", pendingSkinIndex);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedClassSkinID, pendingSkinIndex);
             PlayerPrefs.Save();
             LoadCurrentSkin();
 
@@ -245,7 +247,7 @@ public class UiClass : MonoBehaviour
 
     private void SyncChondaShop()
     {
-        int selected = PlayerPrefs.GetInt("SelectedClassSkinID", 0);
+        int selected = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedClassSkinID, 0);
         var unlocked = new System.Collections.Generic.List<int> { 0 };
         for (int i = 1; i < allSkins.Length; i++)
         {
@@ -256,7 +258,7 @@ public class UiClass : MonoBehaviour
 
     public void LoadCurrentSkin()
     {
-        int id = PlayerPrefs.GetInt("SelectedClassSkinID", 0);
+        int id = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedClassSkinID, 0);
 
         if (id < allSkins.Length)
         {
@@ -268,7 +270,7 @@ public class UiClass : MonoBehaviour
         }
     }
 
-    private bool IsSkinUnlocked(int index) => index == 0 || PlayerPrefs.GetInt("ClassSkinUnlocked" + index, 0) == 1;
+    private bool IsSkinUnlocked(int index) => index == 0 || PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.ClassSkinUnlockedKey(index), 0) == 1;
 
     public void UpdateSkinShopUI()
     {
@@ -289,8 +291,8 @@ public class UiClass : MonoBehaviour
     #region QUẢN LÝ TIỀN (Độc lập hoàn toàn)
     private void LoadCoins()
     {
-        // Sử dụng chung Key TotalCoins để đồng bộ tài sản toàn game[cite: 9]
-        totalCoins = PlayerPrefs.GetInt("TotalCoins", 0);
+        // Sử dụng LocalStorageKeyResolver để main/clone không đụng chung
+        totalCoins = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, 0);
         levelCoins = 0;
         UpdateCoinUI();
     }
@@ -300,7 +302,7 @@ public class UiClass : MonoBehaviour
         if (amount > 0) levelCoins += amount;
         totalCoins += amount;
 
-        PlayerPrefs.SetInt("TotalCoins", totalCoins);
+        PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
         PlayerPrefs.Save();
         UpdateCoinUI();
 
@@ -440,7 +442,7 @@ public class UiClass : MonoBehaviour
         foreach (Transform child in contentParent) Destroy(child.gameObject);
 
         // Lưu tiến trình riêng cho lớp học[cite: 9]
-        int highestLevel = PlayerPrefs.GetInt("Class_HighestLevel", 1);
+        int highestLevel = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.ClassHighest, 1);
 
         for (int i = 1; i <= 100; i++)
         {
@@ -553,10 +555,10 @@ public class UiClass : MonoBehaviour
         isGameOver = true;
         SetSettingButtonInteractable(false);
         // Lưu tiến trình local
-        int highestLevel = PlayerPrefs.GetInt("Class_HighestLevel", 1);
+        int highestLevel = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.ClassHighest, 1);
         if (LevelManager.CurrentLevel >= highestLevel)
         {
-            PlayerPrefs.SetInt("Class_HighestLevel", LevelManager.CurrentLevel + 1);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.ClassHighest, LevelManager.CurrentLevel + 1);
             PlayerPrefs.Save();
         }
 

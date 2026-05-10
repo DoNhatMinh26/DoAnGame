@@ -86,6 +86,10 @@ namespace DoAnGame.UI
             if (AvatarManager.Instance != null)
                 AvatarManager.Instance.OnAvatarChanged += OnAvatarChanged;
 
+            // ✅ Subscribe CloudSyncService event để tự refresh khi multiplayer match hoàn thành
+            if (CloudSyncService.Instance != null)
+                CloudSyncService.Instance.OnPlayerDataUpdated += OnPlayerDataUpdated;
+
             if (logoutButton != null)
             {
                 var logoutNavigator = logoutButton.GetComponent<UIButtonScreenNavigator>();
@@ -169,6 +173,18 @@ namespace DoAnGame.UI
             logoutButton?.onClick.RemoveAllListeners();
             if (AvatarManager.Instance != null)
                 AvatarManager.Instance.OnAvatarChanged -= OnAvatarChanged;
+            if (CloudSyncService.Instance != null)
+                CloudSyncService.Instance.OnPlayerDataUpdated -= OnPlayerDataUpdated;
+        }
+
+        /// <summary>
+        /// Callback từ CloudSyncService khi player data được update (sau multiplayer match).
+        /// Tự động refresh MainMenuPanel để hiển thị điểm mới.
+        /// </summary>
+        private void OnPlayerDataUpdated()
+        {
+            Debug.Log("[MainMenu] 🔄 OnPlayerDataUpdated event received - refreshing UI");
+            UpdatePlayerInfo();
         }
 
         /// <summary>
@@ -205,9 +221,9 @@ namespace DoAnGame.UI
                 string guestName = UIQuickPlayNameController.GetGuestName();
                 characterNameText?.SetText($"Khách: {guestName}");
                 
-                // ✅ Đọc từ đúng key cho guest mode
-                int guestScore = PlayerPrefs.GetInt("LocalGuestScore", 0);
-                int guestLevel = PlayerPrefs.GetInt("LocalGuestLevel", 1);
+                // ✅ Đọc từ đúng key cho guest mode (dùng LocalStorageKeyResolver)
+                int guestScore = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestScore, 0);
+                int guestLevel = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestLevel, 1);
                 int guestGrade = UIManager.SelectedGrade;
                 
                 levelText?.SetText($"Lv: {guestLevel}");
@@ -253,9 +269,9 @@ namespace DoAnGame.UI
                     characterNameText?.SetText("Tên Nhân Vật: -----");
                 }
                 
-                // Hiển thị score, level, grade từ PlayerPrefs
-                int score = PlayerPrefs.GetInt("UserScore", 0);
-                int level = PlayerPrefs.GetInt("UserLevel", 1);
+                // Hiển thị score, level, grade từ PlayerPrefs (dùng LocalStorageKeyResolver)
+                int score = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.UserScore, 0);
+                int level = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.UserLevel, 1);
                 int grade = UIManager.SelectedGrade;
                 levelText?.SetText($"Lv: {level}");
                 scoreText?.SetText($"Score: {score}");

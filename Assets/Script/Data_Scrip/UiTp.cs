@@ -93,7 +93,7 @@ public class GameUIManager : MonoBehaviour
     private void Start()
     {
         // Tải tiền tổng từ máy
-        totalCoins = PlayerPrefs.GetInt("TotalCoins", 0);
+        totalCoins = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, 0);
 
         // Tải và mặc skin đã lưu
         UpdateShopProfileUI();
@@ -129,8 +129,12 @@ public class GameUIManager : MonoBehaviour
     {
 
         bool isGuest = UIQuickPlayNameController.IsGuestMode();
-        string scoreKey = isGuest ? "LocalGuestScore" : "UserScore";
-        string levelKey = isGuest ? "LocalGuestLevel" : "UserLevel";
+        string scoreKey = isGuest
+            ? DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestScore
+            : DoAnGame.Auth.LocalStorageKeyResolver.UserScore;
+        string levelKey = isGuest
+            ? DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestLevel
+            : DoAnGame.Auth.LocalStorageKeyResolver.UserLevel;
 
         int score = PlayerPrefs.GetInt(scoreKey, 0);
         int level = PlayerPrefs.GetInt(levelKey, 1);
@@ -169,7 +173,7 @@ public class GameUIManager : MonoBehaviour
     {
         levelCoins += amount;
         totalCoins += amount;
-        PlayerPrefs.SetInt("TotalCoins", totalCoins);
+        PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
         PlayerPrefs.Save();
         UpdateCoinUI();
 
@@ -230,7 +234,7 @@ public class GameUIManager : MonoBehaviour
     #region LOGIC skin Meo
     public void LoadCurrentSkin()
     {
-        int currentSkinID = PlayerPrefs.GetInt("SelectedSkinID", 0);
+        int currentSkinID = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedSkinID, 0);
 
         if (allSkins != null && currentSkinID < allSkins.Length && allSkins[currentSkinID] != null)
         {
@@ -251,7 +255,7 @@ public class GameUIManager : MonoBehaviour
         if (index == 0) return true;
 
         // Kiểm tra PlayerPrefs, trả về 0 nếu chưa từng lưu (mặc định là khóa)
-        return PlayerPrefs.GetInt("SkinUnlocked_" + index, 0) == 1;
+        return PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SkinUnlockedKey(index), 0) == 1;
     }
 
 
@@ -304,7 +308,7 @@ public class GameUIManager : MonoBehaviour
         if (IsSkinUnlocked(index))
         {
             // Nếu đã có rồi thì tự động lưu và báo "Đã mặc"
-            PlayerPrefs.SetInt("SelectedSkinID", index);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedSkinID, index);
             PlayerPrefs.Save();
             ShowShopNotification("Đã mặc: " + allSkins[index].skinName);
         }
@@ -331,8 +335,8 @@ public class GameUIManager : MonoBehaviour
             if (!isUnlocked)
             {
                 totalCoins -= skin.price;
-                PlayerPrefs.SetInt("TotalCoins", totalCoins);
-                PlayerPrefs.SetInt("SkinUnlocked_" + pendingSkinIndex, 1);
+                PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
+                PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SkinUnlockedKey(pendingSkinIndex), 1);
                 ShowShopNotification("Mua thành công: " + skin.skinName + "!");
             }
             else
@@ -340,7 +344,7 @@ public class GameUIManager : MonoBehaviour
                 ShowShopNotification("Đã Sở Hữu: " + skin.skinName);
             }
 
-            PlayerPrefs.SetInt("SelectedSkinID", pendingSkinIndex);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedSkinID, pendingSkinIndex);
             PlayerPrefs.Save();
 
             UpdateCoinUI();
@@ -360,7 +364,7 @@ public class GameUIManager : MonoBehaviour
 
     private void SyncKeoThadaSkinShop()
     {
-        int selected = PlayerPrefs.GetInt("SelectedSkinID", 0);
+        int selected = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedSkinID, 0);
         var unlocked = new System.Collections.Generic.List<int> { 0 };
         if (allSkins != null)
         {
@@ -384,7 +388,7 @@ public class GameUIManager : MonoBehaviour
 
         if (IsSkinUnlocked(index))
         {
-            PlayerPrefs.SetInt("SelectedSkinID", index);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedSkinID, index);
             PlayerPrefs.Save();
         }
     }
@@ -392,7 +396,7 @@ public class GameUIManager : MonoBehaviour
     #region LOGIC skin Pháo
     public void LoadCurrentPhao()
     {
-        int id = PlayerPrefs.GetInt("SelectedPhaoID", 0);
+        int id = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedPhaoID, 0);
         if (allPhaoSkins != null && id < allPhaoSkins.Length)
         {
             Sprite currentPhaoSprite = allPhaoSkins[id].phaoSprite;
@@ -423,12 +427,12 @@ public class GameUIManager : MonoBehaviour
         if (phaoRenderer != null) phaoRenderer.sprite = previewSprite;
 
         // KIỂM TRA TRẠNG THÁI SỞ HỮU
-        bool isUnlocked = (index == 0 || PlayerPrefs.GetInt("PhaoUnlocked_" + index, 0) == 1);
+        bool isUnlocked = (index == 0 || PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.PhaoUnlockedKey(index), 0) == 1);
 
         if (isUnlocked)
         {
             // Nếu đã có rồi thì tự động lưu và báo "Đã trang bị"
-            PlayerPrefs.SetInt("SelectedPhaoID", index);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedPhaoID, index);
             PlayerPrefs.Save();
             ShowShopNotification("Đã trang bị pháo!");
         }
@@ -448,15 +452,15 @@ public class GameUIManager : MonoBehaviour
         }
 
         PhaoSkin skin = allPhaoSkins[pendingPhaoIndex];
-        bool isUnlocked = pendingPhaoIndex == 0 || PlayerPrefs.GetInt("PhaoUnlocked_" + pendingPhaoIndex, 0) == 1;
+        bool isUnlocked = pendingPhaoIndex == 0 || PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.PhaoUnlockedKey(pendingPhaoIndex), 0) == 1;
 
         if (isUnlocked || totalCoins >= skin.price)
         {
             if (!isUnlocked)
             {
                 totalCoins -= skin.price;
-                PlayerPrefs.SetInt("TotalCoins", totalCoins);
-                PlayerPrefs.SetInt("PhaoUnlocked_" + pendingPhaoIndex, 1);
+                PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
+                PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.PhaoUnlockedKey(pendingPhaoIndex), 1);
                 ShowShopNotification("Đã mua thành công: " + skin.phaoName + "!");
             }
             else
@@ -464,7 +468,7 @@ public class GameUIManager : MonoBehaviour
                 ShowShopNotification("Đã sở hữu: " + skin.phaoName);
             }
 
-            PlayerPrefs.SetInt("SelectedPhaoID", pendingPhaoIndex);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedPhaoID, pendingPhaoIndex);
             PlayerPrefs.Save();
 
             UpdateCoinUI();
@@ -483,13 +487,13 @@ public class GameUIManager : MonoBehaviour
 
     private void SyncKeoThadaPhaoShop()
     {
-        int selected = PlayerPrefs.GetInt("SelectedPhaoID", 0);
+        int selected = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedPhaoID, 0);
         var unlocked = new System.Collections.Generic.List<int> { 0 };
         if (allPhaoSkins != null)
         {
             for (int i = 1; i < allPhaoSkins.Length; i++)
             {
-                if (PlayerPrefs.GetInt("PhaoUnlocked_" + i, 0) == 1) unlocked.Add(i);
+                if (PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.PhaoUnlockedKey(i), 0) == 1) unlocked.Add(i);
             }
         }
         DoAnGame.Auth.CloudSyncService.Instance?.OnShopPurchased("keothada_phao", selected, unlocked.ToArray());
@@ -498,7 +502,7 @@ public class GameUIManager : MonoBehaviour
     {
         for (int i = 0; i < allPhaoSkins.Length; i++)
         {
-            bool unlocked = i == 0 || PlayerPrefs.GetInt("PhaoUnlocked_" + i, 0) == 1;
+            bool unlocked = i == 0 || PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.PhaoUnlockedKey(i), 0) == 1;
             if (i < phaoButtonImages.Length)
             {
                 phaoButtonImages[i].color = unlocked ? Color.white : new Color(0.3f, 0.3f, 0.3f, 1f);
@@ -606,12 +610,12 @@ public class GameUIManager : MonoBehaviour
             DragAndDrop.SetGlobalLock(true);
 
             // Lưu tiến trình local
-            int currentHighest = PlayerPrefs.GetInt("HighestLevelReached", 1);
+            int currentHighest = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.KeoThaHighest, 1);
             int wonLevel = LevelManager.CurrentLevel;
 
             if (wonLevel == currentHighest && wonLevel < 100)
             {
-                PlayerPrefs.SetInt("HighestLevelReached", wonLevel + 1);
+                PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.KeoThaHighest, wonLevel + 1);
                 PlayerPrefs.Save();
                 GenerateLevelButtons();
             }
@@ -776,7 +780,7 @@ public class GameUIManager : MonoBehaviour
     public void ResetAllGameData()
     {
         // Xóa tiền
-        PlayerPrefs.DeleteKey("TotalCoins");
+        PlayerPrefs.DeleteKey(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins);
         totalCoins = 0;
         UpdateCoinUI();
 
@@ -784,7 +788,7 @@ public class GameUIManager : MonoBehaviour
         ResetSkins();
 
         // Xóa tiến trình màn chơi
-        PlayerPrefs.DeleteKey("HighestLevelReached");
+        PlayerPrefs.DeleteKey(DoAnGame.Auth.LocalStorageKeyResolver.KeoThaHighest);
 
         PlayerPrefs.Save();
 
@@ -798,27 +802,27 @@ public class GameUIManager : MonoBehaviour
     {
         // --- RESET SKIN MÈO ---
         // 1. Reset ID skin mèo về mặc định (0)
-        PlayerPrefs.SetInt("SelectedSkinID", 0);
+        PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedSkinID, 0);
 
         // 2. Khóa lại tất cả skin mèo (trừ cái đầu tiên)
         if (allSkins != null)
         {
             for (int i = 1; i < allSkins.Length; i++)
             {
-                PlayerPrefs.DeleteKey("SkinUnlocked_" + i);
+                PlayerPrefs.DeleteKey(DoAnGame.Auth.LocalStorageKeyResolver.SkinUnlockedKey(i));
             }
         }
 
         // --- RESET SKIN PHÁO ---
         // 3. Reset ID pháo về mặc định (0)
-        PlayerPrefs.SetInt("SelectedPhaoID", 0);
+        PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedPhaoID, 0);
 
         // 4. Khóa lại tất cả skin pháo (trừ cái đầu tiên)
         if (allPhaoSkins != null)
         {
             for (int i = 1; i < allPhaoSkins.Length; i++)
             {
-                PlayerPrefs.DeleteKey("PhaoUnlocked_" + i);
+                PlayerPrefs.DeleteKey(DoAnGame.Auth.LocalStorageKeyResolver.PhaoUnlockedKey(i));
             }
         }
 
@@ -861,7 +865,7 @@ public class GameUIManager : MonoBehaviour
         foreach (Transform child in contentParent) Destroy(child.gameObject);
 
         // Lấy màn cao nhất đã mở khóa (Mặc định là màn 1)
-        int highestLevelReached = PlayerPrefs.GetInt("HighestLevelReached", 1);
+        int highestLevelReached = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.KeoThaHighest, 1);
 
         for (int i = 1; i <= 100; i++)
         {

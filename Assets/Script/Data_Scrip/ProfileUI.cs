@@ -178,29 +178,46 @@ public class ProfileUI : MonoBehaviour
 
     public void UpdateProfileDisplay()
     {
-        // ✅ Đọc từ đúng key tuỳ theo chế độ
-        string scoreKey = DoAnGame.UI.UIQuickPlayNameController.IsGuestMode() ? "LocalGuestScore" : "UserScore";
-        string levelKey = DoAnGame.UI.UIQuickPlayNameController.IsGuestMode() ? "LocalGuestLevel" : "UserLevel";
+        // ✅ Dùng LocalStorageKeyResolver để đọc đúng key (có prefix)
+        bool isGuest = DoAnGame.UI.UIQuickPlayNameController.IsGuestMode();
+        string scoreKey = isGuest
+            ? DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestScore
+            : DoAnGame.Auth.LocalStorageKeyResolver.UserScore;
+        string levelKey = isGuest
+            ? DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestLevel
+            : DoAnGame.Auth.LocalStorageKeyResolver.UserLevel;
+        
+        // ✅ DEBUG: Log exact keys being read
+        Debug.Log($"[ProfileUI] ========== UPDATE PROFILE DISPLAY ==========");
+        Debug.Log($"[ProfileUI] IsGuestMode: {isGuest}");
+        Debug.Log($"[ProfileUI] ScoreKey: '{scoreKey}'");
+        Debug.Log($"[ProfileUI] LevelKey: '{levelKey}'");
+        Debug.Log($"[ProfileUI] Reading score from PlayerPrefs...");
+        
+        int score = PlayerPrefs.GetInt(scoreKey, 0);
+        int level = PlayerPrefs.GetInt(levelKey, 1);
+        int coins = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, 0);
+        
+        Debug.Log($"[ProfileUI] Score: {score}, Level: {level}, Coins: {coins}");
+        Debug.Log($"[ProfileUI] ================================================");
         
         if (levelUserTxt != null)
-            levelUserTxt.text = PlayerPrefs.GetInt(levelKey, 1).ToString();
+            levelUserTxt.text = level.ToString();
         if (diemUserTxt != null)
-            diemUserTxt.text = PlayerPrefs.GetInt(scoreKey, 0).ToString();
+            diemUserTxt.text = score.ToString();
         if (totalCoinTxt != null)
-            totalCoinTxt.text = PlayerPrefs.GetInt("TotalCoins", 0).ToString();
+            totalCoinTxt.text = coins.ToString();
         if (currentGradeTxt != null)
             currentGradeTxt.text = UIManager.SelectedGrade.ToString();
         if (lopHocLevelTxt != null)
-            lopHocLevelTxt.text = PlayerPrefs.GetInt("Class_HighestLevel", 1).ToString();
+            lopHocLevelTxt.text = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.ClassHighest, 1).ToString();
         if (phongThuLevelTxt != null)
-            phongThuLevelTxt.text = PlayerPrefs.GetInt("HighestLevelReached", 1).ToString();
+            phongThuLevelTxt.text = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.KeoThaHighest, 1).ToString();
         if (phiThuyenLevelTxt != null)
-            phiThuyenLevelTxt.text = PlayerPrefs.GetInt("Space_HighestLevel", 1).ToString();
+            phiThuyenLevelTxt.text = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SpaceHighest, 1).ToString();
 
         // Cập nhật ảnh avatar hiện tại
         RefreshAvatarDisplay();
-        
-        Debug.Log($"[ProfileUI] Updated display: level={PlayerPrefs.GetInt(levelKey, 1)}, score={PlayerPrefs.GetInt(scoreKey, 0)}, grade={UIManager.SelectedGrade} (keys: {levelKey}, {scoreKey})");
     }
 
     private void SetStatusText(string message)
@@ -573,9 +590,9 @@ public class ProfileUI : MonoBehaviour
             DoAnGame.UI.UIQuickPlayNameController.SaveSelectedGrade(newGrade);
 
             // Bước 2: Reset tiến độ local (chỉ 3 chế độ, giữ score/level/coins)
-            PlayerPrefs.SetInt("Class_HighestLevel", 1);
-            PlayerPrefs.SetInt("HighestLevelReached", 1);
-            PlayerPrefs.SetInt("Space_HighestLevel", 1);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.ClassHighest, 1);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.KeoThaHighest, 1);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SpaceHighest, 1);
             PlayerPrefs.Save();
 
             // Bước 3: Sync Firebase (chỉ khi đã đăng nhập bằng email)

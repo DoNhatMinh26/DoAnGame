@@ -62,6 +62,7 @@ public class AvatarCharacterDisplay : MonoBehaviour
         ApplySkin(meoGoc34Fix,     SkinNamesMeo34,  avatarId);
 
         currentAvatarId = avatarId;
+        TriggerIdle(); // Bắt đầu ở trạng thái Idle sau khi set skin
         Debug.Log($"[AvatarCharacterDisplay] ✅ Set avatar id={avatarId} trên {gameObject.name}");
     }
 

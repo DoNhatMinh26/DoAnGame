@@ -80,8 +80,14 @@ public class UiSp : MonoBehaviour
     #region QUẢN LÝ SHOP
     public void UpdateShopProfileUI()
     {
-        string scoreKey = DoAnGame.UI.UIQuickPlayNameController.IsGuestMode() ? "LocalGuestScore" : "UserScore";
-        string levelKey = DoAnGame.UI.UIQuickPlayNameController.IsGuestMode() ? "LocalGuestLevel" : "UserLevel";
+        // ✅ Dùng LocalStorageKeyResolver để đọc đúng key (có prefix)
+        bool isGuest = DoAnGame.UI.UIQuickPlayNameController.IsGuestMode();
+        string scoreKey = isGuest
+            ? DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestScore
+            : DoAnGame.Auth.LocalStorageKeyResolver.UserScore;
+        string levelKey = isGuest
+            ? DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestLevel
+            : DoAnGame.Auth.LocalStorageKeyResolver.UserLevel;
 
         int score = PlayerPrefs.GetInt(scoreKey, 0);
         int level = PlayerPrefs.GetInt(levelKey, 1);
@@ -134,7 +140,7 @@ public class UiSp : MonoBehaviour
         // 3. Kiểm tra trạng thái sở hữu để Trang bị
         if (IsShipUnlocked(index))
         {
-            PlayerPrefs.SetInt("SelectedShipID", index);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedShipID, index);
             PlayerPrefs.Save();
 
             // Cập nhật lại toàn bộ (bao gồm cả renderer trong gameplay)
@@ -164,8 +170,8 @@ public class UiSp : MonoBehaviour
         if (!isUnlocked && totalCoins >= ship.price)
         {
             AddCoins(-ship.price);
-            PlayerPrefs.SetInt("ShipUnlocked_" + pendingShipIndex, 1);
-            PlayerPrefs.SetInt("SelectedShipID", pendingShipIndex);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.ShipUnlockedKey(pendingShipIndex), 1);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedShipID, pendingShipIndex);
             PlayerPrefs.Save();
 
             ShowShopNotification("Mua thành công: " + ship.shipName + "!");
@@ -178,7 +184,7 @@ public class UiSp : MonoBehaviour
         else if (isUnlocked)
         {
             ShowShopNotification("Đã sở hữu");
-            PlayerPrefs.SetInt("SelectedShipID", pendingShipIndex);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedShipID, pendingShipIndex);
             PlayerPrefs.Save();
             LoadCurrentShip();
 
@@ -194,7 +200,7 @@ public class UiSp : MonoBehaviour
 
     private void SyncPhiThuyenShop()
     {
-        int selected = PlayerPrefs.GetInt("SelectedShipID", 0);
+        int selected = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedShipID, 0);
         var unlocked = new System.Collections.Generic.List<int> { 0 };
         if (allShips != null)
         {
@@ -208,7 +214,7 @@ public class UiSp : MonoBehaviour
 
     public void LoadCurrentShip()
     {
-        int id = PlayerPrefs.GetInt("SelectedShipID", 0);
+        int id = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedShipID, 0);
 
         if (id < allShips.Length)
         {
@@ -226,7 +232,7 @@ public class UiSp : MonoBehaviour
 
     }
 
-    private bool IsShipUnlocked(int index) => index == 0 || PlayerPrefs.GetInt("ShipUnlocked_" + index, 0) == 1;
+    private bool IsShipUnlocked(int index) => index == 0 || PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.ShipUnlockedKey(index), 0) == 1;
 
     public void UpdateShipShopUI()
     {
@@ -244,7 +250,7 @@ public class UiSp : MonoBehaviour
     private void LoadCoins()
     {
         // Load tiền từ máy khi vừa mở game
-        totalCoins = PlayerPrefs.GetInt("TotalCoins", 0);
+        totalCoins = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, 0);
         levelCoins = 0;
         UpdateCoinUI();
     }
@@ -254,7 +260,7 @@ public class UiSp : MonoBehaviour
         if (amount > 0) levelCoins += amount;
         totalCoins += amount;
 
-        PlayerPrefs.SetInt("TotalCoins", totalCoins);
+        PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
         PlayerPrefs.Save();
         UpdateCoinUI();
 
@@ -462,11 +468,11 @@ public class UiSp : MonoBehaviour
         if (videoBackground != null) videoBackground.SetActive(false);
 
         // 4. Lưu tiến trình (Giữ nguyên logic của bạn)
-        int currentHighest = PlayerPrefs.GetInt("Space_HighestLevel", 1);
+        int currentHighest = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SpaceHighest, 1);
         int wonLevel = LevelManager.CurrentLevel;
         if (wonLevel == currentHighest && wonLevel < 100)
         {
-            PlayerPrefs.SetInt("Space_HighestLevel", wonLevel + 1);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SpaceHighest, wonLevel + 1);
             PlayerPrefs.Save();
         }
 
@@ -533,7 +539,7 @@ public class UiSp : MonoBehaviour
     {
         foreach (Transform child in contentParent) Destroy(child.gameObject);
 
-        int highestLevel = PlayerPrefs.GetInt("Space_HighestLevel", 1);
+        int highestLevel = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SpaceHighest, 1);
         float startOffset = 200f;
 
         for (int i = 1; i <= 100; i++)

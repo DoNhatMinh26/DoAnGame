@@ -191,6 +191,9 @@ public class AuthManager : MonoBehaviour
             currentPlayerData = CreateDefaultPlayerData(uid, fallbackName);
         }
 
+        // ✅ FIX: Sync PlayerData vào PlayerPrefs keys để UI có thể đọc được
+        SyncPlayerDataToPlayerPrefs(currentPlayerData);
+
         CacheCurrentPlayerDataLocal();
         OnLoginDataLoaded?.Invoke(currentPlayerData);
 
@@ -269,6 +272,9 @@ public class AuthManager : MonoBehaviour
                     currentPlayerData = CreateDefaultPlayerData(uid, characterName);
                 }
 
+                // ✅ FIX: Sync PlayerData vào PlayerPrefs keys
+                SyncPlayerDataToPlayerPrefs(currentPlayerData);
+
                 CacheCurrentPlayerDataLocal();
                 OnLoginDataLoaded?.Invoke(currentPlayerData);
             }
@@ -341,6 +347,9 @@ public class AuthManager : MonoBehaviour
                         user.UserId,
                         string.IsNullOrWhiteSpace(user.DisplayName) ? "Player" : user.DisplayName);
                 }
+
+                // ✅ FIX: Sync PlayerData vào PlayerPrefs keys
+                SyncPlayerDataToPlayerPrefs(currentPlayerData);
 
                 CacheCurrentPlayerDataLocal();
                 OnLoginDataLoaded?.Invoke(currentPlayerData);
@@ -572,18 +581,31 @@ public class AuthManager : MonoBehaviour
         PlayerPrefs.DeleteKey("cached_player_data_timestamp");
 
         // ── Game progress keys — phải xóa khi đổi tài khoản ───────
-        // Nếu không xóa, acc mới sẽ thấy dữ liệu của acc cũ
+        // Xóa cả key cũ (legacy) lẫn key mới (LocalStorageKeyResolver)
         PlayerPrefs.DeleteKey("UserScore");
         PlayerPrefs.DeleteKey("UserLevel");
         PlayerPrefs.DeleteKey("TotalCoins");
         PlayerPrefs.DeleteKey("Class_HighestLevel");
         PlayerPrefs.DeleteKey("HighestLevelReached");
         PlayerPrefs.DeleteKey("Space_HighestLevel");
+        // Key mới (có prefix)
+        PlayerPrefs.DeleteKey(LocalStorageKeyResolver.UserScore);
+        PlayerPrefs.DeleteKey(LocalStorageKeyResolver.UserLevel);
+        PlayerPrefs.DeleteKey(LocalStorageKeyResolver.TotalCoins);
+        PlayerPrefs.DeleteKey(LocalStorageKeyResolver.ClassHighest);
+        PlayerPrefs.DeleteKey(LocalStorageKeyResolver.KeoThaHighest);
+        PlayerPrefs.DeleteKey(LocalStorageKeyResolver.SpaceHighest);
 
         // ── Guest data ─────────────────────────────────────────────
         PlayerPrefs.DeleteKey("GuestPlayerName");
         PlayerPrefs.DeleteKey("IsGuestMode");
         PlayerPrefs.DeleteKey("SelectedGrade");
+        // Dùng LocalStorageKeyResolver để xóa đúng key của instance này
+        PlayerPrefs.DeleteKey(LocalStorageKeyResolver.GuestName);
+        PlayerPrefs.DeleteKey(LocalStorageKeyResolver.IsGuestMode);
+        PlayerPrefs.DeleteKey(LocalStorageKeyResolver.SelectedGrade);
+        PlayerPrefs.DeleteKey(LocalStorageKeyResolver.LocalGuestScore);
+        PlayerPrefs.DeleteKey(LocalStorageKeyResolver.LocalGuestLevel);
 
         // ── Shop / Skin keys ───────────────────────────────────────
         PlayerPrefs.DeleteKey("SelectedClassSkinID");
@@ -602,6 +624,23 @@ public class AuthManager : MonoBehaviour
 
         PlayerPrefs.Save();
         Debug.Log("[Auth] 🗑️ Đã xóa toàn bộ local data của tài khoản cũ.");
+    }
+
+    /// <summary>
+    /// Sync PlayerData từ Firebase vào PlayerPrefs keys để UI có thể đọc được.
+    /// Gọi sau khi load data từ Firebase.
+    /// </summary>
+    private void SyncPlayerDataToPlayerPrefs(PlayerData data)
+    {
+        if (data == null) return;
+
+        // Lưu score, level, coins vào PlayerPrefs keys (dùng LocalStorageKeyResolver)
+        PlayerPrefs.SetInt(LocalStorageKeyResolver.UserScore, data.totalScore);
+        PlayerPrefs.SetInt(LocalStorageKeyResolver.UserLevel, data.level);
+        PlayerPrefs.SetInt(LocalStorageKeyResolver.TotalCoins, data.coins);
+        PlayerPrefs.Save();
+
+        Debug.Log($"[Auth] 💾 Synced PlayerData to PlayerPrefs: Score={data.totalScore}, Level={data.level}, Coins={data.coins}");
     }
 
     // ─────────────────────────────────────────────────────────────

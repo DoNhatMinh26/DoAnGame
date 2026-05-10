@@ -26,18 +26,21 @@ namespace DoAnGame.Auth
 
         private FirebaseFirestore firestore;
 
+        // ✅ Event để notify UI khi player data được update
+        public event System.Action OnPlayerDataUpdated;
+
         // Firestore collection names
         private const string COL_PLAYER_DATA      = "playerData";
         private const string COL_GAME_PROGRESS    = "gameModeProgress";
         private const string COL_LEVEL_PROGRESS   = "levelProgress";
 
-        // PlayerPrefs keys (dùng chung với mini-game managers)
-        private const string KEY_CHONDA    = "Class_HighestLevel";
-        private const string KEY_KEOTHADA  = "HighestLevelReached";
-        private const string KEY_PHITHUYEN = "Space_HighestLevel";
-        private const string KEY_COINS     = "TotalCoins";
-        private const string KEY_SCORE     = "UserScore";
-        private const string KEY_LEVEL     = "UserLevel";
+        // PlayerPrefs keys — dùng LocalStorageKeyResolver để main/clone tách biệt
+        private static string KEY_CHONDA    => LocalStorageKeyResolver.ClassHighest;
+        private static string KEY_KEOTHADA  => LocalStorageKeyResolver.KeoThaHighest;
+        private static string KEY_PHITHUYEN => LocalStorageKeyResolver.SpaceHighest;
+        private static string KEY_COINS     => LocalStorageKeyResolver.TotalCoins;
+        private static string KEY_SCORE     => LocalStorageKeyResolver.UserScore;
+        private static string KEY_LEVEL     => LocalStorageKeyResolver.UserLevel;
 
         private void Awake()
         {
@@ -196,9 +199,15 @@ namespace DoAnGame.Auth
         public void OnMultiplayerMatchCompleted(int scoreEarned, bool isWin)
         {
             string uid = GetCurrentUid();
+            Debug.Log($"[CloudSync] 🎮 OnMultiplayerMatchCompleted: uid={uid}, scoreEarned={scoreEarned}, isWin={isWin}");
+            
             if (!string.IsNullOrEmpty(uid))
             {
                 _ = SyncMultiplayerResultAsync(uid, scoreEarned, isWin);
+            }
+            else
+            {
+                Debug.LogWarning($"[CloudSync] ⚠️ No uid found, skipping Firebase sync");
             }
         }
         public void OnScoreChanged(int newScore, int newLevel)
@@ -206,8 +215,8 @@ namespace DoAnGame.Auth
             // ✅ Cập nhật PlayerPrefs ngay lập tức (cho UI hiển thị đúng)
             // Chỉ ghi vào UserScore/UserLevel (dùng cho logged-in user)
             // Guest mode không gọi hàm này (không có uid)
-            PlayerPrefs.SetInt("UserScore", newScore);
-            PlayerPrefs.SetInt("UserLevel", newLevel);
+            PlayerPrefs.SetInt(KEY_SCORE, newScore);
+            PlayerPrefs.SetInt(KEY_LEVEL, newLevel);
             PlayerPrefs.Save();
             
             Debug.Log($"[CloudSync] 💾 Updated PlayerPrefs: UserScore={newScore}, UserLevel={newLevel}");
@@ -292,9 +301,16 @@ namespace DoAnGame.Auth
 
         private async Task SyncMultiplayerResultAsync(string uid, int scoreEarned, bool isWin)
         {
-            if (firestore == null) return;
+            if (firestore == null)
+            {
+                Debug.LogWarning($"[CloudSync] ⚠️ Firestore is NULL, cannot sync");
+                return;
+            }
+            
             try
             {
+                Debug.Log($"[CloudSync] 📤 SyncMultiplayerResultAsync START: uid={uid[..8]}..., scoreEarned={scoreEarned}, isWin={isWin}");
+                
                 var docRef = firestore.Collection(COL_PLAYER_DATA).Document(uid);
                 var snap   = await docRef.GetSnapshotAsync();
 
@@ -310,6 +326,12 @@ namespace DoAnGame.Auth
                     prevXp     = GetInt(d, "totalXp", 0);
                     prevPlayed = GetInt(d, "gamesPlayed", 0);
                     prevWon    = GetInt(d, "gamesWon", 0);
+                    
+                    Debug.Log($"[CloudSync] 📊 Previous data: score={prevScore}, xp={prevXp}, played={prevPlayed}, won={prevWon}");
+                }
+                else
+                {
+                    Debug.Log($"[CloudSync] 📊 No previous data found (new player)");
                 }
 
                 int newScore   = prevScore + scoreEarned;
@@ -318,6 +340,8 @@ namespace DoAnGame.Auth
                 int newPlayed  = prevPlayed + 1;
                 int newWon     = prevWon + (isWin ? 1 : 0);
                 float winRate  = newPlayed > 0 ? (float)newWon / newPlayed : 0f;
+
+                Debug.Log($"[CloudSync] 📊 New data: score={newScore} (+{scoreEarned}), xp={newXp}, level={newLevel}, played={newPlayed}, won={newWon}, winRate={winRate:P0}");
 
                 var update = new Dictionary<string, object>
                 {
@@ -336,12 +360,18 @@ namespace DoAnGame.Auth
                 PlayerPrefs.SetInt(KEY_SCORE, newScore);
                 PlayerPrefs.SetInt(KEY_LEVEL, newLevel);
                 PlayerPrefs.Save();
+                
+                Debug.Log($"[CloudSync] 💾 Updated PlayerPrefs: UserScore={newScore}, UserLevel={newLevel}");
 
                 Debug.Log($"[CloudSync] ✅ Multiplayer result synced: +{scoreEarned}đ, win={isWin}, winRate={winRate:P0}");
+                
+                // ✅ Trigger event để notify UI (MainMenuPanel sẽ tự refresh)
+                OnPlayerDataUpdated?.Invoke();
+                Debug.Log($"[CloudSync] 📢 OnPlayerDataUpdated event triggered");
             }
             catch (System.Exception ex)
             {
-                Debug.LogWarning($"[CloudSync] ⚠️ Multiplayer sync thất bại: {ex.Message}");
+                Debug.LogError($"[CloudSync] ❌ Multiplayer sync thất bại: {ex.Message}\n{ex.StackTrace}");
             }
         }
 
@@ -647,16 +677,17 @@ namespace DoAnGame.Auth
                 int localScore = PlayerPrefs.GetInt(KEY_SCORE, 0);
                 int localLevel = PlayerPrefs.GetInt(KEY_LEVEL, 1);
 
-                // Cloud là nguồn chính xác nhất.
-                // Chỉ dùng local nếu cloud = 0 (lần đầu đăng nhập chưa sync)
-                int finalScore = (cloudScore > 0) ? cloudScore : localScore;
-                int finalLevel = (cloudLevel > 1) ? cloudLevel : Mathf.Max(cloudLevel, localLevel);
+                // Cloud là nguồn chính xác nhất — luôn dùng cloud khi restore.
+                // Không fallback về local để tránh nhiễm dữ liệu guest.
+                // Nếu cloud = 0 (tài khoản mới) → ghi 0 là đúng.
+                int finalScore = cloudScore;
+                int finalLevel = (cloudLevel > 0) ? cloudLevel : 1;
 
                 PlayerPrefs.SetInt(KEY_SCORE, finalScore);
                 PlayerPrefs.SetInt(KEY_LEVEL, finalLevel);
                 PlayerPrefs.Save();
 
-                Debug.Log($"[CloudSync] Restored score={finalScore} level={finalLevel} (cloud: {cloudScore}/{cloudLevel}, local: {localScore}/{localLevel})");
+                Debug.Log($"[CloudSync] Restored score={finalScore} level={finalLevel} (cloud: {cloudScore}/{cloudLevel}, local was: {localScore}/{localLevel})");
             }
             catch (System.Exception ex)
             {
