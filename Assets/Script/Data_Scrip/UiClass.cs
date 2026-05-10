@@ -1,9 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
+﻿using DoAnGame.Auth;
+using DoAnGame.UI;
 using System.Collections;
 using System.Collections.Generic;
-using DoAnGame.Auth;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class UiClass : MonoBehaviour
 {
@@ -99,12 +100,14 @@ public class UiClass : MonoBehaviour
     }
     public void UpdateShopProfileUI()
     {
-        // Lấy dữ liệu từ máy
-        int currentScore = PlayerPrefs.GetInt("UserScore", 0);
+        // CẬP NHẬT: Kiểm tra chế độ Guest/User để lấy đúng Key dữ liệu
+        string scoreKey = UIQuickPlayNameController.IsGuestMode() ? "LocalGuestScore" : "UserScore";
 
-        // Tính toán Level theo công thức đồng bộ với DataManager
-        // level = 1 + (totalScore / 10 / 100)
-        int currentLevel = 1 + (currentScore / 10 / 100);
+        // Lấy dữ liệu từ máy dựa trên đúng Key
+        int currentScore = PlayerPrefs.GetInt(scoreKey, 0);
+
+        // Tính toán Level đồng bộ
+        int currentLevel = 1 + (currentScore / 1000);
 
         if (shopLevelTxt != null)
             shopLevelTxt.text = "LV: " + currentLevel;

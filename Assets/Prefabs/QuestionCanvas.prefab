@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 9202047941842562147}
   - component: {fileID: 1915646140116923935}
   - component: {fileID: 1117107194687714932}
+  - component: {fileID: 6261262848036413901}
   m_Layer: 5
   m_Name: Gate3
   m_TagString: Gate
@@ -36,8 +37,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1107, y: -600}
-  m_SizeDelta: {x: 450, y: 500}
+  m_AnchoredPosition: {x: 1108.6799, y: -600}
+  m_SizeDelta: {x: 332.4, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9202047941842562147
 CanvasRenderer:
@@ -67,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7c97ea218ba82834d91ccc7a35221ac8, type: 3}
+  m_Sprite: {fileID: 272010981, guid: 53f5fd4d64bb962438818564b9b939a6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -122,6 +123,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 276.44418, y: 406.28546}
   m_EdgeRadius: 0
+--- !u!95 &6261262848036413901
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1315261006250608065}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0f951e8d6e9b76041b01072d0e5273c8, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2068894668991502778
 GameObject:
   m_ObjectHideFlags: 0
@@ -156,7 +178,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 15, y: -0.00055695}
+  m_AnchoredPosition: {x: 0.00061035156, y: 5.999199}
   m_SizeDelta: {x: 300, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5090401220640063575
@@ -268,6 +290,7 @@ GameObject:
   - component: {fileID: 4742322356398009948}
   - component: {fileID: 1238380902778277419}
   - component: {fileID: 8017338207279546597}
+  - component: {fileID: 8640136357026656125}
   m_Layer: 5
   m_Name: Gate2
   m_TagString: Gate
@@ -292,8 +315,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1107, y: -160}
-  m_SizeDelta: {x: 450, y: 500}
+  m_AnchoredPosition: {x: 1108.6799, y: -160}
+  m_SizeDelta: {x: 332.4, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4742322356398009948
 CanvasRenderer:
@@ -323,7 +346,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7c97ea218ba82834d91ccc7a35221ac8, type: 3}
+  m_Sprite: {fileID: 272010981, guid: 53f5fd4d64bb962438818564b9b939a6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -378,6 +401,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 276.44418, y: 406.28546}
   m_EdgeRadius: 0
+--- !u!95 &8640136357026656125
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3463322033194639898}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 448a81882b99f7d47880fa6d2786f59b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &3922476679228472732
 GameObject:
   m_ObjectHideFlags: 0
@@ -390,6 +434,7 @@ GameObject:
   - component: {fileID: 7978611318680399534}
   - component: {fileID: 7964707429767393884}
   - component: {fileID: 4678178961892692503}
+  - component: {fileID: 2341656583073240659}
   m_Layer: 5
   m_Name: Gate1
   m_TagString: Gate
@@ -414,8 +459,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1107, y: 280}
-  m_SizeDelta: {x: 450, y: 500}
+  m_AnchoredPosition: {x: 1108.6799, y: 280}
+  m_SizeDelta: {x: 332.4, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7978611318680399534
 CanvasRenderer:
@@ -445,7 +490,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7c97ea218ba82834d91ccc7a35221ac8, type: 3}
+  m_Sprite: {fileID: 272010981, guid: 53f5fd4d64bb962438818564b9b939a6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -500,6 +545,27 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 276.81, y: 406.28546}
   m_EdgeRadius: 0
+--- !u!95 &2341656583073240659
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3922476679228472732}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4dc88678cbecf454b9d5cafc918af6cf, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4807514765069122926
 GameObject:
   m_ObjectHideFlags: 0
@@ -588,7 +654,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &2040436739502532294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -671,7 +737,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 15, y: -0.00055695}
+  m_AnchoredPosition: {x: 0.00061035156, y: 5.999199}
   m_SizeDelta: {x: 300, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2284378275305314013
@@ -796,7 +862,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9181751892583599824}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -805,7 +871,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 15, y: -0.00055695}
+  m_AnchoredPosition: {x: 0, y: 6}
   m_SizeDelta: {x: 300, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7482445602969124677

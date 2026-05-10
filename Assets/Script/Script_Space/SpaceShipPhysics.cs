@@ -17,6 +17,34 @@ public class SpaceShipPhysics : MonoBehaviour
     private bool isLockedByMagnet = false;
 
     private GameObject lastHitGate;
+    private Rigidbody2D rb;
+    private Vector3 startPosition;
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+    }
+    void Start()
+    {
+        // Lưu lại vị trí lúc vừa khởi chạy game
+        startPosition = transform.position;
+        rb = GetComponent<Rigidbody2D>();
+    }
+
+    public void ResetPosition()
+    {
+        // Đưa phi thuyền về vị trí cũ
+        transform.position = startPosition;
+
+        // Đưa vận tốc về 0 để không bị trôi tiếp
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.gravityScale = 1f; // Trả lại trọng lực nếu trước đó bạn đã chỉnh về 0 khi thắng
+        }
+    }
+    
 
     void Update()
     {
@@ -59,6 +87,15 @@ public class SpaceShipPhysics : MonoBehaviour
         }
 
         transform.localScale = originalScale; // Đảm bảo trả về đúng kích thước gốc
+    }
+    public void BoostForwardOnWin()
+    {
+        // Giả sử rb là Rigidbody2D hoặc Rigidbody của phi thuyền
+        // Chúng ta đẩy vận tốc lên cao để tạo hiệu ứng phóng đi
+        if (rb != null)
+        {
+            rb.velocity = new Vector2(5f, 0f); // Điều chỉnh số 20f tùy độ nhanh bạn muốn
+        }
     }
     void ApplyMagnetEffect()
     {
