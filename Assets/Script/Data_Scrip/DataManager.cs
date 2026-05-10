@@ -50,7 +50,7 @@ public class DataManager : MonoBehaviour
         // level   = 1 + (totalXp / 100)
         int newLevel = 1 + (currentScore / 10 / 100); // = 1 + (currentScore / 1000)
 
-        // Thăng cấp → thưởng tiền (chỉ khi level thực sự tăng)
+        // Thăng cấp → thưởng tiền (chỉ khi level thực sự tăng) 
         if (newLevel > currentLevel)
         {
             int levelsGained = newLevel - currentLevel;

@@ -4,7 +4,7 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using DoAnGame.Auth;
-
+using UnityEngine.Video;
 public class UiSp : MonoBehaviour
 {
     public static UiSp Instance;
@@ -62,7 +62,10 @@ public class UiSp : MonoBehaviour
     public TextMeshProUGUI loseScoreTxt;   // 7. Điểm bảng Thua
     public TextMeshProUGUI loseRewardTxt;  // 8. Tiền bảng Thua
     public TextMeshProUGUI loseProgressTxt;// 9. Tiến trình (VD: 50%)
-
+    [Header("Cấu hình Video kết thúc")]
+    public VideoPlayer winVideo;   // Kéo Video Player thắng vào đây
+    public VideoPlayer loseVideo;  // Kéo Video Player thua vào đây
+    public GameObject videoBackground; // Một Panel đen để che màn hình khi phát video
     private int pendingShipIndex = -1;
     private void Awake() => Instance = this;
 
@@ -346,26 +349,7 @@ public class UiSp : MonoBehaviour
         if (panelSetting) panelSetting.SetActive(false);
     }
 
-    public void ShowLose()
-    {
-        if (isGameOver) return; // Chống hiện bảng nhiều lần
-        isGameOver = true;
-        if (settingButton != null) settingButton.interactable = false;
-        if (loseScoreTxt != null) loseScoreTxt.text = "Điểm: +" + levelScore;
-        if (loseRewardTxt != null) loseRewardTxt.text = "+" + levelCoins;
-        if (loseProgressTxt != null && SpaceShipManager.Instance != null)
-        {
-            int passed = SpaceShipManager.Instance.CorrectAnswersCount;
-            int total = SpaceShipManager.Instance.TotalGatesToWin;
-            loseProgressTxt.text = "Hoàn thành: " + passed + "/" + total + " Cổng";
-        } // Có thể tính theo quãng đường bay
-        HideAllPanels();
-        if (panelLose != null)
-        {
-            panelLose.SetActive(true);
-            Time.timeScale = 0f;
-        }
-    }
+    
     public void Click_ThoatNgayLapTuc()
     {
         if (isGameOver) return;
@@ -377,29 +361,107 @@ public class UiSp : MonoBehaviour
 
         ShowLose();
     }
-
-    
-    // Tối ưu: Chuyển ShowWin thành Coroutine để đợi vài giây trước khi hiện bảng[cite: 8]
-    public void ShowWin()
+    public void ShowLose()
     {
-        StartCoroutine(ShowWinRoutine(2.0f));
+        if (isGameOver) return;
+        isGameOver = true;
+
+        // Vô hiệu hóa nút cài đặt
+        if (settingButton != null) settingButton.interactable = false;
+
+        // Bắt đầu chuỗi hiệu ứng thua
+        StartCoroutine(ShowLoseRoutine());
     }
 
-    private IEnumerator ShowWinRoutine(float delay)
+    private IEnumerator ShowLoseRoutine()
     {
+        Time.timeScale = 0f;
+        // 1. Hiện nền đen và phát video Thua
+        // Lưu ý: Không tắt panelGameplay để nó vẫn hiện phía sau
+        if (videoBackground != null) videoBackground.SetActive(true);
+
+        if (loseVideo != null)
+        {
+            loseVideo.gameObject.SetActive(true);
+            loseVideo.Play();
+            // Đợi video chạy xong
+            yield return new WaitForSecondsRealtime(8.0f);
+            loseVideo.gameObject.SetActive(false);
+        }
+
+        // 2. Tắt nền video đen ĐỂ LỘ GAMEPLAY PHÍA SAU
+        if (videoBackground != null) videoBackground.SetActive(false);
+
+        // 3. Cập nhật dữ liệu UI trước khi hiện Panel
+        if (loseScoreTxt != null) loseScoreTxt.text = "Điểm: +" + levelScore;
+        if (loseRewardTxt != null) loseRewardTxt.text = "+" + levelCoins;
+        if (loseProgressTxt != null && SpaceShipManager.Instance != null)
+        {
+            int passed = SpaceShipManager.Instance.CorrectAnswersCount;
+            int total = SpaceShipManager.Instance.TotalGatesToWin;
+            loseProgressTxt.text = "Hoàn thành: " + passed + "/" + total + " Cổng";
+        }
+
+        // 4. HIỆN PANEL THUA đè lên Gameplay
+        // Quan trọng: Chỉ ẩn các panel không liên quan, không ẩn panelGameplay
+        panelHome.SetActive(false);
+        panelChonMan.SetActive(false);
+        if (panelWin) panelWin.SetActive(false);
+
+        if (panelLose != null)
+        {
+            panelLose.SetActive(true);
+            Time.timeScale = 0f; // Dừng chuyển động của gameplay phía sau
+        }
+    }
+
+    // --- PHẦN SỬA LẠI CHO SHOW WIN ---
+    public void ShowWin()
+    {
+        // Chuyển isGameOver lên trước để chặn va chạm liên tục
+        if (isGameOver) return;
+        isGameOver = true;
+
+        StartCoroutine(ShowWinRoutine(1f));
+    }
+
+    private IEnumerator ShowWinRoutine(float delayBeforeVideo)
+    {
+        
+        SpaceShipPhysics ship = FindObjectOfType<SpaceShipPhysics>();
+        if (ship != null)
+        {
+            ship.BoostForwardOnWin();
+        }
         if (settingButton != null) settingButton.interactable = false;
-        yield return new WaitForSeconds(delay);
+
+        yield return new WaitForSeconds(delayBeforeVideo);
+        Time.timeScale = 0f;
+        // 1. Hiện nền đen và phát video Thắng
+        if (videoBackground != null) videoBackground.SetActive(true);
+        if (winVideo != null)
+        {
+            winVideo.gameObject.SetActive(true);
+            winVideo.Play();
+            yield return new WaitForSecondsRealtime(6.3f);
+            winVideo.gameObject.SetActive(false);
+        }
+
+        // 2. Cập nhật dữ liệu UI
         if (winScoreTxt != null) winScoreTxt.text = "Điểm: +" + levelScore;
         if (winRewardTxt != null) winRewardTxt.text = "+" + levelCoins;
         if (winLevelInfoTxt != null) winLevelInfoTxt.text = "Hoàn thành Màn " + LevelManager.CurrentLevel;
+
+        // 3. Hiện Panel Thắng và dừng game
         HideAllPanels();
         if (panelWin != null)
         {
             panelWin.SetActive(true);
             Time.timeScale = 0f;
         }
+        if (videoBackground != null) videoBackground.SetActive(false);
 
-        // Lưu tiến trình local
+        // 4. Lưu tiến trình (Giữ nguyên logic của bạn)
         int currentHighest = PlayerPrefs.GetInt("Space_HighestLevel", 1);
         int wonLevel = LevelManager.CurrentLevel;
         if (wonLevel == currentHighest && wonLevel < 100)
@@ -408,12 +470,12 @@ public class UiSp : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        // Sync lên Firebase (nếu đã đăng nhập)
+        // 5. Sync Firebase
         DoAnGame.Auth.CloudSyncService.Instance?.OnLevelCompleted(
-            gameMode:    "phithuyen",
-            grade:       UIManager.SelectedGrade,
+            gameMode: "phithuyen",
+            grade: UIManager.SelectedGrade,
             levelNumber: wonLevel,
-            score:       100,  // điểm cố định mỗi màn thắng PhiThuyen
+            score: 100,
             coinsEarned: levelCoins
         );
     }
@@ -501,6 +563,7 @@ public class UiSp : MonoBehaviour
 
     public void BatDauChoiSpace(int levelIndex)
     {
+
         if (settingButton != null) settingButton.interactable = true;
         levelScore = 0; // Reset điểm về 0 khi bắt đầu
         if (gameplayScoreRewardTxt != null) gameplayScoreRewardTxt.text = "Điểm: +0";
@@ -521,7 +584,11 @@ public class UiSp : MonoBehaviour
         }
 
         SpaceShipPhysics ship = FindObjectOfType<SpaceShipPhysics>();
-        if (ship != null) ship.ResetMovement();
+        if (ship != null)
+        {
+            ship.ResetPosition();
+            ship.ResetMovement();
+        }
 
         ShowShopNotification("Bắt đầu Màn " + levelIndex);
     }
