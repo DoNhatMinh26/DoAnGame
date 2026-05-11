@@ -94,7 +94,70 @@ ScriptedImporter:
     spritePosition: {x: 0, y: 0}
   mosaicSpriteImportData: []
   rigSpriteImportData:
-  - name: M1_TT
+  - name: M4_TT
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 565
+      y: 2663
+      width: 170
+      height: 183
+    spriteID: a33d06fae7274fc41a14c582c445f013
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 565, y: 2663}
+    spritePosition: {x: 293, y: 276}
+  - name: M4_Mat
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 1121
+      y: 881
+      width: 334
+      height: 90
+    spriteID: 271abbaa01900344284ed5dda9a87513
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1121, y: 881}
+    spritePosition: {x: 496, y: 657}
+  - name: M4_Mieng
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 1466
+      y: 782
+      width: 119
+      height: 78
+    spriteID: 769437a8baa3a714184c1a8a035f7451
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1466, y: 782}
+    spritePosition: {x: 611, y: 504}
+  - name: M4_Dau
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -102,7 +165,385 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 1687
+      y: 4
+      width: 782
+      height: 862
+    spriteID: 6561dff9059584f44990e0be04c17852
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 4}
+    spritePosition: {x: 172, y: 433}
+  - name: M4_Duoi
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 794
+      y: 1026
+      width: 298
+      height: 231
+    spriteID: 1da25675bef4acb4584209693a8156f0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 794, y: 1026}
+    spritePosition: {x: 139, y: 160}
+  - name: M4_Than
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 2465
+      width: 553
+      height: 400
+    spriteID: 5de7d49923b8bd54fb76c95cbeb1659c
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 2465}
+    spritePosition: {x: 210, y: 59}
+  - name: M4_TP
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 958
+      y: 1440
+      width: 155
+      height: 158
+    spriteID: 044e8527a62e27a4c8f425c2e0f60796
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 958, y: 1440}
+    spritePosition: {x: 705, y: 306}
+  - name: M3_TT
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 501
+      y: 2873
+      width: 162
+      height: 185
+    spriteID: fecaa022be0f11642a2ffa551712ca9d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 501, y: 2873}
+    spritePosition: {x: 291, y: 277}
+  - name: M3_mat
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 3978
+      width: 345
+      height: 89
+    spriteID: 751b6b0a68cbecb458d3f1cfbdba9ecd
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 3978}
+    spritePosition: {x: 495, y: 663}
+  - name: M3_Mieng
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 975
+      y: 1352
+      width: 118
+      height: 77
+    spriteID: 190186d0d1877a145ada10117ee56e24
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 975, y: 1352}
+    spritePosition: {x: 613, y: 506}
+  - name: M3_Dau
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 794
+      y: 4
+      width: 859
+      height: 770
+    spriteID: db10c94fbdb9dc74d9d974d47ce78ab0
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 794, y: 4}
+    spritePosition: {x: 170, y: 440}
+  - name: M3_Than
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 2873
+      width: 489
+      height: 430
+    spriteID: 6dccfe1060f45ef459fb1d265a537e4d
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 2873}
+    spritePosition: {x: 416, y: 52}
+  - name: M3_Duoi
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 425
+      y: 3734
+      width: 326
+      height: 240
+    spriteID: a183506157ac4c543b7b87a44495d25a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 425, y: 3734}
+    spritePosition: {x: 144, y: 154}
+  - name: M3_TP
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 794
+      y: 1630
+      width: 170
+      height: 166
+    spriteID: 0aa29f1ae6ed97d4cb28b48a6e34ee44
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 794, y: 1630}
+    spritePosition: {x: 698, y: 306}
+  - name: M2_TTrai
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 565
+      y: 2465
+      width: 166
+      height: 190
+    spriteID: deac13c7cfa21c4409eb082b91eb155a
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 565, y: 2465}
+    spritePosition: {x: 290, y: 273}
+  - name: M2_mat
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 1121
+      y: 782
+      width: 337
+      height: 91
+    spriteID: ea9626023077bab4a9893358882da53e
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 1121, y: 782}
+    spritePosition: {x: 500, y: 673}
+  - name: M2_Mieng
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 975
+      y: 1265
+      width: 117
+      height: 79
+    spriteID: d0db8665ec1e0f54f868b4ef38bbe4b3
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 975, y: 1265}
+    spritePosition: {x: 612, y: 515}
+  - name: M2_Dau
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 874
+      width: 770
+      height: 829
+    spriteID: 2a9456d5ccf66c14385449a092dd47dc
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 874}
+    spritePosition: {x: 181, y: 442}
+  - name: M2_Than
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 425
+      y: 3311
+      width: 346
+      height: 415
+    spriteID: 047f9e9a7a526414085377fba002fe14
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 425, y: 3311}
+    spritePosition: {x: 411, y: 52}
+  - name: M2_Duoi
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 3732
+      width: 318
+      height: 238
+    spriteID: d18903a326215194389ffe99af8edbe6
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 3732}
+    spritePosition: {x: 153, y: 158}
+  - name: M2_TPhai
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 794
+      y: 1265
+      width: 173
+      height: 167
+    spriteID: e626281a188d83340b824435d5e116b6
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 794, y: 1265}
+    spritePosition: {x: 692, y: 302}
+  - name: M1_TT
+    originalName: 
+    pivot: {x: 0.5, y: 0.5}
+    alignment: 0
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 794
+      y: 1440
       width: 156
       height: 182
     spriteID: 4573b9f97344e54459edb2720e894d2b
@@ -569,7 +1010,7 @@ ScriptedImporter:
     - {x: 24, y: 25}
     - {x: 25, y: 26}
     tessellationDetail: 0
-    uvTransform: {x: 4, y: 1687}
+    uvTransform: {x: 794, y: 1440}
     spritePosition: {x: 300, y: 280}
   - name: M1_Mat
     originalName: 
@@ -578,8 +1019,8 @@ ScriptedImporter:
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 4
-      y: 1423
+      x: 425
+      y: 3982
       width: 328
       height: 94
     spriteID: c75b0abd35a96fe4e987ce7098ac0bd0
@@ -881,7 +1322,7 @@ ScriptedImporter:
     - {x: 20, y: 21}
     - {x: 21, y: 22}
     tessellationDetail: 0
-    uvTransform: {x: 4, y: 1423}
+    uvTransform: {x: 425, y: 3982}
     spritePosition: {x: 508, y: 663}
   - name: M1_Mieng
     originalName: 
@@ -890,8 +1331,8 @@ ScriptedImporter:
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 4
-      y: 1877
+      x: 501
+      y: 3228
       width: 117
       height: 75
     spriteID: c9ecd74e8d7bb5a4cbd4cb1efef2fba1
@@ -1240,7 +1681,7 @@ ScriptedImporter:
     - {x: 26, y: 27}
     - {x: 27, y: 28}
     tessellationDetail: 0
-    uvTransform: {x: 4, y: 1877}
+    uvTransform: {x: 501, y: 3228}
     spritePosition: {x: 615, y: 513}
   - name: M1_Dau
     originalName: 
@@ -1250,7 +1691,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 4
+      y: 1711
       width: 760
       height: 746
     spriteID: 4d11261c6f8ea174980e2483be08f580
@@ -2670,7 +3111,7 @@ ScriptedImporter:
     - {x: 124, y: 126}
     - {x: 127, y: 128}
     tessellationDetail: 0
-    uvTransform: {x: 4, y: 4}
+    uvTransform: {x: 4, y: 1711}
     spritePosition: {x: 189, y: 443}
   - name: M1_Than
     originalName: 
@@ -2680,7 +3121,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 758
+      y: 3311
       width: 413
       height: 413
     spriteID: f6e720883e3cef045b72fc30edb5f3df
@@ -3095,7 +3536,7 @@ ScriptedImporter:
     - {x: 32, y: 33}
     - {x: 33, y: 34}
     tessellationDetail: 0
-    uvTransform: {x: 4, y: 758}
+    uvTransform: {x: 4, y: 3311}
     spritePosition: {x: 403, y: 59}
   - name: M1_Duoi
     originalName: 
@@ -3104,8 +3545,8 @@ ScriptedImporter:
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 4
-      y: 1179
+      x: 794
+      y: 782
       width: 319
       height: 236
     spriteID: a76d110756e8e754792de71d512acc0d
@@ -3745,7 +4186,7 @@ ScriptedImporter:
     - {x: 29, y: 56}
     - {x: 30, y: 56}
     tessellationDetail: 0
-    uvTransform: {x: 4, y: 1179}
+    uvTransform: {x: 794, y: 782}
     spritePosition: {x: 139, y: 168}
   - name: M1_TP
     originalName: 
@@ -3754,8 +4195,8 @@ ScriptedImporter:
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 4
-      y: 1525
+      x: 501
+      y: 3066
       width: 188
       height: 154
     spriteID: 621bac6ad3d148f4c993a3bd8c335e5c
@@ -4241,7 +4682,7 @@ ScriptedImporter:
     - {x: 23, y: 24}
     - {x: 24, y: 25}
     tessellationDetail: 0
-    uvTransform: {x: 4, y: 1525}
+    uvTransform: {x: 501, y: 3066}
     spritePosition: {x: 672, y: 323}
   characterData:
     bones:
@@ -4699,7 +5140,7 @@ ScriptedImporter:
     mosaicPosition: {x: 0, y: 0}
     flatten: 0
     isImported: 0
-    isVisible: 0
+    isVisible: 1
   - name: M4_TT
     spriteName: M4_TT
     isGroup: 0
@@ -4708,7 +5149,7 @@ ScriptedImporter:
     layerID: 21
     mosaicPosition: {x: 565, y: 2663}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M4_Mat
     spriteName: M4_Mat
@@ -4718,7 +5159,7 @@ ScriptedImporter:
     layerID: 35
     mosaicPosition: {x: 1121, y: 881}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M4_Mieng
     spriteName: M4_Mieng
@@ -4728,7 +5169,7 @@ ScriptedImporter:
     layerID: 36
     mosaicPosition: {x: 1466, y: 782}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M4_Dau
     spriteName: M4_Dau
@@ -4738,7 +5179,7 @@ ScriptedImporter:
     layerID: 34
     mosaicPosition: {x: 4, y: 4}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M4_Duoi
     spriteName: M4_Duoi
@@ -4748,7 +5189,7 @@ ScriptedImporter:
     layerID: 37
     mosaicPosition: {x: 794, y: 1026}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M4_Than
     spriteName: M4_Than
@@ -4758,7 +5199,7 @@ ScriptedImporter:
     layerID: 20
     mosaicPosition: {x: 4, y: 2465}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M4_TP
     spriteName: M4_TP
@@ -4768,7 +5209,7 @@ ScriptedImporter:
     layerID: 19
     mosaicPosition: {x: 958, y: 1440}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: Meo3
     spriteName: 
@@ -4779,7 +5220,7 @@ ScriptedImporter:
     mosaicPosition: {x: 0, y: 0}
     flatten: 0
     isImported: 0
-    isVisible: 0
+    isVisible: 1
   - name: M3_TT
     spriteName: M3_TT
     isGroup: 0
@@ -4788,7 +5229,7 @@ ScriptedImporter:
     layerID: 16
     mosaicPosition: {x: 501, y: 2873}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M3_mat
     spriteName: M3_mat
@@ -4798,7 +5239,7 @@ ScriptedImporter:
     layerID: 32
     mosaicPosition: {x: 4, y: 3978}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M3_Mieng
     spriteName: M3_Mieng
@@ -4808,7 +5249,7 @@ ScriptedImporter:
     layerID: 33
     mosaicPosition: {x: 975, y: 1352}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M3_Dau
     spriteName: M3_Dau
@@ -4818,7 +5259,7 @@ ScriptedImporter:
     layerID: 31
     mosaicPosition: {x: 794, y: 4}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M3_Than
     spriteName: M3_Than
@@ -4828,7 +5269,7 @@ ScriptedImporter:
     layerID: 15
     mosaicPosition: {x: 4, y: 2873}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M3_Duoi
     spriteName: M3_Duoi
@@ -4838,7 +5279,7 @@ ScriptedImporter:
     layerID: 38
     mosaicPosition: {x: 425, y: 3734}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M3_TP
     spriteName: M3_TP
@@ -4848,7 +5289,7 @@ ScriptedImporter:
     layerID: 14
     mosaicPosition: {x: 794, y: 1630}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: Meo2
     spriteName: 
@@ -4859,7 +5300,7 @@ ScriptedImporter:
     mosaicPosition: {x: 0, y: 0}
     flatten: 0
     isImported: 0
-    isVisible: 0
+    isVisible: 1
   - name: M2_TTrai
     spriteName: M2_TTrai
     isGroup: 0
@@ -4868,7 +5309,7 @@ ScriptedImporter:
     layerID: 11
     mosaicPosition: {x: 565, y: 2465}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M2_mat
     spriteName: M2_mat
@@ -4878,7 +5319,7 @@ ScriptedImporter:
     layerID: 29
     mosaicPosition: {x: 1121, y: 782}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M2_Mieng
     spriteName: M2_Mieng
@@ -4888,7 +5329,7 @@ ScriptedImporter:
     layerID: 30
     mosaicPosition: {x: 975, y: 1265}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M2_Dau
     spriteName: M2_Dau
@@ -4898,7 +5339,7 @@ ScriptedImporter:
     layerID: 28
     mosaicPosition: {x: 4, y: 874}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M2_Than
     spriteName: M2_Than
@@ -4908,7 +5349,7 @@ ScriptedImporter:
     layerID: 10
     mosaicPosition: {x: 425, y: 3311}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M2_Duoi
     spriteName: M2_Duoi
@@ -4918,7 +5359,7 @@ ScriptedImporter:
     layerID: 39
     mosaicPosition: {x: 4, y: 3732}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: M2_TPhai
     spriteName: M2_TPhai
@@ -4928,7 +5369,7 @@ ScriptedImporter:
     layerID: 9
     mosaicPosition: {x: 794, y: 1265}
     flatten: 0
-    isImported: 0
+    isImported: 1
     isVisible: 1
   - name: Meo1
     spriteName: 
@@ -4946,7 +5387,7 @@ ScriptedImporter:
     parentIndex: 24
     spriteID: 4573b9f97344e54459edb2720e894d2b
     layerID: 6
-    mosaicPosition: {x: 4, y: 1687}
+    mosaicPosition: {x: 794, y: 1440}
     flatten: 0
     isImported: 1
     isVisible: 1
@@ -4956,7 +5397,7 @@ ScriptedImporter:
     parentIndex: 24
     spriteID: c75b0abd35a96fe4e987ce7098ac0bd0
     layerID: 24
-    mosaicPosition: {x: 4, y: 1423}
+    mosaicPosition: {x: 425, y: 3982}
     flatten: 0
     isImported: 1
     isVisible: 1
@@ -4966,7 +5407,7 @@ ScriptedImporter:
     parentIndex: 24
     spriteID: c9ecd74e8d7bb5a4cbd4cb1efef2fba1
     layerID: 25
-    mosaicPosition: {x: 4, y: 1877}
+    mosaicPosition: {x: 501, y: 3228}
     flatten: 0
     isImported: 1
     isVisible: 1
@@ -4976,7 +5417,7 @@ ScriptedImporter:
     parentIndex: 24
     spriteID: 4d11261c6f8ea174980e2483be08f580
     layerID: 23
-    mosaicPosition: {x: 4, y: 4}
+    mosaicPosition: {x: 4, y: 1711}
     flatten: 0
     isImported: 1
     isVisible: 1
@@ -4986,7 +5427,7 @@ ScriptedImporter:
     parentIndex: 24
     spriteID: f6e720883e3cef045b72fc30edb5f3df
     layerID: 5
-    mosaicPosition: {x: 4, y: 758}
+    mosaicPosition: {x: 4, y: 3311}
     flatten: 0
     isImported: 1
     isVisible: 1
@@ -4996,7 +5437,7 @@ ScriptedImporter:
     parentIndex: 24
     spriteID: a76d110756e8e754792de71d512acc0d
     layerID: 26
-    mosaicPosition: {x: 4, y: 1179}
+    mosaicPosition: {x: 794, y: 782}
     flatten: 0
     isImported: 1
     isVisible: 1
@@ -5006,7 +5447,7 @@ ScriptedImporter:
     parentIndex: 24
     spriteID: 621bac6ad3d148f4c993a3bd8c335e5c
     layerID: 4
-    mosaicPosition: {x: 4, y: 1525}
+    mosaicPosition: {x: 501, y: 3066}
     flatten: 0
     isImported: 1
     isVisible: 1
