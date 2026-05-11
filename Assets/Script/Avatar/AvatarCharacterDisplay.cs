@@ -53,18 +53,52 @@ public class AvatarCharacterDisplay : MonoBehaviour
 
     /// <summary>
     /// Bật đúng skin tương ứng avatarId trên cả 3 PSB, tắt các skin còn lại.
+    /// Tự động gọi ShowIdle() ở cuối để bắt đầu ở trạng thái Idle.
     /// </summary>
     public void SetAvatar(int avatarId)
     {
         if (avatarId == currentAvatarId) return;
+
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → SetAvatar(avatarId={avatarId}) START");
 
         ApplySkin(characterMeo,    SkinNamesMeo,    avatarId);
         ApplySkin(characterMeoSad, SkinNamesMeoSad, avatarId);
         ApplySkin(meoGoc34Fix,     SkinNamesMeo34,  avatarId);
 
         currentAvatarId = avatarId;
-        TriggerIdle(); // Bắt đầu ở trạng thái Idle sau khi set skin
-        Debug.Log($"[AvatarCharacterDisplay] ✅ Set avatar id={avatarId} trên {gameObject.name}");
+        
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → SetAvatar(avatarId={avatarId}) DONE, calling ShowIdle()...");
+        
+        // ✅ Bắt đầu ở trạng thái Idle - chỉ hiển thị Character Meo, ẩn 2 PSB còn lại
+        ShowIdle();
+        
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] ✅ {gameObject.name} → SetAvatar(avatarId={avatarId}) COMPLETE");
+        
+        // Log trạng thái sau khi SetAvatar
+        LogCurrentState();
+    }
+
+    /// <summary>
+    /// Bật đúng skin tương ứng avatarId trên cả 3 PSB, tắt các skin còn lại.
+    /// KHÔNG tự động gọi ShowIdle() — dùng cho WinsPanel để tránh animation double-trigger.
+    /// Sau khi gọi method này, phải gọi ShowHappy()/ShowSad()/ShowAttack() để hiển thị animation.
+    /// </summary>
+    public void SetAvatarWithoutAnimation(int avatarId)
+    {
+        if (avatarId == currentAvatarId) return;
+
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → SetAvatarWithoutAnimation(avatarId={avatarId}) START");
+
+        ApplySkin(characterMeo,    SkinNamesMeo,    avatarId);
+        ApplySkin(characterMeoSad, SkinNamesMeoSad, avatarId);
+        ApplySkin(meoGoc34Fix,     SkinNamesMeo34,  avatarId);
+
+        currentAvatarId = avatarId;
+        
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] ✅ {gameObject.name} → SetAvatarWithoutAnimation(avatarId={avatarId}) COMPLETE (NO animation triggered)");
+        
+        // Log trạng thái sau khi SetAvatar
+        LogCurrentState();
     }
 
     public int GetCurrentAvatarId() => currentAvatarId;
@@ -90,9 +124,11 @@ public class AvatarCharacterDisplay : MonoBehaviour
     /// </summary>
     public void ShowIdle()
     {
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → ShowIdle() START");
         SetPSBVisibility(showMeo: true, showMeoSad: false, showMeo34: false);
         TriggerIdle();
-        Debug.Log($"[AvatarCharacterDisplay] {gameObject.name} → ShowIdle()");
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] ✅ {gameObject.name} → ShowIdle() DONE (Meo=ON, MeoSad=OFF, Meo34=OFF, Trigger=Idle)");
+        LogCurrentState();
     }
 
     /// <summary>
@@ -101,9 +137,11 @@ public class AvatarCharacterDisplay : MonoBehaviour
     /// </summary>
     public void ShowHappy()
     {
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → ShowHappy() START");
         SetPSBVisibility(showMeo: true, showMeoSad: false, showMeo34: false);
         TriggerHappy();
-        Debug.Log($"[AvatarCharacterDisplay] {gameObject.name} → ShowHappy()");
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] ✅ {gameObject.name} → ShowHappy() DONE (Meo=ON, MeoSad=OFF, Meo34=OFF, Trigger=Happy)");
+        LogCurrentState();
     }
 
     /// <summary>
@@ -112,9 +150,11 @@ public class AvatarCharacterDisplay : MonoBehaviour
     /// </summary>
     public void ShowSad()
     {
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → ShowSad() START");
         SetPSBVisibility(showMeo: false, showMeoSad: true, showMeo34: false);
         TriggerSad();
-        Debug.Log($"[AvatarCharacterDisplay] {gameObject.name} → ShowSad()");
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] ✅ {gameObject.name} → ShowSad() DONE (Meo=OFF, MeoSad=ON, Meo34=OFF, Trigger=Sad)");
+        LogCurrentState();
     }
 
     /// <summary>
@@ -124,9 +164,40 @@ public class AvatarCharacterDisplay : MonoBehaviour
     /// </summary>
     public void ShowAttack()
     {
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → ShowAttack() START");
         SetPSBVisibility(showMeo: false, showMeoSad: false, showMeo34: true);
         TriggerAttack();
-        Debug.Log($"[AvatarCharacterDisplay] {gameObject.name} → ShowAttack()");
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] ✅ {gameObject.name} → ShowAttack() DONE (Meo=OFF, MeoSad=OFF, Meo34=ON, Trigger=Attack)");
+        LogCurrentState();
+    }
+
+    /// <summary>
+    /// Hiển thị Attack animation, sau đó tự động chuyển sang Happy animation.
+    /// Dùng trong Summary Time khi player thắng (1 đúng 1 sai) → Attack → Happy.
+    /// Attack animation chạy 1 lần (không loop), sau ~1.5 giây chuyển sang Happy.
+    /// </summary>
+    public void ShowAttackThenHappy(float attackDuration = 1.5f)
+    {
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → ShowAttackThenHappy() START (attackDuration={attackDuration}s)");
+        
+        // Hiển thị Attack trước
+        SetPSBVisibility(showMeo: false, showMeoSad: false, showMeo34: true);
+        TriggerAttack();
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Attack animation started");
+        
+        // Sau attackDuration giây, chuyển sang Happy
+        Invoke(nameof(TransitionToHappyAfterAttack), attackDuration);
+        
+        LogCurrentState();
+    }
+
+    /// <summary>
+    /// Chuyển từ Attack sang Happy (được gọi bởi ShowAttackThenHappy sau delay)
+    /// </summary>
+    private void TransitionToHappyAfterAttack()
+    {
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → TransitionToHappyAfterAttack() - Switching to Happy");
+        ShowHappy();
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -138,14 +209,22 @@ public class AvatarCharacterDisplay : MonoBehaviour
         if (parent == null) return;
 
         int index = Mathf.Clamp(avatarId, 0, skinNames.Length - 1);
+        
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → ApplySkin on '{parent.name}': avatarId={avatarId}, skinIndex={index}, skinName='{skinNames[index]}'");
 
         for (int i = 0; i < skinNames.Length; i++)
         {
             Transform skin = parent.transform.Find(skinNames[i]);
             if (skin != null)
-                skin.gameObject.SetActive(i == index);
+            {
+                bool shouldActivate = (i == index);
+                skin.gameObject.SetActive(shouldActivate);
+                Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Skin '{skinNames[i]}' in '{parent.name}' = {(shouldActivate ? "ACTIVE" : "INACTIVE")}");
+            }
             else
-                Debug.LogWarning($"[AvatarCharacterDisplay] Không tìm thấy '{skinNames[i]}' trong '{parent.name}'");
+            {
+                Debug.LogWarning($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → ⚠️ Không tìm thấy skin '{skinNames[i]}' trong '{parent.name}'");
+            }
         }
     }
 
@@ -168,13 +247,113 @@ public class AvatarCharacterDisplay : MonoBehaviour
     /// </summary>
     private void SetPSBVisibility(bool showMeo, bool showMeoSad, bool showMeo34)
     {
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → SetPSBVisibility(Meo={showMeo}, MeoSad={showMeoSad}, Meo34={showMeo34})");
+        
         if (characterMeo != null)
+        {
             characterMeo.SetActive(showMeo);
+            Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Character Meo = {(showMeo ? "ACTIVE" : "INACTIVE")}");
+        }
+        else
+        {
+            Debug.LogWarning($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Character Meo is NULL!");
+        }
         
         if (characterMeoSad != null)
+        {
             characterMeoSad.SetActive(showMeoSad);
+            Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Character Meo_Sad = {(showMeoSad ? "ACTIVE" : "INACTIVE")}");
+        }
+        else
+        {
+            Debug.LogWarning($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Character Meo_Sad is NULL!");
+        }
         
         if (meoGoc34Fix != null)
+        {
             meoGoc34Fix.SetActive(showMeo34);
+            Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → MeoGoc34 Fix = {(showMeo34 ? "ACTIVE" : "INACTIVE")}");
+        }
+        else
+        {
+            Debug.LogWarning($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → MeoGoc34 Fix is NULL!");
+        }
+    }
+
+    /// <summary>
+    /// Lấy role hiện tại (HOST/CLIENT) để log
+    /// </summary>
+    private string GetRole()
+    {
+        var net = Unity.Netcode.NetworkManager.Singleton;
+        if (net == null) return "OFFLINE";
+        if (net.IsServer) return "HOST";
+        return "CLIENT";
+    }
+
+    /// <summary>
+    /// Log trạng thái hiện tại của tất cả PSB và skin (dùng để debug)
+    /// </summary>
+    public void LogCurrentState()
+    {
+        string role = GetRole();
+        Debug.Log($"[AvatarCharacterDisplay] [{role}] ===== CURRENT STATE: {gameObject.name} =====");
+        Debug.Log($"[AvatarCharacterDisplay] [{role}] CurrentAvatarId: {currentAvatarId}");
+        
+        // Log Character Meo
+        if (characterMeo != null)
+        {
+            Debug.Log($"[AvatarCharacterDisplay] [{role}] Character Meo: {(characterMeo.activeSelf ? "ACTIVE" : "INACTIVE")}");
+            for (int i = 0; i < SkinNamesMeo.Length; i++)
+            {
+                Transform skin = characterMeo.transform.Find(SkinNamesMeo[i]);
+                if (skin != null)
+                {
+                    Debug.Log($"[AvatarCharacterDisplay] [{role}]   - Skin '{SkinNamesMeo[i]}': {(skin.gameObject.activeSelf ? "ACTIVE" : "INACTIVE")}");
+                }
+            }
+        }
+        else
+        {
+            Debug.Log($"[AvatarCharacterDisplay] [{role}] Character Meo: NULL");
+        }
+        
+        // Log Character Meo_Sad
+        if (characterMeoSad != null)
+        {
+            Debug.Log($"[AvatarCharacterDisplay] [{role}] Character Meo_Sad: {(characterMeoSad.activeSelf ? "ACTIVE" : "INACTIVE")}");
+            for (int i = 0; i < SkinNamesMeoSad.Length; i++)
+            {
+                Transform skin = characterMeoSad.transform.Find(SkinNamesMeoSad[i]);
+                if (skin != null)
+                {
+                    Debug.Log($"[AvatarCharacterDisplay] [{role}]   - Skin '{SkinNamesMeoSad[i]}': {(skin.gameObject.activeSelf ? "ACTIVE" : "INACTIVE")}");
+                }
+            }
+        }
+        else
+        {
+            Debug.Log($"[AvatarCharacterDisplay] [{role}] Character Meo_Sad: NULL");
+        }
+        
+        // Log MeoGoc34 Fix
+        if (meoGoc34Fix != null)
+        {
+            Debug.Log($"[AvatarCharacterDisplay] [{role}] MeoGoc34 Fix: {(meoGoc34Fix.activeSelf ? "ACTIVE" : "INACTIVE")}");
+            for (int i = 0; i < SkinNamesMeo34.Length; i++)
+            {
+                Transform skin = meoGoc34Fix.transform.Find(SkinNamesMeo34[i]);
+                if (skin != null)
+                {
+                    Debug.Log($"[AvatarCharacterDisplay] [{role}]   - Skin '{SkinNamesMeo34[i]}': {(skin.gameObject.activeSelf ? "ACTIVE" : "INACTIVE")}");
+                }
+            }
+        }
+        else
+        {
+            Debug.Log($"[AvatarCharacterDisplay] [{role}] MeoGoc34 Fix: NULL");
+        }
+        
+        Debug.Log($"[AvatarCharacterDisplay] [{role}] ===== END STATE =====");
     }
 }

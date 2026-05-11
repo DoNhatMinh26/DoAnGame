@@ -93,8 +93,9 @@ namespace DoAnGame.UI
                 }
             }
 
-            // Subscribe vào battle events
-            SubscribeBattleEvents();
+            // ✅ FIX: Không subscribe ở đây nữa - để OnEnable() xử lý
+            // Subscribe vào battle events sẽ được gọi trong OnEnable() → EnsureBattleManagerAndSubscribe()
+            // SubscribeBattleEvents(); // ← REMOVED to prevent duplicate subscription
 
             // Subscribe vào NetworkVariable changes (delay để đảm bảo NetworkObject đã spawn)
             Invoke(nameof(SubscribeNetworkVariables), 0.5f);
@@ -201,12 +202,12 @@ namespace DoAnGame.UI
 
             // Unsubscribe trước để tránh duplicate subscription
             battleManager.OnQuestionGenerated -= HandleQuestionGenerated;
-            battleManager.OnAnswerResult -= HandleAnswerResult;
+            battleManager.OnAnswerResultReceived -= HandleAnswerResultDetailed;
             battleManager.OnMatchEnded -= HandleMatchEnded;
 
             // Subscribe lại
             battleManager.OnQuestionGenerated += HandleQuestionGenerated;
-            battleManager.OnAnswerResult += HandleAnswerResult;
+            battleManager.OnAnswerResultReceived += HandleAnswerResultDetailed; // ✅ Subscribe to detailed event
             battleManager.OnMatchEnded += HandleMatchEnded;
 
             Debug.Log("[BattleController] ✅ Subscribed to BattleManager events");
@@ -452,7 +453,7 @@ namespace DoAnGame.UI
         {
             if (battleManager == null) return;
             battleManager.OnQuestionGenerated -= HandleQuestionGenerated;
-            battleManager.OnAnswerResult -= HandleAnswerResult;
+            battleManager.OnAnswerResultReceived -= HandleAnswerResultDetailed;
             battleManager.OnMatchEnded -= HandleMatchEnded;
         }
 
@@ -494,23 +495,58 @@ namespace DoAnGame.UI
         {
             if (battleManager == null) return;
 
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+
+            Debug.Log($"[BattleController] [{role}] ===== ApplyAvatarCharacters START =====");
+
             var p1 = battleManager.GetPlayer1State();
             var p2 = battleManager.GetPlayer2State();
 
+            Debug.Log($"[BattleController] [{role}] Player1State: {(p1 != null ? "FOUND" : "NULL")}");
+            Debug.Log($"[BattleController] [{role}] Player2State: {(p2 != null ? "FOUND" : "NULL")}");
+            Debug.Log($"[BattleController] [{role}] player1Character: {(player1Character != null ? player1Character.gameObject.name : "NULL")}");
+            Debug.Log($"[BattleController] [{role}] player2Character: {(player2Character != null ? player2Character.gameObject.name : "NULL")}");
+
             if (p1 != null && player1Character != null)
             {
-                player1Character.SetAvatar(p1.AvatarId.Value);
+                int avatarId = p1.AvatarId.Value;
+                Debug.Log($"[BattleController] [{role}] Player1 AvatarId={avatarId}, calling SetAvatar()...");
+                player1Character.SetAvatar(avatarId);
+                
                 // Subscribe để update nếu AvatarId sync muộn
-                p1.AvatarId.OnValueChanged += (_, newId) => player1Character.SetAvatar(newId);
+                p1.AvatarId.OnValueChanged += (oldId, newId) =>
+                {
+                    Debug.Log($"[BattleController] [{role}] Player1 AvatarId changed: {oldId} → {newId}");
+                    player1Character.SetAvatar(newId);
+                };
+            }
+            else
+            {
+                if (p1 == null) Debug.LogWarning($"[BattleController] [{role}] ⚠️ Player1State is NULL!");
+                if (player1Character == null) Debug.LogWarning($"[BattleController] [{role}] ⚠️ player1Character is NULL!");
             }
 
             if (p2 != null && player2Character != null)
             {
-                player2Character.SetAvatar(p2.AvatarId.Value);
-                p2.AvatarId.OnValueChanged += (_, newId) => player2Character.SetAvatar(newId);
+                int avatarId = p2.AvatarId.Value;
+                Debug.Log($"[BattleController] [{role}] Player2 AvatarId={avatarId}, calling SetAvatar()...");
+                player2Character.SetAvatar(avatarId);
+                
+                // Subscribe để update nếu AvatarId sync muộn
+                p2.AvatarId.OnValueChanged += (oldId, newId) =>
+                {
+                    Debug.Log($"[BattleController] [{role}] Player2 AvatarId changed: {oldId} → {newId}");
+                    player2Character.SetAvatar(newId);
+                };
+            }
+            else
+            {
+                if (p2 == null) Debug.LogWarning($"[BattleController] [{role}] ⚠️ Player2State is NULL!");
+                if (player2Character == null) Debug.LogWarning($"[BattleController] [{role}] ⚠️ player2Character is NULL!");
             }
 
-            Debug.Log($"[BattleController] ✅ Avatar characters initialized: P1={p1?.AvatarId.Value}, P2={p2?.AvatarId.Value}");
+            Debug.Log($"[BattleController] [{role}] ===== ApplyAvatarCharacters COMPLETE =====");
         }
 
         /// <summary>
@@ -518,6 +554,11 @@ namespace DoAnGame.UI
         /// </summary>
         private void HandleQuestionGenerated(string question, int[] choices)
         {
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+            
+            Debug.Log($"[BattleController] [{role}] ===== HandleQuestionGenerated START =====");
+            Debug.Log($"[BattleController] [{role}] Question: '{question}'");
             Log($"Question received: {question}");
 
             // Hiển thị câu hỏi
@@ -556,8 +597,30 @@ namespace DoAnGame.UI
             StartQuestionTimer();
 
             // ✅ AVATAR ANIMATION: Reset về Idle khi câu hỏi mới bắt đầu (Question Time)
-            player1Character?.ShowIdle();
-            player2Character?.ShowIdle();
+            Debug.Log($"[BattleController] [{role}] ===== AVATAR ANIMATION: Question Time → ShowIdle() =====");
+            Debug.Log($"[BattleController] [{role}] Calling ShowIdle() for Player1Character...");
+            if (player1Character != null)
+            {
+                player1Character.ShowIdle();
+                Debug.Log($"[BattleController] [{role}] ✅ Player1Character.ShowIdle() DONE");
+            }
+            else
+            {
+                Debug.LogWarning($"[BattleController] [{role}] ⚠️ player1Character is NULL!");
+            }
+            
+            Debug.Log($"[BattleController] [{role}] Calling ShowIdle() for Player2Character...");
+            if (player2Character != null)
+            {
+                player2Character.ShowIdle();
+                Debug.Log($"[BattleController] [{role}] ✅ Player2Character.ShowIdle() DONE");
+            }
+            else
+            {
+                Debug.LogWarning($"[BattleController] [{role}] ⚠️ player2Character is NULL!");
+            }
+            
+            Debug.Log($"[BattleController] [{role}] ===== HandleQuestionGenerated COMPLETE =====");
         }
 
         /// <summary>
@@ -587,15 +650,18 @@ namespace DoAnGame.UI
         }
 
         /// <summary>
-        /// Xử lý kết quả đáp án
+        /// Xử lý kết quả đáp án với thông tin đầy đủ (player1Answer, player2Answer)
+        /// để phân biệt được "cả 2 đúng" vs "1 đúng 1 sai"
         /// </summary>
-        private void HandleAnswerResult(int winnerId, bool correct, long responseTimeMs)
+        private void HandleAnswerResultDetailed(int winnerId, bool correct, long player1ResponseTimeMs, long player2ResponseTimeMs, int player1Answer, int player2Answer)
         {
             var net = NetworkManager.Singleton;
             string role = net != null && net.IsHost ? "HOST" : "CLIENT";
             
-            Debug.Log($"[BattleController] [{role}] HandleAnswerResult CALLED: Winner={winnerId}, Correct={correct}, Time={responseTimeMs}ms");
-            Log($"[{role}] Answer result: Winner={winnerId}, Correct={correct}, Time={responseTimeMs}ms");
+            Debug.Log($"[BattleController] [{role}] ===== HandleAnswerResultDetailed START =====");
+            Debug.Log($"[BattleController] [{role}] Winner={winnerId}, Correct={correct}, P1Time={player1ResponseTimeMs}ms, P2Time={player2ResponseTimeMs}ms");
+            Debug.Log($"[BattleController] [{role}] P1Answer={player1Answer}, P2Answer={player2Answer}");
+            Log($"[{role}] Answer result: Winner={winnerId}, Correct={correct}, P1Time={player1ResponseTimeMs}ms, P2Time={player2ResponseTimeMs}ms");
 
             // ✅ KHÓA DRAG-DROP NGAY LẬP TỨC (không cho kéo thả trong thời gian thống kê)
             DragAndDrop.SetGlobalLock(true);
@@ -613,6 +679,13 @@ namespace DoAnGame.UI
 
             Debug.Log($"[BattleController] [{role}] Correct answer: {correctAnswer}");
             Log($"[{role}] Correct answer: {correctAnswer}");
+
+            // ✅ Kiểm tra cả 2 có đúng không
+            bool player1Correct = (player1Answer == correctAnswer);
+            bool player2Correct = (player2Answer == correctAnswer);
+            bool bothCorrect = player1Correct && player2Correct;
+            
+            Debug.Log($"[BattleController] [{role}] P1Correct={player1Correct}, P2Correct={player2Correct}, BothCorrect={bothCorrect}");
 
             // ✅ Kiểm tra answerChoices
             if (answerChoices == null)
@@ -660,72 +733,233 @@ namespace DoAnGame.UI
                 }
             }
 
-            // Hiển thị kết quả text
+            // ✅ Hiển thị kết quả text - phân biệt rõ ràng giữa local player và opponent
+            // isLocalWinner: true nếu local player thắng câu này
             bool isLocalWinner = net != null && ((net.IsHost && winnerId == 0) || (!net.IsHost && winnerId == 1));
+            
+            // Lấy response time của local player để hiển thị
+            long localResponseTime = (net != null && net.IsHost) ? player1ResponseTimeMs : player2ResponseTimeMs;
             
             if (battleStatusText != null)
             {
                 if (winnerId == -1)
                 {
-                    battleStatusText.text = "Cả 2 đều sai!";
+                    // Cả 2 sai
+                    battleStatusText.SetText("Cả 2 đều sai!");
+                    Debug.Log($"[BattleController] [{role}] battleStatusText: 'Cả 2 đều sai!'");
+                }
+                else if (winnerId == -2)
+                {
+                    // Hòa (cả 2 đúng cùng lúc)
+                    battleStatusText.SetText("Hòa! Cả 2 đều đúng cùng lúc.");
+                    Debug.Log($"[BattleController] [{role}] battleStatusText: 'Hòa! Cả 2 đều đúng cùng lúc.'");
                 }
                 else
                 {
+                    // Có người thắng
                     if (isLocalWinner)
                     {
-                        battleStatusText.text = $"<color=green>Bạn trả lời đúng! ({responseTimeMs}ms)</color>";
+                        // Local player thắng câu này
+                        battleStatusText.SetText($"<color=green>Chiến thắng! ({localResponseTime}ms)</color>");
+                        Debug.Log($"[BattleController] [{role}] battleStatusText: 'Chiến thắng! ({localResponseTime}ms)' (local player won)");
                     }
                     else
                     {
-                        battleStatusText.text = $"<color=red>Đối thủ trả lời đúng nhanh hơn!</color>";
+                        // Opponent thắng câu này
+                        battleStatusText.SetText($"<color=red>Thua cuộc! Đối thủ nhanh hơn.</color>");
+                        Debug.Log($"[BattleController] [{role}] battleStatusText: 'Thua cuộc! Đối thủ nhanh hơn.' (opponent won)");
                     }
                 }
             }
+            else
+            {
+                Debug.LogWarning($"[BattleController] [{role}] battleStatusText is NULL!");
+            }
 
-            Debug.Log($"[BattleController] [{role}] HandleAnswerResult COMPLETED");
+            Debug.Log($"[BattleController] [{role}] HandleAnswerResultDetailed text display COMPLETED");
 
             // ✅ AVATAR ANIMATION: Trigger animation theo kết quả câu trả lời (Summary Time)
             // winnerId: 0 = Player1 thắng, 1 = Player2 thắng, -1 = cả 2 sai, -2 = hòa
-            // correct: true nếu có ít nhất 1 người đúng, false nếu cả 2 sai
-            // 
-            // LOGIC ANIMATION với Attack:
-            // 1. Cả 2 đúng (correct=true, winnerId=0/1):
-            //    - Nhanh hơn: ShowAttack() (tấn công, KHÔNG gây sát thương)
-            //    - Chậm hơn: ShowSad() (buồn vì chậm, KHÔNG mất máu)
-            // 2. 1 đúng, 1 sai (correct=true, winnerId=0/1):
-            //    - Đúng: ShowAttack() (tấn công → đối thủ MẤT MÁU)
-            //    - Sai: ShowSad() (bị tấn công, MẤT MÁU)
-            // 3. Cả 2 sai (correct=false, winnerId=-1):
-            //    - Cả 2: ShowSad() (cả 2 buồn, KHÔNG mất máu)
-            // 4. Hòa (correct=true, winnerId=-2):
-            //    - Cả 2: ShowSad() (cả 2 buồn vì hòa, KHÔNG mất máu)
+            // bothCorrect: true nếu CẢ 2 đều trả lời đúng
+            
+            Debug.Log($"[BattleController] [{role}] ===== AVATAR ANIMATION: Summary Time START =====");
+            Debug.Log($"[BattleController] [{role}] winnerId={winnerId}, bothCorrect={bothCorrect}");
             
             if (winnerId == -1)
             {
                 // Cả 2 sai → Sad cho cả 2 (KHÔNG mất máu)
-                player1Character?.ShowSad();
-                player2Character?.ShowSad();
+                Debug.Log($"[BattleController] [{role}] Case: Cả 2 sai → ShowSad() for both");
+                Debug.Log($"[BattleController] [{role}] Calling Player1Character.ShowSad()...");
+                if (player1Character != null)
+                {
+                    player1Character.ShowSad();
+                    Debug.Log($"[BattleController] [{role}] ✅ Player1Character.ShowSad() DONE");
+                }
+                else
+                {
+                    Debug.LogWarning($"[BattleController] [{role}] ⚠️ player1Character is NULL!");
+                }
+                
+                Debug.Log($"[BattleController] [{role}] Calling Player2Character.ShowSad()...");
+                if (player2Character != null)
+                {
+                    player2Character.ShowSad();
+                    Debug.Log($"[BattleController] [{role}] ✅ Player2Character.ShowSad() DONE");
+                }
+                else
+                {
+                    Debug.LogWarning($"[BattleController] [{role}] ⚠️ player2Character is NULL!");
+                }
             }
             else if (winnerId == -2)
             {
                 // Hòa (cả 2 đúng cùng lúc) → Sad cho cả 2 (KHÔNG mất máu)
-                player1Character?.ShowSad();
-                player2Character?.ShowSad();
+                Debug.Log($"[BattleController] [{role}] Case: Hòa (cả 2 đúng cùng lúc) → ShowSad() for both");
+                Debug.Log($"[BattleController] [{role}] Calling Player1Character.ShowSad()...");
+                if (player1Character != null)
+                {
+                    player1Character.ShowSad();
+                    Debug.Log($"[BattleController] [{role}] ✅ Player1Character.ShowSad() DONE");
+                }
+                else
+                {
+                    Debug.LogWarning($"[BattleController] [{role}] ⚠️ player1Character is NULL!");
+                }
+                
+                Debug.Log($"[BattleController] [{role}] Calling Player2Character.ShowSad()...");
+                if (player2Character != null)
+                {
+                    player2Character.ShowSad();
+                    Debug.Log($"[BattleController] [{role}] ✅ Player2Character.ShowSad() DONE");
+                }
+                else
+                {
+                    Debug.LogWarning($"[BattleController] [{role}] ⚠️ player2Character is NULL!");
+                }
             }
             else if (winnerId == 0)
             {
-                // Player1 thắng câu → P1 Attack, P2 Sad
-                // (Mất máu chỉ khi P2 sai - logic HP đã xử lý trong NetworkedMathBattleManager)
-                player1Character?.ShowAttack();
-                player2Character?.ShowSad();
+                // Player1 thắng câu (đúng hoặc nhanh hơn)
+                // ✅ FIXED LOGIC: Kiểm tra bothCorrect để phân biệt "cả 2 đúng" vs "1 đúng 1 sai"
+                
+                Debug.Log($"[BattleController] [{role}] Case: Player1 thắng (bothCorrect={bothCorrect})");
+                
+                if (bothCorrect)
+                {
+                    // Cả 2 đúng, P1 nhanh hơn → P1 Happy, P2 Sad
+                    Debug.Log($"[BattleController] [{role}] Both correct, P1 faster → P1 ShowHappy(), P2 ShowSad()");
+                    Debug.Log($"[BattleController] [{role}] Calling Player1Character.ShowHappy()...");
+                    if (player1Character != null)
+                    {
+                        player1Character.ShowHappy();
+                        Debug.Log($"[BattleController] [{role}] ✅ Player1Character.ShowHappy() DONE");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[BattleController] [{role}] ⚠️ player1Character is NULL!");
+                    }
+                    
+                    Debug.Log($"[BattleController] [{role}] Calling Player2Character.ShowSad()...");
+                    if (player2Character != null)
+                    {
+                        player2Character.ShowSad();
+                        Debug.Log($"[BattleController] [{role}] ✅ Player2Character.ShowSad() DONE");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[BattleController] [{role}] ⚠️ player2Character is NULL!");
+                    }
+                }
+                else
+                {
+                    // 1 đúng 1 sai → P1 Attack THEN Happy, P2 Sad
+                    Debug.Log($"[BattleController] [{role}] P1 correct, P2 wrong → P1 ShowAttackThenHappy(), P2 ShowSad()");
+                    Debug.Log($"[BattleController] [{role}] Calling Player1Character.ShowAttackThenHappy()...");
+                    if (player1Character != null)
+                    {
+                        player1Character.ShowAttackThenHappy();
+                        Debug.Log($"[BattleController] [{role}] ✅ Player1Character.ShowAttackThenHappy() DONE");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[BattleController] [{role}] ⚠️ player1Character is NULL!");
+                    }
+                    
+                    Debug.Log($"[BattleController] [{role}] Calling Player2Character.ShowSad()...");
+                    if (player2Character != null)
+                    {
+                        player2Character.ShowSad();
+                        Debug.Log($"[BattleController] [{role}] ✅ Player2Character.ShowSad() DONE");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[BattleController] [{role}] ⚠️ player2Character is NULL!");
+                    }
+                }
             }
             else if (winnerId == 1)
             {
-                // Player2 thắng câu → P2 Attack, P1 Sad
-                // (Mất máu chỉ khi P1 sai - logic HP đã xử lý trong NetworkedMathBattleManager)
-                player2Character?.ShowAttack();
-                player1Character?.ShowSad();
+                // Player2 thắng câu (đúng hoặc nhanh hơn)
+                // ✅ FIXED LOGIC: Kiểm tra bothCorrect để phân biệt "cả 2 đúng" vs "1 đúng 1 sai"
+                
+                Debug.Log($"[BattleController] [{role}] Case: Player2 thắng (bothCorrect={bothCorrect})");
+                
+                if (bothCorrect)
+                {
+                    // Cả 2 đúng, P2 nhanh hơn → P2 Happy, P1 Sad
+                    Debug.Log($"[BattleController] [{role}] Both correct, P2 faster → P2 ShowHappy(), P1 ShowSad()");
+                    Debug.Log($"[BattleController] [{role}] Calling Player2Character.ShowHappy()...");
+                    if (player2Character != null)
+                    {
+                        player2Character.ShowHappy();
+                        Debug.Log($"[BattleController] [{role}] ✅ Player2Character.ShowHappy() DONE");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[BattleController] [{role}] ⚠️ player2Character is NULL!");
+                    }
+                    
+                    Debug.Log($"[BattleController] [{role}] Calling Player1Character.ShowSad()...");
+                    if (player1Character != null)
+                    {
+                        player1Character.ShowSad();
+                        Debug.Log($"[BattleController] [{role}] ✅ Player1Character.ShowSad() DONE");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[BattleController] [{role}] ⚠️ player1Character is NULL!");
+                    }
+                }
+                else
+                {
+                    // 1 đúng 1 sai → P2 Attack THEN Happy, P1 Sad
+                    Debug.Log($"[BattleController] [{role}] P2 correct, P1 wrong → P2 ShowAttackThenHappy(), P1 ShowSad()");
+                    Debug.Log($"[BattleController] [{role}] Calling Player2Character.ShowAttackThenHappy()...");
+                    if (player2Character != null)
+                    {
+                        player2Character.ShowAttackThenHappy();
+                        Debug.Log($"[BattleController] [{role}] ✅ Player2Character.ShowAttackThenHappy() DONE");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[BattleController] [{role}] ⚠️ player2Character is NULL!");
+                    }
+                    
+                    Debug.Log($"[BattleController] [{role}] Calling Player1Character.ShowSad()...");
+                    if (player1Character != null)
+                    {
+                        player1Character.ShowSad();
+                        Debug.Log($"[BattleController] [{role}] ✅ Player1Character.ShowSad() DONE");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[BattleController] [{role}] ⚠️ player1Character is NULL!");
+                    }
+                }
             }
+            
+            Debug.Log($"[BattleController] [{role}] ===== AVATAR ANIMATION: Summary Time COMPLETE =====");
+            Debug.Log($"[BattleController] [{role}] ===== HandleAnswerResultDetailed COMPLETE =====");
         }
 
         /// <summary>

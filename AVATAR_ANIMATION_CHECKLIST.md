@@ -7,6 +7,9 @@
 - [ ] **Character Meo.controller**
   - [ ] Tạo 2 triggers: `TriggerIdle`, `TriggerHappy`
   - [ ] Thêm 2 states: `Idle` (default), `Happy`
+  - [ ] **Set Loop Time:**
+    - [ ] `Idle.anim` → Loop Time = **ON**
+    - [ ] `Happy.anim` → Loop Time = **ON**
   - [ ] Tạo transitions từ `Any State`:
     - [ ] `Any State → Idle` (condition: `TriggerIdle`, Has Exit Time = OFF)
     - [ ] `Any State → Happy` (condition: `TriggerHappy`, Has Exit Time = OFF)
@@ -14,12 +17,16 @@
 - [ ] **Character Meo_Sad.controller**
   - [ ] Tạo 1 trigger: `TriggerSad`
   - [ ] Thêm 1 state: `Sad` (default)
+  - [ ] **Set Loop Time:**
+    - [ ] `Sad.anim` → Loop Time = **ON**
   - [ ] Tạo transition từ `Any State`:
     - [ ] `Any State → Sad` (condition: `TriggerSad`, Has Exit Time = OFF)
 
 - [ ] **MeoGoc34 Fix.controller** ⭐ MỚI
   - [ ] Tạo 1 trigger: `TriggerAttack`
   - [ ] Thêm 1 state: `Attack` (default)
+  - [ ] **Set Loop Time:**
+    - [ ] `Attack.anim` → Loop Time = **OFF** (chỉ chạy 1 lần!)
   - [ ] Tạo transition từ `Any State`:
     - [ ] `Any State → Attack` (condition: `TriggerAttack`, Has Exit Time = OFF)
 
@@ -42,12 +49,24 @@
     - [ ] `Meo Goc34 Fix` → child `MeoGoc34 Fix`
 - [ ] Lặp lại cho `Player2Character`
 
-### 4. Gán vào UIMultiplayerBattleController
+### 4. Gán vào UIMultiplayerBattleController & UIWinsController
 
+**GameplayPanel:**
 - [ ] Chọn `Canvas/GameplayPanel`
   - [ ] Component **UIMultiplayerBattleController** → gán:
     - [ ] `Player1 Character` → `Player1Character`
     - [ ] `Player2 Character` → `Player2Character`
+
+**Wins Panel:**
+- [ ] Chọn `Canvas/Wins`
+  - [ ] Component **UIWinsController** → gán:
+    - [ ] `Winner Character` → `WinnerCharacter` (GameObject chứa 3 PSB)
+    - [ ] `Loser Character` → `LoserCharacter` (GameObject chứa 3 PSB)
+- [ ] Setup `WinnerCharacter` và `LoserCharacter` giống như `Player1Character`:
+  - [ ] Kéo 3 PSB vào làm con
+  - [ ] Gán controller cho từng PSB
+  - [ ] Gán `AvatarCharacterDisplay` component
+  - [ ] Gán 3 PSB vào Inspector của `AvatarCharacterDisplay`
 
 ### 5. Kiểm tra tên skin con (trong Hierarchy)
 
@@ -70,17 +89,24 @@
 - [ ] Chạy Play Mode
 - [ ] Tạo phòng multiplayer (dùng ParrelSync để test 2 client)
 - [ ] Bắt đầu trận đấu
+- [ ] **Kiểm tra chỉ 1 character hiển thị tại 1 thời điểm:**
+  - [ ] Question Time → Chỉ `Character Meo` active (2 PSB còn lại inactive)
+  - [ ] Attack → Chỉ `MeoGoc34 Fix` active (2 PSB còn lại inactive)
+  - [ ] Sad → Chỉ `Character Meo_Sad` active (2 PSB còn lại inactive)
 - [ ] **Kiểm tra animation:**
-  - [ ] Question Time → `Idle` (Character Meo hiển thị)
+  - [ ] Question Time → `Idle` (Character Meo hiển thị, loop)
   - [ ] **1 đúng, 1 sai:**
-    - [ ] Người đúng → `Attack` (MeoGoc34 Fix hiển thị, ném bóng)
-    - [ ] Người sai → `Sad` (Character Meo_Sad hiển thị, mất máu)
+    - [ ] Người đúng → `Attack` (MeoGoc34 Fix hiển thị, chạy 1 lần, không loop)
+    - [ ] Người sai → `Sad` (Character Meo_Sad hiển thị, loop, mất máu)
   - [ ] **Cả 2 đúng, so sánh tốc độ:**
     - [ ] Nhanh hơn → `Attack` (MeoGoc34 Fix hiển thị, KHÔNG gây sát thương)
     - [ ] Chậm hơn → `Sad` (Character Meo_Sad hiển thị, KHÔNG mất máu)
   - [ ] **Cả 2 sai** → `Sad` (cả 2, KHÔNG mất máu)
   - [ ] **Hòa** (cả 2 đúng cùng lúc) → `Sad` (cả 2, KHÔNG mất máu)
   - [ ] Câu hỏi mới → quay về `Idle`
+- [ ] **Kiểm tra Wins panel:**
+  - [ ] Winner → `Happy` (Character Meo hiển thị, loop)
+  - [ ] Loser → `Sad` (Character Meo_Sad hiển thị, loop)
 
 ### 8. Kiểm tra Console Logs
 
@@ -128,9 +154,17 @@
   - `questionTimeLimit` (Question Time)
   - `delayBetweenQuestions` (Summary Time)
 
-### Cả 2 player cùng animation
-- ✅ Kiểm tra `winnerId` từ server (0/1/-1/-2)
-- ✅ Kiểm tra `HandleAnswerResult()` gọi đúng method
+### Nhiều character hiển thị cùng lúc
+- ✅ Code đã fix - `SetAvatar()` tự động gọi `ShowIdle()` để ẩn 2 PSB không dùng
+- ✅ Kiểm tra trong Hierarchy khi Play Mode - chỉ 1 PSB active tại 1 thời điểm
+- ✅ Xóa các GameObject duplicate nếu có
+
+### Attack animation loop liên tục
+- ✅ Chọn `Attack.anim` → Inspector → **Loop Time = OFF**
+
+### Wins panel không hiển thị animation
+- ✅ Kiểm tra `UIWinsController` đã gán `winnerCharacter` và `loserCharacter`
+- ✅ Winner → `ShowHappy()`, Loser → `ShowSad()`
 
 ---
 

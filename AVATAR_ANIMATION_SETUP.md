@@ -1,295 +1,412 @@
-# Hướng dẫn Setup Avatar Animation System
+# Avatar Animation System - Complete Logic
 
 ## Tổng quan
 
-Nhân vật mèo gồm **3 PSB riêng biệt**, mỗi PSB có bộ xương riêng và AnimatorController riêng — không thể dùng chung controller vì xương khác nhau.
+Hệ thống avatar animation cho multiplayer battle với 3 PSB files:
+- **Character Meo**: Idle + Happy animations
+- **Character Meo_Sad**: Sad animation
+- **MeoGoc34 Fix**: Attack animation (góc 3/4)
 
-Bên trong mỗi PSB có 4 skin dùng chung xương của PSB đó.
+**Quy tắc quan trọng**: Chỉ 1 PSB được hiển thị tại 1 thời điểm.
 
-| PSB | Controller | Animation |
+---
+
+## Logic Animation Chi Tiết
+
+### 1. GameplayPanel - Question Time (10s)
+
+**Khi câu hỏi mới bắt đầu** (`HandleQuestionGenerated`):
+
+```
+A: ShowIdle() → Character Meo ACTIVE → Idle animation
+B: ShowIdle() → Character Meo ACTIVE → Idle animation
+
+→ Chỉ hiển thị Character Meo (Idle)
+→ Character Meo_Sad = INACTIVE
+→ MeoGoc34 Fix = INACTIVE
+```
+
+**Timing**: Từ khi câu hỏi hiển thị đến hết `questionTimeLimit` (default 10s từ `GameRulesConfig`)
+
+---
+
+### 2. GameplayPanel - Summary Time (delayBetweenQuestions)
+
+**Sau khi cả 2 player trả lời hoặc hết thời gian** (`HandleAnswerResultDetailed`):
+
+#### Case 1: Cả 2 sai (winnerId = -1)
+```
+P1: ShowSad() → Character Meo_Sad ACTIVE → Sad animation
+    → Character Meo = INACTIVE
+    → MeoGoc34 Fix = INACTIVE
+
+P2: ShowSad() → Character Meo_Sad ACTIVE → Sad animation
+    → Character Meo = INACTIVE
+    → MeoGoc34 Fix = INACTIVE
+
+→ KHÔNG mất máu
+→ battleStatusText: "Cả 2 đều sai!"
+```
+
+#### Case 2: Hòa - Cả 2 đúng cùng lúc (winnerId = -2)
+```
+P1: ShowSad() → Character Meo_Sad ACTIVE → Sad animation
+    → Character Meo = INACTIVE
+    → MeoGoc34 Fix = INACTIVE
+
+P2: ShowSad() → Character Meo_Sad ACTIVE → Sad animation
+    → Character Meo = INACTIVE
+    → MeoGoc34 Fix = INACTIVE
+
+→ KHÔNG mất máu
+→ battleStatusText: "Hòa! Cả 2 đều đúng cùng lúc."
+```
+
+#### Case 3: Cả 2 đúng, P1 nhanh hơn (winnerId = 0, bothCorrect = true)
+```
+P1 (Winner - nhanh hơn):
+    ShowHappy() → Character Meo ACTIVE → Happy animation
+    → Character Meo_Sad = INACTIVE
+    → MeoGoc34 Fix = INACTIVE
+
+P2 (Loser - chậm hơn):
+    ShowSad() → Character Meo_Sad ACTIVE → Sad animation
+    → Character Meo = INACTIVE
+    → MeoGoc34 Fix = INACTIVE
+
+→ KHÔNG mất máu (cả 2 đều đúng)
+→ KHÔNG có Attack animation (chỉ Happy/Sad)
+→ P1 +10 điểm, P2 +5 điểm (khuyến khích)
+→ battleStatusText (P1): "Chiến thắng! (XXXms)"
+→ battleStatusText (P2): "Thua cuộc! Đối thủ nhanh hơn."
+```
+
+#### Case 4: Cả 2 đúng, P2 nhanh hơn (winnerId = 1, bothCorrect = true)
+```
+P2 (Winner - nhanh hơn):
+    ShowHappy() → Character Meo ACTIVE → Happy animation
+    → Character Meo_Sad = INACTIVE
+    → MeoGoc34 Fix = INACTIVE
+
+P1 (Loser - chậm hơn):
+    ShowSad() → Character Meo_Sad ACTIVE → Sad animation
+    → Character Meo = INACTIVE
+    → MeoGoc34 Fix = INACTIVE
+
+→ KHÔNG mất máu (cả 2 đều đúng)
+→ KHÔNG có Attack animation (chỉ Happy/Sad)
+→ P2 +10 điểm, P1 +5 điểm (khuyến khích)
+→ battleStatusText (P2): "Chiến thắng! (XXXms)"
+→ battleStatusText (P1): "Thua cuộc! Đối thủ nhanh hơn."
+```
+
+#### Case 5: P1 đúng, P2 sai (winnerId = 0, bothCorrect = false)
+```
+P1 (Winner - đúng):
+    ShowAttackThenHappy() → 
+    BƯỚC 1 (1.5s): MeoGoc34 Fix ACTIVE → Attack animation (chạy 1 lần, không loop)
+                   → Character Meo = INACTIVE
+                   → Character Meo_Sad = INACTIVE
+    
+    BƯỚC 2 (sau 1.5s): Character Meo ACTIVE → Happy animation
+                       → MeoGoc34 Fix = INACTIVE
+                       → Character Meo_Sad = INACTIVE
+
+P2 (Loser - sai):
+    ShowSad() → Character Meo_Sad ACTIVE → Sad animation
+    → Character Meo = INACTIVE
+    → MeoGoc34 Fix = INACTIVE
+
+→ CÓ mất máu: P2 -1 HP
+→ P1 +10 điểm, P2 +0 điểm
+→ battleStatusText (P1): "Chiến thắng! (XXXms)"
+→ battleStatusText (P2): "Thua cuộc! Đối thủ nhanh hơn."
+```
+
+#### Case 6: P1 sai, P2 đúng (winnerId = 1, bothCorrect = false)
+```
+P2 (Winner - đúng):
+    ShowAttackThenHappy() → 
+    BƯỚC 1 (1.5s): MeoGoc34 Fix ACTIVE → Attack animation (chạy 1 lần, không loop)
+                   → Character Meo = INACTIVE
+                   → Character Meo_Sad = INACTIVE
+    
+    BƯỚC 2 (sau 1.5s): Character Meo ACTIVE → Happy animation
+                       → MeoGoc34 Fix = INACTIVE
+                       → Character Meo_Sad = INACTIVE
+
+P1 (Loser - sai):
+    ShowSad() → Character Meo_Sad ACTIVE → Sad animation
+    → Character Meo = INACTIVE
+    → MeoGoc34 Fix = INACTIVE
+
+→ CÓ mất máu: P1 -1 HP
+→ P2 +10 điểm, P1 +0 điểm
+→ battleStatusText (P2): "Chiến thắng! (XXXms)"
+→ battleStatusText (P1): "Thua cuộc! Đối thủ nhanh hơn."
+```
+
+**Timing**: Hiển thị trong `delayBetweenQuestions` giây (default 5s từ `GameRulesConfig`)
+
+---
+
+### 3. Sau Summary Time → Câu hỏi mới
+
+**Sau khi hết `delayBetweenQuestions`** (`HandleQuestionGenerated` được gọi lại):
+
+```
+A: ShowIdle() → Character Meo ACTIVE → Idle animation
+    → Character Meo_Sad = INACTIVE
+    → MeoGoc34 Fix = INACTIVE
+
+B: ShowIdle() → Character Meo ACTIVE → Idle animation
+    → Character Meo_Sad = INACTIVE
+    → MeoGoc34 Fix = INACTIVE
+
+→ Reset về Question Time cho câu hỏi mới
+```
+
+---
+
+### 4. WinsPanel - Kết quả trận đấu
+
+**Khi trận đấu kết thúc** (1 người hết máu hoặc bỏ cuộc):
+
+```
+Winner:
+    SetAvatarWithoutAnimation(avatarId) → Set skin KHÔNG trigger animation
+    → Delay 0.1s
+    → ShowHappy() → Character Meo ACTIVE → Happy animation
+                  → Character Meo_Sad = INACTIVE
+                  → MeoGoc34 Fix = INACTIVE
+
+Loser:
+    SetAvatarWithoutAnimation(avatarId) → Set skin KHÔNG trigger animation
+    → Delay 0.1s
+    → ShowSad() → Character Meo_Sad ACTIVE → Sad animation
+                → Character Meo = INACTIVE
+                → MeoGoc34 Fix = INACTIVE
+
+→ trangThaiText (Winner): "CHIẾN THẮNG!" (màu xanh)
+→ trangThaiText (Loser): "THUA CUỘC!" (màu đỏ)
+```
+
+**Lưu ý**: 
+- Dùng `SetAvatarWithoutAnimation()` thay vì `SetAvatar()` để tránh Idle animation chạy trước Happy/Sad
+- Delay 0.1s giữa `SetAvatarWithoutAnimation()` và `ShowHappy()/ShowSad()` để đảm bảo skin setup hoàn tất
+
+---
+
+## Timing Summary
+
+| Phase | Duration | Animation |
 |---|---|---|
-| `Character Meo.psb` | `Character Meo.controller` | Idle + Happy (1 controller) |
-| `Character Meo_Sad.psb` | `Character Meo_Sad.controller` | Sad |
-| `MeoGoc34 Fix.psb` | `MeoGoc34 Fix.controller` | Attack (góc 3/4) |
+| Question Time | `questionTimeLimit` (10s) | Idle |
+| Summary Time | `delayBetweenQuestions` (5s) | Happy/Sad/Attack→Happy |
+| Attack animation | 1.5s | Attack (không loop) |
+| Happy after Attack | Còn lại của Summary Time | Happy (loop) |
+| WinsPanel | Vô thời hạn | Happy (winner) / Sad (loser) |
 
 ---
 
-## Phần 1: Setup AnimatorController
+## Animation Clip Settings (Unity Editor)
 
-### 1.1 — Character Meo.controller (Idle + Happy)
+### Character Meo (Idle + Happy)
+- `Idle.anim`: **Loop Time = ON**
+- `Happy.anim`: **Loop Time = ON**
 
-File có sẵn tại: `Assets/Script/Script_multiplayer/1Code/Multiplay/Animation_Multiplayer/Character/Character Meo.controller`
+### Character Meo_Sad (Sad)
+- `Sad.anim`: **Loop Time = ON**
 
-1. Double-click `Character Meo.controller` → mở **Animator window**
-2. Tab **Parameters** (góc trái) → nhấn **+** → **Trigger**, tạo 2 trigger:
-
-| Tên | Loại |
-|---|---|
-| `TriggerIdle` | Trigger |
-| `TriggerHappy` | Trigger |
-
-3. Kéo `Idle.anim` từ Project vào Animator graph → right-click state `Idle` → **Set as Layer Default State** (chuyển màu cam)
-4. Kéo `Happy.anim` vào graph
-
-5. Tạo transitions từ **Any State**:
-
-**Any State → Idle:**
-- Right-click `Any State` → Make Transition → kéo đến `Idle`
-- Inspector: `Has Exit Time` = **bỏ tick**, `Transition Duration` = `0.1`
-- Conditions: nhấn **+** → chọn `TriggerIdle`
-
-**Any State → Happy:**
-- Right-click `Any State` → Make Transition → kéo đến `Happy`
-- Inspector: `Has Exit Time` = **bỏ tick**, `Transition Duration` = `0.1`
-- Conditions: nhấn **+** → chọn `TriggerHappy`
-
-Kết quả graph:
-```
-[Any State] ──TriggerIdle──→  [Idle] ← default (cam)
-[Any State] ──TriggerHappy──→ [Happy]
-```
+### MeoGoc34 Fix (Attack)
+- `Attack.anim`: **Loop Time = OFF** ⚠️ CRITICAL - Chỉ chạy 1 lần
 
 ---
 
-### 1.2 — Character Meo_Sad.controller (Sad)
+## Code Implementation
 
-File có sẵn tại: `Assets/Script/Script_multiplayer/1Code/Multiplay/Animation_Multiplayer/Character/Character Meo_Sad.controller`
+### AvatarCharacterDisplay.cs
 
-1. Double-click `Character Meo_Sad.controller` → mở **Animator window**
-2. Tab **Parameters** → nhấn **+** → **Trigger**:
+```csharp
+// Question Time
+public void ShowIdle()
+{
+    SetPSBVisibility(showMeo: true, showMeoSad: false, showMeo34: false);
+    TriggerIdle();
+}
 
-| Tên | Loại |
-|---|---|
-| `TriggerSad` | Trigger |
+// Summary Time - Winner (cả 2 đúng, nhanh hơn)
+public void ShowHappy()
+{
+    SetPSBVisibility(showMeo: true, showMeoSad: false, showMeo34: false);
+    TriggerHappy();
+}
 
-3. Kéo `Sad.anim` vào graph → right-click → **Set as Layer Default State**
-4. Tạo transition:
+// Summary Time - Loser (sai hoặc chậm hơn)
+public void ShowSad()
+{
+    SetPSBVisibility(showMeo: false, showMeoSad: true, showMeo34: false);
+    TriggerSad();
+}
 
-**Any State → Sad:**
-- `Has Exit Time` = **bỏ tick**, `Transition Duration` = `0.1`
-- Condition: `TriggerSad`
+// Summary Time - Winner (1 đúng 1 sai) - Attack THEN Happy
+public void ShowAttackThenHappy(float attackDuration = 1.5f)
+{
+    // BƯỚC 1: Hiển thị Attack
+    SetPSBVisibility(showMeo: false, showMeoSad: false, showMeo34: true);
+    TriggerAttack();
+    
+    // BƯỚC 2: Sau 1.5s, chuyển sang Happy
+    Invoke(nameof(TransitionToHappyAfterAttack), attackDuration);
+}
 
-Kết quả graph:
-```
-[Any State] ──TriggerSad──→ [Sad] ← default (cam)
-```
+private void TransitionToHappyAfterAttack()
+{
+    ShowHappy(); // Chuyển sang Character Meo + Happy animation
+}
 
----
-
-### 1.3 — MeoGoc34 Fix.controller (Attack)
-
-File có sẵn tại: `Assets/Script/Script_multiplayer/1Code/Multiplay/Animation_Multiplayer/Character 3_4/MeoGoc34 Fix.controller`
-
-*(Setup tương tự — tính sau khi implement phần Attack)*
-
----
-
-## Phần 2: Gán controller vào PSB trong scene
-
-Sau khi setup controller xong, gán vào Animator của từng PSB:
-
-1. Mở scene `Test_FireBase_multi`
-2. Tìm `Canvas/GameplayPanel/Player1Character`
-3. Chọn child `Character Meo` → component **Animator** → kéo `Character Meo.controller` vào field **Controller**
-4. Chọn child `Character Meo_Sad` → component **Animator** → kéo `Character Meo_Sad.controller` vào field **Controller**
-5. Chọn child `MeoGoc34 Fix` → component **Animator** → kéo `MeoGoc34 Fix.controller` vào field **Controller**
-6. Lặp lại cho `Player2Character`
-
----
-
-## Phần 3: Kéo PSB vào scene
-
-1. Mở scene `Test_FireBase_multi`
-2. Tìm `Canvas/GameplayPanel`
-3. Tạo Empty GameObject con của `GameplayPanel`, đặt tên `Player1Character`
-4. Kéo 3 PSB từ `Assets/Script/Script_multiplayer/1Code/Multiplay/Animation_Multiplayer/` vào làm con của `Player1Character`:
-   - `Character Meo.psb`
-   - `Character Meo_Sad.psb`
-   - `MeoGoc34 Fix.psb`
-5. Đặt vị trí phù hợp (bên trái — Player 1)
-6. Duplicate `Player1Character` → đổi tên `Player2Character`, đặt bên phải
-
----
-
-## Phần 4: Gán AvatarCharacterDisplay
-
-1. Chọn `Player1Character` → **Add Component → AvatarCharacterDisplay**
-2. Trong Inspector gán:
-   - `Character Meo` → child `Character Meo`
-   - `Character Meo Sad` → child `Character Meo_Sad`
-   - `Meo Goc34 Fix` → child `MeoGoc34 Fix`
-3. Lặp lại cho `Player2Character`
-
----
-
-## Phần 5: Kiểm tra tên skin con
-
-Mở từng PSB trong Hierarchy và xác nhận tên con:
-
-**Character Meo** và **Character Meo_Sad:**
-```
-mascost1, mascost2, mascost3, mascost4, root
+// WinsPanel - Set avatar KHÔNG trigger animation
+public void SetAvatarWithoutAnimation(int avatarId)
+{
+    ApplySkin(characterMeo, SkinNamesMeo, avatarId);
+    ApplySkin(characterMeoSad, SkinNamesMeoSad, avatarId);
+    ApplySkin(meoGoc34Fix, SkinNamesMeo34, avatarId);
+    currentAvatarId = avatarId;
+    // KHÔNG gọi ShowIdle() - để WinsController tự gọi ShowHappy()/ShowSad()
+}
 ```
 
-**MeoGoc34 Fix:**
+### UIMultiplayerBattleController.cs
+
+```csharp
+// Question Time
+private void HandleQuestionGenerated(string question, int[] choices)
+{
+    // ... display question ...
+    
+    // Reset về Idle
+    player1Character?.ShowIdle();
+    player2Character?.ShowIdle();
+}
+
+// Summary Time
+private void HandleAnswerResultDetailed(int winnerId, bool correct, ...)
+{
+    bool bothCorrect = player1Correct && player2Correct;
+    
+    if (winnerId == -1) // Cả 2 sai
+    {
+        player1Character?.ShowSad();
+        player2Character?.ShowSad();
+    }
+    else if (winnerId == -2) // Hòa
+    {
+        player1Character?.ShowSad();
+        player2Character?.ShowSad();
+    }
+    else if (winnerId == 0) // P1 thắng
+    {
+        if (bothCorrect)
+        {
+            // Cả 2 đúng, P1 nhanh hơn
+            player1Character?.ShowHappy();
+            player2Character?.ShowSad();
+        }
+        else
+        {
+            // P1 đúng, P2 sai
+            player1Character?.ShowAttackThenHappy();
+            player2Character?.ShowSad();
+        }
+    }
+    else if (winnerId == 1) // P2 thắng
+    {
+        if (bothCorrect)
+        {
+            // Cả 2 đúng, P2 nhanh hơn
+            player2Character?.ShowHappy();
+            player1Character?.ShowSad();
+        }
+        else
+        {
+            // P2 đúng, P1 sai
+            player2Character?.ShowAttackThenHappy();
+            player1Character?.ShowSad();
+        }
+    }
+}
 ```
-Meo1, Meo2, Meo3, Meo4, Root
-```
 
-> Tên phải khớp chính xác (phân biệt hoa thường) với `SkinNames` trong `AvatarCharacterDisplay.cs`.
+### UIWinsController.cs
 
----
+```csharp
+private void SetWinsPanelAvatars(MatchResultData r)
+{
+    // Set avatar WITHOUT animation
+    winnerCharacter?.SetAvatarWithoutAnimation(winnerAvatarId);
+    loserCharacter?.SetAvatarWithoutAnimation(loserAvatarId);
+    
+    // Delay 0.1s để skin setup hoàn tất
+    StartCoroutine(DelayedShowAnimation(winnerCharacter, isHappy: true, 0.1f));
+    StartCoroutine(DelayedShowAnimation(loserCharacter, isHappy: false, 0.1f));
+}
 
-## Phần 6: Gán vào UIMultiplayerBattleController
-
-1. Chọn `GameplayPanel` → component **UIMultiplayerBattleController**
-2. Gán:
-   - `Player1 Character` → `Player1Character`
-   - `Player2 Character` → `Player2Character`
-
----
-
-## Phần 7: Setup Wins panel
-
-1. Tìm `Canvas/Wins`
-2. Tạo Empty GameObject `WinnerCharacter`, kéo 3 PSB vào làm con, gán controller như Phần 2
-3. Tạo Empty GameObject `LoserCharacter`, kéo 3 PSB vào làm con, gán controller như Phần 2
-4. Gán `AvatarCharacterDisplay` lên cả 2, gán 3 PSB vào Inspector
-5. Chọn `Wins` → **UIWinsController** → gán `Winner Character` và `Loser Character`
-
----
-
-## Phần 8: Tạo AvatarData assets
-
-1. Vào `Assets/Resources/Avatars/`
-2. Right-click → **Create → Game → AvatarData**
-3. Tạo 4 assets:
-
-| Asset | avatarId | avatarName | isDefault |
-|---|---|---|---|
-| `Avatar_0` | 0 | Mèo 1 | ✅ true |
-| `Avatar_1` | 1 | Mèo 2 | false |
-| `Avatar_2` | 2 | Mèo 3 | false |
-| `Avatar_3` | 3 | Mèo 4 | false |
-
-4. Gán `thumbnail` và `fullAvatar` từ `Assets/TaiNguyen/Character/Avatar/`:
-   - `AVA_M1.png` → Avatar_0, `AVA_M2.png` → Avatar_1, v.v.
-
-> **Không có field `animatorController`** — controller gán trực tiếp vào Animator của PSB trong scene.
-
----
-
-## Phần 9: Kiểm tra
-
-1. Chạy Play Mode
-2. Gọi `player1Character.SetAvatar(0)` → `mascost1` / `Meo1` bật, còn lại tắt
-3. Gọi `player1Character.TriggerHappy()` → `Character Meo` chạy animation Happy
-
-Console log khi đúng:
-```
-[AvatarCharacterDisplay] ✅ Set avatar id=0 trên Player1Character
+private IEnumerator DelayedShowAnimation(AvatarCharacterDisplay character, bool isHappy, float delay)
+{
+    yield return new WaitForSeconds(delay);
+    
+    if (isHappy)
+        character.ShowHappy();
+    else
+        character.ShowSad();
+}
 ```
 
 ---
 
-## Phần 10: Kiểm tra Animation Events đã hoạt động
+## Troubleshooting
 
-### 10.1 — Kiểm tra code đã được update
+### Vấn đề: Attack animation loop liên tục
+**Nguyên nhân**: `Attack.anim` có Loop Time = ON
+**Giải pháp**: Set Loop Time = OFF trong Unity Inspector
 
-✅ **Code đã được update tự động:**
+### Vấn đề: Nhiều PSB hiển thị cùng lúc (overlapping)
+**Nguyên nhân**: `SetPSBVisibility()` không được gọi đúng
+**Giải pháp**: Luôn gọi `SetPSBVisibility()` trước `TriggerXXX()` trong mọi Show method
 
-1. **AvatarCharacterDisplay.cs** — Đã thêm 3 method mới:
-   - `ShowIdle()` — Hiện Character Meo + trigger Idle
-   - `ShowHappy()` — Hiện Character Meo + trigger Happy
-   - `ShowSad()` — Hiện Character Meo_Sad + trigger Sad
+### Vấn đề: WinsPanel hiển thị Idle trước Happy/Sad
+**Nguyên nhân**: Dùng `SetAvatar()` thay vì `SetAvatarWithoutAnimation()`
+**Giải pháp**: Dùng `SetAvatarWithoutAnimation()` + delay 0.1s + `ShowHappy()/ShowSad()`
 
-2. **UIMultiplayerBattleController.cs** — Đã hook animation vào battle events:
-   - `HandleQuestionGenerated()` → gọi `ShowIdle()` cho cả 2 player
-   - `HandleAnswerResult()` → gọi `ShowHappy()` hoặc `ShowSad()` dựa trên winnerId
-
-### 10.2 — Kiểm tra trong Unity Editor
-
-1. Mở scene `Test_FireBase_multi`
-2. Chọn `Canvas/GameplayPanel/Player1Character` → Component **AvatarCharacterDisplay**
-3. Kiểm tra 3 PSB đã được gán đúng:
-   - `Character Meo` → child `Character Meo`
-   - `Character Meo Sad` → child `Character Meo_Sad`
-   - `Meo Goc34 Fix` → child `MeoGoc34 Fix`
-4. Lặp lại cho `Player2Character`
-
-### 10.3 — Kiểm tra Animator Controllers
-
-**Character Meo.controller:**
-1. Mở `Assets/Script/Script_multiplayer/1Code/Multiplay/Animation_Multiplayer/Character/Character Meo.controller`
-2. Kiểm tra có 2 triggers: `TriggerIdle`, `TriggerHappy`
-3. Kiểm tra có 2 states: `Idle` (default - màu cam), `Happy`
-4. Kiểm tra transitions từ `Any State`:
-   - `Any State → Idle` (condition: `TriggerIdle`)
-   - `Any State → Happy` (condition: `TriggerHappy`)
-
-**Character Meo_Sad.controller:**
-1. Mở `Assets/Script/Script_multiplayer/1Code/Multiplay/Animation_Multiplayer/Character/Character Meo_Sad.controller`
-2. Kiểm tra có 1 trigger: `TriggerSad`
-3. Kiểm tra có 1 state: `Sad` (default - màu cam)
-4. Kiểm tra transition từ `Any State`:
-   - `Any State → Sad` (condition: `TriggerSad`)
-
-### 10.4 — Test trong Play Mode
-
-1. **Chạy Play Mode** trong Unity Editor
-2. **Tạo phòng multiplayer** (cần 2 client — dùng ParrelSync để test)
-3. **Bắt đầu trận đấu**
-
-**Kiểm tra timeline animation:**
-
-| Thời điểm | Animation mong đợi | PSB hiển thị |
-|-----------|-------------------|--------------|
-| **Countdown "3, 2, 1, Ready, GO!"** | *(chưa có animation)* | *(chưa hiển thị)* |
-| **Question Time (10s)** | `Idle` (đứng chờ) | `Character Meo` |
-| **Summary Time - Thắng** | `Happy` (vui) | `Character Meo` |
-| **Summary Time - Thua** | `Sad` (buồn) | `Character Meo_Sad` |
-| **Summary Time - Cả 2 sai** | `Sad` (cả 2) | `Character Meo_Sad` |
-| **Summary Time - Hòa** | `Happy` (cả 2) | `Character Meo` |
-| **Câu hỏi mới** | `Idle` (quay lại) | `Character Meo` |
-
-**Console logs mong đợi:**
-```
-[AvatarCharacterDisplay] Player1Character → ShowIdle()
-[AvatarCharacterDisplay] Player2Character → ShowIdle()
-[AvatarCharacterDisplay] Player1Character → ShowHappy()
-[AvatarCharacterDisplay] Player2Character → ShowSad()
-```
-
-### 10.5 — Troubleshooting
-
-**Vấn đề: Animation không chạy**
-- ✅ Kiểm tra Animator component có controller được gán chưa
-- ✅ Kiểm tra tên trigger khớp chính xác: `TriggerIdle`, `TriggerHappy`, `TriggerSad`
-- ✅ Kiểm tra animation clips đã được gán vào states chưa
-
-**Vấn đề: PSB không hiển thị/ẩn đúng**
-- ✅ Kiểm tra 3 PSB đã được gán đúng trong Inspector của `AvatarCharacterDisplay`
-- ✅ Kiểm tra tên skin con khớp: `mascost1`, `mascost2`, `mascost3`, `mascost4` (Character Meo/Sad)
-- ✅ Kiểm tra tên skin con khớp: `Meo1`, `Meo2`, `Meo3`, `Meo4` (MeoGoc34 Fix)
-
-**Vấn đề: Animation chạy nhưng không đúng timing**
-- ✅ Kiểm tra `DefaultGameRules.asset`:
-  - `questionTimeLimit` = 10s (Question Time)
-  - `delayBetweenQuestions` = 3s (Summary Time)
-- ✅ Animation tự động theo thời gian này — không cần code thêm
-
-**Vấn đề: Cả 2 player đều hiển thị cùng animation**
-- ✅ Kiểm tra `HandleAnswerResult()` có gọi đúng `ShowHappy()` / `ShowSad()` cho từng player
-- ✅ Kiểm tra `winnerId` từ server (0 = Player1, 1 = Player2, -1 = cả 2 sai, -2 = hòa)
+### Vấn đề: Attack không chuyển sang Happy
+**Nguyên nhân**: `ShowAttack()` được gọi thay vì `ShowAttackThenHappy()`
+**Giải pháp**: Gọi `ShowAttackThenHappy()` trong case "1 đúng 1 sai"
 
 ---
 
-## Lưu ý quan trọng
+## Inspector Setup Checklist
 
-- **3 PSB có 3 bộ xương khác nhau** → mỗi PSB có controller riêng, không dùng chung
-- `Character Meo.controller` chứa **cả Idle lẫn Happy** trong 1 controller — dùng `TriggerIdle` / `TriggerHappy` để chuyển state
-- `Character Meo_Sad.controller` chỉ có **Sad** — dùng `TriggerSad`
-- Tên trigger phải khớp chính xác: `TriggerIdle`, `TriggerHappy`, `TriggerSad` (phân biệt hoa thường)
-- Tên skin con phải khớp: `mascost1` (không phải `Mascost1`), `Meo1` (không phải `meo1`)
-- ✅ **Logic PSB hiển thị theo sự kiện đã được implement** — animation tự động theo timeline battle
-- ⏱️ **Thời gian animation bám theo GameRulesConfig** — người dùng có thể tuỳ chỉnh trong `DefaultGameRules.asset`
+- [ ] 3 PSB files imported với skeleton
+- [ ] Mỗi PSB có 4 skin con (mascost1-4 hoặc Meo1-4)
+- [ ] AnimatorController gán cho mỗi PSB
+- [ ] Animation clips: Idle, Happy, Sad, Attack
+- [ ] Loop Time settings: Idle/Happy/Sad = ON, Attack = OFF
+- [ ] Triggers trong AnimatorController: TriggerIdle, TriggerHappy, TriggerSad, TriggerAttack
+- [ ] AvatarCharacterDisplay components gán 3 PSB references
+- [ ] UIMultiplayerBattleController gán player1Character, player2Character
+- [ ] UIWinsController gán winnerCharacter, loserCharacter
+
+---
+
+## Testing
+
+1. **Question Time**: Cả 2 player thấy Idle animation
+2. **Cả 2 đúng, P1 nhanh hơn**: P1 Happy, P2 Sad, KHÔNG mất máu
+3. **P1 đúng, P2 sai**: P1 Attack (1.5s) → Happy, P2 Sad, P2 -1 HP
+4. **Cả 2 sai**: Cả 2 Sad, KHÔNG mất máu
+5. **WinsPanel**: Winner Happy, Loser Sad, KHÔNG có Idle trước đó
+
+---
+
+**Last Updated**: 2026-05-11
+**Version**: 2.0 - Complete logic with Attack→Happy transition

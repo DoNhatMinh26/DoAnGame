@@ -127,32 +127,65 @@ namespace DoAnGame.UI
                 Log($"WinnerId={r.WinnerId}, LocalPlayerId={r.LocalPlayerId}, IsAbandoned={r.IsAbandoned}");
 
                 bool isLocalWinner = (r.WinnerId == r.LocalPlayerId);
+                
+                GameLogger.Log($"[WinsController] [{role}] ===== TEXT DISPLAY LOGIC =====");
+                GameLogger.Log($"[WinsController] [{role}] WinnerId: {r.WinnerId}");
+                GameLogger.Log($"[WinsController] [{role}] LocalPlayerId: {r.LocalPlayerId}");
+                GameLogger.Log($"[WinsController] [{role}] IsLocalWinner: {isLocalWinner}");
 
-                // Title
+                // Title - Hiển thị rõ ràng cho local player
                 if (trangThaiText != null)
                 {
-                    trangThaiText.text  = isLocalWinner ? "CHIẾN THẮNG!" : "THUA CUỘC!";
-                    trangThaiText.color = isLocalWinner ? Color.green : Color.red;
-                    GameLogger.Log($"[WinsController] [{role}] ✅ Set title: {trangThaiText.text}");
+                    string titleText = isLocalWinner ? "CHIẾN THẮNG!" : "THUA CUỘC!";
+                    Color titleColor = isLocalWinner ? Color.green : Color.red;
+                    
+                    trangThaiText.SetText(titleText);  // ✅ Dùng SetText() thay vì .text
+                    trangThaiText.color = titleColor;
+                    
+                    GameLogger.Log($"[WinsController] [{role}] ✅ Set title text: '{titleText}' (color: {(isLocalWinner ? "GREEN" : "RED")})");
+                    Debug.Log($"[WinsController] [{role}] ✅ trangThaiText.text = '{trangThaiText.text}' (expected: '{titleText}')");
                 }
                 else
                 {
-                    GameLogger.Log($"[WinsController] [{role}] ⚠️ trangThaiText is NULL");
+                    GameLogger.Log($"[WinsController] [{role}] ⚠️ trangThaiText is NULL!");
+                    Debug.LogError($"[WinsController] [{role}] ⚠️ trangThaiText is NULL - cannot display title!");
                 }
+                
+                GameLogger.Log($"[WinsController] [{role}] ===== TEXT DISPLAY COMPLETE =====");
 
-                // Winner section
+                // Winner section - Hiển thị tên + "(Bạn)" nếu là local player
                 string winnerDisplay = r.WinnerName;
-                if (r.WinnerId == r.LocalPlayerId) winnerDisplay += " (Bạn)";
-                GameLogger.Log($"[WinsController] [{role}] Displaying winner section: {winnerDisplay}");
+                if (r.WinnerId == r.LocalPlayerId)
+                {
+                    winnerDisplay += " (Bạn)";
+                    GameLogger.Log($"[WinsController] [{role}] Winner is LOCAL player");
+                }
+                else
+                {
+                    GameLogger.Log($"[WinsController] [{role}] Winner is OPPONENT");
+                }
+                GameLogger.Log($"[WinsController] [{role}] Displaying winner section: '{winnerDisplay}'");
                 DisplaySection(winContainer, winnerNameText, winnerScoreText, winnerHealthText,
                                winnerDisplay, r.WinnerScore, r.WinnerHealth);
 
-                // Loser section
+                // Loser section - Hiển thị tên + "(Bạn)" nếu là local player
                 string loserDisplay = r.LoserName;
                 int    loserId      = (r.WinnerId == 0) ? 1 : 0;
-                if (loserId == r.LocalPlayerId) loserDisplay += " (Bạn)";
-                if (r.IsAbandoned && r.AbandonedPlayerId == loserId) loserDisplay += " (Đã Rời Trận)";
-                GameLogger.Log($"[WinsController] [{role}] Displaying loser section: {loserDisplay}");
+                if (loserId == r.LocalPlayerId)
+                {
+                    loserDisplay += " (Bạn)";
+                    GameLogger.Log($"[WinsController] [{role}] Loser is LOCAL player");
+                }
+                else
+                {
+                    GameLogger.Log($"[WinsController] [{role}] Loser is OPPONENT");
+                }
+                if (r.IsAbandoned && r.AbandonedPlayerId == loserId)
+                {
+                    loserDisplay += " (Đã Rời Trận)";
+                    GameLogger.Log($"[WinsController] [{role}] Loser abandoned the match");
+                }
+                GameLogger.Log($"[WinsController] [{role}] Displaying loser section: '{loserDisplay}'");
                 DisplaySection(lostContainer, loserNameText, loserScoreText, loserHealthText,
                                loserDisplay, r.LoserScore, r.LoserHealth);
 
@@ -191,8 +224,8 @@ namespace DoAnGame.UI
             
             if (nameText != null)
             {
-                nameText.text = name;
-                GameLogger.Log($"[WinsController] [{role}] ✅ Set name: {name}");
+                nameText.SetText(name);  // ✅ Dùng SetText() thay vì .text
+                GameLogger.Log($"[WinsController] [{role}] ✅ Set name: '{name}' (actual: '{nameText.text}')");
             }
             else
             {
@@ -201,8 +234,9 @@ namespace DoAnGame.UI
             
             if (scoreText != null)
             {
-                scoreText.text = $"Điểm Số: {score}";
-                GameLogger.Log($"[WinsController] [{role}] ✅ Set score: {score}");
+                string scoreDisplay = $"Điểm Số: {score}";
+                scoreText.SetText(scoreDisplay);  // ✅ Dùng SetText() thay vì .text
+                GameLogger.Log($"[WinsController] [{role}] ✅ Set score: '{scoreDisplay}'");
             }
             else
             {
@@ -211,8 +245,9 @@ namespace DoAnGame.UI
             
             if (healthText != null)
             {
-                healthText.text = $"Số Máu Còn Lại: {health}";
-                GameLogger.Log($"[WinsController] [{role}] ✅ Set health: {health}");
+                string healthDisplay = $"Số Máu Còn Lại: {health}";
+                healthText.SetText(healthDisplay);  // ✅ Dùng SetText() thay vì .text
+                GameLogger.Log($"[WinsController] [{role}] ✅ Set health: '{healthDisplay}'");
             }
             else
             {
@@ -263,10 +298,23 @@ namespace DoAnGame.UI
         /// <summary>
         /// Set avatar đúng nhân vật và trigger Happy/Sad cho Wins panel.
         /// Winner → Happy, Loser → Sad.
+        /// ✅ FIX: Dùng SetAvatarWithoutAnimation() để tránh double-trigger (Idle → Happy/Sad)
+        /// ✅ FIX: Cleanup PSB visibility trước khi set avatar để tránh overlapping
         /// </summary>
         private void SetWinsPanelAvatars(MatchResultData r)
         {
-            if (winnerCharacter == null && loserCharacter == null) return;
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+            
+            Debug.Log($"[WinsController] [{role}] ===== SetWinsPanelAvatars START =====");
+            Debug.Log($"[WinsController] [{role}] winnerCharacter: {(winnerCharacter != null ? winnerCharacter.gameObject.name : "NULL")}");
+            Debug.Log($"[WinsController] [{role}] loserCharacter: {(loserCharacter != null ? loserCharacter.gameObject.name : "NULL")}");
+            
+            if (winnerCharacter == null && loserCharacter == null)
+            {
+                Debug.LogWarning($"[WinsController] [{role}] Both winnerCharacter and loserCharacter are NULL!");
+                return;
+            }
 
             int winnerAvatarId = 0;
             int loserAvatarId  = 0;
@@ -277,36 +325,111 @@ namespace DoAnGame.UI
                 var p1 = battleManager.GetPlayer1State();
                 var p2 = battleManager.GetPlayer2State();
 
+                Debug.Log($"[WinsController] [{role}] Player1State: {(p1 != null ? "FOUND" : "NULL")}");
+                Debug.Log($"[WinsController] [{role}] Player2State: {(p2 != null ? "FOUND" : "NULL")}");
+
                 var winnerState = (r.WinnerId == 0) ? p1 : p2;
                 var loserState  = (r.WinnerId == 0) ? p2 : p1;
 
-                if (winnerState != null) winnerAvatarId = winnerState.AvatarId.Value;
-                if (loserState  != null) loserAvatarId  = loserState.AvatarId.Value;
+                if (winnerState != null)
+                {
+                    winnerAvatarId = winnerState.AvatarId.Value;
+                    Debug.Log($"[WinsController] [{role}] Winner (Player{r.WinnerId + 1}) AvatarId from PlayerState: {winnerAvatarId}");
+                }
+                else
+                {
+                    Debug.LogWarning($"[WinsController] [{role}] Winner PlayerState is NULL!");
+                }
+                
+                if (loserState  != null)
+                {
+                    loserAvatarId  = loserState.AvatarId.Value;
+                    Debug.Log($"[WinsController] [{role}] Loser (Player{(r.WinnerId == 0 ? 2 : 1)}) AvatarId from PlayerState: {loserAvatarId}");
+                }
+                else
+                {
+                    Debug.LogWarning($"[WinsController] [{role}] Loser PlayerState is NULL!");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"[WinsController] [{role}] BattleManager is NULL!");
             }
 
             // Fallback: local player dùng AvatarManager
             bool isLocalWinner = (r.WinnerId == r.LocalPlayerId);
             int localAvatarId  = AvatarManager.Instance?.GetCurrentAvatarId() ?? 0;
+            Debug.Log($"[WinsController] [{role}] IsLocalWinner: {isLocalWinner}, LocalAvatarId from AvatarManager: {localAvatarId}");
 
             if (isLocalWinner)
+            {
                 winnerAvatarId = localAvatarId;
+                Debug.Log($"[WinsController] [{role}] Using local avatar for winner: {winnerAvatarId}");
+            }
             else
+            {
                 loserAvatarId = localAvatarId;
+                Debug.Log($"[WinsController] [{role}] Using local avatar for loser: {loserAvatarId}");
+            }
 
-            // Apply avatar + animation
+            // ✅ FIX: Apply avatar WITHOUT animation, then trigger Happy/Sad
+            // ✅ CRITICAL: Ensure only 1 PSB is visible at a time
             if (winnerCharacter != null)
             {
-                winnerCharacter.SetAvatar(winnerAvatarId);
-                winnerCharacter.TriggerHappy();
+                Debug.Log($"[WinsController] [{role}] Calling winnerCharacter.SetAvatarWithoutAnimation({winnerAvatarId})...");
+                winnerCharacter.SetAvatarWithoutAnimation(winnerAvatarId);
+                
+                // ✅ CRITICAL: Delay để đảm bảo SetAvatarWithoutAnimation hoàn tất trước khi ShowHappy
+                // Tránh race condition giữa SetAvatar và ShowHappy
+                Debug.Log($"[WinsController] [{role}] Scheduling winnerCharacter.ShowHappy() after 0.1s delay...");
+                StartCoroutine(DelayedShowAnimation(winnerCharacter, true, 0.1f));
+            }
+            else
+            {
+                Debug.LogWarning($"[WinsController] [{role}] ⚠️ winnerCharacter is NULL!");
             }
 
             if (loserCharacter != null)
             {
-                loserCharacter.SetAvatar(loserAvatarId);
-                loserCharacter.TriggerSad();
+                Debug.Log($"[WinsController] [{role}] Calling loserCharacter.SetAvatarWithoutAnimation({loserAvatarId})...");
+                loserCharacter.SetAvatarWithoutAnimation(loserAvatarId);
+                
+                // ✅ CRITICAL: Delay để đảm bảo SetAvatarWithoutAnimation hoàn tất trước khi ShowSad
+                Debug.Log($"[WinsController] [{role}] Scheduling loserCharacter.ShowSad() after 0.1s delay...");
+                StartCoroutine(DelayedShowAnimation(loserCharacter, false, 0.1f));
+            }
+            else
+            {
+                Debug.LogWarning($"[WinsController] [{role}] ⚠️ loserCharacter is NULL!");
             }
 
             Log($"SetWinsPanelAvatars: winner avatarId={winnerAvatarId}, loser avatarId={loserAvatarId}");
+            Debug.Log($"[WinsController] [{role}] ===== SetWinsPanelAvatars COMPLETE =====");
+        }
+
+        /// <summary>
+        /// Delay trước khi gọi ShowHappy/ShowSad để đảm bảo SetAvatarWithoutAnimation hoàn tất.
+        /// Tránh race condition giữa SetAvatar và Show animation.
+        /// </summary>
+        private System.Collections.IEnumerator DelayedShowAnimation(AvatarCharacterDisplay character, bool isHappy, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+            
+            if (isHappy)
+            {
+                Debug.Log($"[WinsController] [{role}] Calling {character.gameObject.name}.ShowHappy()...");
+                character.ShowHappy();
+                Debug.Log($"[WinsController] [{role}] ✅ {character.gameObject.name}.ShowHappy() DONE");
+            }
+            else
+            {
+                Debug.Log($"[WinsController] [{role}] Calling {character.gameObject.name}.ShowSad()...");
+                character.ShowSad();
+                Debug.Log($"[WinsController] [{role}] ✅ {character.gameObject.name}.ShowSad() DONE");
+            }
         }
 
         private void SetErrorState(string errorMessage)
