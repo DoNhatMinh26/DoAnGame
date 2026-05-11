@@ -223,6 +223,11 @@ public class MathManager : MonoBehaviour
         if (val == dapAnDung)
         {
             if (oTrongImage != null) oTrongImage.color = Color.green;
+            // Gọi Trigger đúng tên trong ảnh của bạn
+            if (UiClass.Instance != null)
+            {
+                UiClass.Instance.PlayMascotAnimation("TriggerHappy");
+            }
             if (UiClass.Instance != null)
             {
                 UiClass.Instance.SpawnAndFlyCoin(1);
@@ -237,6 +242,10 @@ public class MathManager : MonoBehaviour
         else
         {
             if (oTrongImage != null) oTrongImage.color = Color.red;
+            if (UiClass.Instance != null)
+            {
+                UiClass.Instance.PlayMascotAnimation("TriggerSad");
+            }
             if (UiClass.Instance != null)
             {
                 UiClass.Instance.OnWrongAnswer(); 

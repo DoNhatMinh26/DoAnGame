@@ -46,8 +46,8 @@ namespace DoAnGame.Auth
         {
             if (Instance != null && Instance != this)
             {
-                // Chỉ destroy component, không destroy gameObject (vì gán chung AuthServices)
-                Destroy(this);
+                Debug.LogWarning("[CloudSync] Duplicate CloudSyncService detected, destroying duplicate GameObject.");
+                Destroy(gameObject);
                 return;
             }
             Instance = this;

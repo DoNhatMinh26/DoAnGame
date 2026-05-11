@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Collections;
@@ -50,6 +51,8 @@ namespace DoAnGame.UI
         [SerializeField] private Button readyButton;
         [Tooltip("Nút làm mới thủ công — force refresh lobby ngay lập tức")]
         [SerializeField] private Button refreshButton;
+        [Tooltip("Nút Back — tự động quit room nếu đang trong phòng, sau đó navigate về ModSelectionPanel")]
+        [SerializeField] private Button backButton;
 
         [Header("Room Inputs")]
         [SerializeField] private TMP_InputField roomCodeInput;
@@ -70,6 +73,7 @@ namespace DoAnGame.UI
         [SerializeField] private UIFlowManager flowManager;
         [SerializeField] private UIButtonScreenNavigator startBattleNavigator;
         [SerializeField] private UIButtonScreenNavigator quitRoomNavigator;
+        [SerializeField] private UIButtonScreenNavigator backNavigator; // ← Navigate về ModSelectionPanel
         [SerializeField] private UIButtonScreenNavigator loadingPanelNavigator; // ← THÊM DÒNG NÀY
         [SerializeField] private UnityEvent onBattleStarted;
         [SerializeField] private UnityEvent onQuitRoom;
@@ -134,6 +138,7 @@ namespace DoAnGame.UI
             startMatchButton?.onClick.AddListener(() => _ = HandleStartMatch());
             readyButton?.onClick.AddListener(() => _ = HandleReadyButtonClick());
             refreshButton?.onClick.AddListener(() => _ = HandleRefreshButton());
+            backButton?.onClick.AddListener(() => _ = HandleBackButton());
             EnsureStartMatchMessageHandlerRegistered();
         }
 
@@ -497,14 +502,27 @@ namespace DoAnGame.UI
                 return "Chưa có ai trong room.";
             }
 
-            Debug.Log($"[UIRoom] BuildRosterText: {currentLobby.Players.Count} players in lobby");
-            var lines = new List<string>(currentLobby.Players.Count);
-            for (int i = 0; i < currentLobby.Players.Count; i++)
+            // ✅ FIX: Deduplicate players by ID (Unity Lobby Service sometimes returns duplicates)
+            var uniquePlayers = new Dictionary<string, Player>();
+            foreach (var player in currentLobby.Players)
             {
-                var lobbyPlayer = currentLobby.Players[i];
-                string displayName = ResolveLobbyPlayerName(lobbyPlayer, i);
-                lines.Add($"{i + 1}. {displayName}");
-                Debug.Log($"[UIRoom]   Player {i + 1}: {displayName} (ID: {lobbyPlayer?.Id})");
+                if (player != null && !string.IsNullOrWhiteSpace(player.Id))
+                {
+                    uniquePlayers[player.Id] = player; // Ghi đè nếu duplicate
+                }
+            }
+
+            Debug.Log($"[UIRoom] BuildRosterText: {currentLobby.Players.Count} players in lobby ({uniquePlayers.Count} unique)");
+            
+            var lines = new List<string>(uniquePlayers.Count);
+            int index = 0;
+            foreach (var kvp in uniquePlayers)
+            {
+                var lobbyPlayer = kvp.Value;
+                string displayName = ResolveLobbyPlayerName(lobbyPlayer, index);
+                lines.Add($"{index + 1}. {displayName}");
+                Debug.Log($"[UIRoom]   Player {index + 1}: {displayName} (ID: {lobbyPlayer?.Id})");
+                index++;
             }
 
             return string.Join("\n", lines);
@@ -985,6 +1003,14 @@ namespace DoAnGame.UI
 
         public async Task<bool> JoinLobbyFromBrowserAsync(Lobby lobby)
         {
+            // ✅ FIX: Reset flags TRƯỚC KHI join (giống HandleQuickMatch/HandleJoinByCode)
+            suppressAutoBattleStart = false;
+            isQuitting = false;
+            battleStartNotified = false;
+            receivedStartSignalFromHost = false;
+            
+            Debug.Log($"[UIRoom] JoinLobbyFromBrowserAsync: Reset flags, joining lobby {lobby?.Id}...");
+            
             return await JoinLobbyAndRelayAsync(lobby);
         }
 
@@ -1119,10 +1145,23 @@ namespace DoAnGame.UI
 
         public void NotifyEnteredFromBrowser()
         {
+            // ✅ FIX: Reset ALL state flags giống HandleQuickMatch/HandleJoinByCode
+            suppressAutoBattleStart = false;
+            isQuitting = false;
+            battleStartNotified = false;
+            receivedStartSignalFromHost = false; // CRITICAL: Reset để CLIENT nhận start signal đúng
+            
+            Debug.Log("[UIRoom] NotifyEnteredFromBrowser: Reset all flags and refreshing UI...");
+            
             ResolveTextReferences();
             RefreshAuthState();
             RefreshRoomRoster();
             EnsureLobbyRuntimeRoutines();
+            
+            // ✅ FIX: Sync avatar data từ AvatarManager (giống như khi tạo/join phòng)
+            _ = SyncLocalPlayerLobbyDataAsync();
+            
+            Debug.Log("[UIRoom] ✅ NotifyEnteredFromBrowser complete");
         }
 
         private async Task HandleStartMatch()
@@ -1358,6 +1397,122 @@ namespace DoAnGame.UI
             SetActionButtonsInteractable(true);
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_ROOM", "HandleQuitRoom completed");
             GameLogger.Log($"[UIRoom] [{role}] HandleQuitRoom COMPLETE - isBusy=false, isQuitting=false");
+        }
+
+        /// <summary>
+        /// Xử lý nút Back: Tự động quit room nếu đang trong phòng, sau đó navigate về ModSelectionPanel.
+        /// Logic:
+        /// - Nếu đang trong phòng (currentLobby != null) → Quit room trước
+        /// - Sau đó navigate về ModSelectionPanel qua backNavigator
+        /// - Nếu không trong phòng → Navigate trực tiếp
+        /// </summary>
+        private async Task HandleBackButton()
+        {
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+            GameLogger.Log($"[UIRoom] [{role}] HandleBackButton START");
+            
+            if (isBusy)
+            {
+                GameLogger.Log($"[UIRoom] [{role}] HandleBackButton: isBusy=true, returning early");
+                return;
+            }
+
+            // Kiểm tra xem có đang trong phòng không
+            bool inRoom = (currentLobby != null);
+            GameLogger.Log($"[UIRoom] [{role}] HandleBackButton: inRoom={inRoom}");
+
+            if (inRoom)
+            {
+                // Đang trong phòng → Quit room trước
+                GameLogger.Log($"[UIRoom] [{role}] In room, calling quit room logic...");
+                
+                isBusy = true;
+                isQuitting = true;
+                suppressAutoBattleStart = true;
+                SetActionButtonsInteractable(false);
+                SetStatus("Đang rời phòng...");
+                
+                StopRoutines();
+                
+                // Lưu lobby info trước khi clear
+                var lobbyToLeave = currentLobby;
+                bool wasHost = isHost;
+                currentLobby = null;
+                isHost = false;
+                
+                // Quit room logic (giống HandleQuitRoom)
+                if (wasHost && lobbyToLeave != null)
+                {
+                    GameLogger.Log($"[UIRoom] [{role}] Is HOST - marking lobby as abandoned");
+                    try
+                    {
+                        await LobbyService.Instance.UpdateLobbyAsync(lobbyToLeave.Id,
+                            new UpdateLobbyOptions
+                            {
+                                IsPrivate = true,
+                                Data = new Dictionary<string, DataObject>
+                                {
+                                    { "IsAbandoned", new DataObject(DataObject.VisibilityOptions.Public, "1") },
+                                    { "AbandonedTime", new DataObject(DataObject.VisibilityOptions.Public, System.DateTime.UtcNow.Ticks.ToString()) }
+                                }
+                            });
+                        GameLogger.Log($"[UIRoom] [{role}] ✅ Lobby marked as abandoned");
+                    }
+                    catch (Exception ex)
+                    {
+                        GameLogger.Log($"[UIRoom] [{role}] ⚠️ Failed to mark abandoned: {ex.Message}");
+                        try { await LobbyService.Instance.DeleteLobbyAsync(lobbyToLeave.Id); } catch { }
+                    }
+                }
+                else if (lobbyToLeave != null && AuthenticationService.Instance != null && AuthenticationService.Instance.IsSignedIn)
+                {
+                    // Client: remove self
+                    GameLogger.Log($"[UIRoom] [{role}] Is CLIENT - removing self from lobby");
+                    try
+                    {
+                        await LobbyService.Instance.RemovePlayerAsync(lobbyToLeave.Id, AuthenticationService.Instance.PlayerId);
+                        GameLogger.Log($"[UIRoom] [{role}] ✅ Removed self from lobby");
+                    }
+                    catch (Exception ex)
+                    {
+                        GameLogger.Log($"[UIRoom] [{role}] ⚠️ RemovePlayer failed: {ex.Message}");
+                    }
+                }
+
+                // Disconnect Relay
+                GameLogger.Log($"[UIRoom] [{role}] Disconnecting Relay...");
+                RelayManager.Instance.Disconnect();
+                
+                // Reset state
+                GameLogger.Log($"[UIRoom] [{role}] Calling ResetRoomSessionState...");
+                ResetRoomSessionState("Đã rời phòng.");
+                
+                isBusy = false;
+                isQuitting = false;
+                SetActionButtonsInteractable(true);
+                
+                GameLogger.Log($"[UIRoom] [{role}] ✅ Quit room completed");
+            }
+            else
+            {
+                GameLogger.Log($"[UIRoom] [{role}] Not in room, navigate directly");
+            }
+
+            // Navigate về ModSelectionPanel
+            if (backNavigator != null)
+            {
+                GameLogger.Log($"[UIRoom] [{role}] Calling backNavigator.NavigateNow()...");
+                backNavigator.NavigateNow();
+                GameLogger.Log($"[UIRoom] [{role}] ✅ Navigation completed");
+            }
+            else
+            {
+                GameLogger.Log($"[UIRoom] [{role}] ⚠️ backNavigator is NULL - cannot navigate");
+                Debug.LogWarning("[UIRoom] backNavigator chưa được gán trong Inspector! Không thể navigate về ModSelectionPanel.");
+            }
+            
+            GameLogger.Log($"[UIRoom] [{role}] HandleBackButton COMPLETE");
         }
 
         private void ResetRoomSessionState(string status)
@@ -1728,9 +1883,17 @@ namespace DoAnGame.UI
         /// </summary>
         private async Task HandleRefreshButton()
         {
-            if (isBusy || currentLobby == null)
+            if (isBusy)
             {
-                Debug.LogWarning($"[UIRoom] HandleRefreshButton blocked: isBusy={isBusy}, lobby={(currentLobby != null)}");
+                Debug.LogWarning($"[UIRoom] HandleRefreshButton blocked: isBusy={isBusy}");
+                return;
+            }
+            
+            // ✅ FIX: Check if we're still in a lobby
+            if (currentLobby == null)
+            {
+                Debug.LogWarning("[UIRoom] HandleRefreshButton: No active lobby to refresh");
+                SetStatus("Không có phòng để làm mới.");
                 return;
             }
 
@@ -1741,6 +1904,19 @@ namespace DoAnGame.UI
 
             try
             {
+                // ✅ FIX: Check if lobby still exists before refreshing
+                var lobbies = await LobbyService.Instance.QueryLobbiesAsync();
+                bool lobbyExists = lobbies.Results.Any(l => l.Id == currentLobby.Id);
+                
+                if (!lobbyExists)
+                {
+                    Debug.LogWarning($"[UIRoom] Lobby {currentLobby.Id} no longer exists");
+                    SetStatus("Phòng không còn tồn tại.");
+                    currentLobby = null;
+                    MultiplayerDetailedLogger.TraceWarning("UI_ROOM", "HandleRefreshButton: Lobby no longer exists");
+                    return;
+                }
+                
                 // Bypass rate limit bằng cách reset nextLobbyReadAt
                 nextLobbyReadAt = 0f;
                 
@@ -2321,6 +2497,12 @@ namespace DoAnGame.UI
                     var child = screensRootForBattleFallback.GetChild(i);
                     if (child != null)
                     {
+                        if (ShouldPreserveUiChild(child))
+                        {
+                            Log($"Preserving UI child during battle fallback hide: {child.name}");
+                            continue;
+                        }
+
                         if (child.GetComponent<EventSystem>() != null)
                         {
                             Log("Fallback skip auto-hide EventSystem");
@@ -2783,6 +2965,15 @@ namespace DoAnGame.UI
             bool fallbackActive = battleScreenFallback != null && battleScreenFallback.activeInHierarchy;
             string rootName = screensRootForBattleFallback != null ? screensRootForBattleFallback.name : "null";
             Debug.Log($"[UIRoom:{name}] {tag} | roomActive={gameObject.activeInHierarchy} | enabled={isActiveAndEnabled} | navigator={navigatorName} | fallback={fallbackName} active={fallbackActive} | root={rootName}");
+        }
+
+        private static bool ShouldPreserveUiChild(Transform child)
+        {
+            if (child == null)
+                return false;
+
+            return string.Equals(child.name, "CharacterContainer", StringComparison.OrdinalIgnoreCase)
+                || child.GetComponentInChildren<DoAnGame.Multiplayer.CharacterContainerController>(true) != null;
         }
 
         private void SetPlayerCount(string text)

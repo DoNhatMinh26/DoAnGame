@@ -17,9 +17,9 @@ public class RelayManager : MonoBehaviour
 
     private void Awake() {
         if (Instance != null && Instance != this) {
-            Debug.LogWarning("[Relay] Duplicate RelayManager detected, disabling duplicate component.");
-            MultiplayerDetailedLogger.TraceWarning("RELAY", "Duplicate RelayManager detected, disabling duplicate component");
-            enabled = false;
+            Debug.LogWarning("[Relay] Duplicate RelayManager detected, destroying duplicate GameObject.");
+            MultiplayerDetailedLogger.TraceWarning("RELAY", "Duplicate RelayManager detected, destroying duplicate GameObject");
+            Destroy(gameObject);
             return;
         }
         Instance = this;

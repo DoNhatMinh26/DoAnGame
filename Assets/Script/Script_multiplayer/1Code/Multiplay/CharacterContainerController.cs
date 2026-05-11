@@ -10,6 +10,17 @@ namespace DoAnGame.Multiplayer
     /// </summary>
     public class CharacterContainerController : MonoBehaviour
     {
+        private string GetCallStack()
+        {
+            var st = new System.Diagnostics.StackTrace(true);
+            string stack = "";
+            for (int i = 1; i < Mathf.Min(4, st.FrameCount); i++)
+            {
+                var frame = st.GetFrame(i);
+                stack += frame.GetMethod().DeclaringType?.Name + "." + frame.GetMethod().Name + "() → ";
+            }
+            return stack.TrimEnd('→', ' ');
+        }
         [Header("Battle Characters")]
         [SerializeField] private GameObject player1Character;
         [SerializeField] private GameObject player2Character;
@@ -34,14 +45,33 @@ namespace DoAnGame.Multiplayer
             if (gameplayPanel    == null) Debug.LogWarning("[CharContainer] gameplayPanel chua gan!");
             if (winsPanel        == null) Debug.LogWarning("[CharContainer] winsPanel chua gan!");
 
-            SetBattleCharacters(false);
+            // ✅ CHANGED: Don't deactivate battle characters in Awake
+            // They will be managed by UIMultiplayerBattleController.ApplyAvatarCharacters()
+            // SetBattleCharacters(false); // DISABLED
+            
+            // Only manage wins characters
             SetWinsCharacters(false);
 
-            Debug.Log("[CharContainer] Initialized - tat ca characters da an");
+            Debug.Log("[CharContainer] Initialized - wins characters hidden, battle characters managed by BattleController");
+        }
+
+        private void OnEnable()
+        {
+            Debug.Log($"[CharContainer] ⏫ OnEnable - GameObject.activeSelf={gameObject.activeSelf}, parent={gameObject.transform.parent?.name}, Stack: {GetCallStack()}");
+        }
+
+        private void OnDisable()
+        {
+            Debug.Log($"[CharContainer] ⏬ OnDisable - GameObject.activeSelf={gameObject.activeSelf}, parent={gameObject.transform.parent?.name}, Stack: {GetCallStack()}");
         }
 
         private void Update()
         {
+            // ✅ DISABLED: CharacterContainerController không còn quản lý battle characters
+            // Battle characters được quản lý bởi UIMultiplayerBattleController.ApplyAvatarCharacters()
+            // Chỉ giữ logic cho WinsPanel
+            
+            /*
             if (gameplayPanel != null)
             {
                 bool isActive = gameplayPanel.activeInHierarchy;
@@ -52,6 +82,7 @@ namespace DoAnGame.Multiplayer
                     Debug.Log("[CharContainer] GameplayPanel " + (isActive ? "ACTIVE" : "INACTIVE") + " - Battle characters " + (isActive ? "bat" : "tat"));
                 }
             }
+            */
 
             if (winsPanel != null)
             {
@@ -67,16 +98,9 @@ namespace DoAnGame.Multiplayer
 
         private void SetBattleCharacters(bool active)
         {
-            if (player1Character != null)
-            {
-                player1Character.SetActive(active);
-                Debug.Log("[CharContainer] Player1Character.SetActive(" + active + ")");
-            }
-            if (player2Character != null)
-            {
-                player2Character.SetActive(active);
-                Debug.Log("[CharContainer] Player2Character.SetActive(" + active + ")");
-            }
+            // ✅ DISABLED: Battle characters are now managed by UIMultiplayerBattleController
+            // This method is no longer used
+            Debug.Log("[CharContainer] SetBattleCharacters called but DISABLED - BattleController manages characters now");
         }
 
         private void SetWinsCharacters(bool active)

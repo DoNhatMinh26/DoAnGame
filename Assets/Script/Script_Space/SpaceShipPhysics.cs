@@ -33,6 +33,7 @@ public class SpaceShipPhysics : MonoBehaviour
 
     public void ResetPosition()
     {
+        transform.localScale = Vector3.one;
         // Đưa phi thuyền về vị trí cũ
         transform.position = startPosition;
 
@@ -150,12 +151,13 @@ public class SpaceShipPhysics : MonoBehaviour
 
                 if (isCorrect)
                 {
-                    gateText.color = Color.green;
-                    SpaceShipManager.Instance.CountCorrectAnswer();
                     if (UiSp.Instance != null)
                     {
                         UiSp.Instance.AddScore(10); // Hàm này sẽ tự gọi DataManager.Instance.AddScore bên trong
                     }
+                    gateText.color = Color.green;
+                    SpaceShipManager.Instance.CountCorrectAnswer();
+                    
                 }
                 else
                 {
@@ -207,6 +209,8 @@ public class SpaceShipPhysics : MonoBehaviour
     }
     public void ResetMovement()
     {
+        StopAllCoroutines(); // Dừng các hiệu ứng thu nhỏ đang chạy dở
+        transform.localScale = Vector3.one; // Trả về kích thước chuẩn
         canMove = true;
         isLockedByMagnet = false;
     }

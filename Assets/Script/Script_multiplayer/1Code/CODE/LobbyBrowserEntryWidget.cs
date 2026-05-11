@@ -88,6 +88,11 @@ namespace DoAnGame.UI
 
         private void HandleJoinClicked()
         {
+            if (joinButton != null)
+            {
+                joinButton.interactable = false;
+            }
+
             joinAction?.Invoke();
         }
 

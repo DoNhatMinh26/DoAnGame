@@ -3466,7 +3466,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -371179441
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 1479963822, guid: 715f5ec0c4677d341bc38fded9e05207, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -4024,7 +4024,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -371179441
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 54ee223ca1758eb4cb2c14c322659aab, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -10913,7 +10913,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -371179441
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: e3d6b4948a785654cb380de8159ed949, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -12577,6 +12577,10 @@ PrefabInstance:
     - target: {fileID: -8653719598885068355, guid: 69016fdf5c837d040a14e3e8c9e8d521, type: 3}
       propertyPath: m_Name
       value: MeoGoc34 Fix
+      objectReference: {fileID: 0}
+    - target: {fileID: -8653719598885068355, guid: 69016fdf5c837d040a14e3e8c9e8d521, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7552582706839291426, guid: 69016fdf5c837d040a14e3e8c9e8d521, type: 3}
       propertyPath: m_LocalPosition.x

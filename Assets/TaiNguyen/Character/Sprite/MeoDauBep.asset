@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bfbe29c430a4eb24695fb5c9b79441fc, type: 3}
-  m_Name: meoVang2
+  m_Name: MeoDauBep
   m_EditorClassIdentifier: 
-  shipName: "M\xE8o V\xE0ng"
-  shipSprite: {fileID: 21300000, guid: 9c68f1e6ed87a88418f9ab5bb1f39506, type: 3}
-  price: 15
+  shipName: "M\xE8o \u0110\u1EA7u B\xE9p"
+  shipIcon: {fileID: 21300000, guid: c7fcaa95eedd57e4e82258f3bf3827e3, type: 3}
+  price: 20

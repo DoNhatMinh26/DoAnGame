@@ -1,7 +1,7 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: GameUIPlay 1
 Đường dẫn: Assets/Scenes/GameUIPlay 1.unity
-Thời gian export: 5/10/2026 6:49:08 PM
+Thời gian export: 5/11/2026 10:05:56 PM
 ═══════════════════════════════════════════════════════════
 
 Tổng số Root GameObjects: 6
@@ -21,7 +21,7 @@ AuthServices
    • CloudSyncService (DoAnGame.Auth)
    • SessionGuardService (DoAnGame.Auth)
 GameUICanvas [Layer: UI]
-   • Canvas (RenderMode: ScreenSpaceOverlay)
+   • Canvas (RenderMode: ScreenSpaceCamera)
    • CanvasScaler (UnityEngine.UI)
    • GraphicRaycaster (UnityEngine.UI)
    • UIStartupController (DoAnGame.UI)
@@ -486,6 +486,9 @@ GameUICanvas [Layer: UI]
 ││├─ Backgroud [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
+││├─ Image [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
 ││├─ lv [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
@@ -732,12 +735,33 @@ GameUICanvas [Layer: UI]
 ││││││├─ Text (TMP) [Layer: UI]
 ││││││   • CanvasRenderer
 ││││││   • TextMeshProUGUI (TMPro)
-││├─ DuLieuTxt [Layer: UI]
+││├─ Image [Layer: UI]
 ││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
+││   • Image (UnityEngine.UI)
+││├─ Label (3) [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ LabelGreen [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ LabelGreen (1) [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ LabelGreen (2) [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
 ││├─ LopTxt (1) [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
+││├─ Image [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ Image (3) [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ Image (4) [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
 ││├─ SoLop [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
@@ -759,6 +783,24 @@ GameUICanvas [Layer: UI]
 ││├─ CoinTxt [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
+││├─ Label [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ Label (1) [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ Label (2) [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ Image [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ Image (1) [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ Image (2) [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
 ││├─ SoMan1 [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
@@ -782,9 +824,6 @@ GameUICanvas [Layer: UI]
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
 ││   • UIButtonScreenNavigator (DoAnGame.UI)
-│││├─ Text (TMP) [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
 ││├─ DeleteAccountBtn [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -838,9 +877,6 @@ GameUICanvas [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
 │││   • Button (UnityEngine.UI)
-││││├─ Text (TMP) [Layer: UI]
-││││   • CanvasRenderer
-││││   • TextMeshProUGUI (TMPro)
 ││├─ StatusText [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
@@ -852,9 +888,6 @@ GameUICanvas [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
 │││   • Button (UnityEngine.UI)
-││││├─ Text (TMP) [Layer: UI]
-││││   • CanvasRenderer
-││││   • TextMeshProUGUI (TMPro)
 ││├─ AvatarSelectionPopup [INACTIVE] [Layer: UI]
 ││   • Canvas (RenderMode: WorldSpace)
 │││├─ Overlay [Layer: UI]
@@ -907,5 +940,5 @@ DataManager [Layer: UI]
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 271
+Tổng số GameObjects: 282
 ═══════════════════════════════════════════════════════════

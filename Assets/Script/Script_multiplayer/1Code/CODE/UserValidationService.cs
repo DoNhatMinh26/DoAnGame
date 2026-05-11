@@ -24,8 +24,8 @@ namespace DoAnGame.Auth
         {
             if (Instance != null && Instance != this)
             {
-                Debug.LogWarning("[Validation] Duplicate UserValidationService detected, disabling duplicate component.");
-                enabled = false;
+                Debug.LogWarning("[Validation] Duplicate UserValidationService detected, destroying duplicate GameObject.");
+                Destroy(gameObject);
                 return;
             }
             Instance = this;

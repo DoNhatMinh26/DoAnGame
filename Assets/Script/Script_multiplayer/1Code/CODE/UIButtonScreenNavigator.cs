@@ -303,7 +303,23 @@ namespace DoAnGame.UI
                 return true;
 
             // EventSystem phải luôn bật để UI nhận click.
-            return go.GetComponent<EventSystem>() != null;
+            if (go.GetComponent<EventSystem>() != null)
+                return true;
+
+            // ✅ FIX: Preserve CharacterContainer từ auto-hide
+            if (string.Equals(go.name, "CharacterContainer", System.StringComparison.OrdinalIgnoreCase))
+            {
+                Debug.Log($"[UIButtonScreenNavigator] ✅ SKIPPING auto-hide for CharacterContainer");
+                return true;
+            }
+
+            if (go.GetComponentInChildren<DoAnGame.Multiplayer.CharacterContainerController>(true) != null)
+            {
+                Debug.Log($"[UIButtonScreenNavigator] ✅ SKIPPING auto-hide for CharacterContainer (by component)");
+                return true;
+            }
+
+            return false;
         }
 
         private bool HasRootsToShow()

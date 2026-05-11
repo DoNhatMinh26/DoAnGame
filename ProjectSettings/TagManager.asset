@@ -49,6 +49,9 @@ TagManager:
   - name: DoHoa
     uniqueID: 1026619121
     locked: 0
+  - name: Character
+    uniqueID: 2215559153
+    locked: 0
   - name: Ui
     uniqueID: 3923787855
     locked: 0
