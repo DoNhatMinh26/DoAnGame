@@ -294,6 +294,11 @@ namespace DoAnGame.Auth
             await RestoreAvatar(uid);
 
             Debug.Log("[CloudSync] ✅ Restore hoàn tất.");
+            
+            // ✅ CRITICAL FIX: Trigger event để MainMenuPanel refresh sau khi restore
+            // (Trường hợp MainMenuPanel đã hiển thị trước khi restore hoàn tất)
+            OnPlayerDataUpdated?.Invoke();
+            Debug.Log("[CloudSync] 📢 OnPlayerDataUpdated triggered after restore");
         }
 
         /// <summary>

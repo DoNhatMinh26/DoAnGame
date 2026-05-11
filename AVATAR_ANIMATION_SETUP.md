@@ -192,6 +192,98 @@ Console log khi đúng:
 
 ---
 
+## Phần 10: Kiểm tra Animation Events đã hoạt động
+
+### 10.1 — Kiểm tra code đã được update
+
+✅ **Code đã được update tự động:**
+
+1. **AvatarCharacterDisplay.cs** — Đã thêm 3 method mới:
+   - `ShowIdle()` — Hiện Character Meo + trigger Idle
+   - `ShowHappy()` — Hiện Character Meo + trigger Happy
+   - `ShowSad()` — Hiện Character Meo_Sad + trigger Sad
+
+2. **UIMultiplayerBattleController.cs** — Đã hook animation vào battle events:
+   - `HandleQuestionGenerated()` → gọi `ShowIdle()` cho cả 2 player
+   - `HandleAnswerResult()` → gọi `ShowHappy()` hoặc `ShowSad()` dựa trên winnerId
+
+### 10.2 — Kiểm tra trong Unity Editor
+
+1. Mở scene `Test_FireBase_multi`
+2. Chọn `Canvas/GameplayPanel/Player1Character` → Component **AvatarCharacterDisplay**
+3. Kiểm tra 3 PSB đã được gán đúng:
+   - `Character Meo` → child `Character Meo`
+   - `Character Meo Sad` → child `Character Meo_Sad`
+   - `Meo Goc34 Fix` → child `MeoGoc34 Fix`
+4. Lặp lại cho `Player2Character`
+
+### 10.3 — Kiểm tra Animator Controllers
+
+**Character Meo.controller:**
+1. Mở `Assets/Script/Script_multiplayer/1Code/Multiplay/Animation_Multiplayer/Character/Character Meo.controller`
+2. Kiểm tra có 2 triggers: `TriggerIdle`, `TriggerHappy`
+3. Kiểm tra có 2 states: `Idle` (default - màu cam), `Happy`
+4. Kiểm tra transitions từ `Any State`:
+   - `Any State → Idle` (condition: `TriggerIdle`)
+   - `Any State → Happy` (condition: `TriggerHappy`)
+
+**Character Meo_Sad.controller:**
+1. Mở `Assets/Script/Script_multiplayer/1Code/Multiplay/Animation_Multiplayer/Character/Character Meo_Sad.controller`
+2. Kiểm tra có 1 trigger: `TriggerSad`
+3. Kiểm tra có 1 state: `Sad` (default - màu cam)
+4. Kiểm tra transition từ `Any State`:
+   - `Any State → Sad` (condition: `TriggerSad`)
+
+### 10.4 — Test trong Play Mode
+
+1. **Chạy Play Mode** trong Unity Editor
+2. **Tạo phòng multiplayer** (cần 2 client — dùng ParrelSync để test)
+3. **Bắt đầu trận đấu**
+
+**Kiểm tra timeline animation:**
+
+| Thời điểm | Animation mong đợi | PSB hiển thị |
+|-----------|-------------------|--------------|
+| **Countdown "3, 2, 1, Ready, GO!"** | *(chưa có animation)* | *(chưa hiển thị)* |
+| **Question Time (10s)** | `Idle` (đứng chờ) | `Character Meo` |
+| **Summary Time - Thắng** | `Happy` (vui) | `Character Meo` |
+| **Summary Time - Thua** | `Sad` (buồn) | `Character Meo_Sad` |
+| **Summary Time - Cả 2 sai** | `Sad` (cả 2) | `Character Meo_Sad` |
+| **Summary Time - Hòa** | `Happy` (cả 2) | `Character Meo` |
+| **Câu hỏi mới** | `Idle` (quay lại) | `Character Meo` |
+
+**Console logs mong đợi:**
+```
+[AvatarCharacterDisplay] Player1Character → ShowIdle()
+[AvatarCharacterDisplay] Player2Character → ShowIdle()
+[AvatarCharacterDisplay] Player1Character → ShowHappy()
+[AvatarCharacterDisplay] Player2Character → ShowSad()
+```
+
+### 10.5 — Troubleshooting
+
+**Vấn đề: Animation không chạy**
+- ✅ Kiểm tra Animator component có controller được gán chưa
+- ✅ Kiểm tra tên trigger khớp chính xác: `TriggerIdle`, `TriggerHappy`, `TriggerSad`
+- ✅ Kiểm tra animation clips đã được gán vào states chưa
+
+**Vấn đề: PSB không hiển thị/ẩn đúng**
+- ✅ Kiểm tra 3 PSB đã được gán đúng trong Inspector của `AvatarCharacterDisplay`
+- ✅ Kiểm tra tên skin con khớp: `mascost1`, `mascost2`, `mascost3`, `mascost4` (Character Meo/Sad)
+- ✅ Kiểm tra tên skin con khớp: `Meo1`, `Meo2`, `Meo3`, `Meo4` (MeoGoc34 Fix)
+
+**Vấn đề: Animation chạy nhưng không đúng timing**
+- ✅ Kiểm tra `DefaultGameRules.asset`:
+  - `questionTimeLimit` = 10s (Question Time)
+  - `delayBetweenQuestions` = 3s (Summary Time)
+- ✅ Animation tự động theo thời gian này — không cần code thêm
+
+**Vấn đề: Cả 2 player đều hiển thị cùng animation**
+- ✅ Kiểm tra `HandleAnswerResult()` có gọi đúng `ShowHappy()` / `ShowSad()` cho từng player
+- ✅ Kiểm tra `winnerId` từ server (0 = Player1, 1 = Player2, -1 = cả 2 sai, -2 = hòa)
+
+---
+
 ## Lưu ý quan trọng
 
 - **3 PSB có 3 bộ xương khác nhau** → mỗi PSB có controller riêng, không dùng chung
@@ -199,4 +291,5 @@ Console log khi đúng:
 - `Character Meo_Sad.controller` chỉ có **Sad** — dùng `TriggerSad`
 - Tên trigger phải khớp chính xác: `TriggerIdle`, `TriggerHappy`, `TriggerSad` (phân biệt hoa thường)
 - Tên skin con phải khớp: `mascost1` (không phải `Mascost1`), `Meo1` (không phải `meo1`)
-- Phần logic PSB nào hiển thị theo sự kiện (Idle/Happy/Sad/Attack) sẽ bổ sung sau
+- ✅ **Logic PSB hiển thị theo sự kiện đã được implement** — animation tự động theo timeline battle
+- ⏱️ **Thời gian animation bám theo GameRulesConfig** — người dùng có thể tuỳ chỉnh trong `DefaultGameRules.asset`

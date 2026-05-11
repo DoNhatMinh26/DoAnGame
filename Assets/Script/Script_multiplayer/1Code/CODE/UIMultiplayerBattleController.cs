@@ -555,9 +555,9 @@ namespace DoAnGame.UI
             // Gọi StartQuestionTimer() để bắt đầu đếm ngược cho câu hỏi này
             StartQuestionTimer();
 
-            // Reset animation về Idle khi câu hỏi mới bắt đầu
-            player1Character?.TriggerIdle();
-            player2Character?.TriggerIdle();
+            // ✅ AVATAR ANIMATION: Reset về Idle khi câu hỏi mới bắt đầu (Question Time)
+            player1Character?.ShowIdle();
+            player2Character?.ShowIdle();
         }
 
         /// <summary>
@@ -684,25 +684,47 @@ namespace DoAnGame.UI
 
             Debug.Log($"[BattleController] [{role}] HandleAnswerResult COMPLETED");
 
-            // Trigger animation theo kết quả câu trả lời
-            // winnerId: 0 = Player1 thắng, 1 = Player2 thắng, -1 = cả 2 sai
+            // ✅ AVATAR ANIMATION: Trigger animation theo kết quả câu trả lời (Summary Time)
+            // winnerId: 0 = Player1 thắng, 1 = Player2 thắng, -1 = cả 2 sai, -2 = hòa
+            // correct: true nếu có ít nhất 1 người đúng, false nếu cả 2 sai
+            // 
+            // LOGIC ANIMATION với Attack:
+            // 1. Cả 2 đúng (correct=true, winnerId=0/1):
+            //    - Nhanh hơn: ShowAttack() (tấn công, KHÔNG gây sát thương)
+            //    - Chậm hơn: ShowSad() (buồn vì chậm, KHÔNG mất máu)
+            // 2. 1 đúng, 1 sai (correct=true, winnerId=0/1):
+            //    - Đúng: ShowAttack() (tấn công → đối thủ MẤT MÁU)
+            //    - Sai: ShowSad() (bị tấn công, MẤT MÁU)
+            // 3. Cả 2 sai (correct=false, winnerId=-1):
+            //    - Cả 2: ShowSad() (cả 2 buồn, KHÔNG mất máu)
+            // 4. Hòa (correct=true, winnerId=-2):
+            //    - Cả 2: ShowSad() (cả 2 buồn vì hòa, KHÔNG mất máu)
+            
             if (winnerId == -1)
             {
-                // Cả 2 sai → Idle
-                player1Character?.TriggerIdle();
-                player2Character?.TriggerIdle();
+                // Cả 2 sai → Sad cho cả 2 (KHÔNG mất máu)
+                player1Character?.ShowSad();
+                player2Character?.ShowSad();
+            }
+            else if (winnerId == -2)
+            {
+                // Hòa (cả 2 đúng cùng lúc) → Sad cho cả 2 (KHÔNG mất máu)
+                player1Character?.ShowSad();
+                player2Character?.ShowSad();
             }
             else if (winnerId == 0)
             {
-                // Player1 thắng câu
-                player1Character?.TriggerHappy();
-                player2Character?.TriggerSad();
+                // Player1 thắng câu → P1 Attack, P2 Sad
+                // (Mất máu chỉ khi P2 sai - logic HP đã xử lý trong NetworkedMathBattleManager)
+                player1Character?.ShowAttack();
+                player2Character?.ShowSad();
             }
-            else
+            else if (winnerId == 1)
             {
-                // Player2 thắng câu
-                player1Character?.TriggerSad();
-                player2Character?.TriggerHappy();
+                // Player2 thắng câu → P2 Attack, P1 Sad
+                // (Mất máu chỉ khi P1 sai - logic HP đã xử lý trong NetworkedMathBattleManager)
+                player2Character?.ShowAttack();
+                player1Character?.ShowSad();
             }
         }
 
@@ -744,14 +766,17 @@ namespace DoAnGame.UI
             PushMatchResultToWinsController(winnerId, localPlayerId);
 
             // Sync Firebase phía client (uid của client chỉ client biết)
-            if (!isAbandoned)
+            // ✅ FIX: Chỉ skip sync cho người BỎ CUỘC, người THẮNG vẫn được sync
+            bool isLocalPlayerAbandoned = (isAbandoned && abandonedPlayerId == localPlayerId);
+            
+            if (!isLocalPlayerAbandoned)
             {
                 GameLogger.Log($"[BattleController] [{role2}] Syncing own match result to Firebase...");
                 SyncOwnMatchResult(winnerId);
             }
             else
             {
-                GameLogger.Log($"[BattleController] [{role2}] Match abandoned - skipping Firebase sync");
+                GameLogger.Log($"[BattleController] [{role2}] Local player abandoned - skipping Firebase sync");
             }
 
             bool isLocalWinner = (winnerId == localPlayerId);

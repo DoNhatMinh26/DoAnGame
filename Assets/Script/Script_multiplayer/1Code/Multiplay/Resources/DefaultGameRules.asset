@@ -15,8 +15,8 @@ MonoBehaviour:
   startingHealth: 2
   damageOnWrongAnswer: 1
   damageOnTimeout: 1
-  questionTimeLimit: 6
-  delayBetweenQuestions: 3
+  questionTimeLimit: 10
+  delayBetweenQuestions: 5
   correctAnswersToIncreaseDifficulty: 1
   difficultyIncrement: 15
   maxDifficulty: 100

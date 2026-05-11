@@ -1,0 +1,704 @@
+=== GAME LOG START (CLIENT) ===
+Time: 5/11/2026 8:47:59 AM
+Unity Version: 2022.3.62f3
+Platform: WindowsEditor
+Log Path: D:/app/GameDoan/DoAnGame_clone_0/Assets\Script\Script_multiplayer\1Code\Multiplay\GameLog_CLIENT_20260511_084759.txt
+================================
+
+[08:47:59.148] [INFO] [UIRoom] ✅ Updated dropdown to Grade 1 (locked)
+[08:47:59.149] [INFO] [UIRoom] Đã vào phòng (2/2). Chờ chủ phòng bắt đầu...
+[08:47:59.149] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[08:47:59.150] [INFO] [UIRoom]   Player 1: VVGDS_Giang (chủ phòng) (ID: 68UTMAlFcONbkOXLlol8aTRrzaDR)
+[08:47:59.151] [INFO] [UIRoom]   Player 2: Vovangiang22222 (ID: qq8XCzTGv890gmenoZPCx128p7S6)
+[08:47:59.153] [INFO] [UIRoom] IsLocalPlayerReady: playerId=qq8XCzTGv890gmenoZPCx128p7S6, hasKey=false, isReady=false
+[08:47:59.153] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[08:47:59.502] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[08:47:59.503] [INFO] [UIRoom]   Player 1: VVGDS_Giang (chủ phòng) (ID: 68UTMAlFcONbkOXLlol8aTRrzaDR)
+[08:47:59.505] [INFO] [UIRoom]   Player 2: Vovangiang22222 (ID: qq8XCzTGv890gmenoZPCx128p7S6)
+[08:47:59.506] [INFO] [UIRoom] IsLocalPlayerReady: playerId=qq8XCzTGv890gmenoZPCx128p7S6, hasKey=false, isReady=false
+[08:47:59.508] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[08:47:59.813] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[08:47:59.814] [INFO] [UIRoom]   Player 1: VVGDS_Giang (chủ phòng) (ID: 68UTMAlFcONbkOXLlol8aTRrzaDR)
+[08:47:59.814] [INFO] [UIRoom]   Player 2: Vovangiang22222 (ID: qq8XCzTGv890gmenoZPCx128p7S6)
+[08:47:59.814] [INFO] [UIRoom] IsLocalPlayerReady: playerId=qq8XCzTGv890gmenoZPCx128p7S6, hasKey=false, isReady=false
+[08:47:59.814] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[08:47:59.814] [INFO] [UIRoom] ✅ Force refreshed lobby after join: 2 players
+[08:47:59.814] [INFO] [UIRoom] IsLocalPlayerReady: playerId=qq8XCzTGv890gmenoZPCx128p7S6, hasKey=false, isReady=false
+[08:47:59.815] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[08:47:59.815] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[08:47:59.815] [INFO] [UIRoom]   Player 1: VVGDS_Giang (chủ phòng) (ID: 68UTMAlFcONbkOXLlol8aTRrzaDR)
+[08:47:59.815] [INFO] [UIRoom]   Player 2: Vovangiang22222 (ID: qq8XCzTGv890gmenoZPCx128p7S6)
+[08:47:59.815] [INFO] [UIRoom] IsLocalPlayerReady: playerId=qq8XCzTGv890gmenoZPCx128p7S6, hasKey=false, isReady=false
+[08:47:59.815] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[08:47:59.818] [INFO] [UIRoom] UpdateStartMatchButton: players=2, clientReady=False, relayReady=False, visible=False, interactable=False
+[08:47:59.869] [INFO] [UIRoom] BuildRosterText: 2 players in lobby
+[08:47:59.870] [INFO] [UIRoom]   Player 1: VVGDS_Giang (chủ phòng) (ID: 68UTMAlFcONbkOXLlol8aTRrzaDR)
+[08:47:59.870] [INFO] [UIRoom]   Player 2: Vovangiang22222 (ID: qq8XCzTGv890gmenoZPCx128p7S6)
+[08:47:59.871] [INFO] [UIRoom] IsLocalPlayerReady: playerId=qq8XCzTGv890gmenoZPCx128p7S6, hasKey=false, isReady=false
+[08:47:59.872] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[08:47:59.873] [INFO] [UIRoom] IsLocalPlayerReady: playerId=qq8XCzTGv890gmenoZPCx128p7S6, hasKey=false, isReady=false
+[08:47:59.874] [INFO] [UIRoom] Nhấn Sẵn sàng để báo hiệu cho chủ phòng.
+[08:48:00.160] [INFO] [BattleManager] Client spawned, waiting for player states...
+[08:48:00.459] [INFO] [UIRoom] 🟢 HandleReadyButtonClick START: isHost=False, isBusy=False
+[08:48:00.460] [INFO] [UIRoom] 🟢 Calling MarkClientReadyAsync...
+[08:48:00.812] [INFO] [UIRoom] Đã sẵn sàng! Chờ chủ phòng bắt đầu...
+[08:48:00.813] [INFO] [UIRoom] IsLocalPlayerReady: playerId=qq8XCzTGv890gmenoZPCx128p7S6, hasKey=true, value=1, isReady=True
+[08:48:00.814] [INFO] [UIRoom] Đã sẵn sàng! Chờ chủ phòng bắt đầu...
+[08:48:00.814] [INFO] [UIRoom] 🟢 MarkClientReadyAsync completed. UI should stay on LobbyPanel.
+[08:48:00.815] [INFO] [UIRoom] 🟢 HandleReadyButtonClick END: isHost=False, receivedStartSignalFromHost=False
+[08:48:00.820] [WARNING] The character with Unicode value \u2713 was not found in the [Roboto-Bold SDF] font asset or any potential fallbacks. It was replaced by Unicode character \u25A1 in text object [Text (TMP)].
+[08:48:02.603] [WARNING] [UIRoom] 🔴 HandleStartMatchMessageReceived: signal=1, sender=0, isHost=False
+[08:48:02.603] [WARNING] [UIRoom] 🔴 TRIGGERING NotifyBattleStarted from NGO message! receivedStartSignalFromHost=true
+[08:48:02.604] [INFO] [UIRoom] Nhận tín hiệu bắt đầu từ host...
+[08:48:02.604] [WARNING] [UIRoom] 🔥 NotifyBattleStarted() CALLED 🔥 isHost=False, receivedStartSignalFromHost=True
+[08:48:02.607] [WARNING] [UIRoom] 🔥 Stack trace:   at System.Environment.get_StackTrace () [0x00000] in <1071a2cb0cb3433aae80a793c277a048>:0 
+  at DoAnGame.UI.UIMultiplayerRoomController.NotifyBattleStarted () [0x00025] in D:\app\GameDoan\DoAnGame_clone_0\Assets\Script\Script_multiplayer\1Code\CODE\UIMultiplayerRoomController.cs:2026 
+  at DoAnGame.UI.UIMultiplayerRoomController.HandleStartMatchMessageReceived (System.UInt64 senderClientId, Unity.Netcode.FastBufferReader reader) [0x0009c] in D:\app\GameDoan\DoAnGame_clone_0\Assets\Script\Script_multiplayer\1Code\CODE\UIMultiplayerRoomController.cs:2702 
+  at Unity.Netcode.CustomMessagingManager.InvokeNamedMessage (System.UInt64 hash, System.UInt64 sender, Unity.Netcode.FastBufferReader reader, System.Int32 serializedHeaderSize) [0x000cb] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Messaging\CustomMessageManager.cs:183 
+  at Unity.Netcode.NamedMessage.Handle (Unity.Netcode.NetworkContext& context) [0x0001c] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Messaging\Messages\NamedMessage.cs:30 
+  at Unity.Netcode.NetworkMessageManager.ReceiveMessage[T] (Unity.Netcode.FastBufferReader reader, Unity.Netcode.NetworkContext& context, Unity.Netcode.NetworkMessageManager manager) [0x000c0] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Messaging\NetworkMessageManager.cs:582 
+  at Unity.Netcode.NetworkMessageManager.HandleMessage (Unity.Netcode.NetworkMessageHeader& header, Unity.Netcode.FastBufferReader reader, System.UInt64 senderId, System.Single timestamp, System.Int32 serializedHeaderSize) [0x000ff] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Messaging\NetworkMessageManager.cs:446 
+  at Unity.Netcode.NetworkMessageManager.ProcessIncomingMessageQueue () [0x0001a] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Messaging\NetworkMessageManager.cs:472 
+  at Unity.Netcode.NetworkManager.NetworkUpdate (Unity.Netcode.NetworkUpdateStage updateStage) [0x00054] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Core\NetworkManager.cs:59 
+  at Unity.Netcode.NetworkUpdateLoop.RunNetworkUpdateStage (Unity.Netcode.NetworkUpdateStage updateStage) [0x00021] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Core\NetworkUpdateLoop.cs:192 
+  at Unity.Netcode.NetworkUpdateLoop+NetworkEarlyUpdate+<>c.<CreateLoopSystem>b__0_0 () [0x00000] in .\Library\PackageCache\com.unity.netcode.gameobjects@1.12.2\Runtime\Core\NetworkUpdateLoop.cs:215 
+[08:48:02.608] [WARNING] [UIRoom] 🔥🔥🔥 InitializeMultiplayerBattleImmediate() ENTRY POINT 🔥🔥🔥
+[08:48:02.609] [WARNING] [UIRoom] ⚠️ Not server (IsServer=False)
+[08:48:02.611] [INFO] [LoadingPanel] 🔄 LoadingRoutine START
+[08:48:02.611] [INFO] [LoadingPanel] Phase 1: Kết nối...
+[08:48:02.615] [INFO] [PlayerState] Owner set AvatarId=0
+[08:48:02.618] [INFO] [BattleManager] Client received player states ready notification
+[08:48:02.620] [INFO] [BattleManager] Client received question: 10 + 6 = ?
+[08:48:03.094] [INFO] [BattleManager] Client sending name: Vovangiang22222 (ClientID: 1)
+[08:48:03.108] [INFO] [LoadingPanel] Phase 2: Đồng bộ dữ liệu...
+[08:48:03.109] [INFO] [LoadingPanel] IsNetworkReady: True
+[08:48:03.115] [INFO] [LoadingPanel] ✅ Network ready!
+[08:48:03.115] [INFO] [LoadingPanel] Phase 3: Chuẩn bị trận đấu...
+[08:48:03.116] [INFO] [BattleManager] Re-found Player1State from scene
+[08:48:03.117] [INFO] [BattleManager] Re-found Player2State from scene
+[08:48:03.118] [INFO] [LoadingPanel] ArePlayerStatesReady: True
+[08:48:03.122] [INFO] [LoadingPanel] ✅ Player states ready!
+[08:48:03.122] [INFO] [LoadingPanel] Waiting 1.48s to reach minLoadingTime...
+[08:48:04.607] [INFO] [LoadingPanel] ✅ Loading complete!
+[08:48:04.912] [INFO] [LoadingPanel] ✅ Loading complete, navigating to GameplayPanel
+[08:48:04.912] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:04.912] [INFO] [LoadingPanel] ✅ Drag-drop unlocked
+[08:48:04.914] [INFO] [HealthUI] Player1State: FOUND
+[08:48:04.915] [INFO] [HealthUI] Player2State: FOUND
+[08:48:04.915] [INFO] [HealthUI] Subscribing to Player1: HP=2/2
+[08:48:04.916] [INFO] [HealthUI] UpdateHealth: TimerFill1 fillAmount=1.00 (2/2), FillMethod=Horizontal, Color=RGBA(0.248, 1.000, 0.000, 1.000)
+[08:48:04.916] [INFO] [HealthUI] Subscribing to Player2: HP=2/2
+[08:48:04.916] [INFO] [HealthUI] UpdateHealth: TimerFill2 fillAmount=1.00 (2/2), FillMethod=Horizontal, Color=RGBA(0.316, 1.000, 0.000, 1.000)
+[08:48:04.917] [INFO] [HealthUI] ✅ Successfully initialized!
+[08:48:04.917] [INFO] [LoadingPanel] ✅ HealthUI reinitialized
+[08:48:04.918] [INFO] [LoadingPanel] ✅ Found GameplayPanel, showing it...
+[08:48:04.919] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0 (1): (-138.14, 12.00)
+[08:48:04.921] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0 (2): (46.16, 12.00)
+[08:48:04.923] [INFO] [BattleController] OnEnable CALLED
+[08:48:04.925] [INFO] [BattleController] ✅ Subscribed to BattleManager events
+[08:48:04.926] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0: (-314.52, 12.00)
+[08:48:04.926] [INFO] [MultiplayerDragAndDrop] OnEnable: Saved original position for ANSWER_0 (3): (212.71, 12.00)
+[08:48:04.927] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:04.927] [INFO] [BattleController] ✅ Subscribed to BattleManager events
+[08:48:04.928] [INFO] [BattleController] 🎬 Starting countdown...
+[08:48:04.929] [INFO] [AnswerSummaryUI] ✅ Hidden all UI for countdown
+[08:48:04.929] [INFO] [BattleController] ✅ Hidden all battle UI for countdown
+[08:48:04.930] [INFO] [AnswerSummaryUI] Auto-loaded summary duration from GameRules: 3s
+[08:48:04.930] [INFO] [AnswerSummaryUI] State: Question Time
+[08:48:04.930] [INFO] [AnswerSummaryUI] ✅ Initialized
+[08:48:04.930] [INFO] [BattleController] Start CALLED
+[08:48:04.930] [INFO] [BattleController] ✅ Subscribed to BattleManager events
+[08:48:04.949] [INFO] [CharContainer] Player1Character.SetActive(True)
+[08:48:04.951] [INFO] [CharContainer] Player2Character.SetActive(True)
+[08:48:04.951] [INFO] [CharContainer] GameplayPanel ACTIVE - Battle characters bat
+[08:48:05.412] [INFO] [BattleController] 🔗 Subscribing to NetworkVariables (IsSpawned=True)
+[08:48:05.413] [INFO] [BattleController] ✅ Subscribed to NetworkVariable changes
+[08:48:05.418] [INFO] [BattleController] Countdown: 3
+[08:48:05.612] [INFO] [BattleController] 🔄 Force initial sync...
+[08:48:05.613] [INFO] [BattleController] 📝 Initial question found: 10 + 6 = ?
+[08:48:05.613] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:05.614] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:05.614] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:05.614] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:05.614] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:05.614] [INFO] [BattleController] ⚔️ Match already started
+[08:48:05.712] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:05.712] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:05.712] [INFO] [AvatarCharacterDisplay] ✅ Set avatar id=1 trên Player1Character
+[08:48:05.713] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:05.714] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:05.714] [INFO] [AvatarCharacterDisplay] ✅ Set avatar id=0 trên Player2Character
+[08:48:05.714] [INFO] [BattleController] ✅ Avatar characters initialized: P1=1, P2=0
+[08:48:05.714] [INFO] [BattleController] ✅ Avatar characters initialized: P1=1, P2=0
+[08:48:05.911] [INFO] [HealthUI] Player1State: FOUND
+[08:48:05.911] [INFO] [HealthUI] Player2State: FOUND
+[08:48:05.911] [INFO] [HealthUI] Subscribing to Player1: HP=2/2
+[08:48:05.911] [INFO] [HealthUI] UpdateHealth: TimerFill1 fillAmount=1.00 (2/2), FillMethod=Horizontal, Color=RGBA(0.000, 1.000, 0.000, 1.000)
+[08:48:05.911] [INFO] [HealthUI] Subscribing to Player2: HP=2/2
+[08:48:05.911] [INFO] [HealthUI] UpdateHealth: TimerFill2 fillAmount=1.00 (2/2), FillMethod=Horizontal, Color=RGBA(0.000, 1.000, 0.000, 1.000)
+[08:48:05.911] [INFO] [HealthUI] ✅ Successfully initialized!
+[08:48:05.912] [INFO] [HealthUI] Player1State: FOUND
+[08:48:05.912] [INFO] [HealthUI] Player2State: FOUND
+[08:48:05.912] [INFO] [HealthUI] Subscribing to Player1: HP=2/2
+[08:48:05.912] [INFO] [HealthUI] UpdateHealth: TimerFill1 fillAmount=1.00 (2/2), FillMethod=Horizontal, Color=RGBA(0.000, 1.000, 0.000, 1.000)
+[08:48:05.912] [INFO] [HealthUI] Subscribing to Player2: HP=2/2
+[08:48:05.912] [INFO] [HealthUI] UpdateHealth: TimerFill2 fillAmount=1.00 (2/2), FillMethod=Horizontal, Color=RGBA(0.000, 1.000, 0.000, 1.000)
+[08:48:05.913] [INFO] [HealthUI] ✅ Successfully initialized!
+[08:48:06.424] [INFO] [BattleController] Countdown: 2
+[08:48:07.430] [INFO] [BattleController] Countdown: 1
+[08:48:08.435] [INFO] [BattleController] Countdown: Ready
+[08:48:09.442] [INFO] [BattleController] Countdown: GO!
+[08:48:10.449] [INFO] [AnswerSummaryUI] ✅ Shown all UI after countdown
+[08:48:10.449] [INFO] [BattleController] ✅ Shown all battle UI after countdown
+[08:48:10.450] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[08:48:10.450] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[08:48:10.450] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[08:48:10.450] [INFO] [BattleController] ✅ Countdown complete, battle started!
+[08:48:10.451] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[08:48:10.452] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[08:48:10.452] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[08:48:10.453] [INFO] [MultiplayerDragAndDrop] Auto-found BattleController: GameplayPanel
+[08:48:16.448] [INFO] [AnswerSummaryUI] Question Time ended
+[08:48:16.463] [INFO] [PlayerState] Client received damage notification: -1 HP (now 1)
+[08:48:16.464] [INFO] [BattleManager] Client received answer result: Winner=0, Correct=True, P1Time=4111ms, P2Time=9223372036854775807ms, P1Answer=16, P2Answer=-1
+[08:48:16.465] [INFO] [BattleController] [CLIENT] HandleAnswerResult CALLED: Winner=0, Correct=True, Time=4111ms
+[08:48:16.465] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[08:48:16.465] [INFO] [BattleController] [CLIENT] Correct answer: 16
+[08:48:16.465] [INFO] [BattleController] [CLIENT] answerChoices.Length: 4
+[08:48:16.466] [INFO] [BattleController] [CLIENT] Answer 0 text: '18'
+[08:48:16.466] [INFO] [BattleController] [CLIENT] Answer 0: 18 → WRONG → Calling ShowResultForce(False)
+[08:48:16.466] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[08:48:16.466] [INFO] [BattleController] [CLIENT] Answer 0: ShowResultForce DONE
+[08:48:16.466] [INFO] [BattleController] [CLIENT] Answer 1 text: '19'
+[08:48:16.467] [INFO] [BattleController] [CLIENT] Answer 1: 19 → WRONG → Calling ShowResultForce(False)
+[08:48:16.467] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (1)
+[08:48:16.467] [INFO] [BattleController] [CLIENT] Answer 1: ShowResultForce DONE
+[08:48:16.467] [INFO] [BattleController] [CLIENT] Answer 2 text: '15'
+[08:48:16.467] [INFO] [BattleController] [CLIENT] Answer 2: 15 → WRONG → Calling ShowResultForce(False)
+[08:48:16.467] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[08:48:16.467] [INFO] [BattleController] [CLIENT] Answer 2: ShowResultForce DONE
+[08:48:16.467] [INFO] [BattleController] [CLIENT] Answer 3 text: '16'
+[08:48:16.469] [INFO] [BattleController] [CLIENT] Answer 3: 16 → CORRECT → Calling ShowResultForce(True)
+[08:48:16.469] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (3)
+[08:48:16.469] [INFO] [BattleController] [CLIENT] Answer 3: ShowResultForce DONE
+[08:48:16.470] [INFO] [BattleController] [CLIENT] HandleAnswerResult COMPLETED
+[08:48:16.470] [WARNING] Parameter 'Hash 189968899' does not exist.
+[08:48:16.470] [WARNING] Parameter 'Hash 189968899' does not exist.
+[08:48:16.470] [WARNING] Parameter 'Hash -784094102' does not exist.
+[08:48:16.471] [WARNING] Parameter 'Hash -784094102' does not exist.
+[08:48:16.471] [INFO] [AnswerSummaryUI] Answer result: Winner=0, Correct=True, P1Time=4111ms, P2Time=9223372036854775807ms, P1Answer=16, P2Answer=-1
+[08:48:16.471] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[08:48:16.472] [INFO] [AnswerSummaryUI] P1 answer: 16 (4.1110s)
+[08:48:16.472] [INFO] [AnswerSummaryUI] P2 answer: (Không trả lời)
+[08:48:16.472] [INFO] [AnswerSummaryUI] Correct answer: 16, P1: 16 (True), P2: -1 (False)
+[08:48:16.472] [INFO] [AnswerSummaryUI] Result: <color=green>Người chơi 1 đúng!</color>
+<color=red>Người chơi 2 sai!</color>
+[08:48:16.473] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[08:48:16.474] [INFO] [HealthUI] UpdateHealth: TimerFill2 fillAmount=0.50 (1/2), FillMethod=Horizontal, Color=RGBA(0.000, 1.000, 0.000, 1.000)
+[08:48:19.410] [INFO] [BattleManager] Client received question: 12 - 7 = ?
+[08:48:19.411] [INFO] [AnswerSummaryUI] New question generated: 12 - 7 = ?
+[08:48:19.412] [INFO] [AnswerSummaryUI] State: Question Time
+[08:48:19.412] [INFO] [AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController
+[08:48:19.413] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:19.413] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:19.413] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:19.413] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:19.413] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:19.414] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[08:48:19.414] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[08:48:19.414] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[08:48:19.414] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:19.414] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:19.415] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:19.415] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:19.421] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:19.421] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:19.421] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:19.422] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:19.422] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:19.422] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:19.422] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:19.422] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:19.423] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:19.423] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:19.423] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:19.423] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:19.423] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:19.424] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:19.424] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:19.424] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:19.424] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:19.424] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:19.424] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:19.424] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:19.425] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:19.425] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:19.425] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:19.425] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:19.425] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:25.411] [INFO] [BattleManager] Client received answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=9223372036854775807ms, P1Answer=-1, P2Answer=-1
+[08:48:25.411] [INFO] [BattleController] [CLIENT] HandleAnswerResult CALLED: Winner=-1, Correct=False, Time=9223372036854775807ms
+[08:48:25.412] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[08:48:25.412] [INFO] [BattleController] [CLIENT] Correct answer: 5
+[08:48:25.412] [INFO] [BattleController] [CLIENT] answerChoices.Length: 4
+[08:48:25.412] [INFO] [BattleController] [CLIENT] Answer 0 text: '8'
+[08:48:25.413] [INFO] [BattleController] [CLIENT] Answer 0: 8 → WRONG → Calling ShowResultForce(False)
+[08:48:25.413] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[08:48:25.413] [INFO] [BattleController] [CLIENT] Answer 0: ShowResultForce DONE
+[08:48:25.413] [INFO] [BattleController] [CLIENT] Answer 1 text: '5'
+[08:48:25.413] [INFO] [BattleController] [CLIENT] Answer 1: 5 → CORRECT → Calling ShowResultForce(True)
+[08:48:25.413] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (1)
+[08:48:25.414] [INFO] [BattleController] [CLIENT] Answer 1: ShowResultForce DONE
+[08:48:25.414] [INFO] [BattleController] [CLIENT] Answer 2 text: '3'
+[08:48:25.414] [INFO] [BattleController] [CLIENT] Answer 2: 3 → WRONG → Calling ShowResultForce(False)
+[08:48:25.415] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[08:48:25.415] [INFO] [BattleController] [CLIENT] Answer 2: ShowResultForce DONE
+[08:48:25.415] [INFO] [BattleController] [CLIENT] Answer 3 text: '9'
+[08:48:25.415] [INFO] [BattleController] [CLIENT] Answer 3: 9 → WRONG → Calling ShowResultForce(False)
+[08:48:25.415] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[08:48:25.415] [INFO] [BattleController] [CLIENT] Answer 3: ShowResultForce DONE
+[08:48:25.415] [INFO] [BattleController] [CLIENT] HandleAnswerResult COMPLETED
+[08:48:25.416] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:25.416] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:25.416] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:25.416] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:25.416] [INFO] [AnswerSummaryUI] Answer result: Winner=-1, Correct=False, P1Time=9223372036854775807ms, P2Time=9223372036854775807ms, P1Answer=-1, P2Answer=-1
+[08:48:25.417] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[08:48:25.417] [INFO] [AnswerSummaryUI] P1 answer: (Không trả lời)
+[08:48:25.417] [INFO] [AnswerSummaryUI] P2 answer: (Không trả lời)
+[08:48:25.417] [INFO] [AnswerSummaryUI] Correct answer: 5, P1: -1 (False), P2: -1 (False)
+[08:48:25.418] [INFO] [AnswerSummaryUI] Result: <color=red>Cả 2 đều sai!</color>
+[08:48:25.418] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[08:48:28.400] [INFO] [BattleManager] Client received question: 9 - 8 = ?
+[08:48:28.402] [INFO] [AnswerSummaryUI] New question generated: 9 - 8 = ?
+[08:48:28.402] [INFO] [AnswerSummaryUI] State: Question Time
+[08:48:28.403] [INFO] [AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController
+[08:48:28.403] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:28.403] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:28.403] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:28.403] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:28.403] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:28.404] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[08:48:28.405] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[08:48:28.405] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[08:48:28.405] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:28.405] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:28.405] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:28.405] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:28.414] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:28.415] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:28.415] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:28.415] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:28.415] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:28.415] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:28.416] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:28.416] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:28.416] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:28.416] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:28.416] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:28.417] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:28.417] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:28.417] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:28.417] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:28.417] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:28.417] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:28.417] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:28.417] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:28.417] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:28.419] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:28.419] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:28.419] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:28.419] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:28.419] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:30.213] [INFO] [MultiplayerDragAndDrop] OnBeginDrag CALLED for ANSWER_0 (1)
+[08:48:30.213] [INFO]   isLocked: False
+[08:48:30.213] [INFO]   canvasGroup: True
+[08:48:30.213] [INFO]   image: True
+[08:48:30.213] [INFO]   rectTransform: True
+[08:48:30.214] [INFO] [MultiplayerDragAndDrop] ✅ Begin drag: 1
+[08:48:30.260] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(9.67, -9.67), position=(-112.35, -10.57)
+[08:48:30.677] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(-3.22, 0.00), position=(135.91, -184.68)
+[08:48:30.747] [INFO] [MultiplayerDragAndDrop] OnDrag: delta=(-3.22, 0.00), position=(87.55, -178.23)
+[08:48:30.880] [INFO] [MultiplayerDragAndDrop] RaycastAll found 1 objects at (1034.96, 369.12)
+[08:48:30.881] [INFO]   - ANSWER_0 (1) (tag: Untagged)
+[08:48:30.881] [INFO]     → Bỏ qua (là Answer object)
+[08:48:30.881] [INFO] [MultiplayerDragAndDrop] RaycastAll không tìm thấy, thử tìm trực tiếp...
+[08:48:30.882] [INFO] [MultiplayerDragAndDrop] ✅ Found Slot (direct): Slot
+[08:48:30.882] [INFO] [MultiplayerDragAndDrop] End drag: 1, dropped on: Slot
+[08:48:30.883] [INFO] [MultiplayerDragAndDrop] Player dropped answer: 1
+[08:48:30.884] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[08:48:30.884] [INFO] [MultiplayerDragAndDrop] Answer submitted: 1
+[08:48:34.402] [INFO] [AnswerSummaryUI] Question Time ended
+[08:48:34.409] [INFO] [BattleManager] Client received answer result: Winner=1, Correct=True, P1Time=4263ms, P2Time=2568ms, P1Answer=1, P2Answer=1
+[08:48:34.409] [INFO] [BattleController] [CLIENT] HandleAnswerResult CALLED: Winner=1, Correct=True, Time=4263ms
+[08:48:34.410] [INFO] [MultiplayerDragAndDrop] Global lock: True
+[08:48:34.410] [INFO] [BattleController] [CLIENT] Correct answer: 1
+[08:48:34.410] [INFO] [BattleController] [CLIENT] answerChoices.Length: 4
+[08:48:34.410] [INFO] [BattleController] [CLIENT] Answer 0 text: '6'
+[08:48:34.410] [INFO] [BattleController] [CLIENT] Answer 0: 6 → WRONG → Calling ShowResultForce(False)
+[08:48:34.411] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0
+[08:48:34.411] [INFO] [BattleController] [CLIENT] Answer 0: ShowResultForce DONE
+[08:48:34.411] [INFO] [BattleController] [CLIENT] Answer 1 text: '1'
+[08:48:34.411] [INFO] [BattleController] [CLIENT] Answer 1: 1 → CORRECT → Calling ShowResultForce(True)
+[08:48:34.411] [INFO] [MultiplayerDragAndDrop] FORCE Correct answer: ANSWER_0 (1)
+[08:48:34.412] [INFO] [BattleController] [CLIENT] Answer 1: ShowResultForce DONE
+[08:48:34.412] [INFO] [BattleController] [CLIENT] Answer 2 text: '4'
+[08:48:34.412] [INFO] [BattleController] [CLIENT] Answer 2: 4 → WRONG → Calling ShowResultForce(False)
+[08:48:34.412] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (2)
+[08:48:34.412] [INFO] [BattleController] [CLIENT] Answer 2: ShowResultForce DONE
+[08:48:34.412] [INFO] [BattleController] [CLIENT] Answer 3 text: '3'
+[08:48:34.412] [INFO] [BattleController] [CLIENT] Answer 3: 3 → WRONG → Calling ShowResultForce(False)
+[08:48:34.412] [INFO] [MultiplayerDragAndDrop] FORCE Wrong answer: ANSWER_0 (3)
+[08:48:34.412] [INFO] [BattleController] [CLIENT] Answer 3: ShowResultForce DONE
+[08:48:34.412] [INFO] [BattleController] [CLIENT] HandleAnswerResult COMPLETED
+[08:48:34.413] [WARNING] Parameter 'Hash -784094102' does not exist.
+[08:48:34.413] [WARNING] Parameter 'Hash -784094102' does not exist.
+[08:48:34.413] [WARNING] Parameter 'Hash 189968899' does not exist.
+[08:48:34.413] [WARNING] Parameter 'Hash 189968899' does not exist.
+[08:48:34.413] [INFO] [AnswerSummaryUI] Answer result: Winner=1, Correct=True, P1Time=4263ms, P2Time=2568ms, P1Answer=1, P2Answer=1
+[08:48:34.413] [INFO] [AnswerSummaryUI] State: Summary Time (matchEnded=False)
+[08:48:34.414] [INFO] [AnswerSummaryUI] P1 answer: 1 (4.2630s)
+[08:48:34.414] [INFO] [AnswerSummaryUI] P2 answer: 1 (2.5680s)
+[08:48:34.414] [INFO] [AnswerSummaryUI] Correct answer: 1, P1: 1 (True), P2: 1 (True)
+[08:48:34.415] [INFO] [AnswerSummaryUI] Result: <color=green>Cả 2 đều đúng!</color>
+<color=yellow>Người chơi 2 nhanh hơn!</color>
+[08:48:34.415] [INFO] [AnswerSummaryUI] Starting summary countdown: 3s
+[08:48:37.399] [INFO] [BattleManager] Client received question: 14 + 21 = ?
+[08:48:37.400] [INFO] [AnswerSummaryUI] New question generated: 14 + 21 = ?
+[08:48:37.400] [INFO] [AnswerSummaryUI] State: Question Time
+[08:48:37.400] [INFO] [AnswerSummaryUI] Question generated, waiting for timer start signal from BattleController
+[08:48:37.401] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:37.401] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:37.401] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:37.401] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:37.401] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:37.402] [INFO] [AnswerSummaryUI] Starting question countdown: 6s
+[08:48:37.403] [INFO] [AnswerSummaryUI] ✅ Timer started from external call
+[08:48:37.403] [INFO] [BattleController] ✅ Started AnswerSummaryUI timer (UI)
+[08:48:37.403] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:37.403] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:37.403] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:37.404] [WARNING] Parameter 'Hash -1277538648' does not exist.
+[08:48:37.409] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:37.409] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:37.410] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:37.410] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:37.410] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:37.410] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:37.410] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:37.411] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:37.411] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:37.411] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:37.411] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:37.411] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:37.411] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:37.411] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:37.411] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:37.411] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:37.412] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:37.412] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:37.412] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:37.412] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:37.412] [INFO] [MultiplayerDragAndDrop] Global lock: False
+[08:48:37.412] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0
+[08:48:37.413] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (1)
+[08:48:37.413] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (2)
+[08:48:37.413] [INFO] [MultiplayerDragAndDrop] Reset for new question: ANSWER_0 (3)
+[08:48:39.383] [INFO] [UI16Hub] OnClickQuitRoom called. battleQuitConfirmPopup=BattleQuitConfirmPopup
+[08:48:39.385] [INFO] [UI16Hub] ✅ Showing BattleQuitConfirmPopup
+[08:48:39.386] [INFO] [QuitPopup] Popup shown
+[08:48:39.392] [WARNING] The character with Unicode value \u1EBD was not found in the [LiberationSans SDF] font asset or any potential fallbacks. It was replaced by Unicode character \u25A1 in text object [MessageText].
+[08:48:40.320] [INFO] [QuitPopup] Confirmed quit
+[08:48:40.321] [CUSTOM] [QuitPopup] [CLIENT] [ClientID:1] User CONFIRMED quit - starting forfeit flow
+[08:48:40.321] [CUSTOM] [QuitPopup] [CLIENT] Sending RequestForfeitServerRpc to server...
+[08:48:40.321] [INFO] [QuitPopup] Sent RequestForfeitServerRpc
+[08:48:40.321] [CUSTOM] [QuitPopup] [CLIENT] ✅ RequestForfeitServerRpc sent successfully
+[08:48:40.321] [CUSTOM] [QuitPopup] [CLIENT] Starting 1s delay before ExecuteQuitToLobby...
+[08:48:40.321] [INFO] [QuitPopup] Waiting 1s before quitting...
+[08:48:40.321] [CUSTOM] [QuitPopup] [CLIENT] Waiting 1s for server to process forfeit...
+[08:48:40.915] [INFO] [BattleManager] Client received match result: Winner=0, WinnerHealth=2, P1HP=2, P2HP=1
+[08:48:40.917] [CUSTOM] [BattleManager] [CLIENT] ShowMatchResultClientRpc: Winner=0, WinnerHP=2, P1HP=2, P2HP=1
+[08:48:40.917] [INFO] [AnswerSummaryUI] Match ended! Winner=0, Health=2
+[08:48:40.917] [CUSTOM] [BattleController] [CLIENT] HandleMatchEnded RECEIVED - winnerId=0, winnerHealth=2
+[08:48:40.917] [CUSTOM] [BattleController] [CLIENT] LocalPlayerId=1, IsAbandoned=True, AbandonedPlayerId=1
+[08:48:40.917] [CUSTOM] [BattleController] [CLIENT] Pushing match result to WinsController...
+[08:48:40.918] [CUSTOM] [BattleController] CLIENT reading HP from cache: Winner=2, Loser=1
+[08:48:40.918] [CUSTOM] [BattleController] DEBUG: Loser (Vovangiang22222) FinalHealth=1, CurrentHealth.Value=1, MaxHealth.Value=2, IsAlive=True
+[08:48:40.918] [CUSTOM] [BattleController] ✅ PushMatchResult SUCCESS:
+[08:48:40.918] [CUSTOM]   - Winner: VVGDS_Giang (Score:15, HP:2)
+[08:48:40.918] [CUSTOM]   - Loser: Vovangiang22222 (Score:10, HP:1)
+[08:48:40.918] [CUSTOM]   - IsAbandoned: True, AbandonedPlayerId: 1
+[08:48:40.918] [CUSTOM] [BattleController] [CLIENT] Local player abandoned - skipping Firebase sync
+[08:48:40.918] [CUSTOM] [BattleController] [CLIENT] IsLocalWinner=False, navigating to WinsPanel in 2s...
+[08:48:41.325] [CUSTOM] [QuitPopup] [CLIENT] Delay complete - calling ExecuteQuitToLobby
+[08:48:41.325] [INFO] [QuitPopup] ExecuteQuitToLobby
+[08:48:41.326] [CUSTOM] [QuitPopup] [CLIENT] ExecuteQuitToLobby START
+[08:48:41.326] [CUSTOM] [QuitPopup] [CLIENT] Cancelling pending NavigateToWinsPanel invoke...
+[08:48:41.326] [CUSTOM] [QuitPopup] [CLIENT] ✅ Cancelled NavigateToWinsPanel
+[08:48:41.327] [INFO] [QuitPopup] Hidden GameplayPanel
+[08:48:41.327] [CUSTOM] [QuitPopup] [CLIENT] ✅ Hidden GameplayPanel
+[08:48:41.327] [INFO] [QuitPopup] Popup hidden
+[08:48:41.327] [CUSTOM] [QuitPopup] [CLIENT] ✅ Hidden QuitPopup
+[08:48:41.327] [CUSTOM] [QuitPopup] [CLIENT] Calling RequestQuitRoom (will Show LobbyPanel internally)...
+[08:48:41.329] [CUSTOM] [UIRoom] [CLIENT] HandleQuitRoom START
+[08:48:41.329] [INFO] [UIRoom] UpdateStartMatchButton: players=2, clientReady=True, relayReady=False, visible=False, interactable=False
+[08:48:41.329] [INFO] [UIRoom] Đang rời phòng...
+[08:48:41.330] [CUSTOM] [UIRoom] [CLIENT] Set isBusy=true, isQuitting=true, suppressAutoBattleStart=true
+[08:48:41.330] [CUSTOM] [UIRoom] [CLIENT] Stopped all routines
+[08:48:41.330] [CUSTOM] [UIRoom] [CLIENT] Cleared currentLobby/isHost early to stop stale UI updates
+[08:48:41.330] [CUSTOM] [UIRoom] [CLIENT] Is CLIENT - removing self from lobby
+[08:48:41.332] [INFO] [QuitPopup] Called RequestQuitRoom
+[08:48:41.332] [CUSTOM] [QuitPopup] [CLIENT] ✅ RequestQuitRoom called - ExecuteQuitToLobby COMPLETE
+[08:48:41.336] [INFO] [CharContainer] Player1Character.SetActive(False)
+[08:48:41.337] [INFO] [CharContainer] Player2Character.SetActive(False)
+[08:48:41.337] [INFO] [CharContainer] GameplayPanel INACTIVE - Battle characters tat
+[08:48:41.665] [CUSTOM] [UIRoom] [CLIENT] ✅ Removed self from lobby
+[08:48:41.665] [CUSTOM] [UIRoom] [CLIENT] Disconnecting Relay...
+[08:48:41.666] [INFO] [Relay] Đang ngắt kết nối Relay...
+[08:48:41.667] [CUSTOM] [UIRoom] [CLIENT] ✅ Relay disconnected
+[08:48:41.667] [CUSTOM] [UIRoom] [CLIENT] Calling ResetRoomSessionState...
+[08:48:41.667] [CUSTOM] [UIRoom] [CLIENT] ResetRoomSessionState START
+[08:48:41.667] [CUSTOM] [UIRoom] [CLIENT] Reset flags: currentLobby=null, isHost=false, battleStartNotified=false, receivedStartSignalFromHost=false
+[08:48:41.667] [CUSTOM] [UIRoom] [CLIENT] ✅ Unlocked grade dropdown
+[08:48:41.667] [CUSTOM] [UIRoom] [CLIENT] Calling HideAllBattlePanels...
+[08:48:41.668] [INFO] [UIRoom] ✅ Hidden GameplayPanel
+[08:48:41.668] [CUSTOM] [UIRoom] [CLIENT] ✅ Hidden GameplayPanel
+[08:48:41.669] [INFO] [UIRoom] ✅ Hidden WinsPanel
+[08:48:41.669] [CUSTOM] [UIRoom] [CLIENT] ✅ Hidden WinsPanel
+[08:48:41.669] [INFO] [UIRoom] ✅ Hidden LoadingPanel
+[08:48:41.669] [CUSTOM] [UIRoom] [CLIENT] ✅ Hidden LoadingPanel
+[08:48:41.669] [INFO] [UIRoom] ✅ Hidden QuitPopup
+[08:48:41.669] [CUSTOM] [UIRoom] [CLIENT] ✅ Hidden QuitPopup
+[08:48:41.672] [WARNING] [UIRoom] BuildRosterText: currentLobby null or no players
+[08:48:41.672] [WARNING] [UIRoom] BuildRosterText: currentLobby null or no players
+[08:48:41.674] [INFO] [UIRoom] ✅ Shown LobbyPanel
+[08:48:41.674] [CUSTOM] [UIRoom] [CLIENT] ✅ Shown LobbyPanel
+[08:48:41.674] [CUSTOM] [UIRoom] [CLIENT] Calling ResetWinsPanelState...
+[08:48:41.675] [INFO] [UIRoom] ✅ Reset WinsPanel state
+[08:48:41.675] [CUSTOM] [UIRoom] [CLIENT] ✅ Reset WinsPanel.LastResult (IsValid=false)
+[08:48:41.675] [CUSTOM] [UIRoom] [CLIENT] Calling ResetBattleManagerState...
+[08:48:41.675] [INFO] [UIRoom] ⚠️ Not server, skipping BattleManager NetworkVariable reset
+[08:48:41.676] [CUSTOM] [UIRoom] [CLIENT] ⚠️ Not server, skipping BattleManager NetworkVariable reset
+[08:48:41.676] [CUSTOM] [UIRoom] [CLIENT] Calling ApplyIdleVisualState...
+[08:48:41.676] [INFO] [UIRoom] Mời tạo phòng để chơi.
+[08:48:41.676] [WARNING] [UIRoom] BuildRosterText: currentLobby null or no players
+[08:48:41.676] [CUSTOM] [UIRoom] [CLIENT] ResetRoomSessionState COMPLETE
+[08:48:41.676] [CUSTOM] [UIRoom] [CLIENT] ✅ ResetRoomSessionState completed
+[08:48:41.676] [CUSTOM] [UIRoom] [CLIENT] ⚠️ quitRoomNavigator is NULL - cannot navigate
+[08:48:41.677] [INFO] [UIRoom] UpdateStartMatchButton: players=0, clientReady=False, relayReady=False, visible=False, interactable=False
+[08:48:41.677] [CUSTOM] [UIRoom] [CLIENT] HandleQuitRoom COMPLETE - isBusy=false, isQuitting=false
+[08:49:00.435] [INFO] [UIButtonScreenNavigator:Back] Click detected. targetSceneName='GameUIPlay 1', targetScreen='null'
+[08:49:00.436] [INFO] [UIButtonScreenNavigator:Back] ResolveDestinationTargetPanelName: destinationTargetPanelName='ModSelectionPanel', targetScreen=null
+[08:49:00.436] [INFO] [UIButtonScreenNavigator:Back] Using destinationTargetPanelName: 'ModSelectionPanel'
+[08:49:00.436] [INFO] [UIButtonScreenNavigator:Back] QueuePendingSceneUiTargetRequestIfNeeded:
+[08:49:00.436] [INFO]   - destinationTargetPanelName field = 'ModSelectionPanel'
+[08:49:00.436] [INFO]   - targetScreen = null
+[08:49:00.436] [INFO]   - Resolved panelName = 'ModSelectionPanel'
+[08:49:00.436] [INFO] [UIButtonScreenNavigator:Back] Scene navigation với panel đích: 'ModSelectionPanel'
+[08:49:00.438] [INFO] [UIButtonScreenNavigator] Creating DeferredSceneUiResolveRunner BEFORE scene load: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel'
+[08:49:00.442] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.InitializeBeforeSceneLoad: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=8fb05670-3de1-4ad2-8db0-2cd6f493bd7c
+[08:49:00.442] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner created and marked DontDestroyOnLoad.
+[08:49:00.559] [WARNING] [UILoading] Duplicate UILoadingIndicator detected, disabling duplicate component.
+[08:49:00.559] [WARNING] [PlayerData] Duplicate PlayerDataService detected, disabling duplicate component.
+[08:49:00.560] [WARNING] [Session] Duplicate SessionManager detected, disabling duplicate component.
+[08:49:00.560] [WARNING] [Validation] Duplicate UserValidationService detected, disabling duplicate component.
+[08:49:00.560] [WARNING] [Auth] Duplicate AuthManager detected, disabling duplicate component.
+[08:49:00.561] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-fix screensRoot scale to (1,1,1).
+[08:49:00.561] [WARNING] DontDestroyOnLoad only works for root GameObjects or components on root GameObjects.
+[08:49:00.562] [INFO] [UISettingsOpenButton:Setting] Awake | button=Setting | popupController=SettingsPopup | mode=Toggle
+[08:49:00.823] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: scene='GameUIPlay 1', mode=Single, pendingRequest.IsValid=True, pendingRequest.SceneName='GameUIPlay 1'
+[08:49:00.823] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Creating DeferredSceneUiResolveRunner for scene 'GameUIPlay 1'
+[08:49:00.824] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.Initialize: scene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=8fb05670-3de1-4ad2-8db0-2cd6f493bd7c
+[08:49:00.824] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Runner created, pending request cleared.
+[08:49:00.825] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.OnSceneLoaded: Target scene 'GameUIPlay 1' loaded!
+[08:49:00.895] [INFO] [Startup] ========== DEBUG KEYS ==========
+[08:49:00.896] [INFO] [Startup] IsGuestMode key (IS_GUEST_KEY): -1
+[08:49:00.896] [INFO] [Startup] GuestName key (GUEST_NAME_KEY): 'NOT_FOUND'
+[08:49:00.896] [INFO] [Startup] SelectedGrade key (SELECTED_GRADE_KEY): -1
+[08:49:00.896] [INFO] [Startup] SessionToken: 'NOT_FOUND'
+[08:49:00.897] [INFO] [Startup] ====================================
+[08:49:00.897] [INFO] [Session] ✅ Session local còn hạn. Hết hạn lúc: 2026-05-12 01:47:38
+[08:49:00.897] [INFO] [Startup] ✅ CASE 1: Valid email session found → Navigating to MainMenuPanel
+[08:49:00.898] [INFO] [Startup] ShowMainMenuPanel called - mainMenuPanel is null: False
+[08:49:00.898] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:00.898] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:00.900] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:00.900] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:00.900] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:00.900] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-fix screensRoot scale to (1,1,1).
+[08:49:00.900] [INFO] [UISettingsOpenButton:SettingBtn] Awake | button=SettingBtn | popupController=SettingsPopup | mode=Toggle
+[08:49:00.901] [INFO] [MainMenu] ✅ Subscribed to CloudSyncService.OnPlayerDataUpdated
+[08:49:00.901] [INFO] [Startup] Enabled MainMenuPanel - Active: True
+[08:49:00.902] [INFO] [Startup] Calling FlowPanelController.Show()
+[08:49:00.902] [INFO] [MainMenu] 🔄 OnShow() called - refreshing player info
+[08:49:00.902] [INFO] [MainMenu] ========== UPDATE PLAYER INFO ==========
+[08:49:00.902] [INFO] [MainMenu] IsGuestMode: False
+[08:49:00.902] [INFO] [MainMenu] GuestName: 'Guest'
+[08:49:00.902] [INFO] [MainMenu] SelectedGrade: 1
+[08:49:00.903] [INFO] [MainMenu] ==========================================
+[08:49:00.903] [INFO] [MainMenu] Displaying character name: Vovangiang22222
+[08:49:00.903] [INFO] [MainMenu] Logged-in user: Vovangiang22222, Level: 1, Score: 105, Grade: 1
+[08:49:00.903] [INFO] [MainMenu] Logged-in user detected, loading player data...
+[08:49:00.904] [INFO] [Startup] Showing MainMenuPanel
+[08:49:00.904] [INFO] [Auth] 🔍 Kiểm tra session local...
+[08:49:00.904] [INFO] [Session] ✅ Session local còn hạn. Hết hạn lúc: 2026-05-12 01:47:38
+[08:49:00.905] [INFO] [PlayerData] 📥 Loading player data for UID: BQx9ZVCBVna9g5oZNqkjejzxoZ83
+[08:49:00.906] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[08:49:00.906] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[08:49:00.906] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:00.907] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:00.908] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:00.908] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:00.908] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:00.910] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:00.910] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:00.923] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[08:49:00.923] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[08:49:00.924] [INFO] [Startup] Verify after 1 frame - MainMenuPanel Active: True
+[08:49:00.932] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[08:49:00.933] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[08:49:00.937] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[08:49:00.937] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[08:49:00.938] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[08:49:00.939] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[08:49:00.939] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[08:49:00.940] [WARNING] [UIButtonScreenNavigator:multiplayerBtn] Auto-fix screensRoot scale to (1,1,1).
+[08:49:00.940] [INFO] [ModSelection] AuthManager found via Instance
+[08:49:00.940] [INFO] [ModSelection] Popup already assigned: LoginRequiredPopup
+[08:49:00.941] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[08:49:00.941] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[08:49:00.941] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[08:49:00.942] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[08:49:00.942] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[08:49:00.942] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[08:49:00.942] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[08:49:01.006] [INFO] [MainMenu] Firebase user: giangvan200433@gmail.com, DisplayName: Vovangiang22222
+[08:49:01.006] [INFO] [MainMenu] ========== UPDATE PLAYER INFO ==========
+[08:49:01.006] [INFO] [MainMenu] IsGuestMode: False
+[08:49:01.008] [INFO] [MainMenu] GuestName: 'Guest'
+[08:49:01.008] [INFO] [MainMenu] SelectedGrade: 1
+[08:49:01.008] [INFO] [MainMenu] ==========================================
+[08:49:01.008] [INFO] [MainMenu] Displaying character name: Vovangiang22222
+[08:49:01.008] [INFO] [MainMenu] Logged-in user: Vovangiang22222, Level: 1, Score: 105, Grade: 1
+[08:49:01.014] [INFO] [PlayerData] 💾 Player data cached locally
+[08:49:01.014] [INFO] [PlayerData] ✅ Player data loaded: Vovangiang22222 Lv1
+[08:49:01.014] [INFO] [Auth] 💾 Synced PlayerData to PlayerPrefs: Score=105, Level=1, Coins=0
+[08:49:01.015] [INFO] [PlayerData] 💾 Player data cached locally
+[08:49:01.015] [INFO] [Session] ✅ Session local còn hạn. Hết hạn lúc: 2026-05-12 01:47:38
+[08:49:01.015] [INFO] [CloudSync] 🔄 Restoring progress from Firebase...
+[08:49:01.118] [INFO] [QuickPlay] Saved selected grade: 1
+[08:49:01.118] [INFO] [CloudSync] ✅ Restored grade: Lớp 1
+[08:49:01.242] [INFO] [CloudSync] Restored chonda Lớp1: maxLevel=1 (cloud=1, local=1)
+[08:49:01.361] [INFO] [CloudSync] Restored keothada Lớp1: maxLevel=1 (cloud=1, local=1)
+[08:49:01.395] [INFO] [MainMenu] 🔄 DelayedRefresh() - refreshing player info again
+[08:49:01.395] [INFO] [MainMenu] ========== UPDATE PLAYER INFO ==========
+[08:49:01.395] [INFO] [MainMenu] IsGuestMode: False
+[08:49:01.396] [INFO] [MainMenu] GuestName: 'Guest'
+[08:49:01.396] [INFO] [MainMenu] SelectedGrade: 1
+[08:49:01.396] [INFO] [MainMenu] ==========================================
+[08:49:01.396] [INFO] [MainMenu] Displaying character name: Vovangiang22222
+[08:49:01.396] [INFO] [MainMenu] Logged-in user: Vovangiang22222, Level: 1, Score: 105, Grade: 1
+[08:49:01.458] [INFO] [CloudSync] Restored phithuyen Lớp1: maxLevel=1 (cloud=1, local=1)
+[08:49:01.562] [INFO] [CloudSync] Restored coins: 0 (cloud=0, local=0)
+[08:49:01.652] [INFO] [CloudSync] Restored score=105 level=1 (cloud: 105/1, local was: 105/1)
+[08:49:01.743] [INFO] [CloudSync] Restored shop chonda_skin: selected=0, unlocked=[0]
+[08:49:01.847] [INFO] [CloudSync] Restored shop keothada_skin: selected=0, unlocked=[0]
+[08:49:01.943] [INFO] [CloudSync] Restored shop keothada_phao: selected=0, unlocked=[0]
+[08:49:02.040] [INFO] [CloudSync] Restored shop phithuyen_ship: selected=0, unlocked=[0]
+[08:49:02.048] [INFO] [UIButtonScreenNavigator:BackBtn] Click detected. targetSceneName='', targetScreen='MainMenuPanel'
+[08:49:02.048] [INFO] [UIButtonScreenNavigator:BackBtn] Switching UI to 'MainMenuPanel'
+[08:49:02.048] [WARNING] [UIButtonScreenNavigator:BackBtn] Auto-fix screensRoot scale to (1,1,1).
+[08:49:02.049] [WARNING] [UIButtonScreenNavigator:BackBtn] Auto-normalized panel 'MainMenuPanel' to full-screen.
+[08:49:02.049] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:02.050] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:02.050] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:02.050] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:02.050] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:02.050] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:02.050] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:02.137] [INFO] [AvatarManager] 🔄 Restored từ Firebase: Mèo 1 (id=0)
+[08:49:02.137] [INFO] [CloudSync] ✅ Restored avatarId: 0
+[08:49:02.137] [INFO] [CloudSync] ✅ Restore hoàn tất.
+[08:49:02.137] [INFO] [MainMenu] 🔄 OnPlayerDataUpdated event received - refreshing UI
+[08:49:02.137] [INFO] [MainMenu] ========== UPDATE PLAYER INFO ==========
+[08:49:02.137] [INFO] [MainMenu] IsGuestMode: False
+[08:49:02.137] [INFO] [MainMenu] GuestName: 'Guest'
+[08:49:02.139] [INFO] [MainMenu] SelectedGrade: 1
+[08:49:02.139] [INFO] [MainMenu] ==========================================
+[08:49:02.139] [INFO] [MainMenu] Displaying character name: Vovangiang22222
+[08:49:02.139] [INFO] [MainMenu] Logged-in user: Vovangiang22222, Level: 1, Score: 105, Grade: 1
+[08:49:02.139] [INFO] [CloudSync] 📢 OnPlayerDataUpdated triggered after restore
+[08:49:02.140] [INFO] [Auth] ✅ Auto-login: restore tiến độ từ Firebase hoàn tất.
+[08:49:02.140] [INFO] [Auth] ✅ Auto-load account thành công: Vovangiang22222
+[08:49:02.140] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:02.140] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:02.141] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:02.141] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:02.141] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:02.141] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.463] [INFO] [UIButtonScreenNavigator:HoSoBtn] Click detected. targetSceneName='', targetScreen='Profile'
+[08:49:03.464] [INFO] [UIButtonScreenNavigator:HoSoBtn] Switching UI to 'Profile'
+[08:49:03.464] [WARNING] [UIButtonScreenNavigator:HoSoBtn] Auto-fix screensRoot scale to (1,1,1).
+[08:49:03.465] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.465] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.465] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.466] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.466] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.467] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.467] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.467] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.467] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.469] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.469] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.469] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.469] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.470] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.470] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.470] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.471] [WARNING] [UIButtonScreenNavigator:HoSoBtn] Auto-normalized panel 'Profile' to full-screen.
+[08:49:03.473] [INFO] [ProfileUI] ========== UPDATE PROFILE DISPLAY ==========
+[08:49:03.473] [INFO] [ProfileUI] IsGuestMode: False
+[08:49:03.473] [INFO] [ProfileUI] ScoreKey: 'local_d5fd60d40e66774fe28c58d742abd1ad8465b93a:UserScore'
+[08:49:03.473] [INFO] [ProfileUI] LevelKey: 'local_d5fd60d40e66774fe28c58d742abd1ad8465b93a:UserLevel'
+[08:49:03.473] [INFO] [ProfileUI] Reading score from PlayerPrefs...
+[08:49:03.473] [INFO] [ProfileUI] Score: 105, Level: 1, Coins: 0
+[08:49:03.473] [INFO] [ProfileUI] ================================================
+[08:49:03.474] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.475] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.475] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.475] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.475] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.475] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.476] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.476] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.477] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.477] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.477] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.477] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.477] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.477] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.478] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.478] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.478] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.478] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.478] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.479] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.479] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.480] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.480] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:03.480] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:09.422] [INFO] [UIButtonScreenNavigator:Back] Click detected. targetSceneName='', targetScreen='MainMenuPanel'
+[08:49:09.423] [INFO] [UIButtonScreenNavigator:Back] Switching UI to 'MainMenuPanel'
+[08:49:09.423] [WARNING] [UIButtonScreenNavigator:Back] Auto-fix screensRoot scale to (1,1,1).
+[08:49:09.424] [WARNING] [UIButtonScreenNavigator:Back] Auto-normalized panel 'MainMenuPanel' to full-screen.
+[08:49:09.424] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:09.424] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:09.425] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:09.425] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:09.425] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:09.425] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[08:49:09.426] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+
+=== GAME LOG END ===
+Time: 5/11/2026 8:49:39 AM
+====================

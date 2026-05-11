@@ -151,13 +151,74 @@ private void InitAvatarCharacters()
 
 ---
 
-## 8. Phần chưa làm — PSB nào hiển thị theo sự kiện
+## Logic Attack Animation (Chỉnh lại)
 
-*(Tính sau)*
+✅ **ĐÃ IMPLEMENT** — Logic hiển thị PSB theo timeline battle:
 
-| Sự kiện | PSB hiển thị | PSB ẩn |
-|---|---|---|
-| Idle (đang chờ) | Character Meo | Meo_Sad, MeoGoc34 |
-| Happy (đúng) | Character Meo | Meo_Sad, MeoGoc34 |
-| Sad (sai) | Character Meo_Sad | Meo, MeoGoc34 |
-| Attack | MeoGoc34 Fix | Meo, Meo_Sad |
+### Quy tắc mất máu:
+- **CHỈ khi 1 đúng, 1 sai** → người sai mất máu
+- **Cả 2 đúng** (kể cả hòa) → KHÔNG ai mất máu
+- **Cả 2 sai** → KHÔNG ai mất máu (theo logic cũ)
+
+### Timeline Battle (bám theo GameRulesConfig)
+
+**1. Question Time** (thời gian: `gameRules.questionTimeLimit`, mặc định 10s)
+- **Hiển thị:** `Character Meo.psb` (active)
+- **Animation:** `Idle` (đứng chờ)
+- **Ẩn:** `Character Meo_Sad.psb`, `MeoGoc34 Fix.psb` (inactive)
+- **Trigger:** `HandleQuestionGenerated()` → `ShowIdle()`
+
+**2. Summary Time** (thời gian: `gameRules.delayBetweenQuestions`, mặc định 3s)
+
+Dựa trên `winnerId` và đáp án đúng/sai:
+
+| Trường hợp | Người thắng | Người thua | Mất máu? |
+|------------|-------------|------------|----------|
+| **Cả 2 đúng, so sánh tốc độ** | ShowAttack() (tấn công) | ShowSad() (buồn vì chậm) | ❌ KHÔNG |
+| **1 đúng, 1 sai** | ShowAttack() (tấn công) | ShowSad() (bị tấn công) | ✅ CÓ (người sai) |
+| **Cả 2 sai** | ShowSad() | ShowSad() | ❌ KHÔNG |
+| **Hòa (cả 2 đúng cùng lúc)** | ShowSad() | ShowSad() | ❌ KHÔNG |
+
+**Chi tiết theo winnerId:**
+
+| winnerId | Player 1 | Player 2 | Mô tả |
+|----------|----------|----------|-------|
+| `-1` | ShowSad() | ShowSad() | Cả 2 sai, KHÔNG mất máu |
+| `-2` | ShowSad() | ShowSad() | Hòa (cả 2 đúng cùng lúc), KHÔNG mất máu |
+| `0` (P1 thắng) | ShowAttack() | ShowSad() | P1 đúng/nhanh hơn. Mất máu nếu P2 sai |
+| `1` (P2 thắng) | ShowSad() | ShowAttack() | P2 đúng/nhanh hơn. Mất máu nếu P1 sai |
+
+**3. Sau Summary Time → Quay lại Question Time**
+- Tự động quay về `ShowIdle()` khi câu hỏi mới được generate
+
+### API Methods trong AvatarCharacterDisplay
+
+```csharp
+// Hiển thị Character Meo + trigger Idle (Question Time)
+public void ShowIdle()
+
+// Hiển thị Character Meo + trigger Happy (không dùng nữa - thay bằng Attack)
+public void ShowHappy()
+
+// Hiển thị Character Meo_Sad + trigger Sad (Summary Time - thua/buồn)
+public void ShowSad()
+
+// Hiển thị MeoGoc34 Fix + trigger Attack (Summary Time - thắng, tấn công)
+// Animation này có hành động ném (sau này spawn projectile)
+public void ShowAttack()
+```
+
+### Thời gian tuỳ chỉnh
+
+Thời gian animation tự động theo `DefaultGameRules.asset`:
+- **Question Time**: `questionTimeLimit` (10s mặc định)
+- **Summary Time**: `delayBetweenQuestions` (3s mặc định)
+
+Người dùng có thể tuỳ chỉnh trong Inspector của `DefaultGameRules.asset` → animation sẽ tự động theo.
+
+### Ghi chú về Attack Animation
+
+- **Attack animation** (MeoGoc34 Fix) có hành động **ném**
+- Sau này có thể spawn **projectile** (quả bóng) khi animation ném
+- Projectile sẽ bay về phía đối thủ và trigger hiệu ứng va chạm
+- **Hiện tại**: Chỉ có animation, chưa có projectile và va chạm (làm sau)

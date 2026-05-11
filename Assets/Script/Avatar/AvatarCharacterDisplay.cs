@@ -28,9 +28,10 @@ public class AvatarCharacterDisplay : MonoBehaviour
     private static readonly string[] SkinNamesMeo34  = { "Meo1",     "Meo2",     "Meo3",     "Meo4"     };
 
     // Hash trigger parameters
-    private static readonly int HashIdle  = Animator.StringToHash("TriggerIdle");
-    private static readonly int HashHappy = Animator.StringToHash("TriggerHappy");
-    private static readonly int HashSad   = Animator.StringToHash("TriggerSad");
+    private static readonly int HashIdle   = Animator.StringToHash("TriggerIdle");
+    private static readonly int HashHappy  = Animator.StringToHash("TriggerHappy");
+    private static readonly int HashSad    = Animator.StringToHash("TriggerSad");
+    private static readonly int HashAttack = Animator.StringToHash("TriggerAttack");
 
     private int currentAvatarId = -1;
 
@@ -74,9 +75,59 @@ public class AvatarCharacterDisplay : MonoBehaviour
     // PSB nào active sẽ phản hồi animation — logic show/hide PSB theo sự kiện tính sau.
     // ─────────────────────────────────────────────────────────────
 
-    public void TriggerIdle()  => SetTriggerAll(HashIdle);
-    public void TriggerHappy() => SetTriggerAll(HashHappy);
-    public void TriggerSad()   => SetTriggerAll(HashSad);
+    public void TriggerIdle()   => SetTriggerAll(HashIdle);
+    public void TriggerHappy()  => SetTriggerAll(HashHappy);
+    public void TriggerSad()    => SetTriggerAll(HashSad);
+    public void TriggerAttack() => SetTriggerAll(HashAttack);
+
+    // ─────────────────────────────────────────────────────────────
+    // PUBLIC API — Show/Hide PSB theo sự kiện battle
+    // ─────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Hiển thị Character Meo (Idle/Happy), ẩn Meo_Sad và Meo34, trigger Idle animation.
+    /// Dùng trong Question Time (đang chờ trả lời).
+    /// </summary>
+    public void ShowIdle()
+    {
+        SetPSBVisibility(showMeo: true, showMeoSad: false, showMeo34: false);
+        TriggerIdle();
+        Debug.Log($"[AvatarCharacterDisplay] {gameObject.name} → ShowIdle()");
+    }
+
+    /// <summary>
+    /// Hiển thị Character Meo (Idle/Happy), ẩn Meo_Sad và Meo34, trigger Happy animation.
+    /// Dùng trong Summary Time khi player được cộng điểm (đúng hoặc nhanh hơn).
+    /// </summary>
+    public void ShowHappy()
+    {
+        SetPSBVisibility(showMeo: true, showMeoSad: false, showMeo34: false);
+        TriggerHappy();
+        Debug.Log($"[AvatarCharacterDisplay] {gameObject.name} → ShowHappy()");
+    }
+
+    /// <summary>
+    /// Hiển thị Character Meo_Sad, ẩn Meo và Meo34, trigger Sad animation.
+    /// Dùng trong Summary Time khi player trả lời sai hoặc không được cộng điểm.
+    /// </summary>
+    public void ShowSad()
+    {
+        SetPSBVisibility(showMeo: false, showMeoSad: true, showMeo34: false);
+        TriggerSad();
+        Debug.Log($"[AvatarCharacterDisplay] {gameObject.name} → ShowSad()");
+    }
+
+    /// <summary>
+    /// Hiển thị MeoGoc34 Fix (góc 3/4), ẩn Meo và Meo_Sad, trigger Attack animation.
+    /// Dùng trong Summary Time khi player thắng (đúng hoặc nhanh hơn) → tấn công đối thủ.
+    /// Animation này sẽ có hành động ném (sau này có thể spawn projectile).
+    /// </summary>
+    public void ShowAttack()
+    {
+        SetPSBVisibility(showMeo: false, showMeoSad: false, showMeo34: true);
+        TriggerAttack();
+        Debug.Log($"[AvatarCharacterDisplay] {gameObject.name} → ShowAttack()");
+    }
 
     // ─────────────────────────────────────────────────────────────
     // PRIVATE
@@ -109,5 +160,21 @@ public class AvatarCharacterDisplay : MonoBehaviour
     {
         if (anim != null && anim.runtimeAnimatorController != null)
             anim.SetTrigger(hash);
+    }
+
+    /// <summary>
+    /// Set visibility của 3 PSB (Meo, MeoSad, Meo34).
+    /// Chỉ 1 PSB được hiển thị tại 1 thời điểm.
+    /// </summary>
+    private void SetPSBVisibility(bool showMeo, bool showMeoSad, bool showMeo34)
+    {
+        if (characterMeo != null)
+            characterMeo.SetActive(showMeo);
+        
+        if (characterMeoSad != null)
+            characterMeoSad.SetActive(showMeoSad);
+        
+        if (meoGoc34Fix != null)
+            meoGoc34Fix.SetActive(showMeo34);
     }
 }

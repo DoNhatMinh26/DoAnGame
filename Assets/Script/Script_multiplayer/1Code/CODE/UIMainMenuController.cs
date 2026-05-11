@@ -88,7 +88,14 @@ namespace DoAnGame.UI
 
             // ✅ Subscribe CloudSyncService event để tự refresh khi multiplayer match hoàn thành
             if (CloudSyncService.Instance != null)
+            {
                 CloudSyncService.Instance.OnPlayerDataUpdated += OnPlayerDataUpdated;
+                Debug.Log("[MainMenu] ✅ Subscribed to CloudSyncService.OnPlayerDataUpdated");
+            }
+            else
+            {
+                Debug.LogWarning("[MainMenu] ⚠️ CloudSyncService.Instance is NULL - cannot subscribe to OnPlayerDataUpdated");
+            }
 
             if (logoutButton != null)
             {
@@ -122,15 +129,30 @@ namespace DoAnGame.UI
                 authManager = AuthManager.Instance;
             }
             
+            Debug.Log("[MainMenu] 🔄 OnShow() called - refreshing player info");
+            
+            // ✅ Refresh ngay lập tức
+            UpdatePlayerInfo();
+            
+            // ✅ CRITICAL FIX: Refresh lại sau 0.5s để đảm bảo PlayerPrefs đã được update từ multiplayer
+            // (Trường hợp CloudSyncService chưa trigger event hoặc Firebase sync chậm)
+            CancelInvoke(nameof(DelayedRefresh));
+            Invoke(nameof(DelayedRefresh), 0.5f);
+            
             // Force load player data if logged in
             if (!UIQuickPlayNameController.IsGuestMode())
             {
                 Debug.Log("[MainMenu] Logged-in user detected, loading player data...");
                 LoadPlayerDataAsync();
             }
-            
-            // ✅ Luôn gọi UpdatePlayerInfo() để hiển thị dữ liệu mới nhất
-            // (Cho cả guest lẫn logged-in user)
+        }
+        
+        /// <summary>
+        /// Refresh lại sau delay để đảm bảo PlayerPrefs đã được update từ multiplayer.
+        /// </summary>
+        private void DelayedRefresh()
+        {
+            Debug.Log("[MainMenu] 🔄 DelayedRefresh() - refreshing player info again");
             UpdatePlayerInfo();
         }
 
