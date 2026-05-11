@@ -1,0 +1,514 @@
+=== GAME LOG START (HOST) ===
+Time: 5/11/2026 9:03:17 AM
+Unity Version: 2022.3.62f3
+Platform: WindowsEditor
+Log Path: D:/KLTN/DoAnGame/Assets\Script\Script_multiplayer\1Code\Multiplay\GameLog_HOST_20260511_090317.txt
+================================
+
+[09:03:18.506] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[09:03:18.507] [INFO] [UIRoom]   Player 1: Chau (chủ phòng) (ID: dSncGQjWwHQszMRdAK3TG9vSYTS3)
+[09:03:18.509] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[09:03:18.510] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[09:03:18.513] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[09:03:18.596] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[09:03:18.597] [INFO] [UIRoom]   Player 1: Chau (chủ phòng) (ID: dSncGQjWwHQszMRdAK3TG9vSYTS3)
+[09:03:18.599] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[09:03:18.600] [INFO] [UIRoom] Đã tạo phòng. Độ khó: Lớp 1. Chờ người chơi thứ 2...
+[09:03:18.601] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[09:03:18.602] [INFO] [UIRoom]   Player 1: Chau (chủ phòng) (ID: dSncGQjWwHQszMRdAK3TG9vSYTS3)
+[09:03:18.603] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[09:03:18.604] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[09:03:18.611] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[09:03:22.703] [INFO] [UIButtonScreenNavigator:Back] Click detected. targetSceneName='GameUIPlay 1', targetScreen='null'
+[09:03:22.703] [INFO] [UIButtonScreenNavigator:Back] ResolveDestinationTargetPanelName: destinationTargetPanelName='ModSelectionPanel', targetScreen=null
+[09:03:22.703] [INFO] [UIButtonScreenNavigator:Back] Using destinationTargetPanelName: 'ModSelectionPanel'
+[09:03:22.704] [INFO] [UIButtonScreenNavigator:Back] QueuePendingSceneUiTargetRequestIfNeeded:
+[09:03:22.704] [INFO]   - destinationTargetPanelName field = 'ModSelectionPanel'
+[09:03:22.704] [INFO]   - targetScreen = null
+[09:03:22.704] [INFO]   - Resolved panelName = 'ModSelectionPanel'
+[09:03:22.705] [INFO] [UIButtonScreenNavigator:Back] Scene navigation với panel đích: 'ModSelectionPanel'
+[09:03:22.705] [INFO] [UIButtonScreenNavigator] Creating DeferredSceneUiResolveRunner BEFORE scene load: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel'
+[09:03:22.705] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.InitializeBeforeSceneLoad: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=e6bc28e0-4112-4ae1-affb-571c823fa46f
+[09:03:22.706] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner created and marked DontDestroyOnLoad.
+[09:03:22.808] [WARNING] [UILoading] Duplicate UILoadingIndicator detected, disabling duplicate component.
+[09:03:22.808] [WARNING] [PlayerData] Duplicate PlayerDataService detected, disabling duplicate component.
+[09:03:22.809] [WARNING] [Session] Duplicate SessionManager detected, disabling duplicate component.
+[09:03:22.809] [WARNING] [Validation] Duplicate UserValidationService detected, disabling duplicate component.
+[09:03:22.809] [WARNING] [Auth] Duplicate AuthManager detected, disabling duplicate component.
+[09:03:22.809] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:03:22.810] [WARNING] DontDestroyOnLoad only works for root GameObjects or components on root GameObjects.
+[09:03:22.810] [INFO] [UISettingsOpenButton:Setting] Awake | button=Setting | popupController=SettingsPopup | mode=Toggle
+[09:03:23.080] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: scene='GameUIPlay 1', mode=Single, pendingRequest.IsValid=True, pendingRequest.SceneName='GameUIPlay 1'
+[09:03:23.080] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Creating DeferredSceneUiResolveRunner for scene 'GameUIPlay 1'
+[09:03:23.081] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.Initialize: scene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=e6bc28e0-4112-4ae1-affb-571c823fa46f
+[09:03:23.081] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Runner created, pending request cleared.
+[09:03:23.081] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.OnSceneLoaded: Target scene 'GameUIPlay 1' loaded!
+[09:03:23.167] [INFO] [Startup] ========== DEBUG KEYS ==========
+[09:03:23.167] [INFO] [Startup] IsGuestMode key (IS_GUEST_KEY): 1
+[09:03:23.168] [INFO] [Startup] GuestName key (GUEST_NAME_KEY): 'chau'
+[09:03:23.168] [INFO] [Startup] SelectedGrade key (SELECTED_GRADE_KEY): 1
+[09:03:23.168] [INFO] [Startup] SessionToken: 'NOT_FOUND'
+[09:03:23.168] [INFO] [Startup] ====================================
+[09:03:23.169] [INFO] [Session] ✅ Session local còn hạn. Hết hạn lúc: 2026-05-12 02:02:58
+[09:03:23.169] [INFO] [Startup] ✅ CASE 1: Valid email session found → Navigating to MainMenuPanel
+[09:03:23.169] [INFO] [Startup] ShowMainMenuPanel called - mainMenuPanel is null: False
+[09:03:23.170] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:23.170] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:23.170] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:23.171] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:23.171] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:23.172] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:03:23.172] [INFO] [UISettingsOpenButton:SettingBtn] Awake | button=SettingBtn | popupController=SettingsPopup | mode=Toggle
+[09:03:23.172] [INFO] [Startup] Enabled MainMenuPanel - Active: True
+[09:03:23.172] [INFO] [Startup] Calling FlowPanelController.Show()
+[09:03:23.173] [INFO] [MainMenu] Logged-in user detected, loading player data...
+[09:03:23.173] [INFO] [MainMenu] ========== UPDATE PLAYER INFO ==========
+[09:03:23.173] [INFO] [MainMenu] IsGuestMode: False
+[09:03:23.173] [INFO] [MainMenu] GuestName: 'Guest'
+[09:03:23.174] [INFO] [MainMenu] SelectedGrade: 2
+[09:03:23.174] [INFO] [MainMenu] ==========================================
+[09:03:23.174] [INFO] [MainMenu] Displaying character name: Chau
+[09:03:23.174] [INFO] [MainMenu] Logged-in user: Chau, Level: 1, Score: 0, Grade: 2
+[09:03:23.175] [INFO] [Startup] Showing MainMenuPanel
+[09:03:23.175] [INFO] [Auth] 🔍 Kiểm tra session local...
+[09:03:23.175] [INFO] [Session] ✅ Session local còn hạn. Hết hạn lúc: 2026-05-12 02:02:58
+[09:03:23.175] [INFO] [PlayerData] 📥 Loading player data for UID: V4ZaRtv2ztf8pyzfFHALlcuI42C3
+[09:03:23.177] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[09:03:23.177] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[09:03:23.177] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:23.178] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:23.179] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:23.179] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:23.179] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:23.181] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:23.181] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:23.196] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[09:03:23.197] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[09:03:23.197] [INFO] [Startup] Verify after 1 frame - MainMenuPanel Active: True
+[09:03:23.203] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[09:03:23.204] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[09:03:23.209] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[09:03:23.209] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[09:03:23.209] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[09:03:23.210] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[09:03:23.210] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[09:03:23.210] [WARNING] [UIButtonScreenNavigator:multiplayerBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:03:23.211] [INFO] [ModSelection] AuthManager found via Instance
+[09:03:23.211] [INFO] [ModSelection] Popup already assigned: LoginRequiredPopup
+[09:03:23.211] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[09:03:23.212] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[09:03:23.212] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[09:03:23.212] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[09:03:23.212] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[09:03:23.212] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[09:03:23.213] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[09:03:23.274] [INFO] [MainMenu] Firebase user: nchau2539@gmail.com, DisplayName: Chau
+[09:03:23.275] [INFO] [MainMenu] ========== UPDATE PLAYER INFO ==========
+[09:03:23.275] [INFO] [MainMenu] IsGuestMode: False
+[09:03:23.275] [INFO] [MainMenu] GuestName: 'Guest'
+[09:03:23.276] [INFO] [MainMenu] SelectedGrade: 2
+[09:03:23.276] [INFO] [MainMenu] ==========================================
+[09:03:23.276] [INFO] [MainMenu] Displaying character name: Chau
+[09:03:23.276] [INFO] [MainMenu] Logged-in user: Chau, Level: 1, Score: 0, Grade: 2
+[09:03:24.177] [INFO] [UIButtonScreenNavigator:ChoiDonBtn] Click detected. targetSceneName='', targetScreen='ChonMan_'
+[09:03:24.178] [INFO] [UIButtonScreenNavigator:ChoiDonBtn] Switching UI to 'ChonMan_'
+[09:03:24.178] [WARNING] [UIButtonScreenNavigator:ChoiDonBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:03:24.180] [WARNING] [UIButtonScreenNavigator:ChoiDonBtn] Auto-normalized panel 'ChonMan_' to full-screen.
+[09:03:25.194] [INFO] [PlayerData] 💾 Player data cached locally
+[09:03:25.194] [INFO] [PlayerData] ✅ Player data loaded: Chau Lv1
+[09:03:25.195] [INFO] [Auth] 💾 Synced PlayerData to PlayerPrefs: Score=0, Level=1, Coins=0
+[09:03:25.195] [INFO] [PlayerData] 💾 Player data cached locally
+[09:03:25.196] [INFO] [Session] ✅ Session local còn hạn. Hết hạn lúc: 2026-05-12 02:02:58
+[09:03:25.196] [INFO] [CloudSync] 🔄 Restoring progress from Firebase...
+[09:03:25.241] [INFO] [QuickPlay] Saved selected grade: 2
+[09:03:25.241] [INFO] [CloudSync] ✅ Restored grade: Lớp 2
+[09:03:25.287] [INFO] [CloudSync] Restored chonda Lớp2: maxLevel=1 (cloud=1, local=1)
+[09:03:25.327] [INFO] [CloudSync] Restored keothada Lớp2: maxLevel=1 (cloud=1, local=1)
+[09:03:25.372] [INFO] [CloudSync] Restored phithuyen Lớp2: maxLevel=1 (cloud=1, local=1)
+[09:03:25.414] [INFO] [CloudSync] Restored coins: 0 (cloud=0, local=0)
+[09:03:25.445] [INFO] [CloudSync] Restored score=0 level=1 (cloud: 0/1, local was: 0/1)
+[09:03:25.654] [INFO] [AvatarManager] 🔄 Restored từ Firebase: Mèo 1 (id=0)
+[09:03:25.655] [INFO] [CloudSync] ✅ Restored avatarId: 0
+[09:03:25.655] [INFO] [CloudSync] ✅ Restore hoàn tất.
+[09:03:25.655] [INFO] [Auth] ✅ Auto-login: restore tiến độ từ Firebase hoàn tất.
+[09:03:25.656] [INFO] [Auth] ✅ Auto-load account thành công: Chau
+[09:03:28.268] [INFO] [UIButtonScreenNavigator:ChonDA] Click detected. targetSceneName='ChonDA', targetScreen='null'
+[09:03:28.269] [INFO] [UIButtonScreenNavigator:ChonDA] ResolveDestinationTargetPanelName: destinationTargetPanelName='ShopPanel', targetScreen=null
+[09:03:28.269] [INFO] [UIButtonScreenNavigator:ChonDA] Using destinationTargetPanelName: 'ShopPanel'
+[09:03:28.269] [INFO] [UIButtonScreenNavigator:ChonDA] QueuePendingSceneUiTargetRequestIfNeeded:
+[09:03:28.270] [INFO]   - destinationTargetPanelName field = 'ShopPanel'
+[09:03:28.270] [INFO]   - targetScreen = null
+[09:03:28.270] [INFO]   - Resolved panelName = 'ShopPanel'
+[09:03:28.271] [INFO] [UIButtonScreenNavigator:ChonDA] Scene navigation với panel đích: 'ShopPanel'
+[09:03:28.271] [INFO] [UIButtonScreenNavigator] Creating DeferredSceneUiResolveRunner BEFORE scene load: targetScene='ChonDA', targetPanel='ShopPanel'
+[09:03:28.271] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.InitializeBeforeSceneLoad: targetScene='ChonDA', targetPanel='ShopPanel', requestId=f4bddbea-15e3-432a-9518-98618b3a3e79
+[09:03:28.271] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner created and marked DontDestroyOnLoad.
+[09:03:28.699] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: scene='ChonDA', mode=Single, pendingRequest.IsValid=True, pendingRequest.SceneName='ChonDA'
+[09:03:28.699] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Creating DeferredSceneUiResolveRunner for scene 'ChonDA'
+[09:03:28.700] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.Initialize: scene='ChonDA', targetPanel='ShopPanel', requestId=f4bddbea-15e3-432a-9518-98618b3a3e79
+[09:03:28.700] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Runner created, pending request cleared.
+[09:03:28.700] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.OnSceneLoaded: Target scene 'ChonDA' loaded!
+[09:03:28.805] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[09:03:28.805] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[09:03:28.841] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[09:03:28.842] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[09:03:28.851] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[09:03:28.851] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[09:03:28.857] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ShopPanel'
+[09:03:28.858] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[09:03:28.858] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ShopPanel' in scene 'ChonDA'
+[09:03:28.858] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[09:03:28.859] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ShopPanel'
+[09:03:28.859] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[09:03:28.859] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ShopPanel'
+[09:03:28.859] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[09:03:28.859] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ShopPanel' in scene 'ChonDA'
+[09:03:28.860] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[09:03:28.860] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ShopPanel'
+[09:03:28.860] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[09:03:35.254] [INFO] [UIButtonScreenNavigator:StBnt] Click detected. targetSceneName='', targetScreen='null'
+[09:03:35.255] [WARNING] [UIButtonScreenNavigator:StBnt] Chưa cấu hình đích UI trong scene hiện tại (targetScreen/rootsToShow). Bỏ qua điều hướng để tránh màn hình trống.
+[09:03:36.147] [INFO] Đã thoát nhanh: Hiện bảng thua.
+[09:03:39.135] [INFO] [UIButtonScreenNavigator:StBnt] Click detected. targetSceneName='', targetScreen='null'
+[09:03:39.135] [WARNING] [UIButtonScreenNavigator:StBnt] Chưa cấu hình đích UI trong scene hiện tại (targetScreen/rootsToShow). Bỏ qua điều hướng để tránh màn hình trống.
+[09:03:39.895] [INFO] Đã thoát nhanh: Hiện bảng thua.
+[09:03:41.679] [INFO] [UIButtonScreenNavigator:Back] Click detected. targetSceneName='GameUIPlay 1', targetScreen='null'
+[09:03:41.679] [INFO] [UIButtonScreenNavigator:Back] ResolveDestinationTargetPanelName: destinationTargetPanelName='ChonMan_', targetScreen=null
+[09:03:41.679] [INFO] [UIButtonScreenNavigator:Back] Using destinationTargetPanelName: 'ChonMan_'
+[09:03:41.680] [INFO] [UIButtonScreenNavigator:Back] QueuePendingSceneUiTargetRequestIfNeeded:
+[09:03:41.680] [INFO]   - destinationTargetPanelName field = 'ChonMan_'
+[09:03:41.680] [INFO]   - targetScreen = null
+[09:03:41.681] [INFO]   - Resolved panelName = 'ChonMan_'
+[09:03:41.681] [INFO] [UIButtonScreenNavigator:Back] Scene navigation với panel đích: 'ChonMan_'
+[09:03:41.681] [INFO] [UIButtonScreenNavigator] Creating DeferredSceneUiResolveRunner BEFORE scene load: targetScene='GameUIPlay 1', targetPanel='ChonMan_'
+[09:03:41.682] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.InitializeBeforeSceneLoad: targetScene='GameUIPlay 1', targetPanel='ChonMan_', requestId=160decec-07fe-42ae-bca6-c51da51e6249
+[09:03:41.682] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner created and marked DontDestroyOnLoad.
+[09:03:41.857] [WARNING] [UILoading] Duplicate UILoadingIndicator detected, disabling duplicate component.
+[09:03:41.857] [WARNING] [PlayerData] Duplicate PlayerDataService detected, disabling duplicate component.
+[09:03:41.858] [WARNING] [Session] Duplicate SessionManager detected, disabling duplicate component.
+[09:03:41.858] [WARNING] [Validation] Duplicate UserValidationService detected, disabling duplicate component.
+[09:03:41.858] [WARNING] [Auth] Duplicate AuthManager detected, disabling duplicate component.
+[09:03:41.859] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:03:41.859] [WARNING] DontDestroyOnLoad only works for root GameObjects or components on root GameObjects.
+[09:03:41.859] [INFO] [UISettingsOpenButton:Setting] Awake | button=Setting | popupController=SettingsPopup | mode=Toggle
+[09:03:42.129] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: scene='GameUIPlay 1', mode=Single, pendingRequest.IsValid=True, pendingRequest.SceneName='GameUIPlay 1'
+[09:03:42.129] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Creating DeferredSceneUiResolveRunner for scene 'GameUIPlay 1'
+[09:03:42.130] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.Initialize: scene='GameUIPlay 1', targetPanel='ChonMan_', requestId=160decec-07fe-42ae-bca6-c51da51e6249
+[09:03:42.130] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Runner created, pending request cleared.
+[09:03:42.130] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.OnSceneLoaded: Target scene 'GameUIPlay 1' loaded!
+[09:03:42.213] [INFO] [Startup] ========== DEBUG KEYS ==========
+[09:03:42.213] [INFO] [Startup] IsGuestMode key (IS_GUEST_KEY): 1
+[09:03:42.213] [INFO] [Startup] GuestName key (GUEST_NAME_KEY): 'chau'
+[09:03:42.214] [INFO] [Startup] SelectedGrade key (SELECTED_GRADE_KEY): 1
+[09:03:42.214] [INFO] [Startup] SessionToken: 'NOT_FOUND'
+[09:03:42.214] [INFO] [Startup] ====================================
+[09:03:42.214] [INFO] [Session] ✅ Session local còn hạn. Hết hạn lúc: 2026-05-12 02:02:58
+[09:03:42.214] [INFO] [Startup] ✅ CASE 1: Valid email session found → Navigating to MainMenuPanel
+[09:03:42.215] [INFO] [Startup] ShowMainMenuPanel called - mainMenuPanel is null: False
+[09:03:42.215] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:42.216] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:42.216] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:42.217] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:42.217] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:42.217] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:03:42.218] [INFO] [UISettingsOpenButton:SettingBtn] Awake | button=SettingBtn | popupController=SettingsPopup | mode=Toggle
+[09:03:42.218] [INFO] [Startup] Enabled MainMenuPanel - Active: True
+[09:03:42.218] [INFO] [Startup] Calling FlowPanelController.Show()
+[09:03:42.219] [INFO] [MainMenu] Logged-in user detected, loading player data...
+[09:03:42.219] [INFO] [MainMenu] ========== UPDATE PLAYER INFO ==========
+[09:03:42.219] [INFO] [MainMenu] IsGuestMode: False
+[09:03:42.219] [INFO] [MainMenu] GuestName: 'Guest'
+[09:03:42.220] [INFO] [MainMenu] SelectedGrade: 2
+[09:03:42.220] [INFO] [MainMenu] ==========================================
+[09:03:42.220] [INFO] [MainMenu] Displaying character name: Chau
+[09:03:42.220] [INFO] [MainMenu] Logged-in user: Chau, Level: 1, Score: 0, Grade: 2
+[09:03:42.221] [INFO] [Startup] Showing MainMenuPanel
+[09:03:42.221] [INFO] [Auth] 🔍 Kiểm tra session local...
+[09:03:42.221] [INFO] [Session] ✅ Session local còn hạn. Hết hạn lúc: 2026-05-12 02:02:58
+[09:03:42.221] [INFO] [PlayerData] 📥 Loading player data for UID: V4ZaRtv2ztf8pyzfFHALlcuI42C3
+[09:03:42.223] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[09:03:42.223] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[09:03:42.224] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:42.225] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:42.226] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:42.226] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:42.226] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:42.227] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:42.227] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:42.243] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[09:03:42.243] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[09:03:42.243] [INFO] [Startup] Verify after 1 frame - MainMenuPanel Active: True
+[09:03:42.254] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[09:03:42.255] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[09:03:42.258] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ChonMan_'
+[09:03:42.258] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[09:03:42.258] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ChonMan_' in scene 'GameUIPlay 1'
+[09:03:42.259] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[09:03:42.259] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ChonMan_'
+[09:03:42.259] [WARNING] [UIButtonScreenNavigator:BackBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:03:42.260] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[09:03:42.260] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ChonMan_'
+[09:03:42.260] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[09:03:42.260] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ChonMan_' in scene 'GameUIPlay 1'
+[09:03:42.261] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[09:03:42.261] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ChonMan_'
+[09:03:42.261] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[09:03:42.281] [INFO] [PlayerData] 💾 Player data cached locally
+[09:03:42.281] [INFO] [PlayerData] ✅ Player data loaded: Chau Lv1
+[09:03:42.282] [INFO] [Auth] 💾 Synced PlayerData to PlayerPrefs: Score=0, Level=1, Coins=0
+[09:03:42.282] [INFO] [PlayerData] 💾 Player data cached locally
+[09:03:42.282] [INFO] [Session] ✅ Session local còn hạn. Hết hạn lúc: 2026-05-12 02:02:58
+[09:03:42.282] [INFO] [CloudSync] 🔄 Restoring progress from Firebase...
+[09:03:42.324] [INFO] [MainMenu] Firebase user: nchau2539@gmail.com, DisplayName: Chau
+[09:03:42.324] [INFO] [MainMenu] ========== UPDATE PLAYER INFO ==========
+[09:03:42.324] [INFO] [MainMenu] IsGuestMode: False
+[09:03:42.325] [INFO] [MainMenu] GuestName: 'Guest'
+[09:03:42.325] [INFO] [MainMenu] SelectedGrade: 2
+[09:03:42.325] [INFO] [MainMenu] ==========================================
+[09:03:42.325] [INFO] [MainMenu] Displaying character name: Chau
+[09:03:42.325] [INFO] [MainMenu] Logged-in user: Chau, Level: 1, Score: 0, Grade: 2
+[09:03:42.348] [INFO] [QuickPlay] Saved selected grade: 2
+[09:03:42.348] [INFO] [CloudSync] ✅ Restored grade: Lớp 2
+[09:03:42.392] [INFO] [CloudSync] Restored chonda Lớp2: maxLevel=1 (cloud=1, local=1)
+[09:03:42.432] [INFO] [CloudSync] Restored keothada Lớp2: maxLevel=1 (cloud=1, local=1)
+[09:03:42.475] [INFO] [CloudSync] Restored phithuyen Lớp2: maxLevel=1 (cloud=1, local=1)
+[09:03:42.512] [INFO] [CloudSync] Restored coins: 0 (cloud=0, local=0)
+[09:03:42.542] [INFO] [CloudSync] Restored score=0 level=1 (cloud: 0/1, local was: 0/1)
+[09:03:42.754] [INFO] [AvatarManager] 🔄 Restored từ Firebase: Mèo 1 (id=0)
+[09:03:42.754] [INFO] [CloudSync] ✅ Restored avatarId: 0
+[09:03:42.755] [INFO] [CloudSync] ✅ Restore hoàn tất.
+[09:03:42.755] [INFO] [Auth] ✅ Auto-login: restore tiến độ từ Firebase hoàn tất.
+[09:03:42.755] [INFO] [Auth] ✅ Auto-load account thành công: Chau
+[09:03:46.407] [INFO] [UIButtonScreenNavigator:BackBtn] Click detected. targetSceneName='', targetScreen='ModSelectionPanel'
+[09:03:46.407] [INFO] [UIButtonScreenNavigator:BackBtn] Switching UI to 'ModSelectionPanel'
+[09:03:46.407] [WARNING] [UIButtonScreenNavigator:BackBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:03:46.408] [INFO] [ModSelection] AuthManager found via Instance
+[09:03:46.408] [INFO] [ModSelection] Popup already assigned: LoginRequiredPopup
+[09:03:46.409] [WARNING] [UIButtonScreenNavigator:BackBtn] Auto-normalized panel 'ModSelectionPanel' to full-screen.
+[09:03:48.893] [INFO] [UIButtonScreenNavigator:BackBtn] Click detected. targetSceneName='', targetScreen='MainMenuPanel'
+[09:03:48.893] [INFO] [UIButtonScreenNavigator:BackBtn] Switching UI to 'MainMenuPanel'
+[09:03:48.894] [WARNING] [UIButtonScreenNavigator:BackBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:03:48.894] [WARNING] [UIButtonScreenNavigator:BackBtn] Auto-normalized panel 'MainMenuPanel' to full-screen.
+[09:03:48.895] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:48.895] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:48.896] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:48.896] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:48.896] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:48.897] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:48.897] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.348] [INFO] [UIButtonScreenNavigator:HoSoBtn] Click detected. targetSceneName='', targetScreen='Profile'
+[09:03:51.349] [INFO] [UIButtonScreenNavigator:HoSoBtn] Switching UI to 'Profile'
+[09:03:51.349] [WARNING] [UIButtonScreenNavigator:HoSoBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:03:51.350] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.351] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.351] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.352] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.352] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.353] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.353] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.354] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.354] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.355] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.355] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.356] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.356] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.357] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.357] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.357] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.358] [WARNING] [UIButtonScreenNavigator:HoSoBtn] Auto-normalized panel 'Profile' to full-screen.
+[09:03:51.358] [INFO] [ProfileUI] ========== UPDATE PROFILE DISPLAY ==========
+[09:03:51.359] [INFO] [ProfileUI] IsGuestMode: False
+[09:03:51.359] [INFO] [ProfileUI] ScoreKey: 'local_67b1e4f6b99dd2c07cf88d5c5e30d09e6c189811:UserScore'
+[09:03:51.359] [INFO] [ProfileUI] LevelKey: 'local_67b1e4f6b99dd2c07cf88d5c5e30d09e6c189811:UserLevel'
+[09:03:51.359] [INFO] [ProfileUI] Reading score from PlayerPrefs...
+[09:03:51.359] [INFO] [ProfileUI] Score: 0, Level: 1, Coins: 0
+[09:03:51.359] [INFO] [ProfileUI] ================================================
+[09:03:51.360] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.361] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.361] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.361] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.361] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.362] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.362] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.363] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.363] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.363] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.363] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.364] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.364] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.364] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.365] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.365] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.365] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.366] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.366] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.367] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.367] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.368] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.368] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:03:51.368] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:38.704] [INFO] [UIButtonScreenNavigator:Back] Click detected. targetSceneName='', targetScreen='MainMenuPanel'
+[09:04:38.704] [INFO] [UIButtonScreenNavigator:Back] Switching UI to 'MainMenuPanel'
+[09:04:38.705] [WARNING] [UIButtonScreenNavigator:Back] Auto-fix screensRoot scale to (1,1,1).
+[09:04:38.706] [WARNING] [UIButtonScreenNavigator:Back] Auto-normalized panel 'MainMenuPanel' to full-screen.
+[09:04:38.706] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:38.707] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:38.707] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:38.707] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:38.708] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:38.708] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:38.708] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:39.572] [INFO] [UIButtonScreenNavigator:PlayBtn] Click detected. targetSceneName='', targetScreen='ModSelectionPanel'
+[09:04:39.572] [INFO] [UIButtonScreenNavigator:PlayBtn] Switching UI to 'ModSelectionPanel'
+[09:04:39.572] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:04:39.573] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-normalized panel 'ModSelectionPanel' to full-screen.
+[09:04:44.171] [INFO] [ModSelection] Multiplayer button clicked
+[09:04:44.171] [INFO] [ModSelection] IsGuestMode: False
+[09:04:44.172] [INFO] [ModSelection] AuthManager is null: False
+[09:04:44.172] [INFO] [ModSelection] IsLoggedIn: True
+[09:04:44.172] [INFO] [ModSelection] User is logged in, navigating to multiplayer
+[09:04:44.172] [INFO] [ModSelection] Navigating to multiplayer scene: Test_FireBase_multi
+[09:04:44.268] [WARNING] [UIButtonScreenNavigator:MatchEndNavigator] Auto-fix screensRoot scale to (1,1,1).
+[09:04:44.271] [WARNING] [UIButtonScreenNavigator:DS Room] Auto-fix screensRoot scale to (1,1,1).
+[09:04:44.271] [WARNING] [Relay] Duplicate RelayManager detected, disabling duplicate component.
+[09:04:44.271] [INFO] [CharContainer] Player1Character.SetActive(False)
+[09:04:44.272] [INFO] [CharContainer] Player2Character.SetActive(False)
+[09:04:44.272] [INFO] [CharContainer] WinnerCharacter.SetActive(False)
+[09:04:44.272] [INFO] [CharContainer] LoserCharacter.SetActive(False)
+[09:04:44.272] [INFO] [CharContainer] Initialized - tat ca characters da an
+[09:04:44.534] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: scene='Test_FireBase_multi', mode=Single, pendingRequest.IsValid=False, pendingRequest.SceneName=''
+[09:04:44.534] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: No pending request, skipping.
+[09:04:44.622] [INFO] [UIRoom] Mời tạo phòng để chơi.
+[09:04:44.623] [WARNING] [UIRoom] BuildRosterText: currentLobby null or no players
+[09:04:45.586] [INFO] [UIRoom] UpdateStartMatchButton: players=0, clientReady=False, relayReady=False, visible=False, interactable=False
+[09:04:45.586] [WARNING] [UIRoom] BuildRosterText: currentLobby null or no players
+[09:04:45.587] [INFO] [UIRoom] Đang tạo phòng...
+[09:04:45.587] [INFO] [Relay] Đang tạo Allocation...
+[09:04:46.490] [INFO] best region is asia-southeast1
+[09:04:47.226] [INFO] [Relay] Đã cấu hình Transport thành công.
+[09:04:47.227] [WARNING] [Netcode] Cannot start Host while an instance is already running
+[09:04:47.227] [INFO] [Relay] Host đã chạy. Mã: DQJNKG
+[09:04:47.228] [INFO] [UIRoom] Grade đã chọn: Lớp 1
+[09:04:48.093] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[09:04:48.094] [INFO] [UIRoom]   Player 1: Chau (chủ phòng) (ID: dSncGQjWwHQszMRdAK3TG9vSYTS3)
+[09:04:48.095] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[09:04:48.096] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[09:04:48.097] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[09:04:48.194] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[09:04:48.195] [INFO] [UIRoom]   Player 1: Chau (chủ phòng) (ID: dSncGQjWwHQszMRdAK3TG9vSYTS3)
+[09:04:48.196] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[09:04:48.197] [INFO] [UIRoom] Đã tạo phòng. Độ khó: Lớp 1. Chờ người chơi thứ 2...
+[09:04:48.198] [INFO] [UIRoom] BuildRosterText: 1 players in lobby
+[09:04:48.199] [INFO] [UIRoom]   Player 1: Chau (chủ phòng) (ID: dSncGQjWwHQszMRdAK3TG9vSYTS3)
+[09:04:48.200] [INFO] [UIRoom] Chờ người chơi thứ 2 sẵn sàng...
+[09:04:48.201] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[09:04:48.202] [INFO] [UIRoom] UpdateStartMatchButton: players=1, clientReady=False, relayReady=False, visible=False, interactable=False
+[09:04:48.727] [INFO] [UIButtonScreenNavigator:Back] Click detected. targetSceneName='GameUIPlay 1', targetScreen='null'
+[09:04:48.728] [INFO] [UIButtonScreenNavigator:Back] ResolveDestinationTargetPanelName: destinationTargetPanelName='ModSelectionPanel', targetScreen=null
+[09:04:48.728] [INFO] [UIButtonScreenNavigator:Back] Using destinationTargetPanelName: 'ModSelectionPanel'
+[09:04:48.728] [INFO] [UIButtonScreenNavigator:Back] QueuePendingSceneUiTargetRequestIfNeeded:
+[09:04:48.729] [INFO]   - destinationTargetPanelName field = 'ModSelectionPanel'
+[09:04:48.729] [INFO]   - targetScreen = null
+[09:04:48.729] [INFO]   - Resolved panelName = 'ModSelectionPanel'
+[09:04:48.729] [INFO] [UIButtonScreenNavigator:Back] Scene navigation với panel đích: 'ModSelectionPanel'
+[09:04:48.729] [INFO] [UIButtonScreenNavigator] Creating DeferredSceneUiResolveRunner BEFORE scene load: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel'
+[09:04:48.730] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.InitializeBeforeSceneLoad: targetScene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=b608e1eb-e21e-4d18-9880-d32373b670b8
+[09:04:48.730] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner created and marked DontDestroyOnLoad.
+[09:04:48.816] [WARNING] [UILoading] Duplicate UILoadingIndicator detected, disabling duplicate component.
+[09:04:48.816] [WARNING] [PlayerData] Duplicate PlayerDataService detected, disabling duplicate component.
+[09:04:48.816] [WARNING] [Session] Duplicate SessionManager detected, disabling duplicate component.
+[09:04:48.816] [WARNING] [Validation] Duplicate UserValidationService detected, disabling duplicate component.
+[09:04:48.816] [WARNING] [Auth] Duplicate AuthManager detected, disabling duplicate component.
+[09:04:48.817] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:04:48.817] [WARNING] DontDestroyOnLoad only works for root GameObjects or components on root GameObjects.
+[09:04:48.817] [INFO] [UISettingsOpenButton:Setting] Awake | button=Setting | popupController=SettingsPopup | mode=Toggle
+[09:04:49.085] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: scene='GameUIPlay 1', mode=Single, pendingRequest.IsValid=True, pendingRequest.SceneName='GameUIPlay 1'
+[09:04:49.085] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Creating DeferredSceneUiResolveRunner for scene 'GameUIPlay 1'
+[09:04:49.086] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.Initialize: scene='GameUIPlay 1', targetPanel='ModSelectionPanel', requestId=b608e1eb-e21e-4d18-9880-d32373b670b8
+[09:04:49.086] [INFO] [UIButtonScreenNavigator] HandleSceneLoaded: Runner created, pending request cleared.
+[09:04:49.086] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner.OnSceneLoaded: Target scene 'GameUIPlay 1' loaded!
+[09:04:49.170] [INFO] [Startup] ========== DEBUG KEYS ==========
+[09:04:49.171] [INFO] [Startup] IsGuestMode key (IS_GUEST_KEY): 1
+[09:04:49.171] [INFO] [Startup] GuestName key (GUEST_NAME_KEY): 'chau'
+[09:04:49.171] [INFO] [Startup] SelectedGrade key (SELECTED_GRADE_KEY): 1
+[09:04:49.172] [INFO] [Startup] SessionToken: 'NOT_FOUND'
+[09:04:49.172] [INFO] [Startup] ====================================
+[09:04:49.172] [INFO] [Session] ✅ Session local còn hạn. Hết hạn lúc: 2026-05-12 02:02:58
+[09:04:49.172] [INFO] [Startup] ✅ CASE 1: Valid email session found → Navigating to MainMenuPanel
+[09:04:49.172] [INFO] [Startup] ShowMainMenuPanel called - mainMenuPanel is null: False
+[09:04:49.173] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:49.173] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:49.174] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:49.174] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:49.175] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:49.175] [WARNING] [UIButtonScreenNavigator:PlayBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:04:49.175] [INFO] [UISettingsOpenButton:SettingBtn] Awake | button=SettingBtn | popupController=SettingsPopup | mode=Toggle
+[09:04:49.175] [INFO] [Startup] Enabled MainMenuPanel - Active: True
+[09:04:49.176] [INFO] [Startup] Calling FlowPanelController.Show()
+[09:04:49.176] [INFO] [MainMenu] Logged-in user detected, loading player data...
+[09:04:49.176] [INFO] [MainMenu] ========== UPDATE PLAYER INFO ==========
+[09:04:49.176] [INFO] [MainMenu] IsGuestMode: False
+[09:04:49.177] [INFO] [MainMenu] GuestName: 'Guest'
+[09:04:49.177] [INFO] [MainMenu] SelectedGrade: 2
+[09:04:49.177] [INFO] [MainMenu] ==========================================
+[09:04:49.177] [INFO] [MainMenu] Displaying character name: Chau
+[09:04:49.177] [INFO] [MainMenu] Logged-in user: Chau, Level: 1, Score: 0, Grade: 2
+[09:04:49.178] [INFO] [Startup] Showing MainMenuPanel
+[09:04:49.178] [INFO] [Auth] 🔍 Kiểm tra session local...
+[09:04:49.178] [INFO] [Session] ✅ Session local còn hạn. Hết hạn lúc: 2026-05-12 02:02:58
+[09:04:49.178] [INFO] [PlayerData] 📥 Loading player data for UID: V4ZaRtv2ztf8pyzfFHALlcuI42C3
+[09:04:49.179] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[09:04:49.180] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=2
+[09:04:49.181] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:49.181] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:49.182] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:49.182] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:49.182] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:49.183] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:49.183] [WARNING] Unable to add the requested character to font asset [Baloo-Regular SDF]'s atlas texture. Please make the texture [Baloo-Regular SDF Atlas] readable.
+[09:04:49.197] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[09:04:49.197] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=1
+[09:04:49.197] [INFO] [Startup] Verify after 1 frame - MainMenuPanel Active: True
+[09:04:49.208] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[09:04:49.208] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Waiting... frames left=0
+[09:04:49.213] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[09:04:49.213] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[09:04:49.213] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[09:04:49.213] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[09:04:49.214] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[09:04:49.214] [WARNING] [UIButtonScreenNavigator:multiplayerBtn] Auto-fix screensRoot scale to (1,1,1).
+[09:04:49.214] [INFO] [ModSelection] AuthManager found via Instance
+[09:04:49.214] [INFO] [ModSelection] Popup already assigned: LoginRequiredPopup
+[09:04:49.215] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[09:04:49.215] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Attempt 1/30, targetPanel='ModSelectionPanel'
+[09:04:49.215] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: Calling TryApplyPendingSceneUiTarget...
+[09:04:49.216] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Searching for 'ModSelectionPanel' in scene 'GameUIPlay 1'
+[09:04:49.216] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found 0 canvases
+[09:04:49.216] [INFO] [UIButtonScreenNavigator] FindPanelTransform: Found in scene roots 'ModSelectionPanel'
+[09:04:49.216] [INFO] [UIButtonScreenNavigator] DeferredSceneUiResolveRunner: SUCCESS! Panel found and activated.
+[09:04:49.226] [INFO] [PlayerData] 💾 Player data cached locally
+[09:04:49.226] [INFO] [PlayerData] ✅ Player data loaded: Chau Lv1
+[09:04:49.226] [INFO] [Auth] 💾 Synced PlayerData to PlayerPrefs: Score=0, Level=1, Coins=0
+[09:04:49.227] [INFO] [PlayerData] 💾 Player data cached locally
+[09:04:49.227] [INFO] [Session] ✅ Session local còn hạn. Hết hạn lúc: 2026-05-12 02:02:58
+[09:04:49.227] [INFO] [CloudSync] 🔄 Restoring progress from Firebase...
+[09:04:49.273] [INFO] [QuickPlay] Saved selected grade: 2
+[09:04:49.274] [INFO] [CloudSync] ✅ Restored grade: Lớp 2
+[09:04:49.278] [INFO] [MainMenu] Firebase user: nchau2539@gmail.com, DisplayName: Chau
+[09:04:49.278] [INFO] [MainMenu] ========== UPDATE PLAYER INFO ==========
+[09:04:49.278] [INFO] [MainMenu] IsGuestMode: False
+[09:04:49.279] [INFO] [MainMenu] GuestName: 'Guest'
+[09:04:49.279] [INFO] [MainMenu] SelectedGrade: 2
+[09:04:49.279] [INFO] [MainMenu] ==========================================
+[09:04:49.279] [INFO] [MainMenu] Displaying character name: Chau
+[09:04:49.280] [INFO] [MainMenu] Logged-in user: Chau, Level: 1, Score: 0, Grade: 2
+[09:04:49.343] [INFO] [CloudSync] Restored chonda Lớp2: maxLevel=1 (cloud=1, local=1)
+[09:04:49.388] [INFO] [CloudSync] Restored keothada Lớp2: maxLevel=1 (cloud=1, local=1)
+[09:04:49.449] [INFO] [CloudSync] Restored phithuyen Lớp2: maxLevel=1 (cloud=1, local=1)
+[09:04:49.484] [INFO] [CloudSync] Restored coins: 0 (cloud=0, local=0)
+[09:04:49.514] [INFO] [CloudSync] Restored score=0 level=1 (cloud: 0/1, local was: 0/1)
+[09:04:49.667] [WARNING] Directly calling `UnityTransport.Shutdown()` results in unexpected shutdown behaviour. All pending events will be lost. Use `NetworkManager.Shutdown()` instead.
+
+=== GAME LOG END ===
+Time: 5/11/2026 9:04:50 AM
+====================
