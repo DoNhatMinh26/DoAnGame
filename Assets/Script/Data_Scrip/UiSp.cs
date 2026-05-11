@@ -355,17 +355,17 @@ public class UiSp : MonoBehaviour
         if (panelSetting) panelSetting.SetActive(false);
     }
 
-    
+
     public void Click_ThoatNgayLapTuc()
     {
         if (isGameOver) return;
+        isGameOver = true; // Đánh dấu kết thúc game ngay lập tức
 
         if (panelSetting != null) panelSetting.SetActive(false);
+        if (settingButton != null) settingButton.interactable = false;
 
-        // Khóa các nút điều khiển phi thuyền nếu cần
-        // SpaceShipPhysics.SetLock(true); 
-
-        ShowLose();
+        // Gọi hàm hiện panel luôn, không đợi video
+        ShowLosePanelDirectly();
     }
     public void ShowLose()
     {
@@ -419,6 +419,35 @@ public class UiSp : MonoBehaviour
             panelLose.SetActive(true);
             Time.timeScale = 0f; // Dừng chuyển động của gameplay phía sau
         }
+    }
+    private void ShowLosePanelDirectly()
+    {
+        Time.timeScale = 0f;
+
+        // 1. Cập nhật dữ liệu UI trước khi hiện Panel
+        if (loseScoreTxt != null) loseScoreTxt.text = "Điểm: +" + levelScore;
+        if (loseRewardTxt != null) loseRewardTxt.text = "+" + levelCoins;
+        if (loseProgressTxt != null && SpaceShipManager.Instance != null)
+        {
+            int passed = SpaceShipManager.Instance.CorrectAnswersCount;
+            int total = SpaceShipManager.Instance.TotalGatesToWin;
+            loseProgressTxt.text = "Hoàn thành: " + passed + "/" + total + " Cổng";
+        }
+
+        // 2. Ẩn các panel không liên quan
+        panelHome.SetActive(false);
+        panelChonMan.SetActive(false);
+        if (panelWin) panelWin.SetActive(false);
+
+        // 3. HIỆN PANEL THUA đè lên Gameplay
+        if (panelLose != null)
+        {
+            panelLose.SetActive(true);
+        }
+
+        // Đảm bảo video và nền đen bị tắt
+        if (videoBackground != null) videoBackground.SetActive(false);
+        if (loseVideo != null) loseVideo.gameObject.SetActive(false);
     }
 
     // --- PHẦN SỬA LẠI CHO SHOW WIN ---

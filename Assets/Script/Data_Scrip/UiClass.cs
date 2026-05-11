@@ -65,15 +65,21 @@ public class UiClass : MonoBehaviour
     private int currentHealth;
     [Header("Cấu hình thời gian chờ")]
     [SerializeField] private float delayTime = 1.0f;
-    [Header("Giao diện Shop Trang Phục")]
-    public MathSkin[] allSkins;          // Danh sách ScriptableObject trang phục[cite: 18, 20]
-    public Image[] skinButtonImages;     // Hình ảnh hiển thị trên các nút chọn
-    public TextMeshProUGUI[] skinPriceTexts; // Text hiển thị giá tiền
-    public SpriteRenderer shopMascotPreview;
-    public SpriteRenderer gameplayMascotRenderer;
+
+    [Header("Dữ liệu & UI Shop")]
+    public MathSkin[] allSkins;
+    public Image[] skinButtonImages;
+    public TextMeshProUGUI[] skinPriceTexts;
+    public Image[] skinPriceBackgrounds;
+
+    [Header("Cấu hình 4 Mèo Chung Xương")]
+    public GameObject[] catSkins; // Mảng chứa 4 con mèo
+    public Animator sharedAnimator; // Animator tổng điều khiển xương
     public TextMeshProUGUI shopLevelTxt; // Kéo Text hiển thị Level vào đây
     public TextMeshProUGUI shopScoreTxt; // Kéo Text hiển thị Điểm vào đây// Hình ảnh linh vật mèo trong trận đấu
-
+    [Header("Cấu hình Hiệu ứng Nhấn")]
+    [SerializeField] private float scaleAmount = 1.2f; // Độ phóng to (1.2 là 120%)
+    [SerializeField] private float scaleDuration = 0.1f; // Thời gian phóng to/thu nhỏ
     private int pendingSkinIndex = -1;
     private void Awake()
     {
@@ -100,22 +106,21 @@ public class UiClass : MonoBehaviour
     }
     public void UpdateShopProfileUI()
     {
-        // CẬP NHẬT: Kiểm tra chế độ Guest/User để lấy đúng Key dữ liệu
-        string scoreKey = UIQuickPlayNameController.IsGuestMode()
-            ? DoAnGame.Auth.LocalStorageKeyResolver.LocalGuestScore
-            : DoAnGame.Auth.LocalStorageKeyResolver.UserScore;
+        // 1. Xác định đúng Key (Guest hoặc User) giống như trong DataManager
+        bool isGuest = DoAnGame.UI.UIQuickPlayNameController.IsGuestMode();
+        string scoreKey = isGuest ? LocalStorageKeyResolver.LocalGuestScore : LocalStorageKeyResolver.UserScore;
+        string levelKey = isGuest ? LocalStorageKeyResolver.LocalGuestLevel : LocalStorageKeyResolver.UserLevel;
+        
 
-        // Lấy dữ liệu từ máy dựa trên đúng Key
+        // 2. Lấy dữ liệu mới nhất
         int currentScore = PlayerPrefs.GetInt(scoreKey, 0);
+        int currentLevel = PlayerPrefs.GetInt(levelKey, 1);
+        
 
-        // Tính toán Level đồng bộ
-        int currentLevel = 1 + (currentScore / 1000);
-
-        if (shopLevelTxt != null)
-            shopLevelTxt.text = "LV: " + currentLevel;
-
-        if (shopScoreTxt != null)
-            shopScoreTxt.text = "Điểm: " + currentScore;
+        // 3. Cập nhật lên UI
+        if (shopScoreTxt != null) shopScoreTxt.text = "Điểm : "+currentScore.ToString();
+        if (shopLevelTxt != null) shopLevelTxt.text = "Level: " + currentLevel.ToString(); // Dòng quan trọng cập nhật Level
+        
     }
     private void SetSettingButtonInteractable(bool state)
     {
@@ -170,38 +175,58 @@ public class UiClass : MonoBehaviour
         LoadCurrentSkin();
         UpdateSkinShopUI();
     }
-
+    private Coroutine activeScaleCoroutine; // Khai báo biến này ở đầu Class
     public void SelectSkinToPreview(int index)
     {
         if (allSkins == null || index < 0 || index >= allSkins.Length) return;
+        if (index < skinButtonImages.Length && skinButtonImages[index] != null)
+        {
+            RectTransform rt = skinButtonImages[index].GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                // Dừng coroutine đang chạy (nếu có) để tránh xung đột tỷ lệ scale
+                if (activeScaleCoroutine != null) StopCoroutine(activeScaleCoroutine);
+                activeScaleCoroutine = StartCoroutine(ScaleButtonRoutine(rt));
+            }
+        }
+        pendingSkinIndex = index; // Ghi nhận đang xem con nào
 
-        pendingSkinIndex = index;
+        // 1. Chỉ bật hình ảnh để xem thử (Preview)
+        for (int i = 0; i < catSkins.Length; i++)
+        {
+            if (catSkins[i] != null) catSkins[i].SetActive(i == index);
+        }
 
-        // 1. Hiển thị hình ảnh xem trước trong Shop
-        if (shopMascotPreview != null)
-            shopMascotPreview.sprite = allSkins[index].shipSprite; // Dùng shipSprite từ MathSkin[cite: 18, 20]
-
-        // 2. Kiểm tra trạng thái sở hữu
+        // 2. Kiểm tra trạng thái để hiện thông báo
         if (IsSkinUnlocked(index))
         {
-            // Nếu đã có, trang bị ngay lập tức
+            // Nếu đã sở hữu, có thể tự động trang bị luôn
             PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedClassSkinID, index);
             PlayerPrefs.Save();
-
-            // Cập nhật hình ảnh linh vật trong trận[cite: 20]
-            if (gameplayMascotRenderer != null)
-                gameplayMascotRenderer.sprite = allSkins[index].shipSprite;
-
-            ShowClassNotification("Đã trang bị: " + allSkins[index].shipName); 
-    }
+            
+        }
         else
         {
-            ShowClassNotification("Giá: " + allSkins[index].price + "$"); 
-    }
+            // Nếu chưa mua, CHỈ hiện giá, KHÔNG lưu vào PlayerPrefs
+            ShowClassNotification("Giá: " + allSkins[index].price + "$");
+
+        }
 
         UpdateSkinShopUI();
     }
-
+    public void ResetToCurrentSkin()
+    {
+        // Gọi lại hàm Load để bật đúng con mèo đã mua/lưu
+        LoadCurrentSkin();
+    }
+    public void PlayMascotAnimation(string triggerName)
+    {
+        // Đổi tên biến thành sharedAnimator cho khớp với khai báo của bạn
+        if (sharedAnimator != null)
+        {
+            sharedAnimator.SetTrigger(triggerName);
+        }
+    }
     public void Click_BuySkin()
     {
         if (pendingSkinIndex == -1)
@@ -258,15 +283,25 @@ public class UiClass : MonoBehaviour
 
     public void LoadCurrentSkin()
     {
-        int id = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedClassSkinID, 0);
+        int selectedID = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedClassSkinID, 0);
 
-        if (id < allSkins.Length)
+        // Duyệt mảng để bật/tắt từng con mèo
+        if (catSkins != null)
         {
-            Sprite currentSprite = allSkins[id].shipSprite;
+            for (int i = 0; i < catSkins.Length; i++)
+            {
+                if (catSkins[i] != null)
+                {
+                    catSkins[i].SetActive(i == selectedID);
+                }
+            }
+        }
 
-            // Cập nhật linh vật mèo cho cả Shop và Gameplay[cite: 20]
-            if (shopMascotPreview != null) shopMascotPreview.sprite = currentSprite;
-            if (gameplayMascotRenderer != null) gameplayMascotRenderer.sprite = currentSprite;
+        // Làm mới trạng thái Animator sau khi thay đổi
+        if (sharedAnimator != null)
+        {
+            sharedAnimator.Rebind();
+            sharedAnimator.Update(0f);
         }
     }
 
@@ -274,18 +309,90 @@ public class UiClass : MonoBehaviour
 
     public void UpdateSkinShopUI()
     {
+        // Lấy ID con mèo đang được mặc thực tế từ máy
+        int currentEquippedID = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedClassSkinID, 0);
+
         for (int i = 0; i < allSkins.Length; i++)
         {
             bool unlocked = IsSkinUnlocked(i);
 
-            // Làm mờ nút nếu chưa mở khóa[cite: 20]
+            // 1. Làm mờ ảnh nếu chưa mua
             if (i < skinButtonImages.Length)
                 skinButtonImages[i].color = unlocked ? Color.white : new Color(0.3f, 0.3f, 0.3f, 1f);
 
-            // Hiển thị trạng thái Giá hoặc "Đã có"[cite: 20]
+            // 2. Cập nhật văn bản hiển thị
             if (i < skinPriceTexts.Length)
-                skinPriceTexts[i].text = unlocked ? "Đã sở hữu" : allSkins[i].price + "$";
+            {
+                if (unlocked)
+                {
+                    // Nếu ID này trùng với ID đang mặc thì hiện "Đã trang bị"
+                    if (i == currentEquippedID)
+                    {
+                        skinPriceTexts[i].text = "Đang dùng";
+                        skinPriceTexts[i].color = Color.white;
+                        Color customColor;
+                        if (ColorUtility.TryParseHtmlString("#007BFF", out customColor))
+                        {
+                            skinPriceBackgrounds[i].color = customColor;
+                        }
+                    }
+                    else
+                    {
+                        skinPriceTexts[i].text = "Sở hữu"; // Hoặc "Đã sở hữu"
+                        skinPriceTexts[i].color = Color.white;
+                        Color customColor;
+                        if (ColorUtility.TryParseHtmlString("#00FF5D", out customColor))
+                        {
+                            skinPriceBackgrounds[i].color = customColor;
+                        }
+                            
+                    }
+                }
+                else
+                {
+                    // Nếu chưa mua thì hiện giá tiền
+                    skinPriceTexts[i].text = allSkins[i].price + "$";
+                    Color customColor;
+                    if (ColorUtility.TryParseHtmlString("#736921", out customColor))
+                    {
+                        skinPriceTexts[i].color = customColor;
+                    }
+                    skinPriceBackgrounds[i].color = Color.white;
+                }
+            }
         }
+    }
+    private IEnumerator ScaleButtonRoutine(RectTransform target)
+    {
+        // 1. LƯU LẠI SCALE BAN ĐẦU thực tế của Object đó
+        Vector3 originalScale = target.localScale;
+
+        // 2. Tính toán mục tiêu phóng to (ví dụ phóng lên thêm 20% so với gốc)
+        Vector3 targetScale = originalScale * 1.2f;
+
+        float elapsed = 0;
+        float scaleDuration = 0.1f;
+
+        // Giai đoạn phóng to
+        while (elapsed < scaleDuration)
+        {
+            target.localScale = Vector3.Lerp(originalScale, targetScale, elapsed / scaleDuration);
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        target.localScale = targetScale;
+
+        // Giai đoạn thu nhỏ về
+        elapsed = 0;
+        while (elapsed < scaleDuration)
+        {
+            target.localScale = Vector3.Lerp(targetScale, originalScale, elapsed / scaleDuration);
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        // 3. TRẢ VỀ ĐÚNG GIÁ TRỊ GỐC đã lưu ở bước 1
+        target.localScale = originalScale;
     }
     #endregion
     #region QUẢN LÝ TIỀN (Độc lập hoàn toàn)
