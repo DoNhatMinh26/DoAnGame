@@ -45,6 +45,35 @@ public class AvatarCharacterDisplay : MonoBehaviour
         if (characterMeo    != null) animMeo    = characterMeo.GetComponent<Animator>();
         if (characterMeoSad != null) animMeoSad = characterMeoSad.GetComponent<Animator>();
         if (meoGoc34Fix     != null) animMeo34  = meoGoc34Fix.GetComponent<Animator>();
+        
+        // ✅ Validate references ngay khi Awake để phát hiện lỗi Inspector sớm
+        ValidateReferences();
+    }
+
+    /// <summary>
+    /// Kiểm tra các PSB references có bị null hoặc duplicate không.
+    /// Log warning rõ ràng để dễ fix trong Inspector.
+    /// </summary>
+    private void ValidateReferences()
+    {
+        if (characterMeo == null)
+            Debug.LogError($"[AvatarCharacterDisplay] ❌ {gameObject.name}: 'characterMeo' (Character Meo) chưa được assign trong Inspector!");
+        
+        if (characterMeoSad == null)
+            Debug.LogError($"[AvatarCharacterDisplay] ❌ {gameObject.name}: 'characterMeoSad' (Character Meo_Sad) chưa được assign trong Inspector!");
+        
+        if (meoGoc34Fix == null)
+            Debug.LogError($"[AvatarCharacterDisplay] ❌ {gameObject.name}: 'meoGoc34Fix' (MeoGoc34 Fix) chưa được assign trong Inspector!");
+
+        // Kiểm tra duplicate references
+        if (characterMeo != null && characterMeoSad != null && characterMeo == characterMeoSad)
+            Debug.LogError($"[AvatarCharacterDisplay] ❌ {gameObject.name}: 'characterMeo' và 'characterMeoSad' đang trỏ vào cùng 1 GameObject! Hãy fix trong Inspector.");
+        
+        if (characterMeo != null && meoGoc34Fix != null && characterMeo == meoGoc34Fix)
+            Debug.LogError($"[AvatarCharacterDisplay] ❌ {gameObject.name}: 'characterMeo' và 'meoGoc34Fix' đang trỏ vào cùng 1 GameObject! Hãy fix trong Inspector.");
+        
+        if (characterMeoSad != null && meoGoc34Fix != null && characterMeoSad == meoGoc34Fix)
+            Debug.LogError($"[AvatarCharacterDisplay] ❌ {gameObject.name}: 'characterMeoSad' và 'meoGoc34Fix' đang trỏ vào cùng 1 GameObject! Hãy fix trong Inspector.");
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -61,9 +90,14 @@ public class AvatarCharacterDisplay : MonoBehaviour
 
         Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → SetAvatar(avatarId={avatarId}) START");
 
+        // ✅ FIX: Validate không có duplicate references
+        ValidateReferences();
+
         ApplySkin(characterMeo,    SkinNamesMeo,    avatarId);
-        ApplySkin(characterMeoSad, SkinNamesMeoSad, avatarId);
-        ApplySkin(meoGoc34Fix,     SkinNamesMeo34,  avatarId);
+        if (characterMeoSad != null && characterMeoSad != characterMeo)
+            ApplySkin(characterMeoSad, SkinNamesMeoSad, avatarId);
+        if (meoGoc34Fix != null && meoGoc34Fix != characterMeo && meoGoc34Fix != characterMeoSad)
+            ApplySkin(meoGoc34Fix, SkinNamesMeo34, avatarId);
 
         currentAvatarId = avatarId;
         
@@ -81,17 +115,36 @@ public class AvatarCharacterDisplay : MonoBehaviour
     /// <summary>
     /// Bật đúng skin tương ứng avatarId trên cả 3 PSB, tắt các skin còn lại.
     /// KHÔNG tự động gọi ShowIdle() — dùng cho WinsPanel để tránh animation double-trigger.
+    /// ✅ CRITICAL FIX: Reset PSB visibility về trạng thái sạch (tất cả INACTIVE) trước khi apply skin.
     /// Sau khi gọi method này, phải gọi ShowHappy()/ShowSad()/ShowAttack() để hiển thị animation.
     /// </summary>
     public void SetAvatarWithoutAnimation(int avatarId)
     {
-        if (avatarId == currentAvatarId) return;
-
         Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → SetAvatarWithoutAnimation(avatarId={avatarId}) START");
 
-        ApplySkin(characterMeo,    SkinNamesMeo,    avatarId);
-        ApplySkin(characterMeoSad, SkinNamesMeoSad, avatarId);
-        ApplySkin(meoGoc34Fix,     SkinNamesMeo34,  avatarId);
+        // ✅ CRITICAL FIX: Reset tất cả PSB về INACTIVE trước khi apply skin
+        // Tránh overlapping characters từ trạng thái cũ (GameplayPanel → WinsPanel)
+        SetPSBVisibility(showMeo: false, showMeoSad: false, showMeo34: false);
+        Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Reset all PSBs to INACTIVE");
+
+        // ✅ FIX: Validate không có duplicate references trước khi apply
+        ValidateReferences();
+
+        // ✅ FIX: Chỉ apply skin cho PSB nào tồn tại, tránh duplicate call
+        if (characterMeo != null)
+        {
+            ApplySkin(characterMeo, SkinNamesMeo, avatarId);
+        }
+        
+        if (characterMeoSad != null && characterMeoSad != characterMeo)
+        {
+            ApplySkin(characterMeoSad, SkinNamesMeoSad, avatarId);
+        }
+        
+        if (meoGoc34Fix != null && meoGoc34Fix != characterMeo && meoGoc34Fix != characterMeoSad)
+        {
+            ApplySkin(meoGoc34Fix, SkinNamesMeo34, avatarId);
+        }
 
         currentAvatarId = avatarId;
         
@@ -237,47 +290,125 @@ public class AvatarCharacterDisplay : MonoBehaviour
 
     private void TrySetTrigger(Animator anim, int hash)
     {
-        if (anim != null && anim.runtimeAnimatorController != null)
-            anim.SetTrigger(hash);
+        if (anim == null || anim.runtimeAnimatorController == null)
+            return;
+
+        // ✅ FIX: Check if parameter exists before resetting/setting
+        if (!HasParameter(anim, hash))
+        {
+            Debug.LogWarning($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Animator parameter hash {hash} does not exist in {anim.gameObject.name}");
+            return;
+        }
+
+        // Reset all triggers first
+        if (HasParameter(anim, HashIdle))   anim.ResetTrigger(HashIdle);
+        if (HasParameter(anim, HashHappy))  anim.ResetTrigger(HashHappy);
+        if (HasParameter(anim, HashSad))    anim.ResetTrigger(HashSad);
+        if (HasParameter(anim, HashAttack)) anim.ResetTrigger(HashAttack);
+        
+        // Set the target trigger
+        anim.SetTrigger(hash);
+    }
+
+    /// <summary>
+    /// Check if animator has a parameter with the given hash
+    /// </summary>
+    private bool HasParameter(Animator anim, int hash)
+    {
+        if (anim == null || anim.runtimeAnimatorController == null)
+            return false;
+
+        foreach (var param in anim.parameters)
+        {
+            if (param.nameHash == hash)
+                return true;
+        }
+        return false;
     }
 
     /// <summary>
     /// Set visibility của 3 PSB (Meo, MeoSad, Meo34).
     /// Chỉ 1 PSB được hiển thị tại 1 thời điểm.
+    /// ✅ FIX: Nếu field bị null (lỗi Inspector), tìm theo tên trong children để vẫn ẩn được.
+    /// ✅ FIX: Nếu có duplicate (2 field trỏ vào cùng 1 GameObject), ưu tiên state cuối cùng.
     /// </summary>
     private void SetPSBVisibility(bool showMeo, bool showMeoSad, bool showMeo34)
     {
         Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → SetPSBVisibility(Meo={showMeo}, MeoSad={showMeoSad}, Meo34={showMeo34})");
         
-        if (characterMeo != null)
+        // ✅ FIX: Nếu field null, tìm theo tên để vẫn có thể ẩn/hiện
+        GameObject resolvedMeo    = characterMeo    ?? FindChildByName("Character Meo");
+        GameObject resolvedMeoSad = characterMeoSad ?? FindChildByName("Character Meo_Sad");
+        GameObject resolvedMeo34  = meoGoc34Fix     ?? FindChildByName("MeoGoc34 Fix");
+
+        // ✅ SIMPLE FIX: Không dùng Dictionary - set trực tiếp và check duplicate
+        // Set Meo
+        if (resolvedMeo != null)
         {
-            characterMeo.SetActive(showMeo);
+            resolvedMeo.SetActive(showMeo);
             Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Character Meo = {(showMeo ? "ACTIVE" : "INACTIVE")}");
         }
         else
         {
-            Debug.LogWarning($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Character Meo is NULL!");
+            Debug.LogWarning($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Character Meo is NULL (not found in children either)!");
         }
         
-        if (characterMeoSad != null)
+        // Set MeoSad (nếu không trùng với Meo)
+        if (resolvedMeoSad != null)
         {
-            characterMeoSad.SetActive(showMeoSad);
-            Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Character Meo_Sad = {(showMeoSad ? "ACTIVE" : "INACTIVE")}");
+            if (resolvedMeoSad == resolvedMeo)
+            {
+                // Duplicate - ưu tiên showMeoSad
+                resolvedMeoSad.SetActive(showMeoSad);
+                Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Character Meo_Sad = {(showMeoSad ? "ACTIVE" : "INACTIVE")} (DUPLICATE with Meo, overridden)");
+            }
+            else
+            {
+                resolvedMeoSad.SetActive(showMeoSad);
+                Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Character Meo_Sad = {(showMeoSad ? "ACTIVE" : "INACTIVE")}");
+            }
         }
         else
         {
-            Debug.LogWarning($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Character Meo_Sad is NULL!");
+            Debug.LogWarning($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → Character Meo_Sad is NULL (not found in children either)!");
         }
         
-        if (meoGoc34Fix != null)
+        // Set Meo34 (nếu không trùng với Meo hoặc MeoSad)
+        if (resolvedMeo34 != null)
         {
-            meoGoc34Fix.SetActive(showMeo34);
-            Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → MeoGoc34 Fix = {(showMeo34 ? "ACTIVE" : "INACTIVE")}");
+            if (resolvedMeo34 == resolvedMeo || resolvedMeo34 == resolvedMeoSad)
+            {
+                // Duplicate - ưu tiên showMeo34
+                resolvedMeo34.SetActive(showMeo34);
+                Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → MeoGoc34 Fix = {(showMeo34 ? "ACTIVE" : "INACTIVE")} (DUPLICATE, overridden)");
+            }
+            else
+            {
+                resolvedMeo34.SetActive(showMeo34);
+                Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → MeoGoc34 Fix = {(showMeo34 ? "ACTIVE" : "INACTIVE")}");
+            }
         }
         else
         {
-            Debug.LogWarning($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → MeoGoc34 Fix is NULL!");
+            Debug.LogWarning($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → MeoGoc34 Fix is NULL (not found in children either)!");
         }
+    }
+
+    /// <summary>
+    /// Tìm child GameObject theo tên (dùng khi field bị null do lỗi Inspector)
+    /// </summary>
+    private GameObject FindChildByName(string childName)
+    {
+        Transform found = transform.Find(childName);
+        if (found != null) return found.gameObject;
+        
+        // Tìm sâu hơn trong hierarchy
+        foreach (Transform child in GetComponentsInChildren<Transform>(true))
+        {
+            if (child.name == childName)
+                return child.gameObject;
+        }
+        return null;
     }
 
     /// <summary>

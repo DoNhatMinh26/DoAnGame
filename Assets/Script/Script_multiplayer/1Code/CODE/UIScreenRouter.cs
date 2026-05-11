@@ -117,13 +117,21 @@ namespace DoAnGame.UI
                 Transform child = screensRoot.GetChild(i);
                 if (child != null)
                 {
+                    if (ShouldPreserveUiChild(child))
+                    {
+                        Debug.Log($"[UIScreenRouter] ✅ PRESERVING child '{child.name}' from deactivation");
+                        continue;
+                    }
+
                     var panel = child.GetComponent<BasePanelController>();
                     if (panel != null)
                     {
+                        Debug.Log($"[UIScreenRouter] 🔐 Calling Hide() on panel '{child.name}'");
                         panel.Hide();
                     }
                     else
                     {
+                        Debug.Log($"[UIScreenRouter] ❌ Calling SetActive(false) on '{child.name}'");
                         child.gameObject.SetActive(false);
                     }
                 }
@@ -285,6 +293,15 @@ namespace DoAnGame.UI
             rect.pivot = new Vector2(0.5f, 0.5f);
             rect.localScale = Vector3.one;
             rect.anchoredPosition = Vector2.zero;
+        }
+
+        private static bool ShouldPreserveUiChild(Transform child)
+        {
+            if (child == null)
+                return false;
+
+            return string.Equals(child.name, "CharacterContainer", System.StringComparison.OrdinalIgnoreCase)
+                || child.GetComponentInChildren<DoAnGame.Multiplayer.CharacterContainerController>(true) != null;
         }
     }
 }

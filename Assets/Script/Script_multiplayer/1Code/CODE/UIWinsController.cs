@@ -67,6 +67,9 @@ namespace DoAnGame.UI
         [SerializeField] private AvatarCharacterDisplay winnerCharacter;  // Win_image_animation
         [SerializeField] private AvatarCharacterDisplay loserCharacter;   // Lost_image_animation
 
+        private Coroutine winnerAnimationRoutine;
+        private Coroutine loserAnimationRoutine;
+
         private void Start()
         {
             // Auto-resolve BattleManager nếu chưa gán (dùng cho fallback)
@@ -83,12 +86,14 @@ namespace DoAnGame.UI
             GameLogger.Log($"[WinsController] [{role}] OnShow called");
             
             Log("OnShow called");
+            StopPendingAnimationRoutines();
             DisplayMatchResult();
         }
 
         protected override void OnHide()
         {
             base.OnHide();
+            StopPendingAnimationRoutines();
             Log("OnHide called");
         }
 
@@ -382,7 +387,7 @@ namespace DoAnGame.UI
                 // ✅ CRITICAL: Delay để đảm bảo SetAvatarWithoutAnimation hoàn tất trước khi ShowHappy
                 // Tránh race condition giữa SetAvatar và ShowHappy
                 Debug.Log($"[WinsController] [{role}] Scheduling winnerCharacter.ShowHappy() after 0.1s delay...");
-                StartCoroutine(DelayedShowAnimation(winnerCharacter, true, 0.1f));
+                winnerAnimationRoutine = StartCoroutine(DelayedShowAnimation(winnerCharacter, true, 0.1f));
             }
             else
             {
@@ -396,7 +401,7 @@ namespace DoAnGame.UI
                 
                 // ✅ CRITICAL: Delay để đảm bảo SetAvatarWithoutAnimation hoàn tất trước khi ShowSad
                 Debug.Log($"[WinsController] [{role}] Scheduling loserCharacter.ShowSad() after 0.1s delay...");
-                StartCoroutine(DelayedShowAnimation(loserCharacter, false, 0.1f));
+                loserAnimationRoutine = StartCoroutine(DelayedShowAnimation(loserCharacter, false, 0.1f));
             }
             else
             {
@@ -414,6 +419,11 @@ namespace DoAnGame.UI
         private System.Collections.IEnumerator DelayedShowAnimation(AvatarCharacterDisplay character, bool isHappy, float delay)
         {
             yield return new WaitForSeconds(delay);
+
+            if (character == null || !isActiveAndEnabled || !gameObject.activeInHierarchy)
+            {
+                yield break;
+            }
             
             var net = NetworkManager.Singleton;
             string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
@@ -429,6 +439,21 @@ namespace DoAnGame.UI
                 Debug.Log($"[WinsController] [{role}] Calling {character.gameObject.name}.ShowSad()...");
                 character.ShowSad();
                 Debug.Log($"[WinsController] [{role}] ✅ {character.gameObject.name}.ShowSad() DONE");
+            }
+        }
+
+        private void StopPendingAnimationRoutines()
+        {
+            if (winnerAnimationRoutine != null)
+            {
+                StopCoroutine(winnerAnimationRoutine);
+                winnerAnimationRoutine = null;
+            }
+
+            if (loserAnimationRoutine != null)
+            {
+                StopCoroutine(loserAnimationRoutine);
+                loserAnimationRoutine = null;
             }
         }
 

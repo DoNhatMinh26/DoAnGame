@@ -25,8 +25,8 @@ namespace DoAnGame.Auth
         {
             if (Instance != null && Instance != this)
             {
-                Debug.LogWarning("[Session] Duplicate SessionManager detected, disabling duplicate component.");
-                enabled = false;
+                Debug.LogWarning("[Session] Duplicate SessionManager detected, destroying duplicate GameObject.");
+                Destroy(gameObject);
                 return;
             }
             Instance = this;

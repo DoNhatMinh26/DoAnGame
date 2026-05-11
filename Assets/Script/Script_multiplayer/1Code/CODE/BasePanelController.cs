@@ -23,15 +23,29 @@ namespace DoAnGame.UI
 
         public virtual void Show()
         {
-            if (IsVisible) return;
+            bool wasActive = gameObject.activeSelf;
+            bool wasVisible = IsVisible;
+
+            if (wasVisible && wasActive)
+                return;
+
             gameObject.SetActive(true);
             IsVisible = true;
-            OnShow();
+
+            if (!wasVisible || !wasActive)
+            {
+                OnShow();
+            }
         }
 
         public virtual void Hide()
         {
-            if (!IsVisible && !gameObject.activeSelf) return;
+            bool wasActive = gameObject.activeSelf;
+            bool wasVisible = IsVisible;
+
+            if (!wasVisible && !wasActive)
+                return;
+
             OnHide();
             gameObject.SetActive(false);
             IsVisible = false;

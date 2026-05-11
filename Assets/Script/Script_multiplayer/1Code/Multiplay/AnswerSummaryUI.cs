@@ -33,6 +33,7 @@ namespace DoAnGame.UI
         [Header("=== STATUS & TIMER (SHARED) ===")]
         [SerializeField] private TextMeshProUGUI timerText; // Dùng chung từ TimerPanel
         [SerializeField] private TextMeshProUGUI trangThaiText; // Text hiển thị trạng thái
+        [SerializeField] private UnityEngine.UI.Image timerFillImage; // ✅ NEW: Visual progress bar cho timer
         
         [Header("=== RESULT DISPLAY ===")]
         [SerializeField] private TextMeshProUGUI resultText; // Text hiển thị kết quả (optional)
@@ -65,6 +66,17 @@ namespace DoAnGame.UI
         {
             battleManager = NetworkedMathBattleManager.Instance;
             
+            // ✅ Auto-find timerFillImage nếu chưa được assign trong Inspector
+            if (timerFillImage == null)
+            {
+                // Tìm trong children theo tên phổ biến
+                timerFillImage = FindTimerFillImage();
+                if (timerFillImage != null)
+                    Debug.Log($"[AnswerSummaryUI] ✅ Auto-found timerFillImage: {timerFillImage.gameObject.name}");
+                else
+                    Debug.LogWarning("[AnswerSummaryUI] ⚠️ timerFillImage not assigned and not found! Timer fill bar sẽ không hoạt động. Hãy assign trong Inspector.");
+            }
+            
             if (battleManager == null)
             {
                 Debug.LogError("[AnswerSummaryUI] BattleManager not found!");
@@ -74,6 +86,37 @@ namespace DoAnGame.UI
             }
 
             InitializeUI();
+        }
+
+        /// <summary>
+        /// Tìm timerFillImage trong children theo tên phổ biến
+        /// </summary>
+        private UnityEngine.UI.Image FindTimerFillImage()
+        {
+            // Tìm theo tên phổ biến
+            string[] candidateNames = { "TimerFill", "Timer Fill", "TimerBar", "Timer Bar", "FillImage", "Fill", "TimerProgress" };
+            foreach (string name in candidateNames)
+            {
+                Transform found = transform.Find(name);
+                if (found == null)
+                {
+                    // Tìm sâu hơn
+                    foreach (Transform child in GetComponentsInChildren<Transform>(true))
+                    {
+                        if (child.name == name)
+                        {
+                            found = child;
+                            break;
+                        }
+                    }
+                }
+                if (found != null)
+                {
+                    var img = found.GetComponent<UnityEngine.UI.Image>();
+                    if (img != null) return img;
+                }
+            }
+            return null;
         }
 
         private void OnEnable()
@@ -261,12 +304,6 @@ namespace DoAnGame.UI
                 summaryCoroutine = null;
             }
 
-            // Dừng question timer cũ nếu có
-            if (questionTimerCoroutine != null)
-            {
-                StopCoroutine(questionTimerCoroutine);
-            }
-
             // Ẩn đáp án
             HideAnswerTexts();
 
@@ -306,26 +343,62 @@ namespace DoAnGame.UI
 
             Debug.Log($"[AnswerSummaryUI] Starting question countdown: {questionTime}s");
 
+            // ✅ FIX: Kiểm tra timerText trước khi bắt đầu
+            if (timerText == null)
+            {
+                Debug.LogError("[AnswerSummaryUI] ❌ timerText is NULL! Cannot update timer.");
+                isQuestionActive = false;
+                yield break;
+            }
+
+            int lastDisplayedTime = Mathf.CeilToInt(questionTime);
+
             while (elapsed < questionTime)
             {
                 elapsed += Time.deltaTime;
                 float remaining = Mathf.Max(0, questionTime - elapsed);
+                int currentTime = Mathf.CeilToInt(remaining);
 
-                if (timerText != null)
+                // ✅ NEW: Update fill image mỗi frame để có visual feedback mượt mà
+                if (timerFillImage != null)
                 {
-                    timerText.text = $"{Mathf.CeilToInt(remaining)}s";
+                    timerFillImage.fillAmount = remaining / questionTime;
+                    
+                    // ✅ Đổi màu khi sắp hết thời gian (< 3 giây)
+                    if (remaining <= 3f)
+                    {
+                        timerFillImage.color = Color.Lerp(Color.red, Color.yellow, remaining / 3f);
+                    }
+                    else
+                    {
+                        timerFillImage.color = Color.green;
+                    }
+                }
+
+                // ✅ FIX: Chỉ update text khi giá trị thay đổi (tránh spam log)
+                if (currentTime != lastDisplayedTime)
+                {
+                    timerText.text = $"{currentTime}s";
+                    Debug.Log($"[AnswerSummaryUI] Timer update: {currentTime}s (elapsed: {elapsed:F2}s)");
+                    lastDisplayedTime = currentTime;
                 }
 
                 yield return null;
             }
 
-            // Hết thời gian Question Time
-            if (timerText != null)
+            // ✅ Reset fill image về 0
+            if (timerFillImage != null)
             {
-                timerText.text = "0s";
+                timerFillImage.fillAmount = 0f;
+                timerFillImage.color = Color.red;
             }
 
+            // Hết thời gian Question Time
+            timerText.text = "0s";
+            Debug.Log("[AnswerSummaryUI] Timer update: 0s (Question Time ended)");
+
             isQuestionActive = false;
+            questionTimerCoroutine = null;
             Debug.Log("[AnswerSummaryUI] Question Time ended");
         }
 

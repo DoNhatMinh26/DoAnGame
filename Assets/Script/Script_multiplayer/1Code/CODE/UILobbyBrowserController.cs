@@ -525,6 +525,7 @@ namespace DoAnGame.UI
                     SetStatus("Đã vào phòng.");
                     // ✅ FIX: Navigate trực tiếp đến LobbyPanel
                     roomController.Show(); // Gọi Show() để trigger OnShow() đúng cách
+                    roomController.NotifyEnteredFromBrowser();
                     Hide(); // Ẩn LobbyBrowserPanel
                 }
                 else

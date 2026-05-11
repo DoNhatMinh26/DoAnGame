@@ -65,7 +65,13 @@ namespace DoAnGame.UI
         private void OnEnable()
         {
             Debug.Log("[BattleController] OnEnable CALLED");
-            HandlePanelActivated();
+            
+            // ✅ FIX: KHÔNG gọi HandlePanelActivated() ở đây nữa
+            // Vì OnShow() đã gọi rồi, gọi 2 lần sẽ tạo duplicate Invoke cho InitAvatarCharacters
+            // OnEnable() chỉ cần đảm bảo các callbacks được register
+            
+            // Chỉ register callbacks, KHÔNG gọi HandlePanelActivated()
+            RegisterNetCallbacks();
         }
 
         private void OnDisable()
@@ -111,6 +117,10 @@ namespace DoAnGame.UI
             sessionEndedHandled = false;
             nextSessionCheckAt = 0f;
             
+            // ✅ DEBUG: Log character references
+            Debug.Log($"[BattleController] HandlePanelActivated - player1Character activeInHierarchy={player1Character?.gameObject.activeInHierarchy}, activeSelf={player1Character?.gameObject.activeSelf}");
+            Debug.Log($"[BattleController] HandlePanelActivated - player2Character activeInHierarchy={player2Character?.gameObject.activeInHierarchy}, activeSelf={player2Character?.gameObject.activeSelf}");
+            
             try
             {
                 DisableRaycastOnRuntimePlayerClones();
@@ -131,6 +141,7 @@ namespace DoAnGame.UI
             EnsureBattleManagerAndSubscribe();
 
             // Khởi tạo avatar characters cho cả 2 player
+            Debug.Log($"[BattleController] About to call InitAvatarCharacters");
             InitAvatarCharacters();
             
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_BATTLE", "HandlePanelActivated done");
@@ -151,6 +162,19 @@ namespace DoAnGame.UI
         protected override void OnHide()
         {
             base.OnHide();
+            
+            // ✅ Deactivate battle characters when leaving GameplayPanel
+            if (player1Character != null)
+            {
+                player1Character.gameObject.SetActive(false);
+                Debug.Log("[BattleController] Deactivated Player1Character on hide");
+            }
+            if (player2Character != null)
+            {
+                player2Character.gameObject.SetActive(false);
+                Debug.Log("[BattleController] Deactivated Player2Character on hide");
+            }
+            
             UnregisterNetCallbacks();
         }
 
@@ -514,6 +538,13 @@ namespace DoAnGame.UI
                 Debug.Log($"[BattleController] [{role}] Player1 AvatarId={avatarId}, calling SetAvatar()...");
                 player1Character.SetAvatar(avatarId);
                 
+                // Explicitly activate the character GameObject
+                if (!player1Character.gameObject.activeSelf)
+                {
+                    player1Character.gameObject.SetActive(true);
+                    Debug.Log($"[BattleController] [{role}] ✅ Activated Player1Character GameObject");
+                }
+                
                 // Subscribe để update nếu AvatarId sync muộn
                 p1.AvatarId.OnValueChanged += (oldId, newId) =>
                 {
@@ -532,6 +563,13 @@ namespace DoAnGame.UI
                 int avatarId = p2.AvatarId.Value;
                 Debug.Log($"[BattleController] [{role}] Player2 AvatarId={avatarId}, calling SetAvatar()...");
                 player2Character.SetAvatar(avatarId);
+                
+                // Explicitly activate the character GameObject
+                if (!player2Character.gameObject.activeSelf)
+                {
+                    player2Character.gameObject.SetActive(true);
+                    Debug.Log($"[BattleController] [{role}] ✅ Activated Player2Character GameObject");
+                }
                 
                 // Subscribe để update nếu AvatarId sync muộn
                 p2.AvatarId.OnValueChanged += (oldId, newId) =>
@@ -630,22 +668,34 @@ namespace DoAnGame.UI
         {
             if (battleManager == null)
             {
+                Debug.LogError("[BattleController] BattleManager is null, cannot submit answer!");
                 Log("BattleManager is null, cannot submit answer");
                 return;
             }
 
+            var net = NetworkManager.Singleton;
+            if (net == null || !net.IsListening)
+            {
+                Debug.LogError("[BattleController] NetworkManager not ready, cannot submit answer!");
+                return;
+            }
+
+            Debug.Log($"[BattleController] OnAnswerDropped called: answer={answer}");
             Log($"Player dropped answer: {answer}");
 
             // Disable dragging
             DragAndDrop.SetGlobalLock(true);
+            DoAnGame.Multiplayer.MultiplayerDragAndDrop.SetGlobalLock(true);
 
             // Submit đáp án lên server
+            Debug.Log($"[BattleController] Calling SubmitAnswerServerRpc({answer})...");
             battleManager.SubmitAnswerServerRpc(answer);
+            Debug.Log($"[BattleController] ✅ SubmitAnswerServerRpc called");
 
             // Update status
             if (battleStatusText != null)
             {
-                battleStatusText.text = "Đã gửi đáp án...";
+                battleStatusText.SetText("Đã gửi đáp án...");
             }
         }
 

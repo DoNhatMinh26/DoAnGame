@@ -27,8 +27,8 @@ namespace DoAnGame.Auth
         {
             if (Instance != null && Instance != this)
             {
-                Debug.LogWarning("[PlayerData] Duplicate PlayerDataService detected, disabling duplicate component.");
-                enabled = false;
+                Debug.LogWarning("[PlayerData] Duplicate PlayerDataService detected, destroying duplicate GameObject.");
+                Destroy(gameObject);
                 return;
             }
             Instance = this;
