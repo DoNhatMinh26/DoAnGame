@@ -86,6 +86,10 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             {
                 // ĐÚNG
                 image.color = colorCorrect;
+                if (GameUIManager.Instance != null && GameUIManager.Instance.sharedAnimator != null)
+                {
+                    GameUIManager.Instance.sharedAnimator.SetTrigger("TpAttack");
+                }
                 if (CannonDefenseManager.Instance != null)
                 {
                     CannonDefenseManager.Instance.FireAtClosestEnemy();
@@ -109,6 +113,10 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     private void ApplyGlobalWrongEffect()
     {
+        if (GameUIManager.Instance != null && GameUIManager.Instance.sharedAnimator != null)
+        {
+            GameUIManager.Instance.sharedAnimator.SetTrigger("TpSad");
+        }
         DragAndDrop[] allChoices = FindObjectsOfType<DragAndDrop>();
         foreach (DragAndDrop choice in allChoices)
         {

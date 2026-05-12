@@ -4,7 +4,7 @@
 public class CatSkin : ScriptableObject
 {
     public string skinName;
-    public Sprite skinSprite; // Hình ảnh con mèo
+    public Sprite skinSprite; // Icon hiển thị trong Shop
     public int price;
-    public bool isUnlocked; // Đã mua chưa
+    // Không cần isUnlocked ở đây vì chúng ta dùng PlayerPrefs để lưu trữ trạng thái mua của từng người chơi
 }

@@ -368,10 +368,10 @@ public class UiClass : MonoBehaviour
         Vector3 originalScale = target.localScale;
 
         // 2. Tính toán mục tiêu phóng to (ví dụ phóng lên thêm 20% so với gốc)
-        Vector3 targetScale = originalScale * 1.2f;
+        Vector3 targetScale = originalScale * scaleAmount;
 
         float elapsed = 0;
-        float scaleDuration = 0.1f;
+        
 
         // Giai đoạn phóng to
         while (elapsed < scaleDuration)

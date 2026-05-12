@@ -3,6 +3,8 @@ using DoAnGame.UI;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
 
 public class GameUIManager : MonoBehaviour
 {
@@ -46,14 +48,22 @@ public class GameUIManager : MonoBehaviour
     public TextMeshProUGUI levelCoinTxt; // Text hiển thị trong trận đấu (Gameplay)
     public Transform coinTarget;
 
-    [Header("Quản lý Skin")]
-    public SpriteRenderer catRenderer;
-    public SpriteRenderer gameplayCatRenderer;// Kéo SpriteRenderer của con mèo vào đây
-    public CatSkin[] allSkins; // Danh sách các Skin bạn tạo ra
-    [Header("Giao diện Shop")]
+    [Header("Quản lý Skin & Animation")]
+    public GameObject[] catSkins;
+    public GameObject[] catSkins2;// Mảng chứa các Object Mèo trong game (tương tự UiClass)
+    public Animator sharedAnimator; // Animator tổng điều khiển xương
+    public CatSkin[] allSkins; // Danh sách ScriptableObject
+
+    [Header("Giao diện Shop Mèo")]
     public Image[] skinButtonImages;
     public TextMeshProUGUI[] skinPriceTexts;
+    public Image[] skinPriceBackgrounds;
+    [SerializeField] private float scaleAmount = 1.2f;
+    [SerializeField] private float scaleDuration = 0.1f;
     private int pendingSkinIndex = -1;
+    private Coroutine activeScaleCoroutine;
+
+    private Coroutine activePhaoScaleCoroutine;
 
     private int totalCoins = 0;
     private int levelCoins = 0;
@@ -231,141 +241,186 @@ public class GameUIManager : MonoBehaviour
         killedEnemies++;
         UpdateEnemyCounterUI();
     }
-    #region LOGIC skin Meo
+    public void PlayMascotAnimation(string triggerName)
+    {
+        // Chạy cho Animator chính được kéo vào Inspector
+        if (sharedAnimator != null && sharedAnimator.gameObject.activeInHierarchy)
+        {
+            sharedAnimator.SetTrigger(triggerName);
+        }
+    }
+    #region LOGIC SKIN MÈO 
+
     public void LoadCurrentSkin()
     {
-        int currentSkinID = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedSkinID, 0);
+        int selectedID = PlayerPrefs.GetInt(LocalStorageKeyResolver.SelectedSkinID, 0);
 
-        if (allSkins != null && currentSkinID < allSkins.Length && allSkins[currentSkinID] != null)
+        if (catSkins != null)
         {
-            Sprite skinSprite = allSkins[currentSkinID].skinSprite;
-
-            // Gắn cho mèo ở Menu
-            if (catRenderer != null) catRenderer.sprite = skinSprite;
-
-            // Gắn cho mèo trong trận đấu
-            if (gameplayCatRenderer != null) gameplayCatRenderer.sprite = skinSprite;
-
-            Debug.Log("Đã cập nhật skin cho cả Menu và Gameplay.");
+            for (int i = 0; i < catSkins.Length; i++)
+            {
+                if (catSkins[i] != null) catSkins[i].SetActive(i == selectedID);
+            }
+        }
+        if (catSkins2 != null)
+        {
+            for (int i = 0; i < catSkins2.Length; i++)
+            {
+                if (catSkins2[i] != null) catSkins2[i].SetActive(i == selectedID);
+            }
+        }
+        if (sharedAnimator != null)
+        {
+            sharedAnimator.Rebind();
+            sharedAnimator.Update(0f);
         }
     }
+
     public bool IsSkinUnlocked(int index)
     {
-        // Skin 0 luôn mở
         if (index == 0) return true;
-
-        // Kiểm tra PlayerPrefs, trả về 0 nếu chưa từng lưu (mặc định là khóa)
-        return PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SkinUnlockedKey(index), 0) == 1;
+        return PlayerPrefs.GetInt(LocalStorageKeyResolver.SkinUnlockedKey(index), 0) == 1;
     }
 
-
-
-    public void UpdateShopUI()
-    {
-        if (allSkins == null || skinButtonImages == null) return;
-
-        for (int i = 0; i < allSkins.Length; i++)
-        {
-            if (i >= skinButtonImages.Length || skinButtonImages[i] == null) continue;
-
-            bool isUnlocked = IsSkinUnlocked(i);
-
-            // 1. Cập nhật màu sắc (sáng/tối)
-            if (isUnlocked)
-            {
-                skinButtonImages[i].color = Color.white;
-
-                // 2. Cập nhật chữ hiển thị thành "Đã sở hữu" nếu mảng Text tồn tại
-                if (i < skinPriceTexts.Length && skinPriceTexts[i] != null)
-                {
-                    skinPriceTexts[i].text = "Đã sở hữu";
-                }
-            }
-            else
-            {
-                skinButtonImages[i].color = new Color(0.3f, 0.3f, 0.3f, 1f);
-
-                // Hiện lại giá gốc từ ScriptableObject nếu chưa mua
-                if (i < skinPriceTexts.Length && skinPriceTexts[i] != null)
-                {
-                    skinPriceTexts[i].text = allSkins[i].price.ToString() + "$";
-                }
-            }
-        }
-    }
     public void SelectSkinToPreview(int index)
     {
         if (allSkins == null || index < 0 || index >= allSkins.Length) return;
 
+        // Hiệu ứng phóng to nút
+        if (index < phaoButtonImages.Length && phaoButtonImages[index] != null)
+        {
+            RectTransform rt = phaoButtonImages[index].GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                // Dừng hiệu ứng cũ nếu đang chạy để tránh nút bị to/nhỏ bất thường
+                if (activePhaoScaleCoroutine != null) StopCoroutine(activePhaoScaleCoroutine);
+                activePhaoScaleCoroutine = StartCoroutine(ScaleButtonRoutine(rt));
+            }
+        }
+
         pendingSkinIndex = index;
-        lastSelectedType = 1; // Ưu tiên chọn Mèo
+        lastSelectedType = 1;
 
-        // Hiển thị hình ảnh lên các Renderer để xem thử
-        if (catRenderer != null) catRenderer.sprite = allSkins[index].skinSprite;
-        if (gameplayCatRenderer != null) gameplayCatRenderer.sprite = allSkins[index].skinSprite;
+        // Bật Preview skin
+        for (int i = 0; i < catSkins.Length; i++)
+        {
+            if (catSkins[i] != null) catSkins[i].SetActive(i == index);
+        }
 
-        // KIỂM TRA TRẠNG THÁI SỞ HỮU
         if (IsSkinUnlocked(index))
         {
-            // Nếu đã có rồi thì tự động lưu và báo "Đã mặc"
-            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedSkinID, index);
+            PlayerPrefs.SetInt(LocalStorageKeyResolver.SelectedSkinID, index);
             PlayerPrefs.Save();
-            ShowShopNotification("Đã mặc: " + allSkins[index].skinName);
+            ShowShopNotification("Đã mặc trang phục!");
         }
         else
         {
-            // Nếu chưa có thì báo "Chưa sở hữu"
-            ShowShopNotification("Chưa sở hữu nhân vật này!");
+            ShowShopNotification("Giá: " + allSkins[index].price + "$");
+        }
+
+        UpdateShopUI();
+    }
+
+    public void UpdateShopUI()
+    {
+        int currentEquippedID = PlayerPrefs.GetInt(LocalStorageKeyResolver.SelectedSkinID, 0);
+
+        for (int i = 0; i < allSkins.Length; i++)
+        {
+            bool unlocked = IsSkinUnlocked(i);
+
+            if (i < skinButtonImages.Length)
+                skinButtonImages[i].color = unlocked ? Color.white : new Color(0.3f, 0.3f, 0.3f, 1f);
+
+            if (i < skinPriceTexts.Length)
+            {
+                if (unlocked)
+                {
+                    if (i == currentEquippedID)
+                    {
+                        skinPriceTexts[i].text = "Đang dùng";
+                        skinPriceTexts[i].color = Color.white;
+                        if (skinPriceBackgrounds.Length > i) skinPriceBackgrounds[i].color = new Color(0, 0.48f, 1f); // Blue
+                    }
+                    else
+                    {
+                        skinPriceTexts[i].text = "Sở hữu";
+                        skinPriceTexts[i].color = Color.white;
+                        if (skinPriceBackgrounds.Length > i) skinPriceBackgrounds[i].color = new Color(0, 1f, 0.36f); // Green
+                    }
+                }
+                else
+                {
+                    skinPriceTexts[i].text = allSkins[i].price + "$";
+                    skinPriceTexts[i].color = new Color(0.45f, 0.41f, 0.13f); // Dark Gold
+                    if (skinPriceBackgrounds.Length > i) skinPriceBackgrounds[i].color = Color.white;
+                }
+            }
         }
     }
 
     public void Click_ConfirmPurchase()
     {
-        if (pendingSkinIndex == -1)
-        {
-            ShowShopNotification("Vui lòng chọn một nhân vật!");
-            return;
-        }
+        if (pendingSkinIndex == -1) { ShowShopNotification("Chọn nhân vật!"); return; }
 
         CatSkin skin = allSkins[pendingSkinIndex];
-        bool isUnlocked = IsSkinUnlocked(pendingSkinIndex);
+        bool unlocked = IsSkinUnlocked(pendingSkinIndex);
 
-        if (isUnlocked || totalCoins >= skin.price)
+        if (!unlocked && totalCoins >= skin.price)
         {
-            if (!isUnlocked)
-            {
-                totalCoins -= skin.price;
-                PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
-                PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SkinUnlockedKey(pendingSkinIndex), 1);
-                ShowShopNotification("Mua thành công: " + skin.skinName + "!");
-            }
-            else
-            {
-                ShowShopNotification("Đã Sở Hữu: " + skin.skinName);
-            }
-
-            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedSkinID, pendingSkinIndex);
+            totalCoins -= skin.price;
+            PlayerPrefs.SetInt(LocalStorageKeyResolver.TotalCoins, totalCoins);
+            PlayerPrefs.SetInt(LocalStorageKeyResolver.SkinUnlockedKey(pendingSkinIndex), 1);
+            PlayerPrefs.SetInt(LocalStorageKeyResolver.SelectedSkinID, pendingSkinIndex);
             PlayerPrefs.Save();
 
+            ShowShopNotification("Mua thành công!");
             UpdateCoinUI();
             UpdateShopUI();
             LoadCurrentSkin();
-
-            // Sync shop lên Firebase
             SyncKeoThadaSkinShop();
+        }
+        else if (unlocked)
+        {
+            PlayerPrefs.SetInt(LocalStorageKeyResolver.SelectedSkinID, pendingSkinIndex);
+            PlayerPrefs.Save();
+            LoadCurrentSkin();
+            UpdateShopUI();
         }
         else
         {
-            int thieu = skin.price - totalCoins;
-            ShowShopNotification("Bạn còn thiếu " + thieu + "$ để mua skin này!");
-            Debug.Log("Không đủ tiền mua skin này!");
+            ShowShopNotification("Thiếu " + (skin.price - totalCoins) + "$");
         }
     }
 
+    private IEnumerator ScaleButtonRoutine(RectTransform target)
+    {
+        Vector3 originalScale = Vector3.one; // Hoặc giá trị mặc định của bạn
+        Vector3 targetScale = originalScale * scaleAmount;
+        float elapsed = 0;
+
+        while (elapsed < scaleDuration)
+        {
+            target.localScale = Vector3.Lerp(originalScale, targetScale, elapsed / scaleDuration);
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        elapsed = 0;
+        while (elapsed < scaleDuration)
+        {
+            target.localScale = Vector3.Lerp(targetScale, originalScale, elapsed / scaleDuration);
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        target.localScale = originalScale;
+    }
     private void SyncKeoThadaSkinShop()
     {
+        // Lấy ID skin đang chọn hiện tại
         int selected = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedSkinID, 0);
-        var unlocked = new System.Collections.Generic.List<int> { 0 };
+
+        // Tạo danh sách các skin đã mở khóa
+        var unlocked = new System.Collections.Generic.List<int> { 0 }; // Skin 0 mặc định mở
         if (allSkins != null)
         {
             for (int i = 1; i < allSkins.Length; i++)
@@ -373,24 +428,9 @@ public class GameUIManager : MonoBehaviour
                 if (IsSkinUnlocked(i)) unlocked.Add(i);
             }
         }
+
+        // Gửi dữ liệu đồng bộ lên Cloud
         DoAnGame.Auth.CloudSyncService.Instance?.OnShopPurchased("keothada_skin", selected, unlocked.ToArray());
-    }
-    public void BuyAndApplySkin(int index)
-    {
-        if (allSkins == null || index < 0 || index >= allSkins.Length) return;
-
-        pendingSkinIndex = index;
-        CatSkin skin = allSkins[index];
-
-        // Cho xem thử trên cả hai renderer
-        if (catRenderer != null) catRenderer.sprite = skin.skinSprite;
-        if (gameplayCatRenderer != null) gameplayCatRenderer.sprite = skin.skinSprite;
-
-        if (IsSkinUnlocked(index))
-        {
-            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedSkinID, index);
-            PlayerPrefs.Save();
-        }
     }
     #endregion
     #region LOGIC skin Pháo
@@ -655,8 +695,11 @@ public class GameUIManager : MonoBehaviour
 
         // 2. Khóa nút Setting ngay lập tức
         SetSettingButtonInteractable(false);
+        if (sharedAnimator != null)
+        {
+            sharedAnimator.SetTrigger("TpSad");
+        }
 
-        
         // Đợi 1.5 giây thực tế (giống bảng Win)
         yield return new WaitForSecondsRealtime(3f);
         isGameOver = true;
