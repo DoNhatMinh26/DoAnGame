@@ -132,6 +132,31 @@ namespace DoAnGame.UI
                 Log($"WinnerId={r.WinnerId}, LocalPlayerId={r.LocalPlayerId}, IsAbandoned={r.IsAbandoned}");
 
                 bool isLocalWinner = (r.WinnerId == r.LocalPlayerId);
+                int localPlayerId = r.LocalPlayerId;
+                int opponentPlayerId = (localPlayerId == 0) ? 1 : 0;
+
+                string localDisplay = isLocalWinner ? r.WinnerName : r.LoserName;
+                int localScore = isLocalWinner ? r.WinnerScore : r.LoserScore;
+                int localHealth = isLocalWinner ? r.WinnerHealth : r.LoserHealth;
+
+                string opponentDisplay = isLocalWinner ? r.LoserName : r.WinnerName;
+                int opponentScore = isLocalWinner ? r.LoserScore : r.WinnerScore;
+                int opponentHealth = isLocalWinner ? r.LoserHealth : r.WinnerHealth;
+
+                if (!string.IsNullOrEmpty(localDisplay))
+                {
+                    localDisplay += " (Bạn)";
+                }
+
+                if (r.IsAbandoned && r.AbandonedPlayerId == localPlayerId)
+                {
+                    localDisplay += " (Đã Rời Trận)";
+                }
+
+                if (r.IsAbandoned && r.AbandonedPlayerId == opponentPlayerId)
+                {
+                    opponentDisplay += " (Đã Rời Trận)";
+                }
                 
                 GameLogger.Log($"[WinsController] [{role}] ===== TEXT DISPLAY LOGIC =====");
                 GameLogger.Log($"[WinsController] [{role}] WinnerId: {r.WinnerId}");
@@ -158,41 +183,22 @@ namespace DoAnGame.UI
                 
                 GameLogger.Log($"[WinsController] [{role}] ===== TEXT DISPLAY COMPLETE =====");
 
-                // Winner section - Hiển thị tên + "(Bạn)" nếu là local player
-                string winnerDisplay = r.WinnerName;
-                if (r.WinnerId == r.LocalPlayerId)
-                {
-                    winnerDisplay += " (Bạn)";
-                    GameLogger.Log($"[WinsController] [{role}] Winner is LOCAL player");
-                }
-                else
-                {
-                    GameLogger.Log($"[WinsController] [{role}] Winner is OPPONENT");
-                }
-                GameLogger.Log($"[WinsController] [{role}] Displaying winner section: '{winnerDisplay}'");
+                // Left side = local player, right side = opponent
+                GameLogger.Log($"[WinsController] [{role}] Displaying local section (left): '{localDisplay}'");
                 DisplaySection(winContainer, winnerNameText, winnerScoreText, winnerHealthText,
-                               winnerDisplay, r.WinnerScore, r.WinnerHealth);
+                               localDisplay, localScore, localHealth);
 
-                // Loser section - Hiển thị tên + "(Bạn)" nếu là local player
-                string loserDisplay = r.LoserName;
-                int    loserId      = (r.WinnerId == 0) ? 1 : 0;
-                if (loserId == r.LocalPlayerId)
-                {
-                    loserDisplay += " (Bạn)";
-                    GameLogger.Log($"[WinsController] [{role}] Loser is LOCAL player");
-                }
-                else
-                {
-                    GameLogger.Log($"[WinsController] [{role}] Loser is OPPONENT");
-                }
-                if (r.IsAbandoned && r.AbandonedPlayerId == loserId)
-                {
-                    loserDisplay += " (Đã Rời Trận)";
-                    GameLogger.Log($"[WinsController] [{role}] Loser abandoned the match");
-                }
-                GameLogger.Log($"[WinsController] [{role}] Displaying loser section: '{loserDisplay}'");
+                // Ensure any duplicate or decorative stat labels under the left/local container
+                // also receive the updated values (robustness against scene variants).
+                UpdateContainerStats(winContainer, localScore, localHealth);
+
+                GameLogger.Log($"[WinsController] [{role}] Displaying opponent section (right): '{opponentDisplay}'");
                 DisplaySection(lostContainer, loserNameText, loserScoreText, loserHealthText,
-                               loserDisplay, r.LoserScore, r.LoserHealth);
+                               opponentDisplay, opponentScore, opponentHealth);
+
+                // Ensure any duplicate or decorative stat labels under the right/opponent container
+                // also receive the updated values.
+                UpdateContainerStats(lostContainer, opponentScore, opponentHealth);
 
                 GameLogger.Log($"[WinsController] [{role}] ✅ DisplayMatchResult COMPLETE");
                 Log("Match result displayed successfully");
@@ -261,6 +267,53 @@ namespace DoAnGame.UI
         }
 
         /// <summary>
+        /// Robustly update common stat text children under a container (handles duplicate
+        /// or otherwise-named TMP text objects in the Win/Lost panels). This helps
+        /// avoid cases where another TMP object (e.g. decorative/stat panel) still shows
+        /// a stale value even though the main serialized field was updated.
+        /// </summary>
+        private void UpdateContainerStats(GameObject container, int score, int health)
+        {
+            if (container == null)
+                return;
+
+            var texts = container.GetComponentsInChildren<TextMeshProUGUI>(true);
+            var net = NetworkManager.Singleton;
+            string role = (net != null && net.IsServer) ? "HOST" : "CLIENT";
+
+            GameLogger.Log($"[WinsController] [{role}] Debug: found {texts.Length} TMP children under '{container.name}'");
+
+            foreach (var t in texts)
+            {
+                if (t == null || string.IsNullOrEmpty(t.gameObject.name))
+                    continue;
+
+                var n = t.gameObject.name.ToLowerInvariant();
+
+                // Log existing value before change
+                GameLogger.Log($"[WinsController] [{role}] Debug BEFORE: '{t.gameObject.name}' = '{t.text}'");
+
+                // Common Vietnamese name patterns used in the scene exports
+                if (n.Contains("diem") || n.Contains("diem_so") || n.Contains("diem_so_nhan"))
+                {
+                    t.SetText($"Điểm Số: {score}");
+                    GameLogger.Log($"[WinsController] [{role}] Debug SET: '{t.gameObject.name}' -> 'Điểm Số: {score}'");
+                    continue;
+                }
+
+                if (n.Contains("so_mau") || n.Contains("so_mau_con") || n.Contains("so_mau_con_lai"))
+                {
+                    t.SetText($"Số Máu Còn Lại: {health}");
+                    GameLogger.Log($"[WinsController] [{role}] Debug SET: '{t.gameObject.name}' -> 'Số Máu Còn Lại: {health}'");
+                    continue;
+                }
+
+                // Optionally log if we didn't match any pattern
+                GameLogger.Log($"[WinsController] [{role}] Debug SKIP: '{t.gameObject.name}' (no pattern matched)");
+            }
+        }
+
+        /// <summary>
         /// Fallback: đọc từ BattleManager nếu cache chưa được push
         /// (trường hợp trận kết thúc bình thường, không phải forfeit)
         /// </summary>
@@ -283,6 +336,24 @@ namespace DoAnGame.UI
             NetworkedPlayerState winner = (winnerId == 0) ? p1 : p2;
             NetworkedPlayerState loser  = (winnerId == 0) ? p2 : p1;
 
+            int cachedP1Health = battleManager.cachedPlayer1Health;
+            int cachedP2Health = battleManager.cachedPlayer2Health;
+            int cachedP1Score = battleManager.cachedPlayer1Score;
+            int cachedP2Score = battleManager.cachedPlayer2Score;
+
+            int winnerHealth = (cachedP1Health >= 0 && cachedP2Health >= 0)
+                ? ((winnerId == 0) ? cachedP1Health : cachedP2Health)
+                : winner.CurrentHealth.Value;
+            int loserHealth = (cachedP1Health >= 0 && cachedP2Health >= 0)
+                ? ((winnerId == 0) ? cachedP2Health : cachedP1Health)
+                : loser.CurrentHealth.Value;
+            int winnerScore = (cachedP1Score >= 0 && cachedP2Score >= 0)
+                ? ((winnerId == 0) ? cachedP1Score : cachedP2Score)
+                : winner.Score.Value;
+            int loserScore = (cachedP1Score >= 0 && cachedP2Score >= 0)
+                ? ((winnerId == 0) ? cachedP2Score : cachedP1Score)
+                : loser.Score.Value;
+
             LastResult = new MatchResultData
             {
                 IsValid           = true,
@@ -291,11 +362,11 @@ namespace DoAnGame.UI
                 IsAbandoned       = battleManager.IsAbandoned.Value,
                 AbandonedPlayerId = battleManager.AbandonedPlayerId.Value,
                 WinnerName        = winner.PlayerName.Value.ToString(),
-                WinnerScore       = winner.Score.Value,
-                WinnerHealth      = winner.CurrentHealth.Value,
+                WinnerScore       = winnerScore,
+                WinnerHealth      = winnerHealth,
                 LoserName         = loser.PlayerName.Value.ToString(),
-                LoserScore        = loser.Score.Value,
-                LoserHealth       = loser.CurrentHealth.Value,
+                LoserScore        = loserScore,
+                LoserHealth       = loserHealth,
             };
             return true;
         }
@@ -321,8 +392,11 @@ namespace DoAnGame.UI
                 return;
             }
 
-            int winnerAvatarId = 0;
-            int loserAvatarId  = 0;
+            int leftAvatarId = 0;
+            int rightAvatarId  = 0;
+            bool isLocalWinner = (r.WinnerId == r.LocalPlayerId);
+            int localPlayerId = r.LocalPlayerId;
+            int opponentPlayerId = (localPlayerId == 0) ? 1 : 0;
 
             // Lấy avatarId từ NetworkedPlayerState nếu còn sống
             if (battleManager != null)
@@ -333,27 +407,27 @@ namespace DoAnGame.UI
                 Debug.Log($"[WinsController] [{role}] Player1State: {(p1 != null ? "FOUND" : "NULL")}");
                 Debug.Log($"[WinsController] [{role}] Player2State: {(p2 != null ? "FOUND" : "NULL")}");
 
-                var winnerState = (r.WinnerId == 0) ? p1 : p2;
-                var loserState  = (r.WinnerId == 0) ? p2 : p1;
+                var localState = (localPlayerId == 0) ? p1 : p2;
+                var opponentState = (localPlayerId == 0) ? p2 : p1;
 
-                if (winnerState != null)
+                if (localState != null)
                 {
-                    winnerAvatarId = winnerState.AvatarId.Value;
-                    Debug.Log($"[WinsController] [{role}] Winner (Player{r.WinnerId + 1}) AvatarId from PlayerState: {winnerAvatarId}");
+                    rightAvatarId = localState.AvatarId.Value;
+                    Debug.Log($"[WinsController] [{role}] Local (Player{localPlayerId + 1}) AvatarId from PlayerState: {rightAvatarId}");
                 }
                 else
                 {
-                    Debug.LogWarning($"[WinsController] [{role}] Winner PlayerState is NULL!");
+                    Debug.LogWarning($"[WinsController] [{role}] Local PlayerState is NULL!");
                 }
                 
-                if (loserState  != null)
+                if (opponentState != null)
                 {
-                    loserAvatarId  = loserState.AvatarId.Value;
-                    Debug.Log($"[WinsController] [{role}] Loser (Player{(r.WinnerId == 0 ? 2 : 1)}) AvatarId from PlayerState: {loserAvatarId}");
+                    leftAvatarId = opponentState.AvatarId.Value;
+                    Debug.Log($"[WinsController] [{role}] Opponent (Player{opponentPlayerId + 1}) AvatarId from PlayerState: {leftAvatarId}");
                 }
                 else
                 {
-                    Debug.LogWarning($"[WinsController] [{role}] Loser PlayerState is NULL!");
+                    Debug.LogWarning($"[WinsController] [{role}] Opponent PlayerState is NULL!");
                 }
             }
             else
@@ -362,32 +436,26 @@ namespace DoAnGame.UI
             }
 
             // Fallback: local player dùng AvatarManager
-            bool isLocalWinner = (r.WinnerId == r.LocalPlayerId);
             int localAvatarId  = AvatarManager.Instance?.GetCurrentAvatarId() ?? 0;
             Debug.Log($"[WinsController] [{role}] IsLocalWinner: {isLocalWinner}, LocalAvatarId from AvatarManager: {localAvatarId}");
 
-            if (isLocalWinner)
+            if (rightAvatarId == 0)
             {
-                winnerAvatarId = localAvatarId;
-                Debug.Log($"[WinsController] [{role}] Using local avatar for winner: {winnerAvatarId}");
-            }
-            else
-            {
-                loserAvatarId = localAvatarId;
-                Debug.Log($"[WinsController] [{role}] Using local avatar for loser: {loserAvatarId}");
+                rightAvatarId = localAvatarId;
+                Debug.Log($"[WinsController] [{role}] Using local avatar for right/local side: {rightAvatarId}");
             }
 
             // ✅ FIX: Apply avatar WITHOUT animation, then trigger Happy/Sad
             // ✅ CRITICAL: Ensure only 1 PSB is visible at a time
             if (winnerCharacter != null)
             {
-                Debug.Log($"[WinsController] [{role}] Calling winnerCharacter.SetAvatarWithoutAnimation({winnerAvatarId})...");
-                winnerCharacter.SetAvatarWithoutAnimation(winnerAvatarId);
+                Debug.Log($"[WinsController] [{role}] Calling winnerCharacter.SetAvatarWithoutAnimation({leftAvatarId})...");
+                winnerCharacter.SetAvatarWithoutAnimation(leftAvatarId);
                 
-                // ✅ CRITICAL: Delay để đảm bảo SetAvatarWithoutAnimation hoàn tất trước khi ShowHappy
-                // Tránh race condition giữa SetAvatar và ShowHappy
-                Debug.Log($"[WinsController] [{role}] Scheduling winnerCharacter.ShowHappy() after 0.1s delay...");
-                winnerAnimationRoutine = StartCoroutine(DelayedShowAnimation(winnerCharacter, true, 0.1f));
+                // Left side shows local outcome
+                bool leftIsHappy = isLocalWinner;
+                Debug.Log($"[WinsController] [{role}] Scheduling winnerCharacter.{(leftIsHappy ? "ShowHappy" : "ShowSad")}() after 0.1s delay...");
+                winnerAnimationRoutine = StartCoroutine(DelayedShowAnimation(winnerCharacter, leftIsHappy, 0.1f));
             }
             else
             {
@@ -396,19 +464,19 @@ namespace DoAnGame.UI
 
             if (loserCharacter != null)
             {
-                Debug.Log($"[WinsController] [{role}] Calling loserCharacter.SetAvatarWithoutAnimation({loserAvatarId})...");
-                loserCharacter.SetAvatarWithoutAnimation(loserAvatarId);
+                Debug.Log($"[WinsController] [{role}] Calling loserCharacter.SetAvatarWithoutAnimation({rightAvatarId})...");
+                loserCharacter.SetAvatarWithoutAnimation(rightAvatarId);
                 
-                // ✅ CRITICAL: Delay để đảm bảo SetAvatarWithoutAnimation hoàn tất trước khi ShowSad
-                Debug.Log($"[WinsController] [{role}] Scheduling loserCharacter.ShowSad() after 0.1s delay...");
-                loserAnimationRoutine = StartCoroutine(DelayedShowAnimation(loserCharacter, false, 0.1f));
+                // Right side is always opponent player
+                Debug.Log($"[WinsController] [{role}] Scheduling loserCharacter.{(!isLocalWinner ? "ShowHappy" : "ShowSad")}() after 0.1s delay...");
+                loserAnimationRoutine = StartCoroutine(DelayedShowAnimation(loserCharacter, !isLocalWinner, 0.1f));
             }
             else
             {
                 Debug.LogWarning($"[WinsController] [{role}] ⚠️ loserCharacter is NULL!");
             }
 
-            Log($"SetWinsPanelAvatars: winner avatarId={winnerAvatarId}, loser avatarId={loserAvatarId}");
+            Log($"SetWinsPanelAvatars: left avatarId={leftAvatarId}, right avatarId={rightAvatarId}");
             Debug.Log($"[WinsController] [{role}] ===== SetWinsPanelAvatars COMPLETE =====");
         }
 

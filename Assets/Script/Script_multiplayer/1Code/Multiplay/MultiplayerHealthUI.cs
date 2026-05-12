@@ -13,13 +13,13 @@ namespace DoAnGame.UI
     /// </summary>
     public class MultiplayerHealthUI : MonoBehaviour
     {
-        [Header("=== PLAYER 1 ===")]
+        [Header("=== LEFT / LOCAL ===")]
         [SerializeField] private Image player1HealthFill;
         [SerializeField] private TMP_Text player1HealthText;
         [SerializeField] private TMP_Text player1NameText;
         [SerializeField] private TMP_Text player1ScoreText;
 
-        [Header("=== PLAYER 2 ===")]
+        [Header("=== RIGHT / OPPONENT ===")]
         [SerializeField] private Image player2HealthFill;
         [SerializeField] private TMP_Text player2HealthText;
         [SerializeField] private TMP_Text player2NameText;
@@ -160,39 +160,44 @@ namespace DoAnGame.UI
             // ✅ Unsubscribe cũ trước khi subscribe mới (tránh duplicate lần 2+)
             UnsubscribeAll();
 
-            // Subscribe Player 1 — dùng named delegates để có thể unsubscribe
-            Debug.Log($"[HealthUI] Subscribing to Player1: HP={player1State.CurrentHealth.Value}/{player1State.MaxHealth.Value}");
-            
-            var p1 = player1State; // capture local để tránh closure issue
-            onP1HealthChanged = (old, val) => UpdateHealth(player1HealthFill, player1HealthText, val, p1.MaxHealth.Value);
+            var net = NetworkManager.Singleton;
+            bool isHost = net != null && net.IsHost;
+            var localState = isHost ? player1State : player2State;
+            var opponentState = isHost ? player2State : player1State;
+
+            // Subscribe left/local side
+            Debug.Log($"[HealthUI] Subscribing to Local/Left: HP={localState.CurrentHealth.Value}/{localState.MaxHealth.Value}");
+
+            var local = localState; // capture local để tránh closure issue
+            onP1HealthChanged = (old, val) => UpdateHealth(player1HealthFill, player1HealthText, val, local.MaxHealth.Value);
             onP1ScoreChanged  = (old, val) => UpdateScore(player1ScoreText, val);
-            onP1NameChanged   = (old, val) => UpdatePlayerName(player1NameText, val.ToString(), "Player 1", p1);
+            onP1NameChanged   = (old, val) => UpdatePlayerName(player1NameText, val.ToString(), "Left Player", local);
 
-            player1State.CurrentHealth.OnValueChanged += onP1HealthChanged;
-            player1State.Score.OnValueChanged         += onP1ScoreChanged;
-            player1State.PlayerName.OnValueChanged    += onP1NameChanged;
+            localState.CurrentHealth.OnValueChanged += onP1HealthChanged;
+            localState.Score.OnValueChanged         += onP1ScoreChanged;
+            localState.PlayerName.OnValueChanged    += onP1NameChanged;
 
-            // Initial update Player 1
-            UpdateHealth(player1HealthFill, player1HealthText, player1State.CurrentHealth.Value, player1State.MaxHealth.Value);
-            UpdateScore(player1ScoreText, player1State.Score.Value);
-            UpdatePlayerName(player1NameText, player1State.PlayerName.Value.ToString(), "Player 1", player1State);
+            // Initial update left/local
+            UpdateHealth(player1HealthFill, player1HealthText, localState.CurrentHealth.Value, localState.MaxHealth.Value);
+            UpdateScore(player1ScoreText, localState.Score.Value);
+            UpdatePlayerName(player1NameText, localState.PlayerName.Value.ToString(), "Left Player", localState);
 
-            // Subscribe Player 2
-            Debug.Log($"[HealthUI] Subscribing to Player2: HP={player2State.CurrentHealth.Value}/{player2State.MaxHealth.Value}");
+            // Subscribe right/opponent side
+            Debug.Log($"[HealthUI] Subscribing to Opponent/Right: HP={opponentState.CurrentHealth.Value}/{opponentState.MaxHealth.Value}");
             
-            var p2 = player2State;
-            onP2HealthChanged = (old, val) => UpdateHealth(player2HealthFill, player2HealthText, val, p2.MaxHealth.Value);
+            var opponent = opponentState;
+            onP2HealthChanged = (old, val) => UpdateHealth(player2HealthFill, player2HealthText, val, opponent.MaxHealth.Value);
             onP2ScoreChanged  = (old, val) => UpdateScore(player2ScoreText, val);
-            onP2NameChanged   = (old, val) => UpdatePlayerName(player2NameText, val.ToString(), "Player 2", p2);
+            onP2NameChanged   = (old, val) => UpdatePlayerName(player2NameText, val.ToString(), "Right Player", opponent);
 
-            player2State.CurrentHealth.OnValueChanged += onP2HealthChanged;
-            player2State.Score.OnValueChanged         += onP2ScoreChanged;
-            player2State.PlayerName.OnValueChanged    += onP2NameChanged;
+            opponentState.CurrentHealth.OnValueChanged += onP2HealthChanged;
+            opponentState.Score.OnValueChanged         += onP2ScoreChanged;
+            opponentState.PlayerName.OnValueChanged    += onP2NameChanged;
 
-            // Initial update Player 2
-            UpdateHealth(player2HealthFill, player2HealthText, player2State.CurrentHealth.Value, player2State.MaxHealth.Value);
-            UpdateScore(player2ScoreText, player2State.Score.Value);
-            UpdatePlayerName(player2NameText, player2State.PlayerName.Value.ToString(), "Player 2", player2State);
+            // Initial update right/opponent
+            UpdateHealth(player2HealthFill, player2HealthText, opponentState.CurrentHealth.Value, opponentState.MaxHealth.Value);
+            UpdateScore(player2ScoreText, opponentState.Score.Value);
+            UpdatePlayerName(player2NameText, opponentState.PlayerName.Value.ToString(), "Right Player", opponentState);
 
             // Subscribe Timer
             onTimeRemainingChanged = (old, val) => UpdateTimer(val);
