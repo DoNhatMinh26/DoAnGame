@@ -266,14 +266,22 @@ namespace DoAnGame.UI
 
             Debug.Log($"[BattleController] 🔗 Subscribing to NetworkVariables (IsSpawned={netObj?.IsSpawned})");
 
+            // Prevent duplicate subscription if called multiple times
+            UnsubscribeNetworkVariables();
+
             // Subscribe vào CurrentQuestion changes
             battleManager.CurrentQuestion.OnValueChanged += OnQuestionChanged;
-            
-            // Subscribe vào Choice changes
-            battleManager.Choice1.OnValueChanged += (oldVal, newVal) => OnChoicesChanged();
-            battleManager.Choice2.OnValueChanged += (oldVal, newVal) => OnChoicesChanged();
-            battleManager.Choice3.OnValueChanged += (oldVal, newVal) => OnChoicesChanged();
-            battleManager.Choice4.OnValueChanged += (oldVal, newVal) => OnChoicesChanged();
+
+            // Subscribe vào Choice changes (store delegates so we can unsubscribe)
+            _onChoice1Changed ??= (oldVal, newVal) => OnChoicesChanged();
+            _onChoice2Changed ??= (oldVal, newVal) => OnChoicesChanged();
+            _onChoice3Changed ??= (oldVal, newVal) => OnChoicesChanged();
+            _onChoice4Changed ??= (oldVal, newVal) => OnChoicesChanged();
+
+            battleManager.Choice1.OnValueChanged += _onChoice1Changed;
+            battleManager.Choice2.OnValueChanged += _onChoice2Changed;
+            battleManager.Choice3.OnValueChanged += _onChoice3Changed;
+            battleManager.Choice4.OnValueChanged += _onChoice4Changed;
 
             // ✅ FIX: Subscribe vào TimeRemaining để update timer UI
             battleManager.TimeRemaining.OnValueChanged += OnTimeRemainingChanged;
@@ -285,9 +293,7 @@ namespace DoAnGame.UI
             Debug.Log("[BattleController] ✅ Subscribed to NetworkVariable changes");
 
             // ✅ FIX: FORCE INITIAL SYNC - Đảm bảo Client nhận được data ngay cả khi join sau
-            // OnValueChanged chỉ trigger khi VALUE THAY ĐỔI, không trigger cho giá trị ban đầu
-            // Nên phải manually sync lần đầu
-            Invoke(nameof(ForceInitialSync), 0.2f); // Delay nhỏ để đảm bảo NetworkVariables đã replicate
+            Invoke(nameof(ForceInitialSync), 0.2f);
         }
 
         /// <summary>
@@ -397,7 +403,23 @@ namespace DoAnGame.UI
             battleManager.TimeRemaining.OnValueChanged -= OnTimeRemainingChanged;
             battleManager.MatchStarted.OnValueChanged -= OnMatchStartedChanged;
             battleManager.MatchEnded.OnValueChanged -= OnMatchEndedChanged;
-            // Note: Choice callbacks are anonymous, cannot unsubscribe individually
+
+            // Unsubscribe choices using cached delegates to avoid duplicates across matches
+            if (_onChoice1Changed != null) battleManager.Choice1.OnValueChanged -= _onChoice1Changed;
+            if (_onChoice2Changed != null) battleManager.Choice2.OnValueChanged -= _onChoice2Changed;
+            if (_onChoice3Changed != null) battleManager.Choice3.OnValueChanged -= _onChoice3Changed;
+            if (_onChoice4Changed != null) battleManager.Choice4.OnValueChanged -= _onChoice4Changed;
+
+            if (_onLocalAvatarIdChanged != null && battleManager.GetPlayer1State() != null)
+            {
+                var p1 = battleManager.GetPlayer1State();
+                if (p1 != null) p1.AvatarId.OnValueChanged -= _onLocalAvatarIdChanged;
+            }
+            if (_onOpponentAvatarIdChanged != null && battleManager.GetPlayer2State() != null)
+            {
+                var p2 = battleManager.GetPlayer2State();
+                if (p2 != null) p2.AvatarId.OnValueChanged -= _onOpponentAvatarIdChanged;
+            }
         }
 
         /// <summary>
@@ -553,12 +575,13 @@ namespace DoAnGame.UI
                     Debug.Log($"[BattleController] [{role}] ✅ Activated LeftCharacter GameObject");
                 }
                 
-                // Subscribe để update nếu AvatarId sync muộn
-                localState.AvatarId.OnValueChanged += (oldId, newId) =>
+                // Subscribe để update nếu AvatarId sync muộn (store delegate để unsubscribe)
+                _onLocalAvatarIdChanged ??= (oldId, newId) =>
                 {
                     Debug.Log($"[BattleController] [{role}] Local AvatarId changed: {oldId} → {newId}");
                     leftCharacter.SetAvatar(newId);
                 };
+                localState.AvatarId.OnValueChanged += _onLocalAvatarIdChanged;
             }
             else
             {
@@ -579,12 +602,13 @@ namespace DoAnGame.UI
                     Debug.Log($"[BattleController] [{role}] ✅ Activated RightCharacter GameObject");
                 }
                 
-                // Subscribe để update nếu AvatarId sync muộn
-                opponentState.AvatarId.OnValueChanged += (oldId, newId) =>
+                // Subscribe để update nếu AvatarId sync muộn (store delegate để unsubscribe)
+                _onOpponentAvatarIdChanged ??= (oldId, newId) =>
                 {
                     Debug.Log($"[BattleController] [{role}] Opponent AvatarId changed: {oldId} → {newId}");
                     rightCharacter.SetAvatar(newId);
                 };
+                opponentState.AvatarId.OnValueChanged += _onOpponentAvatarIdChanged;
             }
             else
             {
@@ -1033,6 +1057,15 @@ namespace DoAnGame.UI
         /// ✅ FIX: Guard để tránh duplicate call (event + ClientRpc)
         /// </summary>
         private bool hasHandledMatchEnd = false;
+
+        // NetworkVariable delegate caches (allow unsubscribe to avoid duplicate UI updates across matches)
+        private NetworkVariable<int>.OnValueChangedDelegate _onChoice1Changed;
+        private NetworkVariable<int>.OnValueChangedDelegate _onChoice2Changed;
+        private NetworkVariable<int>.OnValueChangedDelegate _onChoice3Changed;
+        private NetworkVariable<int>.OnValueChangedDelegate _onChoice4Changed;
+
+        private NetworkVariable<int>.OnValueChangedDelegate _onLocalAvatarIdChanged;
+        private NetworkVariable<int>.OnValueChangedDelegate _onOpponentAvatarIdChanged;
         
         private void HandleMatchEnded(int winnerId, int winnerHealth)
         {
