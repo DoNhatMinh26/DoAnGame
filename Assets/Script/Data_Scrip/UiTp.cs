@@ -242,13 +242,13 @@ public class GameUIManager : MonoBehaviour
         UpdateEnemyCounterUI();
     }
     public void PlayMascotAnimation(string triggerName)
+{
+    // Chạy cho Animator chính được kéo vào Inspector
+    if (sharedAnimator != null && sharedAnimator.gameObject.activeInHierarchy) 
     {
-        // Chạy cho Animator chính được kéo vào Inspector
-        if (sharedAnimator != null && sharedAnimator.gameObject.activeInHierarchy)
-        {
-            sharedAnimator.SetTrigger(triggerName);
-        }
+        sharedAnimator.SetTrigger(triggerName);
     }
+}
     #region LOGIC SKIN MÈO 
 
     public void LoadCurrentSkin()
