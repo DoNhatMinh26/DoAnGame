@@ -42,6 +42,7 @@ namespace DoAnGame.UI
         private bool hadTwoPlayersInSession;
         private bool sessionEndedHandled;
         private float nextSessionCheckAt;
+        private bool countdownCompleted;
 
         protected override void OnShow()
         {
@@ -116,6 +117,7 @@ namespace DoAnGame.UI
             hadTwoPlayersInSession = false;
             sessionEndedHandled = false;
             nextSessionCheckAt = 0f;
+            countdownCompleted = false;
             
             // ✅ DEBUG: Log character references
             Debug.Log($"[BattleController] HandlePanelActivated - player1Character activeInHierarchy={player1Character?.gameObject.activeInHierarchy}, activeSelf={player1Character?.gameObject.activeSelf}");
@@ -663,8 +665,12 @@ namespace DoAnGame.UI
             }
 
             // ✅ CRITICAL FIX: Start timer cho câu hỏi mới
-            // Gọi StartQuestionTimer() để bắt đầu đếm ngược cho câu hỏi này
-            StartQuestionTimer();
+            // Câu đầu: timer sẽ được start sau countdown.
+            // Câu tiếp theo: chỉ start UI timer để bám theo server timer đang chạy.
+            if (countdownCompleted)
+            {
+                StartQuestionTimerUiOnly();
+            }
 
             // ✅ AVATAR ANIMATION: Reset về Idle khi câu hỏi mới bắt đầu (Question Time)
             Debug.Log($"[BattleController] [{role}] ===== AVATAR ANIMATION: Question Time → ShowIdle() =====");
@@ -1448,6 +1454,7 @@ namespace DoAnGame.UI
             // Hiển thị tất cả UI và bắt đầu timer
             ShowAllBattleUI();
             StartQuestionTimer();
+            countdownCompleted = true;
             
             Debug.Log("[BattleController] ✅ Countdown complete, battle started!");
         }
@@ -1560,6 +1567,11 @@ namespace DoAnGame.UI
             }
 
             // ✅ CẢ HOST VÀ CLIENT: Start AnswerSummaryUI timer (UI countdown)
+            StartQuestionTimerUiOnly();
+        }
+
+        private void StartQuestionTimerUiOnly()
+        {
             var answerSummaryUI = FindObjectOfType<AnswerSummaryUI>();
             if (answerSummaryUI != null)
             {

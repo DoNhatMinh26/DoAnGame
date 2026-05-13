@@ -1323,6 +1323,11 @@ namespace DoAnGame.Multiplayer
         private void NotifyAnswerResultClientRpc(int winnerId, bool correct, long player1ResponseTimeMs, long player2ResponseTimeMs, int player1Answer, int player2Answer)
         {
             Debug.Log($"[BattleManager] Client received answer result: Winner={winnerId}, Correct={correct}, P1Time={player1ResponseTimeMs}ms, P2Time={player2ResponseTimeMs}ms, P1Answer={player1Answer}, P2Answer={player2Answer}");
+            if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsHost)
+            {
+                GameLogger.Log("[BattleManager] [HOST] Skipping OnAnswerResult invoke in ClientRpc (already invoked on server)");
+                return;
+            }
             OnAnswerResult?.Invoke(winnerId, correct, player1ResponseTimeMs);
             OnAnswerResultReceived?.Invoke(winnerId, correct, player1ResponseTimeMs, player2ResponseTimeMs, player1Answer, player2Answer);
         }
