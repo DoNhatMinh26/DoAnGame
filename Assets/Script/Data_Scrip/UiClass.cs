@@ -9,6 +9,9 @@ using UnityEngine.UI;
 public class UiClass : MonoBehaviour
 {
     public static UiClass Instance;
+    [Header("Cấu hình vị trí thủ công")]
+    public RectTransform[] waypoints; // Kéo 20 cái P1...P20 vào đây
+    public float backgroundWidth = 1920f; // Chiều rộng 1 tấm ảnh của bạn
 
     [Header("Cấu hình Danh sách Màn học")]
     public GameObject levelButtonPrefab;
@@ -543,12 +546,18 @@ public class UiClass : MonoBehaviour
     #region LOGIC SINH NÚT MÀN CHƠI
     public void GenerateLevelButtons()
     {
-        if (levelButtonPrefab == null || contentParent == null) return;
+        if (levelButtonPrefab == null || contentParent == null || waypoints.Length == 0) return;
 
-        // Xóa các nút cũ trước khi sinh mới[cite: 9]
-        foreach (Transform child in contentParent) Destroy(child.gameObject);
+        // 1. Xóa các nút cũ nhưng giữ lại Background và Waypoints_Group
+        foreach (Transform child in contentParent)
+        {
+            // Giữ lại các đối tượng chứa "Image" và đối tượng "ViTriMan"
+            if (!child.name.Contains("Image") && child.name != "ViTriMan")
+            {
+                Destroy(child.gameObject);
+            }
+        }
 
-        // Lưu tiến trình riêng cho lớp học[cite: 9]
         int highestLevel = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.ClassHighest, 1);
 
         for (int i = 1; i <= 100; i++)
@@ -556,19 +565,24 @@ public class UiClass : MonoBehaviour
             GameObject btnObj = Instantiate(levelButtonPrefab, contentParent);
             RectTransform btnRect = btnObj.GetComponent<RectTransform>();
 
-            // Công thức sóng Sin tạo hiệu ứng uốn lượn[cite: 9]
-            float posX = (i - 1) * buttonSpacing;
-            float posY = Mathf.Sin(i * waveFrequency) * waveAmplitude;
-            btnRect.anchoredPosition = new Vector2(posX + (buttonSpacing / 2f), posY);
+            // 2. Tính toán vị trí dựa trên Waypoint
+            int indexInImage = (i - 1) % 10; // Chia cho 10 vì mỗi ảnh có 10 nút
+            int imageIndex = (i - 1) / 10;   // Xác định nút thuộc tấm ảnh thứ mấy (0-9)
 
-            // Gán số màn chơi vào Text
+            // Lấy tọa độ X, Y của điểm mốc tương ứng
+            Vector2 pointPos = waypoints[indexInImage].anchoredPosition;
+
+            // Cộng thêm độ lệch theo chiều ngang của tấm ảnh thứ n
+            float finalPosX = pointPos.x + (imageIndex * backgroundWidth);
+
+            btnRect.anchoredPosition = new Vector2(finalPosX, pointPos.y);
+
+            // 3. Gán số và xử lý logic khóa/mở nút
             TextMeshProUGUI txt = btnObj.GetComponentInChildren<TextMeshProUGUI>();
             if (txt != null) txt.text = i.ToString();
 
             Button btn = btnObj.GetComponent<Button>();
             int levelIndex = i;
-
-            // Kiểm tra điều kiện mở khóa hoặc các mốc Test[cite: 1]
             if (i <= highestLevel || i == 30 || i == 50 || i == 70 || i == 100)
             {
                 btn.interactable = true;
@@ -578,11 +592,12 @@ public class UiClass : MonoBehaviour
             else
             {
                 btn.interactable = false;
-                btn.image.color = new Color(0.5f, 0.5f, 0.5f, 0.8f);
+                btn.image.color = new Color(0.8f, 0.8f, 0.8f, 1f);
             }
         }
-        // Cập nhật độ dài của Content để ScrollView hoạt động[cite: 9]
-        contentParent.sizeDelta = new Vector2(100 * buttonSpacing, contentParent.sizeDelta.y);
+
+        // 4. Thiết lập độ dài vùng kéo cho 5 tấm ảnh
+        contentParent.sizeDelta = new Vector2((backgroundWidth * 10)+180, contentParent.sizeDelta.y);
     }
 
     public void BatDauBaiHoc(int levelIndex)

@@ -9,7 +9,9 @@ using System.Collections.Generic;
 public class GameUIManager : MonoBehaviour
 {
     public static GameUIManager Instance;
-
+    [Header("Cấu hình vị trí thủ công")]
+    public RectTransform[] waypoints; // Kéo 20 điểm p(1) đến p(20) vào đây
+    public float backgroundWidth = 1920f; // Chiều rộng 1 tấm ảnh nền
     [Header("Cấu hình Danh sách Màn chơi")]
     public GameObject levelButtonPrefab;
     public RectTransform contentParent;
@@ -900,48 +902,63 @@ public class GameUIManager : MonoBehaviour
         }
     }
     #endregion
-
+    //KeoThaHighest
     #region LOGIC SINH NÚT MÀN CHƠI
-    private void GenerateLevelButtons()
+    public void GenerateLevelButtons()
     {
-        if (levelButtonPrefab == null || contentParent == null) return;
-        foreach (Transform child in contentParent) Destroy(child.gameObject);
+        if (levelButtonPrefab == null || contentParent == null || waypoints.Length == 0) return;
 
-        // Lấy màn cao nhất đã mở khóa (Mặc định là màn 1)
-        int highestLevelReached = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.KeoThaHighest, 1);
+        // 1. Xóa nút cũ, giữ lại các thành phần Map
+        foreach (Transform child in contentParent)
+        {
+            // Kiểm tra tên đối tượng trong Hierarchy của Map Phòng Thủ để tránh xóa nhầm
+            if (!child.name.Contains("Image") && child.name != "ViTriMan")
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        // 2. Lấy đúng level cao nhất của chế độ Phòng Thủ
+        int highestLevel = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.KeoThaHighest, 1);
 
         for (int i = 1; i <= 100; i++)
         {
             GameObject btnObj = Instantiate(levelButtonPrefab, contentParent);
             RectTransform btnRect = btnObj.GetComponent<RectTransform>();
-            Button btn = btnObj.GetComponent<Button>();
 
-            // Tính toán vị trí nút (giữ nguyên logic của bạn)
-            float posX = (i - 1) * buttonSpacing;
-            float posY = Mathf.Sin(i * waveFrequency) * waveAmplitude;
-            btnRect.anchoredPosition = new Vector2(posX + (buttonSpacing / 2f), posY);
+            // 3. Logic tính vị trí theo Waypoint (20 điểm lặp lại)
+            int indexInImage = (i - 1) % 10;
+            int imageIndex = (i - 1) / 10;
 
+            Vector2 pointPos = waypoints[indexInImage].anchoredPosition;
+            float finalPosX = pointPos.x + (imageIndex * backgroundWidth);
+
+            btnRect.anchoredPosition = new Vector2(finalPosX, pointPos.y);
+
+            // 4. Thiết lập hiển thị số thứ tự màn
             TextMeshProUGUI txt = btnObj.GetComponentInChildren<TextMeshProUGUI>();
             if (txt != null) txt.text = i.ToString();
 
+            // 5. Logic khóa/mở màn dựa trên KeoThaHighest
+            Button btn = btnObj.GetComponent<Button>();
             int levelIndex = i;
 
-            // KIỂM TRA MỞ KHÓA
-            if (i <= highestLevelReached)
+            if (i <= highestLevel)
             {
-                // Màn đã mở: Cho phép bấm và để màu bình thường
                 btn.interactable = true;
                 btn.image.color = Color.white;
+                // Gọi hàm bắt đầu chơi của chế độ Phòng Thủ
                 btn.onClick.AddListener(() => BatDauChoiMan(levelIndex));
             }
             else
             {
-                // Màn bị khóa: Không cho bấm và làm mờ nút
                 btn.interactable = false;
-                btn.image.color = new Color(0.5f, 0.5f, 0.5f, 0.8f); // Màu xám mờ
+                btn.image.color = new Color(0.6f, 0.6f, 0.6f, 1f);
             }
         }
-        contentParent.sizeDelta = new Vector2(100 * buttonSpacing, contentParent.sizeDelta.y);
+
+        // 6. Cập nhật vùng kéo khớp với chiều dài 5 tấm ảnh nền
+        contentParent.sizeDelta = new Vector2((backgroundWidth * 10)+180, contentParent.sizeDelta.y);
     }
 
     public void BatDauChoiMan(int levelIndex)
