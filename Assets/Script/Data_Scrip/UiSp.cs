@@ -8,6 +8,9 @@ using UnityEngine.Video;
 public class UiSp : MonoBehaviour
 {
     public static UiSp Instance;
+    [Header("Cấu hình vị trí thủ công")]
+    public RectTransform[] waypoints; // Kéo 20 cái P1...P20 vào đây
+    public float backgroundWidth = 1920f; // Chiều rộng 1 tấm ảnh của bạn
     [Header("Quản lý Animation")]
     public Animator gameplayAnimator;
     public Animator spaceshipAnimator;
@@ -560,40 +563,65 @@ public class UiSp : MonoBehaviour
 
         Debug.Log("Dữ liệu game và Skin đã được reset hoàn toàn.");
     }
-    
+
     #endregion
 
     #region LOGIC MÀN CHƠI
-    private void GenerateLevelButtons()
+    //SpaceHighest
+    public void GenerateLevelButtons()
     {
-        foreach (Transform child in contentParent) Destroy(child.gameObject);
+        if (levelButtonPrefab == null || contentParent == null || waypoints.Length == 0) return;
+
+        // 1. Xóa các nút cũ nhưng giữ lại Background và Waypoints_Group
+        foreach (Transform child in contentParent)
+        {
+            // Giữ lại các đối tượng chứa "Image" và đối tượng "ViTriMan"
+            if (!child.name.Contains("Image") && child.name != "ViTriMan")
+            {
+                Destroy(child.gameObject);
+            }
+        }
 
         int highestLevel = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SpaceHighest, 1);
-        float startOffset = 200f;
 
         for (int i = 1; i <= 100; i++)
         {
             GameObject btnObj = Instantiate(levelButtonPrefab, contentParent);
-            float x = startOffset + (i - 1) * buttonSpacing;
-            float y = Mathf.Sin((i - 1) * waveFrequency) * waveAmplitude;
-            btnObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(x, y);
+            RectTransform btnRect = btnObj.GetComponent<RectTransform>();
+
+            // 2. Tính toán vị trí dựa trên Waypoint
+            int indexInImage = (i - 1) % 10; // Chia cho 10 vì mỗi ảnh có 10 nút
+            int imageIndex = (i - 1) / 10;   // Xác định nút thuộc tấm ảnh thứ mấy (0-9)
+
+            // Lấy tọa độ X, Y của điểm mốc tương ứng
+            Vector2 pointPos = waypoints[indexInImage].anchoredPosition;
+
+            // Cộng thêm độ lệch theo chiều ngang của tấm ảnh thứ n
+            float finalPosX = pointPos.x + (imageIndex * backgroundWidth);
+
+            btnRect.anchoredPosition = new Vector2(finalPosX, pointPos.y);
+
+            // 3. Gán số và xử lý logic khóa/mở nút
+            TextMeshProUGUI txt = btnObj.GetComponentInChildren<TextMeshProUGUI>();
+            if (txt != null) txt.text = i.ToString();
 
             Button btn = btnObj.GetComponent<Button>();
-            btnObj.GetComponentInChildren<TextMeshProUGUI>().text = i.ToString();
-
             int levelIndex = i;
             if (i <= highestLevel || i == 30 || i == 50 || i == 70 || i == 100)
             {
                 btn.interactable = true;
+                btn.image.color = Color.white;
                 btn.onClick.AddListener(() => BatDauChoiSpace(levelIndex));
             }
             else
             {
                 btn.interactable = false;
-                btn.image.color = new Color(0.5f, 0.5f, 0.5f, 0.8f);
+                btn.image.color = new Color(0.8f, 0.8f, 0.8f, 1f);
             }
         }
-        contentParent.sizeDelta = new Vector2((100 * buttonSpacing) + startOffset * 2, contentParent.sizeDelta.y);
+
+        // 4. Thiết lập độ dài vùng kéo cho 5 tấm ảnh
+        contentParent.sizeDelta = new Vector2((backgroundWidth * 10) + 180, contentParent.sizeDelta.y);
     }
 
     public void BatDauChoiSpace(int levelIndex)
