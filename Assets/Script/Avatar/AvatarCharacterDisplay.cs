@@ -90,7 +90,12 @@ public class AvatarCharacterDisplay : MonoBehaviour
     /// </summary>
     public void SetAvatar(int avatarId)
     {
-        if (avatarId == currentAvatarId) return;
+        if (avatarId == currentAvatarId)
+        {
+            Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → SetAvatar called with same avatarId={avatarId} — forcing ShowIdle() to reset visuals.");
+            ShowIdle();
+            return;
+        }
 
         Debug.Log($"[AvatarCharacterDisplay] [{GetRole()}] {gameObject.name} → SetAvatar(avatarId={avatarId}) START");
 

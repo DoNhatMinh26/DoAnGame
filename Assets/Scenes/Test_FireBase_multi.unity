@@ -7183,7 +7183,7 @@ MonoBehaviour:
   player1Character: {fileID: 940371409}
   player2Character: {fileID: 1574164805}
   projectilePrefab: {fileID: 472922348047088096, guid: e18321bbf881a904ca8dd9ccbf197930, type: 3}
-  projectileImpactVfx: {fileID: 0}
+  projectileImpactVfx: {fileID: 8466311189295942869, guid: e8c37c304c60a6c4e944511b84325ce8, type: 3}
   projectileParent: {fileID: 1710770186}
   projectileArcHeight: 1.5
   projectileFlightTime: 0.5

@@ -153,6 +153,19 @@ namespace DoAnGame.UI
             // Khởi tạo avatar characters cho cả 2 player
             Debug.Log($"[BattleController] About to call InitAvatarCharacters");
             InitAvatarCharacters();
+
+            // ✅ Ensure answer visuals are cleared when panel activates
+            // This forces drag-drop unlock and resets all answer choice visuals
+            DragAndDrop.SetGlobalLock(false);
+            DoAnGame.Multiplayer.MultiplayerDragAndDrop.SetGlobalLock(false);
+            if (answerChoices != null)
+            {
+                foreach (var ac in answerChoices)
+                {
+                    if (ac != null)
+                        ac.ResetForNewQuestion();
+                }
+            }
             
             MultiplayerDetailedLogger.TraceNetworkSnapshot("UI_BATTLE", "HandlePanelActivated done");
         }
