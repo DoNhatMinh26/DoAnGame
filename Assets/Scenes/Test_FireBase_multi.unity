@@ -1184,7 +1184,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -2442907722026344734, guid: 102230f8557db10479d9538ae628cdbf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1945584960}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: 102230f8557db10479d9538ae628cdbf, type: 3}
       insertIndex: -1
@@ -1221,6 +1224,11 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!4 &125860690 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -2442907722026344734, guid: 102230f8557db10479d9538ae628cdbf, type: 3}
+  m_PrefabInstance: {fileID: 125860686}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &129235922
 GameObject:
   m_ObjectHideFlags: 0
@@ -3053,6 +3061,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 370753108}
   m_CullTransparentMesh: 1
+--- !u!1 &371330715
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 371330716}
+  m_Layer: 0
+  m_Name: HitPoint_Player1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &371330716
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 371330715}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: 0.00000008940696, w: 1}
+  m_LocalPosition: {x: -0, y: 15, z: 0}
+  m_LocalScale: {x: 2.00012, y: 1.9608995, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 940371408}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &397423613
 GameObject:
   m_ObjectHideFlags: 0
@@ -3876,7 +3915,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -2442907722026344734, guid: 102230f8557db10479d9538ae628cdbf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 724728053}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: -8653719598885068355, guid: 102230f8557db10479d9538ae628cdbf, type: 3}
       insertIndex: -1
@@ -3913,6 +3955,11 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!4 &534581426 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -2442907722026344734, guid: 102230f8557db10479d9538ae628cdbf, type: 3}
+  m_PrefabInstance: {fileID: 534581422}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &538549178
 GameObject:
   m_ObjectHideFlags: 0
@@ -5759,6 +5806,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705259752}
   m_CullTransparentMesh: 1
+--- !u!1 &724728052
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 724728053}
+  m_Layer: 0
+  m_Name: AttackMuzzle_Player2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &724728053
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 724728052}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: 0.36773866, w: 0.92992926}
+  m_LocalPosition: {x: 0.3, y: 1.4, z: 0}
+  m_LocalScale: {x: -1.0122378, y: 0.9717302, z: 1.0122377}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 534581426}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &744807493
 GameObject:
   m_ObjectHideFlags: 0
@@ -7104,6 +7182,12 @@ MonoBehaviour:
   matchEndNavigator: {fileID: 84842095}
   player1Character: {fileID: 940371409}
   player2Character: {fileID: 1574164805}
+  projectilePrefab: {fileID: 472922348047088096, guid: e18321bbf881a904ca8dd9ccbf197930, type: 3}
+  projectileImpactVfx: {fileID: 0}
+  projectileParent: {fileID: 1710770186}
+  projectileArcHeight: 1.5
+  projectileFlightTime: 0.5
+  projectileSpinSpeed: 720
 --- !u!114 &909707727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7469,6 +7553,7 @@ RectTransform:
   m_LocalScale: {x: 6.651076, y: 6.7841053, z: 13.30295}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 371330716}
   - {fileID: 125860688}
   - {fileID: 1113479941}
   - {fileID: 1600428967}
@@ -7494,6 +7579,8 @@ MonoBehaviour:
   characterMeo: {fileID: 1600428968}
   characterMeoSad: {fileID: 1113479942}
   meoGoc34Fix: {fileID: 125860687}
+  attackMuzzle: {fileID: 1945584960}
+  hitPoint: {fileID: 1296340582}
 --- !u!1 &942382063
 GameObject:
   m_ObjectHideFlags: 0
@@ -9799,6 +9886,8 @@ MonoBehaviour:
   characterMeo: {fileID: 1432835782}
   characterMeoSad: {fileID: 1070454228}
   meoGoc34Fix: {fileID: 1138622874}
+  attackMuzzle: {fileID: 0}
+  hitPoint: {fileID: 0}
 --- !u!1001 &1138622872
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10919,6 +11008,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1258009887}
   m_CullTransparentMesh: 1
+--- !u!1 &1296340581
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1296340582}
+  m_Layer: 0
+  m_Name: HitPoint_Player2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1296340582
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1296340581}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: 0.00000017881389, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 2.2311492, y: 2.2311492, z: 2.23115}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1574164804}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1297240185
 GameObject:
   m_ObjectHideFlags: 0
@@ -12716,6 +12836,7 @@ RectTransform:
   m_LocalScale: {x: 5.96242, y: 5.96242, z: 5.96242}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1296340582}
   - {fileID: 1782996804}
   - {fileID: 1734299415}
   - {fileID: 534581424}
@@ -12741,6 +12862,8 @@ MonoBehaviour:
   characterMeo: {fileID: 1782996805}
   characterMeoSad: {fileID: 1734299416}
   meoGoc34Fix: {fileID: 534581423}
+  attackMuzzle: {fileID: 724728053}
+  hitPoint: {fileID: 371330716}
 --- !u!1 &1578660999
 GameObject:
   m_ObjectHideFlags: 0
@@ -15172,6 +15295,8 @@ MonoBehaviour:
   characterMeo: {fileID: 818631029}
   characterMeoSad: {fileID: 1501741767}
   meoGoc34Fix: {fileID: 2095929417}
+  attackMuzzle: {fileID: 0}
+  hitPoint: {fileID: 0}
 --- !u!1 &1898306874
 GameObject:
   m_ObjectHideFlags: 0
@@ -15247,6 +15372,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1898306874}
   m_CullTransparentMesh: 1
+--- !u!1 &1945584959
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1945584960}
+  m_Layer: 0
+  m_Name: AttackMuzzle_Player1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1945584960
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1945584959}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: 0.36773857, w: 0.92992926}
+  m_LocalPosition: {x: 0.1, y: -0.1, z: 0}
+  m_LocalScale: {x: 1.0000125, y: 1, z: 1.0000123}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 125860690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1960977773
 GameObject:
   m_ObjectHideFlags: 0

@@ -39,6 +39,14 @@ namespace DoAnGame.UI
         [SerializeField] private AvatarCharacterDisplay player1Character; // Player1Character trong GameplayPanel
         [SerializeField] private AvatarCharacterDisplay player2Character; // Player2Character trong GameplayPanel
 
+        [Header("Projectile (Attack)")]
+        [SerializeField] private GameObject projectilePrefab;
+        [SerializeField] private GameObject projectileImpactVfx;
+        [SerializeField] private Transform projectileParent;
+        [SerializeField] private float projectileArcHeight = 1.5f;
+        [SerializeField] private float projectileFlightTime = 0.5f;
+        [SerializeField] private float projectileSpinSpeed = 720f;
+
         private bool hadTwoPlayersInSession;
         private bool sessionEndedHandled;
         private float nextSessionCheckAt;
@@ -972,6 +980,7 @@ namespace DoAnGame.UI
                     if (leftCharacter != null)
                     {
                         leftCharacter.ShowAttackThenHappy();
+                        SpawnAttackProjectile(leftCharacter, rightCharacter);
                         Debug.Log($"[BattleController] [{role}] ✅ LeftCharacter.ShowAttackThenHappy() DONE");
                     }
                     else
@@ -1032,6 +1041,7 @@ namespace DoAnGame.UI
                     if (rightCharacter != null)
                     {
                         rightCharacter.ShowAttackThenHappy();
+                        SpawnAttackProjectile(rightCharacter, leftCharacter);
                         Debug.Log($"[BattleController] [{role}] ✅ RightCharacter.ShowAttackThenHappy() DONE");
                     }
                     else
@@ -1054,6 +1064,140 @@ namespace DoAnGame.UI
             
             Debug.Log($"[BattleController] [{role}] ===== AVATAR ANIMATION: Summary Time COMPLETE =====");
             Debug.Log($"[BattleController] [{role}] ===== HandleAnswerResultDetailed COMPLETE =====");
+        }
+
+        private void SpawnAttackProjectile(AvatarCharacterDisplay attacker, AvatarCharacterDisplay target)
+        {
+            if (projectilePrefab == null)
+            {
+                Debug.LogWarning("[BattleController] projectilePrefab is NULL - skipping projectile spawn");
+                return;
+            }
+
+            if (attacker == null || target == null)
+            {
+                Debug.LogWarning("[BattleController] attacker/target is NULL - skipping projectile spawn");
+                return;
+            }
+
+            Transform muzzle = ResolveBattlePoint(attacker, true);
+            Transform hitPoint = ResolveBattlePoint(target, false);
+
+            if (muzzle == null || hitPoint == null)
+            {
+                Debug.LogWarning("[BattleController] AttackMuzzle or HitPoint not assigned - skipping projectile spawn");
+                Debug.LogWarning($"[BattleController] muzzle={(muzzle != null ? muzzle.name : "NULL")}, hitPoint={(hitPoint != null ? hitPoint.name : "NULL")}");
+                return;
+            }
+
+            // Detailed logging for debugging
+            Debug.Log($"[BattleController] PROJECTILE SETUP:");
+            Debug.Log($"[BattleController]   Attacker: {attacker.gameObject.name}");
+            Debug.Log($"[BattleController]   Target: {target.gameObject.name}");
+            Debug.Log($"[BattleController]   Attacker root path: {GetTransformPath(attacker.transform)} | activeInHierarchy={attacker.gameObject.activeInHierarchy} | worldPos={attacker.transform.position}");
+            Debug.Log($"[BattleController]   Target root path: {GetTransformPath(target.transform)} | activeInHierarchy={target.gameObject.activeInHierarchy} | worldPos={target.transform.position}");
+            Debug.Log($"[BattleController]   AttackMuzzle path: {GetTransformPath(muzzle)}");
+            Debug.Log($"[BattleController]   HitPoint path: {GetTransformPath(hitPoint)}");
+            Debug.Log($"[BattleController]   AttackMuzzle localPos={muzzle.localPosition}, activeInHierarchy={muzzle.gameObject.activeInHierarchy}");
+            Debug.Log($"[BattleController]   HitPoint localPos={hitPoint.localPosition}, activeInHierarchy={hitPoint.gameObject.activeInHierarchy}");
+
+            // Fix Z position to 0 (game world, not behind camera)
+            Vector3 muzzlePos = muzzle.position;
+            muzzlePos.z = 0;
+            Vector3 hitPos = hitPoint.position;
+            hitPos.z = 0;
+            float travelDistance = Vector3.Distance(muzzlePos, hitPos);
+
+            Debug.Log($"[BattleController] Spawning projectile: attacker={attacker.gameObject.name}, target={target.gameObject.name}");
+            Debug.Log($"[BattleController] MuzzlePos={muzzlePos}, HitPos={hitPos}");
+            Debug.Log($"[BattleController] Travel distance={travelDistance:F3}");
+            if (travelDistance < 0.5f)
+            {
+                Debug.LogWarning($"[BattleController] ⚠️ Projectile travel distance is very small ({travelDistance:F3}). This usually means the scene layout or point placement is wrong, not the projectile flight code.");
+            }
+            Debug.Log($"[BattleController] ArcHeight={projectileArcHeight}, FlightTime={projectileFlightTime}, SpinSpeed={projectileSpinSpeed}");
+
+            GameObject projectile = projectileParent != null
+                ? Instantiate(projectilePrefab, muzzlePos, Quaternion.identity, projectileParent)
+                : Instantiate(projectilePrefab, muzzlePos, Quaternion.identity);
+
+            Debug.Log($"[BattleController] Projectile spawned: {(projectile != null ? projectile.name : "NULL")}, parent={(projectileParent != null ? projectileParent.name : "NULL")}");
+
+            // Set sorting order to ensure projectile renders on top of characters
+            var spriteRenderer = projectile.GetComponent<SpriteRenderer>();
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.sortingOrder = 10;
+                Debug.Log($"[BattleController] Projectile sorting order set to 10");
+            }
+
+            var arcProjectile = projectile.GetComponent<ArcProjectile>();
+            if (arcProjectile == null)
+            {
+                Debug.LogWarning("[BattleController] ArcProjectile component missing on projectilePrefab");
+                Destroy(projectile);
+                return;
+            }
+
+            arcProjectile.Launch(
+                muzzlePos,
+                hitPos,
+                hitPos,
+                projectileArcHeight,
+                projectileFlightTime,
+                projectileSpinSpeed,
+                projectileImpactVfx
+            );
+
+            Debug.Log("[BattleController] Projectile Launch() called");
+        }
+
+        private Transform ResolveBattlePoint(AvatarCharacterDisplay character, bool isMuzzle)
+        {
+            if (character == null)
+                return null;
+
+            bool isPlayer1 = character == player1Character;
+            bool isPlayer2 = character == player2Character;
+
+            string[] candidateNames = isMuzzle
+                ? (isPlayer1
+                    ? new[] { "AttackMuzzle_Player1", "AttackMuzzle" }
+                    : isPlayer2
+                        ? new[] { "AttackMuzzle_Player2", "AttackMuzzle" }
+                        : new[] { "AttackMuzzle" })
+                : (isPlayer1
+                    ? new[] { "HitPoint_Player1", "HitPoint" }
+                    : isPlayer2
+                        ? new[] { "HitPoint_Player2", "HitPoint" }
+                        : new[] { "HitPoint" });
+
+            Transform found = FindFirstPointInHierarchy(character.transform, candidateNames);
+            Debug.Log($"[BattleController] ResolveBattlePoint: character={character.gameObject.name}, role={(isPlayer1 ? "Player1" : isPlayer2 ? "Player2" : "Unknown")}, pointType={(isMuzzle ? "AttackMuzzle" : "HitPoint")}, result={(found != null ? GetTransformPath(found) : "NULL")}");
+            return found;
+        }
+
+        private Transform FindFirstPointInHierarchy(Transform root, string[] candidateNames)
+        {
+            if (root == null || candidateNames == null || candidateNames.Length == 0)
+                return null;
+
+            Transform[] allChildren = root.GetComponentsInChildren<Transform>(true);
+            for (int i = 0; i < candidateNames.Length; i++)
+            {
+                string candidateName = candidateNames[i];
+                if (string.IsNullOrWhiteSpace(candidateName))
+                    continue;
+
+                for (int j = 0; j < allChildren.Length; j++)
+                {
+                    Transform child = allChildren[j];
+                    if (child != null && child.name == candidateName)
+                        return child;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -1867,6 +2011,21 @@ namespace DoAnGame.UI
                 return;
 
             Debug.Log($"[{nameof(UIMultiplayerBattleController)}:{name}] {message}");
+        }
+
+        private string GetTransformPath(Transform t)
+        {
+            if (t == null) return "NULL";
+            string path = t.name;
+            Transform parent = t.parent;
+            int depth = 0;
+            while (parent != null && depth < 10)
+            {
+                path = parent.name + "/" + path;
+                parent = parent.parent;
+                depth++;
+            }
+            return path;
         }
     }
 }

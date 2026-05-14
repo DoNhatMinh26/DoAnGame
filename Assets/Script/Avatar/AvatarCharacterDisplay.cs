@@ -22,6 +22,10 @@ public class AvatarCharacterDisplay : MonoBehaviour
     [SerializeField] private GameObject characterMeoSad;    // Character Meo_Sad (Sad)
     [SerializeField] private GameObject meoGoc34Fix;        // MeoGoc34 Fix (Attack 3/4)
 
+    [Header("Projectile Points")]
+    [SerializeField] private Transform attackMuzzle;
+    [SerializeField] private Transform hitPoint;
+
     // Tên skin con theo thứ tự avatarId
     private static readonly string[] SkinNamesMeo    = { "mascost1", "mascost2", "mascost3", "mascost4" };
     private static readonly string[] SkinNamesMeoSad = { "mascost1", "mascost2", "mascost3", "mascost4" };
@@ -155,6 +159,9 @@ public class AvatarCharacterDisplay : MonoBehaviour
     }
 
     public int GetCurrentAvatarId() => currentAvatarId;
+
+    public Transform AttackMuzzle => ResolveCachedTransform(ref attackMuzzle, "AttackMuzzle");
+    public Transform HitPoint => ResolveCachedTransform(ref hitPoint, "HitPoint");
 
     // ─────────────────────────────────────────────────────────────
     // PUBLIC API — Animation triggers
@@ -396,19 +403,171 @@ public class AvatarCharacterDisplay : MonoBehaviour
 
     /// <summary>
     /// Tìm child GameObject theo tên (dùng khi field bị null do lỗi Inspector)
+    /// ✅ FIX: Với Battle Point (AttackMuzzle/HitPoint), ưu tiên tên theo side trước rồi mới fallback.
     /// </summary>
     private GameObject FindChildByName(string childName)
     {
+        if (string.IsNullOrWhiteSpace(childName))
+            return null;
+
+        // 1️⃣ TRY: Direct child (1 level deep)
         Transform found = transform.Find(childName);
         if (found != null) return found.gameObject;
         
-        // Tìm sâu hơn trong hierarchy
+        // 2️⃣ PRIORITY: For battle points, search by side-specific aliases first
+        if (IsBattlePointName(childName))
+        {
+            GameObject activePSB = null;
+            if (characterMeo != null && characterMeo.activeInHierarchy)
+                activePSB = characterMeo;
+            else if (characterMeoSad != null && characterMeoSad.activeInHierarchy)
+                activePSB = characterMeoSad;
+            else if (meoGoc34Fix != null && meoGoc34Fix.activeInHierarchy)
+                activePSB = meoGoc34Fix;
+            
+            if (activePSB != null)
+            {
+                Debug.Log($"[AvatarCharacterDisplay] {gameObject.name}.FindChildByName('{childName}') → active PSB: {activePSB.name}");
+
+                            string[] candidateNames = GetBattlePointCandidateNames(childName);
+                            foreach (string candidateName in candidateNames)
+                            {
+                                GameObject foundInActivePsb = FindChildInSubtree(activePSB.transform, candidateName);
+                                if (foundInActivePsb != null)
+                                {
+                                    Debug.Log($"[AvatarCharacterDisplay] {gameObject.name}.FindChildByName('{childName}') → Found '{candidateName}' in ACTIVE PSB at {GetHierarchyPath(foundInActivePsb.transform)}");
+                                    return foundInActivePsb;
+                                }
+                            }
+
+                            Debug.LogWarning($"[AvatarCharacterDisplay] {gameObject.name}.FindChildByName('{childName}') → Active PSB '{activePSB.name}' does not contain any alias: {string.Join(", ", candidateNames)}");
+            }
+            else
+            {
+                Debug.LogWarning($"[AvatarCharacterDisplay] {gameObject.name}.FindChildByName('{childName}') → ⚠️ NO ACTIVE PSB found!");
+            }
+        }
+        
+        // 3️⃣ FALLBACK: Search all children (including inactive) - for other transforms
+        Debug.Log($"[AvatarCharacterDisplay] {gameObject.name}.FindChildByName('{childName}') → Fallback: searching all children...");
         foreach (Transform child in GetComponentsInChildren<Transform>(true))
         {
             if (child.name == childName)
+            {
+                Debug.Log($"[AvatarCharacterDisplay] {gameObject.name}.FindChildByName('{childName}') → Found in fallback at {GetHierarchyPath(child)}");
                 return child.gameObject;
+            }
         }
         return null;
+    }
+
+    private static bool IsBattlePointName(string childName)
+    {
+        return childName == "HitPoint"
+            || childName == "AttackMuzzle"
+            || childName.StartsWith("HitPoint_")
+            || childName.StartsWith("AttackMuzzle_");
+    }
+
+    private string[] GetBattlePointCandidateNames(string baseName)
+    {
+        string sideTag = GetBattlePointSideTag();
+        if (string.IsNullOrEmpty(sideTag))
+        {
+            return new[] { baseName };
+        }
+
+        if (baseName == "HitPoint")
+        {
+            return new[]
+            {
+                $"HitPoint_{sideTag}",
+                $"HitPoint_{sideTag}_1",
+                $"HitPoint_{sideTag}_2",
+                "HitPoint"
+            };
+        }
+
+        if (baseName == "AttackMuzzle")
+        {
+            return new[]
+            {
+                $"AttackMuzzle_{sideTag}",
+                $"AttackMuzzle_{sideTag}_1",
+                $"AttackMuzzle_{sideTag}_2",
+                "AttackMuzzle"
+            };
+        }
+
+        return new[] { baseName };
+    }
+
+    private string GetBattlePointSideTag()
+    {
+        string characterName = gameObject.name;
+        if (characterName.Contains("Player1") || characterName.Contains("Left"))
+            return "Player1";
+
+        if (characterName.Contains("Player2") || characterName.Contains("Right"))
+            return "Player2";
+
+        return string.Empty;
+    }
+
+    private GameObject FindChildInSubtree(Transform root, string childName)
+    {
+        if (root == null)
+            return null;
+
+        foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
+        {
+            if (child != null && child.name == childName)
+                return child.gameObject;
+        }
+
+        return null;
+    }
+
+    private Transform ResolveCachedTransform(ref Transform cached, string name)
+    {
+        // For HitPoint: always look for it on active character (don't cache if character inactive)
+        if (name == "HitPoint" && cached != null && !cached.gameObject.activeInHierarchy)
+        {
+            Debug.Log($"[AvatarCharacterDisplay] {gameObject.name}.{name} was on inactive object, re-resolving...");
+            cached = null;  // Force re-resolve
+        }
+
+        if (cached != null)
+        {
+            Debug.Log($"[AvatarCharacterDisplay] {gameObject.name}.{name} cached hit: {GetHierarchyPath(cached)}");
+            return cached;
+        }
+
+        var found = FindChildByName(name);
+        if (found != null)
+        {
+            cached = found.transform;
+            Debug.Log($"[AvatarCharacterDisplay] {gameObject.name}.{name} RESOLVED to: {GetHierarchyPath(cached)}");
+        }
+        else
+        {
+            Debug.LogWarning($"[AvatarCharacterDisplay] {gameObject.name}.{name} NOT FOUND!");
+        }
+
+        return cached;
+    }
+    
+    private string GetHierarchyPath(Transform t)
+    {
+        if (t == null) return "NULL";
+        string path = t.name;
+        Transform parent = t.parent;
+        while (parent != null && parent != gameObject.transform)
+        {
+            path = parent.name + "/" + path;
+            parent = parent.parent;
+        }
+        return gameObject.name + "/" + path;
     }
 
     /// <summary>
