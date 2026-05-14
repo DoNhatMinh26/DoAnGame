@@ -107,64 +107,109 @@ public class MathManager : MonoBehaviour
                 }
                 dapAnDung = kq; cauHoiText.text = $"{sc * kq} : {sc} =   ?"; break;
 
-            case "find_+-":
-                int x = Random.Range(minVal, maxVal + 1);
-                int b = Random.Range(minVal, maxVal + 1);
+            case "find_+-": // Dạng 4: Tìm ẩn số dạng Cộng/Trừ
+                int xVal = Random.Range(minVal, maxVal + 1);
+                int bVal = Random.Range(minVal, maxVal + 1);
+
                 if (Random.value > 0.5f)
-                { // Cộng
-                    int tong = x + b; dapAnDung = x;
-                    cauHoiText.text = (Random.value > 0.5f) ? $"?   + {b} = {tong}" : $"{b} +   ?   = {tong}";
+                {
+                    // Phép cộng: ? + B = TONG hoặc B + ? = TONG
+                    int tong = xVal + bVal;
+                    dapAnDung = xVal;
+                    cauHoiText.text = (Random.value > 0.5f) ? $"?   + {bVal} = {tong}" : $"{bVal} +   ?   = {tong}";
                 }
                 else
-                { // Trừ
-                    dapAnDung = x;
+                {
+                    // Phép trừ
                     if (Random.value > 0.5f)
                     {
-                        int hieu = x - b; if (x < b) { x = b; b = x - hieu; }
-                        cauHoiText.text = $"?   - {b} = {hieu}";
+                        // Dạng: ? - B = HIEU (X là số bị trừ, luôn lớn hơn B)
+                        if (xVal < bVal) { int t = xVal; xVal = bVal; bVal = t; } // Đảo số để xVal >= bVal
+                        int hieu = xVal - bVal;
+
+                        dapAnDung = xVal;
+                        cauHoiText.text = $"?   - {bVal} = {hieu}";
                     }
                     else
                     {
-                        int a = x + b; cauHoiText.text = $"{a} -   ?   = {b}";
+                        // Dạng: A - ? = B (X là số trừ)
+                        if (xVal < bVal) { int t = xVal; xVal = bVal; bVal = t; } // Đảo số để xVal >= bVal
+                        int a = xVal; // Số bị trừ ban đầu
+                        int b = bVal; // Hiệu số
+
+                        dapAnDung = a - b; // Ẩn số là số trừ (luôn không âm)
+                        cauHoiText.text = $"{a} -   ?   = {b}";
                     }
                 }
                 break;
 
-            case "find x": // Tìm x trong phép nhân
+            case "find x": // Dạng 5: Tìm x trong phép nhân
                 int vX = (UIManager.SelectedGrade >= 4) ? Random.Range(minVal, maxVal + 1) : Random.Range(2, 10);
                 int vB = Random.Range(minVal, maxVal + 1);
-                int tich = vX * vB; dapAnDung = vX;
+
+                int tich = vX * vB;
+                dapAnDung = vX;
                 cauHoiText.text = (Random.value > 0.5f) ? $"?   x {vB} = {tich}" : $"{vB} x   ?   = {tich}";
                 break;
 
-            case "find :": // Tìm x trong phép chia
-                int vXc = (UIManager.SelectedGrade >= 4) ? Random.Range(minVal, maxVal + 1) : Random.Range(2, 10);
-                int vBc = Random.Range(minVal, maxVal + 1);
-                if (vBc == 0) vBc = 1;
-                int sbc = vXc * vBc;
-                if (Random.value > 0.5f) { dapAnDung = sbc; cauHoiText.text = $"?   : {vBc} = {vXc}"; }
-                else { dapAnDung = vBc; cauHoiText.text = $"{sbc} :   ?   = {vXc}"; }
-                break;
+            case "find :": // Dạng 6: Tìm x trong phép chia
+                int vX_c = (UIManager.SelectedGrade >= 4) ? Random.Range(minVal, maxVal + 1) : Random.Range(2, 10);
+                int vB_c = Random.Range(minVal, maxVal + 1);
+                if (vB_c == 0) vB_c = 1; // Bảo vệ: Không chia cho 0
 
-            case "hai phép tính +-": // Dạng tính 3 số
-                n1 = Random.Range(minVal, maxVal + 1);
-                n2 = Random.Range(minVal, maxVal + 1);
-                n3 = Random.Range(minVal, maxVal + 1);
+                int sobc = vX_c * vB_c;
                 if (Random.value > 0.5f)
                 {
-                    dapAnDung = n1 + n2 - n3; cauHoiText.text = $"{n1} + {n2} - {n3} =   ?";
-                    if (dapAnDung < 0) { dapAnDung = n1 + n2 + n3; cauHoiText.text = $"{n1} + {n2} + {n3} =   ?"; }
+                    // Dạng: ? : B = X (Tìm số bị trừ)
+                    dapAnDung = sobc;
+                    cauHoiText.text = $"?   : {vB_c} = {vX_c}";
                 }
                 else
                 {
-                    if (n1 < n2) n1 = n2 + Random.Range(1, 10);
-                    dapAnDung = n1 - n2 + n3; cauHoiText.text = $"{n1} - {n2} + {n3} =   ?";
+                    // Dạng: SBC : ? = X (Tìm số chia)
+                    if (vX_c == 0) vX_c = 1; // Đảm bảo không tạo câu hỏi có thương bằng 0 dẫn đến x bằng ẩn số chia cho 0
+                    int sobc_moi = vX_c * vB_c;
+                    dapAnDung = vB_c;
+                    cauHoiText.text = $"{sobc_moi} :   ?   = {vX_c}";
+                }
+                break;
+
+            case "hai phép tính +-": // Dạng 7: Chuỗi hai phép tính liên tiếp
+                int a1 = Random.Range(minVal, maxVal + 1);
+                int a2 = Random.Range(minVal, maxVal + 1);
+
+                if (Random.value > 0.5f)
+                {
+                    // Dạng toán: a1 + a2 - a3
+                    // Tính toán khoảng giá trị an toàn cho a3 để (a1 + a2 - a3) không âm
+                    int maxA3 = a1 + a2;
+                    int thựcTếMax = Mathf.Min(maxVal, maxA3);
+                    int thựcTếMin = Mathf.Min(minVal, thựcTếMax);
+
+                    // Tạo trực tiếp a3 hợp lệ, loại bỏ hoàn toàn vòng lặp while gây crash game
+                    int a3 = Random.Range(thựcTếMin, thựcTếMax + 1);
+
+                    dapAnDung = a1 + a2 - a3;
+                    cauHoiText.text = $"{a1} + {a2} - {a3} =   ?";
+                }
+                else
+                {
+                    // Dạng toán: a1 - a2 + a3
+                    // Đảm bảo bước tính đầu tiên (a1 - a2) không bị âm
+                    if (a1 < a2)
+                    {
+                        a1 = a2 + Random.Range(0, 10);
+                    }
+                    int a3 = Random.Range(minVal, maxVal + 1);
+
+                    dapAnDung = a1 - a2 + a3;
+                    cauHoiText.text = $"{a1} - {a2} + {a3} =   ?";
                 }
                 break;
 
             default:
                 n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(minVal, maxVal + 1);
-                dapAnDung = n1 + n2; cauHoiText.text = $"{n1} + {n2} =  ?"; break;
+                dapAnDung = n1 + n2; cauHoiText.text = $"{n1} + {n2} =   ?"; break;
         }
         StartCoroutine(UpdateOTrongPosition());
         GenerateChoices();

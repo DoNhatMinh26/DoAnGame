@@ -315,63 +315,100 @@ public class SpaceShipManager : MonoBehaviour
         switch (phepToan)
         {
             case "+":
-                n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(minVal, maxVal + 1);
-                cauHoiStr = $"{n1} + {n2} = ?"; dapAnStr = (n1 + n2).ToString();
+                n1 = Random.Range(minVal, maxVal + 1);
+                n2 = Random.Range(minVal, maxVal + 1);
+                cauHoiStr = $"{n1} + {n2} = ?";
+                dapAnStr = (n1 + n2).ToString();
                 break;
+
             case "-":
-                n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(minVal, maxVal + 1);
+                n1 = Random.Range(minVal, maxVal + 1);
+                n2 = Random.Range(minVal, maxVal + 1);
                 if (n1 < n2) { int t = n1; n1 = n2; n2 = t; }
-                cauHoiStr = $"{n1} - {n2} = ?"; dapAnStr = (n1 - n2).ToString();
+                cauHoiStr = $"{n1} - {n2} = ?";
+                dapAnStr = (n1 - n2).ToString();
                 break;
+
             case "x":
                 n1 = Random.Range(minVal, maxVal + 1);
                 n2 = (UIManager.SelectedGrade >= 4) ? Random.Range(minVal, maxVal + 1) : Random.Range(2, 10);
-                cauHoiStr = $"{n1} x {n2} = ?"; dapAnStr = (n1 * n2).ToString();
+                cauHoiStr = $"{n1} x {n2} = ?";
+                dapAnStr = (n1 * n2).ToString();
                 break;
+
             case ":":
                 int sc = (UIManager.SelectedGrade >= 4) ? Random.Range(minVal, maxVal + 1) : Random.Range(2, 10);
                 int kq = Random.Range(minVal, maxVal + 1);
                 if (sc == 0) sc = 1;
-                cauHoiStr = $"{sc * kq} : {sc} = ?"; dapAnStr = kq.ToString();
+                cauHoiStr = $"{sc * kq} : {sc} = ?";
+                dapAnStr = kq.ToString();
                 break;
+
             case "find_+-":
-                int x = Random.Range(minVal, maxVal + 1); int b = Random.Range(minVal, maxVal + 1);
+                int x = Random.Range(minVal, maxVal + 1);
+                int b = Random.Range(minVal, maxVal + 1);
+
                 if (Random.value > 0.5f)
                 {
-                    int tong = x + b; cauHoiStr = (Random.value > 0.5f) ? $"? + {b} = {tong}" : $"{b} + ? = {tong}";
+                    // Dạng toán cộng: ? + b = tong hoặc b + ? = tong
+                    int tong = x + b;
+                    cauHoiStr = (Random.value > 0.5f) ? $"? + {b} = {tong}" : $"{b} + ? = {tong}";
                     dapAnStr = x.ToString();
                 }
                 else
                 {
-                    if (x < b) x = b + Random.Range(1, 10);
-                    int hieu = x - b; cauHoiStr = (Random.value > 0.5f) ? $"? - {b} = {hieu}" : $"{x} - ? = {hieu}";
+                    // Dạng toán trừ
+                    if (x < b) x = b + Random.Range(1, 10); // Đảm bảo x luôn lớn hơn b
+
+                    int hieu = x - b; // ĐÃ SỬA: Tính hiệu SAU KHI x đã được cập nhật giá trị mới
+                    cauHoiStr = (Random.value > 0.5f) ? $"? - {b} = {hieu}" : $"{x} - ? = {hieu}";
                     dapAnStr = (cauHoiStr.Contains("? -")) ? x.ToString() : b.ToString();
                 }
                 break;
+
             case "find x":
                 int vX = (UIManager.SelectedGrade >= 4) ? Random.Range(minVal, maxVal + 1) : Random.Range(2, 10);
                 int vB = Random.Range(minVal, maxVal + 1);
-                int tich = vX * vB; cauHoiStr = (Random.value > 0.5f) ? $"? x {vB} = {tich}" : $"{vB} x ? = {tich}";
+                int tich = vX * vB;
+                cauHoiStr = (Random.value > 0.5f) ? $"? x {vB} = {tich}" : $"{vB} x ? = {tich}";
                 dapAnStr = vX.ToString();
                 break;
+
             case "find :":
                 int vXc = (UIManager.SelectedGrade >= 4) ? Random.Range(minVal, maxVal + 1) : Random.Range(2, 10);
-                int vBc = Random.Range(minVal, maxVal + 1); if (vBc == 0) vBc = 1;
-                int sbcVal = vXc * vBc; cauHoiStr = (Random.value > 0.5f) ? $"? : {vBc} = {vXc}" : $"{sbcVal} : ? = {vXc}";
+                if (vXc == 0) vXc = 1; // ĐÃ SỬA: Tránh thương bằng 0 gây lỗi logic toán tiểu học
+
+                int vBc = Random.Range(minVal, maxVal + 1);
+                if (vBc == 0) vBc = 1; // Bảo vệ số chia luôn khác 0
+
+                int sbcVal = vXc * vBc;
+                cauHoiStr = (Random.value > 0.5f) ? $"? : {vBc} = {vXc}" : $"{sbcVal} : ? = {vXc}";
                 dapAnStr = (cauHoiStr.Contains("? :")) ? sbcVal.ToString() : vBc.ToString();
                 break;
+
             case "hai phép tính +-":
-                n1 = Random.Range(minVal, maxVal + 1); n2 = Random.Range(minVal, maxVal + 1); n3 = Random.Range(minVal, maxVal + 1);
+                n1 = Random.Range(minVal, maxVal + 1);
+                n2 = Random.Range(minVal, maxVal + 1);
+
                 if (Random.value > 0.5f)
                 {
-                    int res = n1 + n2 - n3; if (res < 0) res = n1 + n2 + n3;
-                    cauHoiStr = (res == n1 + n2 - n3) ? $"{n1} + {n2} - {n3} = ?" : $"{n1} + {n2} + {n3} = ?";
-                    dapAnStr = res.ToString();
+                    // Dạng toán chuẩn: n1 + n2 - n3
+                    int maxN3 = n1 + n2;
+                    int thựcTếMax = Mathf.Min(maxVal, maxN3);
+                    int thựcTếMin = Mathf.Min(minVal, thựcTếMax);
+                    n3 = Random.Range(thựcTếMin, thựcTếMax + 1); // ĐÃ SỬA: Tạo n3 hợp lý ngay từ đầu, không đổi đề bài thành + +
+
+                    cauHoiStr = $"{n1} + {n2} - {n3} = ?";
+                    dapAnStr = (n1 + n2 - n3).ToString();
                 }
                 else
                 {
-                    if (n1 < n2) n1 = n2 + Random.Range(1, 10);
-                    cauHoiStr = $"{n1} - {n2} + {n3} = ?"; dapAnStr = (n1 - n2 + n3).ToString();
+                    // Dạng toán chuẩn: n1 - n2 + n3
+                    if (n1 < n2) n1 = n2 + Random.Range(0, 10);
+                    n3 = Random.Range(minVal, maxVal + 1);
+
+                    cauHoiStr = $"{n1} - {n2} + {n3} = ?";
+                    dapAnStr = (n1 - n2 + n3).ToString();
                 }
                 break;
         }

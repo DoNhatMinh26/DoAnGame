@@ -19,17 +19,17 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 5
+        value: 10
         inSlope: 0
-        outSlope: 15
+        outSlope: 20
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 20
-        inSlope: 15
+        value: 30
+        inSlope: 20
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
@@ -44,17 +44,17 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 5
+        value: 10
         inSlope: 0
-        outSlope: 15
+        outSlope: 20
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 20
-        inSlope: 15
+        value: 30
+        inSlope: 20
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
@@ -69,17 +69,17 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 5
+        value: 10
         inSlope: 0
-        outSlope: 15
+        outSlope: 20
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 20
-        inSlope: 15
+        value: 30
+        inSlope: 20
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
@@ -94,17 +94,17 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 5
+        value: 10
         inSlope: 0
-        outSlope: 15
+        outSlope: 20
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 20
-        inSlope: 15
+        value: 30
+        inSlope: 20
         outSlope: 0
         tangentMode: 0
         weightedMode: 0
@@ -119,17 +119,17 @@ MonoBehaviour:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 5
+        value: 10
         inSlope: 0
-        outSlope: 15
+        outSlope: 20
         tangentMode: 0
         weightedMode: 0
         inWeight: 0
         outWeight: 0
       - serializedVersion: 3
         time: 1
-        value: 20
-        inSlope: 15
+        value: 30
+        inSlope: 20
         outSlope: 0
         tangentMode: 0
         weightedMode: 0

@@ -44,7 +44,7 @@ public class ClassDifficultyConfig : ScriptableObject
                 gradeName = "Lớp " + (i + 1),
 
                 // Mặc định: Màn 1 cần đúng 5 câu, Màn 100 cần đúng 20 câu[cite: 6]
-                questionCountCurve = AnimationCurve.Linear(0, 5, 1, 20)
+                questionCountCurve = AnimationCurve.Linear(0, 10, 1, 30)
             };
         }
 
