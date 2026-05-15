@@ -149,6 +149,8 @@ namespace DoAnGame.UI
             // ✅ FIX: Subscribe battle events mỗi khi panel được activate
             // Vì Start() chỉ gọi 1 lần, nhưng OnEnable() gọi mỗi lần panel active
             EnsureBattleManagerAndSubscribe();
+            SubscribeNetworkVariables();
+            ForceInitialSync();
 
             // Khởi tạo avatar characters cho cả 2 player
             Debug.Log($"[BattleController] About to call InitAvatarCharacters");
@@ -330,7 +332,7 @@ namespace DoAnGame.UI
             Debug.Log("[BattleController] 🔄 Force initial sync...");
 
             // Sync question và choices
-            string currentQuestion = battleManager.CurrentQuestion.Value.ToString();
+            string currentQuestion = battleManager.GetCurrentQuestionText();
             if (!string.IsNullOrEmpty(currentQuestion))
             {
                 Debug.Log($"[BattleController] 📝 Initial question found: {currentQuestion}");
@@ -470,7 +472,7 @@ namespace DoAnGame.UI
         {
             if (battleManager == null) return;
 
-            string question = battleManager.CurrentQuestion.Value.ToString();
+            string question = battleManager.GetCurrentQuestionText();
             
             // Hiển thị câu hỏi
             if (questionText != null)
@@ -486,13 +488,7 @@ namespace DoAnGame.UI
             // ✅ Reset tất cả đáp án về vị trí gốc (câu hỏi mới)
             if (answerChoices != null && answerChoices.Length >= 4)
             {
-                int[] choices = new int[]
-                {
-                    battleManager.Choice1.Value,
-                    battleManager.Choice2.Value,
-                    battleManager.Choice3.Value,
-                    battleManager.Choice4.Value
-                };
+                int[] choices = battleManager.GetCurrentChoices();
 
                 for (int i = 0; i < answerChoices.Length && i < choices.Length; i++)
                 {
@@ -778,7 +774,7 @@ namespace DoAnGame.UI
             Log($"[{role}] 🔒 Locked drag-drop during answer summary");
 
             // ✅ Lấy đáp án đúng từ BattleManager
-            int correctAnswer = battleManager != null ? battleManager.CorrectAnswer.Value : -1;
+            int correctAnswer = battleManager != null ? battleManager.GetCurrentCorrectAnswer() : -1;
             
             if (correctAnswer == -1)
             {

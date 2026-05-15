@@ -87,6 +87,21 @@ namespace DoAnGame.UI
             
             Log("OnShow called");
             StopPendingAnimationRoutines();
+
+            // ✅ FIX BUG 8: Activate wins characters NGAY LẬP TỨC trong OnShow()
+            // Tránh race condition với CharacterContainerController.Update() chạy sau
+            // và override SetAvatarWithoutAnimation() reset
+            if (winnerCharacter != null && !winnerCharacter.gameObject.activeSelf)
+            {
+                winnerCharacter.gameObject.SetActive(true);
+                Debug.Log($"[WinsController] [{role}] Activated winnerCharacter");
+            }
+            if (loserCharacter != null && !loserCharacter.gameObject.activeSelf)
+            {
+                loserCharacter.gameObject.SetActive(true);
+                Debug.Log($"[WinsController] [{role}] Activated loserCharacter");
+            }
+
             DisplayMatchResult();
         }
 
@@ -94,6 +109,8 @@ namespace DoAnGame.UI
         {
             base.OnHide();
             StopPendingAnimationRoutines();
+            // ✅ FIX BUG 7: Cancel QuitRoomAfterLoading Invoke nếu panel bị hide trước khi delay xong
+            CancelInvoke(nameof(QuitRoomAfterLoading));
             Log("OnHide called");
         }
 
@@ -376,6 +393,7 @@ namespace DoAnGame.UI
         /// Winner → Happy, Loser → Sad.
         /// ✅ FIX: Dùng SetAvatarWithoutAnimation() để tránh double-trigger (Idle → Happy/Sad)
         /// ✅ FIX: Cleanup PSB visibility trước khi set avatar để tránh overlapping
+        /// ✅ FIX BUG #1: Assign correct avatars - winner gets winner avatar, loser gets loser avatar
         /// </summary>
         private void SetWinsPanelAvatars(MatchResultData r)
         {
@@ -392,11 +410,12 @@ namespace DoAnGame.UI
                 return;
             }
 
-            int leftAvatarId = 0;
-            int rightAvatarId  = 0;
             bool isLocalWinner = (r.WinnerId == r.LocalPlayerId);
             int localPlayerId = r.LocalPlayerId;
             int opponentPlayerId = (localPlayerId == 0) ? 1 : 0;
+
+            int localAvatarId = 0;
+            int opponentAvatarId = 0;
 
             // Lấy avatarId từ NetworkedPlayerState nếu còn sống
             if (battleManager != null)
@@ -412,8 +431,8 @@ namespace DoAnGame.UI
 
                 if (localState != null)
                 {
-                    rightAvatarId = localState.AvatarId.Value;
-                    Debug.Log($"[WinsController] [{role}] Local (Player{localPlayerId + 1}) AvatarId from PlayerState: {rightAvatarId}");
+                    localAvatarId = localState.AvatarId.Value;
+                    Debug.Log($"[WinsController] [{role}] Local (Player{localPlayerId + 1}) AvatarId from PlayerState: {localAvatarId}");
                 }
                 else
                 {
@@ -422,8 +441,8 @@ namespace DoAnGame.UI
                 
                 if (opponentState != null)
                 {
-                    leftAvatarId = opponentState.AvatarId.Value;
-                    Debug.Log($"[WinsController] [{role}] Opponent (Player{opponentPlayerId + 1}) AvatarId from PlayerState: {leftAvatarId}");
+                    opponentAvatarId = opponentState.AvatarId.Value;
+                    Debug.Log($"[WinsController] [{role}] Opponent (Player{opponentPlayerId + 1}) AvatarId from PlayerState: {opponentAvatarId}");
                 }
                 else
                 {
@@ -436,26 +455,30 @@ namespace DoAnGame.UI
             }
 
             // Fallback: local player dùng AvatarManager
-            int localAvatarId  = AvatarManager.Instance?.GetCurrentAvatarId() ?? 0;
-            Debug.Log($"[WinsController] [{role}] IsLocalWinner: {isLocalWinner}, LocalAvatarId from AvatarManager: {localAvatarId}");
-
-            if (rightAvatarId == 0)
+            if (localAvatarId == 0)
             {
-                rightAvatarId = localAvatarId;
-                Debug.Log($"[WinsController] [{role}] Using local avatar for right/local side: {rightAvatarId}");
+                localAvatarId = AvatarManager.Instance?.GetCurrentAvatarId() ?? 0;
+                Debug.Log($"[WinsController] [{role}] Using local avatar from AvatarManager: {localAvatarId}");
             }
 
-            // ✅ FIX: Apply avatar WITHOUT animation, then trigger Happy/Sad
-            // ✅ CRITICAL: Ensure only 1 PSB is visible at a time
+            Debug.Log($"[WinsController] [{role}] IsLocalWinner: {isLocalWinner}");
+
+            // ✅ FIX VẤN ĐỀ 3: Layout cố định — local player luôn ở trái (winnerCharacter), opponent ở phải (loserCharacter)
+            // Animation theo thắng/thua: local thắng → trái Happy, phải Sad; local thua → trái Sad, phải Happy
+            int leftAvatarId = localAvatarId;    // winnerCharacter = local player (trái)
+            int rightAvatarId = opponentAvatarId; // loserCharacter = opponent (phải)
+
+            Debug.Log($"[WinsController] [{role}] Left (local) avatar: {leftAvatarId}, Right (opponent) avatar: {rightAvatarId}");
+
             if (winnerCharacter != null)
             {
                 Debug.Log($"[WinsController] [{role}] Calling winnerCharacter.SetAvatarWithoutAnimation({leftAvatarId})...");
                 winnerCharacter.SetAvatarWithoutAnimation(leftAvatarId);
                 
-                // Left side shows local outcome
-                bool leftIsHappy = isLocalWinner;
-                Debug.Log($"[WinsController] [{role}] Scheduling winnerCharacter.{(leftIsHappy ? "ShowHappy" : "ShowSad")}() after 0.1s delay...");
-                winnerAnimationRoutine = StartCoroutine(DelayedShowAnimation(winnerCharacter, leftIsHappy, 0.1f));
+                // Local thắng → Happy, local thua → Sad
+                bool localIsHappy = isLocalWinner;
+                Debug.Log($"[WinsController] [{role}] Scheduling winnerCharacter.{(localIsHappy ? "ShowHappy" : "ShowSad")}() after 0.1s delay...");
+                winnerAnimationRoutine = StartCoroutine(DelayedShowAnimation(winnerCharacter, localIsHappy, 0.1f));
             }
             else
             {
@@ -467,16 +490,17 @@ namespace DoAnGame.UI
                 Debug.Log($"[WinsController] [{role}] Calling loserCharacter.SetAvatarWithoutAnimation({rightAvatarId})...");
                 loserCharacter.SetAvatarWithoutAnimation(rightAvatarId);
                 
-                // Right side is always opponent player
-                Debug.Log($"[WinsController] [{role}] Scheduling loserCharacter.{(!isLocalWinner ? "ShowHappy" : "ShowSad")}() after 0.1s delay...");
-                loserAnimationRoutine = StartCoroutine(DelayedShowAnimation(loserCharacter, !isLocalWinner, 0.1f));
+                // Opponent thắng → Happy, opponent thua → Sad
+                bool opponentIsHappy = !isLocalWinner;
+                Debug.Log($"[WinsController] [{role}] Scheduling loserCharacter.{(opponentIsHappy ? "ShowHappy" : "ShowSad")}() after 0.1s delay...");
+                loserAnimationRoutine = StartCoroutine(DelayedShowAnimation(loserCharacter, opponentIsHappy, 0.1f));
             }
             else
             {
                 Debug.LogWarning($"[WinsController] [{role}] ⚠️ loserCharacter is NULL!");
             }
 
-            Log($"SetWinsPanelAvatars: left avatarId={leftAvatarId}, right avatarId={rightAvatarId}");
+            Log($"SetWinsPanelAvatars: local avatarId={leftAvatarId} ({(isLocalWinner ? "Happy" : "Sad")}), opponent avatarId={rightAvatarId} ({(!isLocalWinner ? "Happy" : "Sad")})");
             Debug.Log($"[WinsController] [{role}] ===== SetWinsPanelAvatars COMPLETE =====");
         }
 

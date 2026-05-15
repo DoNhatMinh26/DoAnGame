@@ -137,12 +137,45 @@ namespace DoAnGame.Multiplayer
         // Internal tracking
         private Dictionary<ulong, (int answer, long timestamp)> playerAnswers = new Dictionary<ulong, (int, long)>();
         private int correctAnswersInRow = 0;
+        private int latestCorrectAnswer;
+        private bool hasLatestCorrectAnswer;
+        private readonly int[] latestChoices = new int[4];
+        private bool hasLatestChoices;
+        private string latestQuestionText = string.Empty;
+        private bool hasLatestQuestionText;
 
         // Events
         public event Action<string, int[]> OnQuestionGenerated; // (question, choices)
         public event Action<int, bool, long> OnAnswerResult; // (playerId, isCorrect, responseTimeMs)
         public event Action<int, int> OnMatchEnded; // (winnerId, winnerHealth)
         public event Action<int, bool, long, long, int, int> OnAnswerResultReceived; // (winnerId, correct, player1ResponseTimeMs, player2ResponseTimeMs, player1Answer, player2Answer)
+
+        public int GetCurrentCorrectAnswer()
+        {
+            return hasLatestCorrectAnswer ? latestCorrectAnswer : CorrectAnswer.Value;
+        }
+
+        public string GetCurrentQuestionText()
+        {
+            return hasLatestQuestionText ? latestQuestionText : CurrentQuestion.Value.ToString();
+        }
+
+        private void CacheQuestionData(string questionText, int correctAnswer, int[] choices)
+        {
+            latestQuestionText = questionText ?? string.Empty;
+            hasLatestQuestionText = !string.IsNullOrEmpty(latestQuestionText);
+            latestCorrectAnswer = correctAnswer;
+            hasLatestCorrectAnswer = true;
+
+            if (choices != null)
+            {
+                for (int i = 0; i < latestChoices.Length && i < choices.Length; i++)
+                {
+                    latestChoices[i] = choices[i];
+                }
+                hasLatestChoices = true;
+            }
+        }
 
         private void Awake()
         {
@@ -277,9 +310,10 @@ namespace DoAnGame.Multiplayer
                 return;
             }
 
+            ResetRuntimeStateForNewMatch();
+
             CurrentGrade.Value = Mathf.Clamp(grade, 1, 5);
             CurrentDifficulty.Value = 1; // Bắt đầu từ level 1
-            correctAnswersInRow = 0;
 
             Debug.Log($"[BattleManager] ✅ Initializing battle: Grade {grade}, Difficulty {CurrentDifficulty.Value}");
 
@@ -289,6 +323,47 @@ namespace DoAnGame.Multiplayer
             // ✅ Bắt đầu trận đấu NGAY LẬP TỨC (không delay)
             // LoadingPanel sẽ đợi player states ready trước khi navigate đến GameplayPanel
             StartMatch();
+        }
+
+        private void ResetRuntimeStateForNewMatch()
+        {
+            CancelInvoke();
+
+            if (timerRoutine != null)
+            {
+                StopCoroutine(timerRoutine);
+                timerRoutine = null;
+            }
+
+            playerAnswers.Clear();
+            correctAnswersInRow = 0;
+            latestCorrectAnswer = 0;
+            hasLatestCorrectAnswer = false;
+
+            cachedPlayer1Health = -1;
+            cachedPlayer2Health = -1;
+            cachedPlayer1Score = -1;
+            cachedPlayer2Score = -1;
+            Array.Clear(latestChoices, 0, latestChoices.Length);
+            hasLatestChoices = false;
+            latestQuestionText = string.Empty;
+            hasLatestQuestionText = false;
+
+            MatchStarted.Value = false;
+            MatchEnded.Value = false;
+            WinnerId.Value = -1;
+            IsAbandoned.Value = false;
+            AbandonedPlayerId.Value = -1;
+            CurrentQuestion.Value = default;
+            CorrectAnswer.Value = 0;
+            Choice1.Value = 0;
+            Choice2.Value = 0;
+            Choice3.Value = 0;
+            Choice4.Value = 0;
+            QuestionStartTimestamp.Value = 0;
+            TimeRemaining.Value = 0f;
+
+            Debug.Log("[BattleManager] Reset runtime state for new match");
         }
 
         /// <summary>
@@ -479,6 +554,7 @@ namespace DoAnGame.Multiplayer
             // Broadcast câu hỏi
             CurrentQuestion.Value = questionText;
             CorrectAnswer.Value = correctAnswer;
+            CacheQuestionData(questionText, correctAnswer, choices);
             Choice1.Value = choices[0];
             Choice2.Value = choices[1];
             Choice3.Value = choices[2];
@@ -494,7 +570,7 @@ namespace DoAnGame.Multiplayer
             // Timer sẽ được start từ UIMultiplayerBattleController.StartQuestionTimer()
 
             // Notify clients
-            NotifyQuestionGeneratedClientRpc(questionText, choices);
+            NotifyQuestionGeneratedClientRpc(questionText, choices, correctAnswer);
         }
 
         /// <summary>
@@ -603,6 +679,7 @@ namespace DoAnGame.Multiplayer
             // Broadcast câu hỏi
             CurrentQuestion.Value = questionText;
             CorrectAnswer.Value = correctAnswer;
+            CacheQuestionData(questionText, correctAnswer, choices);
             Choice1.Value = choices[0];
             Choice2.Value = choices[1];
             Choice3.Value = choices[2];
@@ -622,7 +699,7 @@ namespace DoAnGame.Multiplayer
             timerRoutine = StartCoroutine(QuestionTimerRoutine());
 
             // Notify clients
-            NotifyQuestionGeneratedClientRpc(questionText, choices);
+            NotifyQuestionGeneratedClientRpc(questionText, choices, correctAnswer);
         }
 
         /// <summary>
@@ -914,6 +991,27 @@ namespace DoAnGame.Multiplayer
         /// 3. Cả 2 sai → Cả 2 mất máu
         /// 4. 1 timeout → Người còn lại thắng
         /// </summary>
+        private bool TryGetPlayerSubmission(NetworkedPlayerState state, out int answer, out long responseTimeMs)
+        {
+            answer = -1;
+            responseTimeMs = long.MaxValue;
+
+            if (state == null)
+            {
+                return false;
+            }
+
+            ulong ownerClientId = state.OwnerClientId;
+            if (!playerAnswers.TryGetValue(ownerClientId, out var submission))
+            {
+                return false;
+            }
+
+            answer = submission.answer;
+            responseTimeMs = submission.timestamp - QuestionStartTimestamp.Value;
+            return true;
+        }
+
         private void EvaluateAnswers()
         {
             // Kiểm tra NetworkManager thay vì IsServer
@@ -929,13 +1027,10 @@ namespace DoAnGame.Multiplayer
             }
 
             // Lấy đáp án của cả 2 người chơi
-            int player1Answer = playerAnswers.ContainsKey(0) ? playerAnswers[0].answer : -1;
-            int player2Answer = playerAnswers.ContainsKey(1) ? playerAnswers[1].answer : -1;
+            TryGetPlayerSubmission(player1State, out int player1Answer, out long player1ResponseTime);
+            TryGetPlayerSubmission(player2State, out int player2Answer, out long player2ResponseTime);
 
             // Lấy response time của cả 2 (tính từ QuestionStartTimestamp)
-            long player1ResponseTime = playerAnswers.ContainsKey(0) ? playerAnswers[0].timestamp - QuestionStartTimestamp.Value : long.MaxValue;
-            long player2ResponseTime = playerAnswers.ContainsKey(1) ? playerAnswers[1].timestamp - QuestionStartTimestamp.Value : long.MaxValue;
-
             bool player1Correct = player1Answer == CorrectAnswer.Value;
             bool player2Correct = player2Answer == CorrectAnswer.Value;
 
@@ -1034,7 +1129,7 @@ namespace DoAnGame.Multiplayer
                 }
 
                 // Notify clients với winnerId chính xác
-                NotifyAnswerResultClientRpc(winnerId, true, player1ResponseTime, player2ResponseTime, player1Answer, player2Answer);
+                NotifyAnswerResultClientRpc(winnerId, true, player1ResponseTime, player2ResponseTime, player1Answer, player2Answer, CorrectAnswer.Value);
                 
                 // ✅ FIX: Invoke event trên Host (ClientRpc không chạy trên Host)
                 OnAnswerResult?.Invoke(winnerId, true, player1ResponseTime);
@@ -1061,7 +1156,7 @@ namespace DoAnGame.Multiplayer
                 }
 
                 // Notify clients với winnerId = -2 (draw)
-                NotifyAnswerResultClientRpc(-2, true, player1ResponseTime, player2ResponseTime, player1Answer, player2Answer);
+                NotifyAnswerResultClientRpc(-2, true, player1ResponseTime, player2ResponseTime, player1Answer, player2Answer, CorrectAnswer.Value);
                 
                 // ✅ FIX: Invoke event trên Host (ClientRpc không chạy trên Host)
                 OnAnswerResult?.Invoke(-2, true, player1ResponseTime);
@@ -1084,7 +1179,7 @@ namespace DoAnGame.Multiplayer
                 correctAnswersInRow = 0;
 
                 // Notify clients với winnerId = -1 (both wrong)
-                NotifyAnswerResultClientRpc(-1, false, player1ResponseTime, player2ResponseTime, player1Answer, player2Answer);
+                NotifyAnswerResultClientRpc(-1, false, player1ResponseTime, player2ResponseTime, player1Answer, player2Answer, CorrectAnswer.Value);
                 
                 // ✅ FIX: Invoke event trên Host (ClientRpc không chạy trên Host)
                 OnAnswerResult?.Invoke(-1, false, player1ResponseTime);
@@ -1313,16 +1408,19 @@ namespace DoAnGame.Multiplayer
         #region CLIENT RPCs
 
         [ClientRpc]
-        private void NotifyQuestionGeneratedClientRpc(FixedString512Bytes question, int[] choices)
+        private void NotifyQuestionGeneratedClientRpc(FixedString512Bytes question, int[] choices, int correctAnswer)
         {
             Debug.Log($"[BattleManager] Client received question: {question}");
+            CacheQuestionData(question.ToString(), correctAnswer, choices);
             OnQuestionGenerated?.Invoke(question.ToString(), choices);
         }
 
         [ClientRpc]
-        private void NotifyAnswerResultClientRpc(int winnerId, bool correct, long player1ResponseTimeMs, long player2ResponseTimeMs, int player1Answer, int player2Answer)
+        private void NotifyAnswerResultClientRpc(int winnerId, bool correct, long player1ResponseTimeMs, long player2ResponseTimeMs, int player1Answer, int player2Answer, int correctAnswer)
         {
             Debug.Log($"[BattleManager] Client received answer result: Winner={winnerId}, Correct={correct}, P1Time={player1ResponseTimeMs}ms, P2Time={player2ResponseTimeMs}ms, P1Answer={player1Answer}, P2Answer={player2Answer}");
+            latestCorrectAnswer = correctAnswer;
+            hasLatestCorrectAnswer = true;
             if (NetworkManager.Singleton != null && NetworkManager.Singleton.IsHost)
             {
                 GameLogger.Log("[BattleManager] [HOST] Skipping OnAnswerResult invoke in ClientRpc (already invoked on server)");
@@ -1402,6 +1500,11 @@ namespace DoAnGame.Multiplayer
 
         public int[] GetCurrentChoices()
         {
+            if (hasLatestChoices)
+            {
+                return (int[])latestChoices.Clone();
+            }
+
             return new int[] { Choice1.Value, Choice2.Value, Choice3.Value, Choice4.Value };
         }
 

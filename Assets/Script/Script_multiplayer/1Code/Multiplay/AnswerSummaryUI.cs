@@ -510,7 +510,7 @@ namespace DoAnGame.UI
             string resultText = "";
             
             // Kiểm tra xem đáp án có đúng không (dựa vào CorrectAnswer từ BattleManager)
-            int correctAnswer = battleManager.CorrectAnswer.Value;
+            int correctAnswer = battleManager.GetCurrentCorrectAnswer();
             bool player1Correct = (player1Answer == correctAnswer);
             bool player2Correct = (player2Answer == correctAnswer);
             
