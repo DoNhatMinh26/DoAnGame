@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
 using TMPro;
 using System.Collections;
+
 public class SpaceShipPhysics : MonoBehaviour
 {
     [Header("Cài đặt di chuyển bằng Chuột")]
-    public float followSpeed = 25f;
+    public float followSpeed = 10f;
     public float minY = -6f, maxY = 3f;
 
     [Header("Cấu hình Hút Tuyệt Đối")]
-    public float magnetDistance = 4f;
-    public float magnetStrength = 20f;
+    public float magnetDistance = 3f;
+    public float magnetStrength = 15f;
     public float lockThresholdX = 6f;
     public string gateTag = "Gate";
 
@@ -19,21 +20,26 @@ public class SpaceShipPhysics : MonoBehaviour
     private GameObject lastHitGate;
     private Rigidbody2D rb;
     private Vector3 startPosition;
+    private Vector3 originalScale; // Kính thước gốc thực tế của phi thuyền
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        // Lưu lại kích thước chỉnh ở Inspector (ví dụ: 0.3) để dùng xuyên suốt game
+        originalScale = transform.localScale;
     }
+
     void Start()
     {
         // Lưu lại vị trí lúc vừa khởi chạy game
         startPosition = transform.position;
-        rb = GetComponent<Rigidbody2D>();
     }
 
     public void ResetPosition()
     {
-        transform.localScale = Vector3.one;
+        // SỬA: Trả về kích thước gốc đã lưu thay vì ép về 1
+        transform.localScale = originalScale;
+
         // Đưa phi thuyền về vị trí cũ
         transform.position = startPosition;
 
@@ -42,10 +48,9 @@ public class SpaceShipPhysics : MonoBehaviour
         {
             rb.velocity = Vector2.zero;
             rb.angularVelocity = 0f;
-            rb.gravityScale = 1f; // Trả lại trọng lực nếu trước đó bạn đã chỉnh về 0 khi thắng
+            rb.gravityScale = 1f;
         }
     }
-    
 
     void Update()
     {
@@ -62,10 +67,11 @@ public class SpaceShipPhysics : MonoBehaviour
             transform.position = new Vector3(transform.position.x, newY, 0);
         }
     }
+
     private IEnumerator HitGateScaleEffect(float duration)
     {
-        Vector3 originalScale = Vector3.one; // Hoặc dùng transform.localScale nếu mặc định không phải 1
-        Vector3 shrunkScale = originalScale * 0.5f; // Thu nhỏ còn 80%
+        // SỬA: Thu nhỏ dựa trên kích thước originalScale thực tế (ví dụ: 0.3 * 0.5 = 0.15)
+        Vector3 shrunkScale = originalScale * 0.5f;
 
         float elapsed = 0f;
 
@@ -87,17 +93,17 @@ public class SpaceShipPhysics : MonoBehaviour
             yield return null;
         }
 
-        transform.localScale = originalScale; // Đảm bảo trả về đúng kích thước gốc
+        transform.localScale = originalScale; // Đảm bảo trả về đúng kích thước gốc ban đầu
     }
+
     public void BoostForwardOnWin()
     {
-        // Giả sử rb là Rigidbody2D hoặc Rigidbody của phi thuyền
-        // Chúng ta đẩy vận tốc lên cao để tạo hiệu ứng phóng đi
         if (rb != null)
         {
-            rb.velocity = new Vector2(5f, 0f); // Điều chỉnh số 20f tùy độ nhanh bạn muốn
+            rb.velocity = new Vector2(5f, 0f);
         }
     }
+
     void ApplyMagnetEffect()
     {
         GameObject[] gates = GameObject.FindGameObjectsWithTag(gateTag);
@@ -139,7 +145,7 @@ public class SpaceShipPhysics : MonoBehaviour
         {
             canMove = false;
             StartCoroutine(HitGateScaleEffect(1.5f));
-            lastHitGate = other.transform.parent.gameObject; // Lưu lại để xóa
+            lastHitGate = other.transform.parent.gameObject;
 
             TextMeshProUGUI gateText = other.GetComponentInChildren<TextMeshProUGUI>();
             if (gateText != null && SpaceShipManager.Instance != null)
@@ -153,11 +159,10 @@ public class SpaceShipPhysics : MonoBehaviour
                 {
                     if (UiSp.Instance != null)
                     {
-                        UiSp.Instance.AddScore(10); // Hàm này sẽ tự gọi DataManager.Instance.AddScore bên trong
+                        UiSp.Instance.AddScore(10);
                     }
                     gateText.color = Color.green;
                     SpaceShipManager.Instance.CountCorrectAnswer();
-                    
                 }
                 else
                 {
@@ -173,7 +178,7 @@ public class SpaceShipPhysics : MonoBehaviour
             QuestionZone zone = other.GetComponentInParent<QuestionZone>();
             if (zone != null) zone.FadeOut(1.5f);
 
-            other.enabled = false; // Tắt va chạm tạm thời
+            other.enabled = false;
         }
     }
 
@@ -181,7 +186,6 @@ public class SpaceShipPhysics : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
 
-        // XÓA cổng vừa va chạm
         if (lastHitGate != null)
         {
             Destroy(lastHitGate);
@@ -189,7 +193,6 @@ public class SpaceShipPhysics : MonoBehaviour
 
         ResetMovement();
 
-        // Cập nhật câu hỏi mới từ cổng kế tiếp
         if (SpaceShipManager.Instance != null)
         {
             QuestionZone nextQ = SpaceShipManager.Instance.GetNextQuestionZone();
@@ -201,16 +204,16 @@ public class SpaceShipPhysics : MonoBehaviour
         }
     }
 
-
-   
     private void OnEnable()
     {
-        ResetMovement(); // Đảm bảo phi thuyền luôn di chuyển được khi bắt đầu
+        ResetMovement();
     }
+
     public void ResetMovement()
     {
-        StopAllCoroutines(); // Dừng các hiệu ứng thu nhỏ đang chạy dở
-        transform.localScale = Vector3.one; // Trả về kích thước chuẩn
+        StopAllCoroutines();
+        // SỬA: Trả về kích thước originalScale thay vì Vector3.one
+        transform.localScale = originalScale;
         canMove = true;
         isLockedByMagnet = false;
     }

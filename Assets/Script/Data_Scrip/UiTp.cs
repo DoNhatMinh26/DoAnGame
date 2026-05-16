@@ -769,6 +769,27 @@ public class GameUIManager : MonoBehaviour
             }
         }
     }
+    private void ExecuteShowLosePanel()
+    {
+        isGameOver = true;
+
+        if (panelLose != null)
+        {
+            if (loseScoreTxt != null) loseScoreTxt.text = "Điểm: +" + levelScore;
+            if (loseRewardTxt != null) loseRewardTxt.text = "Tiền: +" + levelCoins;
+
+            if (loseProgressTxt != null)
+            {
+                loseProgressTxt.text = $"Tiến trình: {killedEnemies}/{totalEnemiesInLevel}";
+            }
+
+            panelLose.SetActive(true);
+            Time.timeScale = 0f; // Dừng game
+            DragAndDrop.SetGlobalLock(true);
+        }
+    }
+
+    // Hàm xử lý nút bấm thoát nhanh từ panel Cài đặt hiện luôn bảng Thua
     public void Click_ThoatNgayLapTuc()
     {
         Time.timeScale = 1f;
@@ -778,15 +799,15 @@ public class GameUIManager : MonoBehaviour
         DragAndDrop[] allAnswers = FindObjectsOfType<DragAndDrop>();
         foreach (DragAndDrop answer in allAnswers)
         {
-            answer.StopAllCoroutines(); // Hủy các hàm ResetQuestionAfterDelay
+            answer.StopAllCoroutines();
         }
 
-        // 2. Khóa cứng trạng thái
+        // 2. Khóa cứng trạng thái và tắt tương tác nút
         DragAndDrop.SetGlobalLock(true);
         SetSettingButtonInteractable(false);
 
-        // 3. Chạy chờ hiện bảng
-        StartCoroutine(WaitAndShowLose());
+        // 3. Kích hoạt trực tiếp panel thua không cần qua Coroutine đợi 3 giây nữa
+        ExecuteShowLosePanel();
     }
 
     private void CheckPunishmentStatus()

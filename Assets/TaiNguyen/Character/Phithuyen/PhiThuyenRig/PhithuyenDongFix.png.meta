@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -95,7 +95,70 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: PhithuyenDongFix_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1267
+        height: 1122
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6042a8568ca647945a53c52e82344e62
+      internalID: -1150202937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PhithuyenDongFix_1
+      rect:
+        serializedVersion: 2
+        x: 1267
+        y: 0
+        width: 1267
+        height: 1122
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cf3478d9a1fc61946821f0cc7ff662d9
+      internalID: -1361453937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PhithuyenDongFix_2
+      rect:
+        serializedVersion: 2
+        x: 2534
+        y: 0
+        width: 1267
+        height: 1122
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a10370c474e51aa428e27ecde39b3050
+      internalID: 1191421001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -106,7 +169,10 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      PhithuyenDongFix_0: -1150202937
+      PhithuyenDongFix_1: -1361453937
+      PhithuyenDongFix_2: 1191421001
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

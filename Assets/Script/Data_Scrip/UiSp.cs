@@ -137,9 +137,9 @@ public class UiSp : MonoBehaviour
         // 2. Cho chạy Animation xem thử (Kể cả chưa mua vẫn xem được animation bay)
         if (spaceshipAnimator != null)
         {
-            spaceshipAnimator.Play("Ship_" + index); // Nhảy thẳng đến animation của phi thuyền đang chọn
+            spaceshipAnimator.Play("Pt_" + index); // Nhảy thẳng đến animation của phi thuyền đang chọn
         }
-        if (gameplayAnimator != null) gameplayAnimator.Play("Ship_" + index);
+        if (gameplayAnimator != null) gameplayAnimator.Play("Pt_" + index);
         // 3. Kiểm tra trạng thái sở hữu để Trang bị
         if (IsShipUnlocked(index))
         {
@@ -227,9 +227,9 @@ public class UiSp : MonoBehaviour
             if (shopShipRenderer != null) shopShipRenderer.sprite = currentSprite;
             if (gameplayShipRenderer != null) gameplayShipRenderer.sprite = currentSprite;
         }
-        if (spaceshipAnimator != null) spaceshipAnimator.Play("Ship_" + id);
+        if (spaceshipAnimator != null) spaceshipAnimator.Play("Pt_" + id);
        
-        if (gameplayAnimator != null) gameplayAnimator.Play("Ship_" + id);
+        if (gameplayAnimator != null) gameplayAnimator.Play("Pt_" + id);
 
 
 
