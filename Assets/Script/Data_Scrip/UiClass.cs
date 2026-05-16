@@ -323,7 +323,7 @@ public class UiClass : MonoBehaviour
             if (i < skinButtonImages.Length)
                 skinButtonImages[i].color = unlocked ? Color.white : new Color(0.3f, 0.3f, 0.3f, 1f);
 
-            // 2. Cập nhật văn bản hiển thị
+            // 2. Cập nhật văn bản hiển thị 36A628
             if (i < skinPriceTexts.Length)
             {
                 if (unlocked)
@@ -332,9 +332,10 @@ public class UiClass : MonoBehaviour
                     if (i == currentEquippedID)
                     {
                         skinPriceTexts[i].text = "Đang dùng";
-                        skinPriceTexts[i].color = Color.white;
+                        
                         Color customColor;
-                        if (ColorUtility.TryParseHtmlString("#007BFF", out customColor))
+                        
+                        if (ColorUtility.TryParseHtmlString("#ADDCFF", out customColor))
                         {
                             skinPriceBackgrounds[i].color = customColor;
                         }
@@ -342,9 +343,9 @@ public class UiClass : MonoBehaviour
                     else
                     {
                         skinPriceTexts[i].text = "Sở hữu"; // Hoặc "Đã sở hữu"
-                        skinPriceTexts[i].color = Color.white;
                         Color customColor;
-                        if (ColorUtility.TryParseHtmlString("#00FF5D", out customColor))
+                        
+                        if (ColorUtility.TryParseHtmlString("#BBFFAF", out customColor))
                         {
                             skinPriceBackgrounds[i].color = customColor;
                         }
@@ -355,11 +356,7 @@ public class UiClass : MonoBehaviour
                 {
                     // Nếu chưa mua thì hiện giá tiền
                     skinPriceTexts[i].text = allSkins[i].price + "$";
-                    Color customColor;
-                    if (ColorUtility.TryParseHtmlString("#736921", out customColor))
-                    {
-                        skinPriceTexts[i].color = customColor;
-                    }
+                    
                     skinPriceBackgrounds[i].color = Color.white;
                 }
             }
