@@ -6,15 +6,23 @@ namespace DoAnGame.UI
 {
     /// <summary>
     /// Controller cho Settings Popup
-    /// Hiển thị: Volume slider, Exit button, Close button
+    /// Hiển thị: Music Volume slider, SFX Volume slider, Exit button, Close button
     /// Back to Menu button là optional (có thể null)
     /// </summary>
     public class SettingsPopupController : MonoBehaviour
     {
         [Header("UI References")]
         [SerializeField] private TextMeshProUGUI titleText;
-        [SerializeField] private Slider volumeSlider;
-        [SerializeField] private TextMeshProUGUI volumeValueText;
+        
+        [Header("Music Volume Controls")]
+        [SerializeField] private Slider musicSlider;
+        [SerializeField] private TextMeshProUGUI musicValueText;
+        
+        [Header("SFX Volume Controls")]
+        [SerializeField] private Slider sfxSlider;
+        [SerializeField] private TextMeshProUGUI sfxValueText;
+        
+        [Header("Buttons")]
         [SerializeField] private Button exitGameButton;
         [SerializeField] private Button backToMenuButton; // Optional - có thể để null
         [SerializeField] private Button closeButton;
@@ -22,7 +30,8 @@ namespace DoAnGame.UI
         [Header("Settings")]
         [SerializeField] private string menuSceneName = "GameUIPlay 1";
 
-        private const string VOLUME_KEY = "GameVolume";
+        private const string MUSIC_VOLUME_KEY = "MusicVolume";
+        private const string SFX_VOLUME_KEY = "SFXVolume";
 
         private void Awake()
         {
@@ -60,17 +69,50 @@ namespace DoAnGame.UI
                 Debug.LogWarning("[SettingsPopup] Close button is NULL!");
             }
 
-            // Gán sự kiện cho volume slider
-            if (volumeSlider != null)
+            // Gán sự kiện cho music volume slider
+            if (musicSlider != null)
             {
-                volumeSlider.onValueChanged.AddListener(OnVolumeChanged);
+                musicSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
                 
-                // Load volume đã lưu
-                float savedVolume = PlayerPrefs.GetFloat(VOLUME_KEY, 1f);
-                volumeSlider.value = savedVolume;
-                UpdateVolumeText(savedVolume);
+                // Load music volume đã lưu
+                float savedMusicVolume = PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY, 1f);
+                musicSlider.value = savedMusicVolume;
+                UpdateMusicVolumeText(savedMusicVolume);
                 
-                Debug.Log($"[SettingsPopup] Volume slider initialized: {savedVolume}");
+                // Áp dụng volume vào AudioManager
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.SetMusicVolume(savedMusicVolume);
+                }
+                
+                Debug.Log($"[SettingsPopup] Music slider initialized: {savedMusicVolume}");
+            }
+            else
+            {
+                Debug.LogWarning("[SettingsPopup] Music slider is NULL!");
+            }
+
+            // Gán sự kiện cho SFX volume slider
+            if (sfxSlider != null)
+            {
+                sfxSlider.onValueChanged.AddListener(OnSFXVolumeChanged);
+                
+                // Load SFX volume đã lưu
+                float savedSFXVolume = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, 1f);
+                sfxSlider.value = savedSFXVolume;
+                UpdateSFXVolumeText(savedSFXVolume);
+                
+                // Áp dụng volume vào AudioManager
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.SetSFXVolume(savedSFXVolume);
+                }
+                
+                Debug.Log($"[SettingsPopup] SFX slider initialized: {savedSFXVolume}");
+            }
+            else
+            {
+                Debug.LogWarning("[SettingsPopup] SFX slider is NULL!");
             }
 
             // Fix RectTransform
@@ -93,7 +135,8 @@ namespace DoAnGame.UI
             exitGameButton?.onClick.RemoveAllListeners();
             backToMenuButton?.onClick.RemoveAllListeners();
             closeButton?.onClick.RemoveAllListeners();
-            volumeSlider?.onValueChanged.RemoveAllListeners();
+            musicSlider?.onValueChanged.RemoveAllListeners();
+            sfxSlider?.onValueChanged.RemoveAllListeners();
         }
 
         /// <summary>
@@ -102,6 +145,26 @@ namespace DoAnGame.UI
         public void Show()
         {
             Debug.Log("[SettingsPopup] Show() called");
+
+            // Load và áp dụng music volume từ PlayerPrefs
+            float savedMusicVolume = PlayerPrefs.GetFloat(MUSIC_VOLUME_KEY, 1f);
+            if (musicSlider != null)
+            {
+                musicSlider.value = savedMusicVolume;
+            }
+
+            // Load và áp dụng SFX volume từ PlayerPrefs
+            float savedSFXVolume = PlayerPrefs.GetFloat(SFX_VOLUME_KEY, 1f);
+            if (sfxSlider != null)
+            {
+                sfxSlider.value = savedSFXVolume;
+            }
+
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.SetMusicVolume(savedMusicVolume);
+                AudioManager.Instance.SetSFXVolume(savedSFXVolume);
+            }
 
             // Đưa popup lên trên cùng
             transform.SetAsLastSibling();
@@ -144,26 +207,73 @@ namespace DoAnGame.UI
             gameObject.SetActive(false);
         }
 
-        private void OnVolumeChanged(float value)
+        /// <summary>
+        /// Xử lý khi music volume thay đổi
+        /// </summary>
+        private void OnMusicVolumeChanged(float value)
         {
-            // Lưu volume
-            PlayerPrefs.SetFloat(VOLUME_KEY, value);
+            // Lưu music volume
+            PlayerPrefs.SetFloat(MUSIC_VOLUME_KEY, value);
             PlayerPrefs.Save();
 
             // Cập nhật text hiển thị
-            UpdateVolumeText(value);
+            UpdateMusicVolumeText(value);
 
-            // TODO: Áp dụng volume vào AudioListener
-            // AudioListener.volume = value;
-
-            Debug.Log($"[SettingsPopup] Volume changed: {value:F2} ({Mathf.RoundToInt(value * 100)}%)");
+            // Áp dụng volume vào AudioManager
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.SetMusicVolume(value);
+                Debug.Log($"[SettingsPopup] Music volume updated: {value:F2} ({Mathf.RoundToInt(value * 100)}%)");
+            }
+            else
+            {
+                Debug.LogWarning("[SettingsPopup] AudioManager.Instance is NULL!");
+            }
         }
 
-        private void UpdateVolumeText(float value)
+        /// <summary>
+        /// Xử lý khi SFX volume thay đổi
+        /// </summary>
+        private void OnSFXVolumeChanged(float value)
         {
-            if (volumeValueText != null)
+            // Lưu SFX volume
+            PlayerPrefs.SetFloat(SFX_VOLUME_KEY, value);
+            PlayerPrefs.Save();
+
+            // Cập nhật text hiển thị
+            UpdateSFXVolumeText(value);
+
+            // Áp dụng volume vào AudioManager
+            if (AudioManager.Instance != null)
             {
-                volumeValueText.text = $"{Mathf.RoundToInt(value * 100)}%";
+                AudioManager.Instance.SetSFXVolume(value);
+                Debug.Log($"[SettingsPopup] SFX volume updated: {value:F2} ({Mathf.RoundToInt(value * 100)}%)");
+            }
+            else
+            {
+                Debug.LogWarning("[SettingsPopup] AudioManager.Instance is NULL!");
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật text hiển thị music volume
+        /// </summary>
+        private void UpdateMusicVolumeText(float value)
+        {
+            if (musicValueText != null)
+            {
+                musicValueText.text = $"{Mathf.RoundToInt(value * 100)}%";
+            }
+        }
+
+        /// <summary>
+        /// Cập nhật text hiển thị SFX volume
+        /// </summary>
+        private void UpdateSFXVolumeText(float value)
+        {
+            if (sfxValueText != null)
+            {
+                sfxValueText.text = $"{Mathf.RoundToInt(value * 100)}%";
             }
         }
 

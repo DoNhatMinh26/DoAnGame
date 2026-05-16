@@ -8161,8 +8161,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   titleText: {fileID: 0}
-  volumeSlider: {fileID: 1602110414}
-  volumeValueText: {fileID: 1423960915}
+  musicSlider: {fileID: 1602110414}
+  musicValueText: {fileID: 1423960915}
+  sfxSlider: {fileID: 173806959}
+  sfxValueText: {fileID: 2033638678}
   exitGameButton: {fileID: 1364522043}
   backToMenuButton: {fileID: 0}
   closeButton: {fileID: 1395560201}
@@ -13113,6 +13115,9 @@ MonoBehaviour:
   musicDefenseMode: {fileID: 8300000, guid: aa564c3628847e44da8bd199e56f688f, type: 3}
   musicSpaceMode: {fileID: 0}
   musicMultiplayer: {fileID: 0}
+  masterVolume: 1
+  musicVolume: 1
+  sfxVolume: 1
 --- !u!1 &948952288
 GameObject:
   m_ObjectHideFlags: 0

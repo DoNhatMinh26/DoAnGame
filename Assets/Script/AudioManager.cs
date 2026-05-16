@@ -8,6 +8,7 @@ public class AudioManager : MonoBehaviour
     [Header("Bộ phát âm thanh")]
     public AudioSource musicSource; // Dùng cho nhạc nền (Loop)
     public AudioSource sfxSource;   // Dùng cho hiệu ứng (Ting, Click...)
+
     [Header("Audio hiệu ứng chung")]
     public AudioClip soundCorrect;
     public AudioClip soundWrong;
@@ -30,6 +31,12 @@ public class AudioManager : MonoBehaviour
     [Header("Audio Game Multiplayer")]
     public AudioClip musicMultiplayer; // Nhạc chế độ Multiplayer
 
+    [Header("Cài đặt âm thanh")]
+    [Range(0f, 1f)] public float masterVolume = 1f;
+    [Range(0f, 1f)] public float musicVolume = 1f;
+    [Range(0f, 1f)] public float sfxVolume = 1f;
+
+    private Coroutine fadeMusicCoroutine;
 
     private void Awake()
     {
@@ -57,6 +64,53 @@ public class AudioManager : MonoBehaviour
         if (clip == null || musicSource == null) return;
         musicSource.clip = clip;
         musicSource.loop = true;
+        musicSource.volume = masterVolume * musicVolume;
+        musicSource.Play();
+    }
+
+    // Hàm phát nhạc nền với fade in
+    public void PlayMusicWithFade(AudioClip clip, float fadeDuration = 0.5f)
+    {
+        if (clip == null || musicSource == null) return;
+
+        // Dừng fade coroutine cũ nếu có
+        if (fadeMusicCoroutine != null)
+        {
+            StopCoroutine(fadeMusicCoroutine);
+        }
+
+        fadeMusicCoroutine = StartCoroutine(FadeMusicCoroutine(clip, fadeDuration));
+    }
+
+    private IEnumerator FadeMusicCoroutine(AudioClip clip, float fadeDuration)
+    {
+        // Fade out nhạc cũ
+        float elapsedTime = 0f;
+        float startVolume = musicSource.volume;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            musicSource.volume = Mathf.Lerp(startVolume, 0f, elapsedTime / fadeDuration);
+            yield return null;
+        }
+
+        // Chuyển clip
+        musicSource.clip = clip;
+        musicSource.loop = true;
+
+        // Fade in nhạc mới
+        elapsedTime = 0f;
+        float targetVolume = masterVolume * musicVolume;
+
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            musicSource.volume = Mathf.Lerp(0f, targetVolume, elapsedTime / fadeDuration);
+            yield return null;
+        }
+
+        musicSource.volume = targetVolume;
         musicSource.Play();
     }
 
@@ -64,39 +118,94 @@ public class AudioManager : MonoBehaviour
     public void PlaySFX(AudioClip clip)
     {
         if (clip == null || sfxSource == null) return;
+        sfxSource.volume = masterVolume * sfxVolume;
         sfxSource.PlayOneShot(clip);
     }
 
-    public void audioLopHoc()
+    // Dừng nhạc nền
+    public void StopMusic()
     {
-        
-        AudioManager.Instance.PlayMusic(AudioManager.Instance.musicClassMode);
-       
+        if (musicSource != null)
+        {
+            musicSource.Stop();
+        }
     }
 
-    
-    public void audioPhongThu()
+    // Tạm dừng nhạc nền
+    public void PauseMusic()
     {
-        AudioManager.Instance.PlayMusic(AudioManager.Instance.musicDefenseMode);
-       
+        if (musicSource != null && musicSource.isPlaying)
+        {
+            musicSource.Pause();
+        }
     }
 
-   
-    public void audioPhiThuyen()
+    // Tiếp tục phát nhạc nền
+    public void ResumeMusic()
     {
-        AudioManager.Instance.PlayMusic(AudioManager.Instance.musicSpaceMode);
-       
+        if (musicSource != null && !musicSource.isPlaying)
+        {
+            musicSource.Play();
+        }
     }
 
-    
-    public void audioMultiplayer()
+    // Điều chỉnh âm lượng chính
+    public void SetMasterVolume(float volume)
     {
-        AudioManager.Instance.PlayMusic(AudioManager.Instance.musicMultiplayer);
-       
+        masterVolume = Mathf.Clamp01(volume);
+        UpdateVolumes();
     }
-    public void audioMenuChinh()
+
+    // Điều chỉnh âm lượng nhạc nền
+    public void SetMusicVolume(float volume)
     {
-        AudioManager.Instance.PlayMusic(AudioManager.Instance.musicMenu);
-        // Code quay về Scene Menu hoặc đóng các Panel chơi game
+        musicVolume = Mathf.Clamp01(volume);
+        UpdateVolumes();
+    }
+
+    // Điều chỉnh âm lượng hiệu ứng
+    public void SetSFXVolume(float volume)
+    {
+        sfxVolume = Mathf.Clamp01(volume);
+        UpdateVolumes();
+    }
+
+    // Cập nhật âm lượng cho tất cả nguồn âm thanh
+    private void UpdateVolumes()
+    {
+        if (musicSource != null)
+        {
+            musicSource.volume = masterVolume * musicVolume;
+        }
+        if (sfxSource != null)
+        {
+            sfxSource.volume = masterVolume * sfxVolume;
+        }
+    }
+
+    // ===== Các phương thức chế độ game =====
+    public void PlayClassModeMusic()
+    {
+        PlayMusicWithFade(musicClassMode);
+    }
+
+    public void PlayDefenseModeMusic()
+    {
+        PlayMusicWithFade(musicDefenseMode);
+    }
+
+    public void PlaySpaceModeMusic()
+    {
+        PlayMusicWithFade(musicSpaceMode);
+    }
+
+    public void PlayMultiplayerModeMusic()
+    {
+        PlayMusicWithFade(musicMultiplayer);
+    }
+
+    public void PlayMainMenuMusic()
+    {
+        PlayMusicWithFade(musicMenu);
     }
 }

@@ -4413,6 +4413,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1480588576}
+  - {fileID: 1781537914}
   m_Father: {fileID: 171361117}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -7379,6 +7380,7 @@ GameObject:
   - component: {fileID: 881257783}
   - component: {fileID: 881257785}
   - component: {fileID: 881257784}
+  - component: {fileID: 881257786}
   m_Layer: 5
   m_Name: SettingPanel
   m_TagString: Untagged
@@ -7444,6 +7446,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 881257782}
   m_CullTransparentMesh: 1
+--- !u!114 &881257786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881257782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba0a0f9a1e1fe142b0106e3b4fc2793, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titleText: {fileID: 0}
+  musicSlider: {fileID: 1509136579}
+  musicValueText: {fileID: 2052895582}
+  sfxSlider: {fileID: 1480588577}
+  sfxValueText: {fileID: 1781537915}
+  exitGameButton: {fileID: 0}
+  backToMenuButton: {fileID: 0}
+  closeButton: {fileID: 0}
+  menuSceneName: GameUIPlay 1
 --- !u!1 &894327012
 GameObject:
   m_ObjectHideFlags: 0
@@ -9739,7 +9762,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0
+  m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -11805,7 +11828,6 @@ RectTransform:
   - {fileID: 1262310901}
   - {fileID: 793341483}
   - {fileID: 294670397}
-  - {fileID: 1781537914}
   m_Father: {fileID: 503359113}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -11860,7 +11882,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -11955,7 +11977,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -12398,8 +12420,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2082411106}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 14.899994, y: 0.87999916}
   m_SizeDelta: {x: 58.24, y: -1.76}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -13197,8 +13219,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 294670397}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 11.199997, y: 0.4225006}
   m_SizeDelta: {x: 59.98, y: -0.845}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -14079,7 +14101,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0
+  m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -14669,11 +14691,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1480588576}
+  m_Father: {fileID: 503359113}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 243.9, y: 0}
+  m_AnchoredPosition: {x: 471.7, y: 0}
   m_SizeDelta: {x: 119.21, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1781537915

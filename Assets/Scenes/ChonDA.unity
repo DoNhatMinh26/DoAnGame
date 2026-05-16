@@ -2645,6 +2645,7 @@ GameObject:
   - component: {fileID: 357622904}
   - component: {fileID: 357622906}
   - component: {fileID: 357622905}
+  - component: {fileID: 357622907}
   m_Layer: 5
   m_Name: SettingPanel
   m_TagString: Untagged
@@ -2714,6 +2715,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 357622903}
   m_CullTransparentMesh: 1
+--- !u!114 &357622907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 357622903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aba0a0f9a1e1fe142b0106e3b4fc2793, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titleText: {fileID: 0}
+  musicSlider: {fileID: 948364671}
+  musicValueText: {fileID: 343083234}
+  sfxSlider: {fileID: 868657544}
+  sfxValueText: {fileID: 1166065890}
+  exitGameButton: {fileID: 0}
+  backToMenuButton: {fileID: 0}
+  closeButton: {fileID: 0}
+  menuSceneName: GameUIPlay 1
 --- !u!1 &374864209
 GameObject:
   m_ObjectHideFlags: 0
