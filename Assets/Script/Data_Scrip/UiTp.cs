@@ -70,12 +70,13 @@ public class GameUIManager : MonoBehaviour
     private int totalCoins = 0;
     private int levelCoins = 0;
     private int lastSelectedType = 0;
+    [Header("Quản lý Pháo giống cấu trúc Mèo")]
+    public GameObject[] phaoSkins;        // ĐÃ THÊM: Mảng chứa các Object Pháo trong trận đấu (tương tự catSkins)
+    public GameObject[] shopPhaoSkins;    // ĐÃ THÊM: Mảng chứa các Object Pháo hiển thị ở UI Shop/Preview (tương tự catSkins2)
+    public Animator sharedPhaoAnimator;   // ĐÃ THÊM: Animator tổng điều khiển chung cho Pháo (nếu dùng chung xương, hoặc để Rebind)
 
-    [Header("Quản lý Pháo")]
-    public SpriteRenderer phaoRenderer;
-    public SpriteRenderer shopPhaoRenderer;// Kéo Renderer khẩu pháo ở Gameplay vào đây
-    public PhaoSkin[] allPhaoSkins;     // Danh sách các loại Pháo
-    public Image[] phaoButtonImages;   // Các ảnh Pháo trong Shop để làm tối/sáng
+    public PhaoSkin[] allPhaoSkins;       // Danh sách ScriptableObject cấu hình giá/tên pháo
+    public Image[] phaoButtonImages;      // Các ảnh nút Pháo trong Shop
     public TextMeshProUGUI[] phaoPriceTexts;
     private int pendingPhaoIndex = -1;
     [Header("Thông báo Shop")]
@@ -438,92 +439,166 @@ public class GameUIManager : MonoBehaviour
     #region LOGIC skin Pháo
     public void LoadCurrentPhao()
     {
-        int id = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedPhaoID, 0);
-        if (allPhaoSkins != null && id < allPhaoSkins.Length)
+        int selectedPhaoID = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedPhaoID, 0);
+
+        // 1. Cập nhật các Object Pháo trong trận đấu theo ID đang mặc
+        if (phaoSkins != null)
         {
-            Sprite currentPhaoSprite = allPhaoSkins[id].phaoSprite;
-
-            // Cập nhật pháo trong trận đấu
-            if (phaoRenderer != null)
+            for (int i = 0; i < phaoSkins.Length; i++)
             {
-                phaoRenderer.sprite = currentPhaoSprite;
-            }
-
-            // Cập nhật luôn pháo ở Shop/Menu nếu cần đồng bộ
-            if (shopPhaoRenderer != null)
-            {
-                shopPhaoRenderer.sprite = currentPhaoSprite;
+                if (phaoSkins[i] != null) phaoSkins[i].SetActive(i == selectedPhaoID);
             }
         }
+
+        // 2. Cập nhật các Object Pháo ở UI Shop/Menu để đồng bộ
+        if (shopPhaoSkins != null)
+        {
+            for (int i = 0; i < shopPhaoSkins.Length; i++)
+            {
+                if (shopPhaoSkins[i] != null) shopPhaoSkins[i].SetActive(i == selectedPhaoID);
+            }
+        }
+
+        // Rebind lại trạng thái hoạt họa nếu bạn có sử dụng Animator tổng
+        if (sharedPhaoAnimator != null)
+        {
+            sharedPhaoAnimator.Rebind();
+            sharedPhaoAnimator.Update(0f);
+        }
+    }
+
+    public bool IsPhaoUnlocked(int index)
+    {
+        if (index == 0) return true; // Pháo đầu tiên (Pháo gỗ) mặc định mở khóa
+        return PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.PhaoUnlockedKey(index), 0) == 1;
     }
 
     public void SelectPhaoToPreview(int index)
     {
         if (allPhaoSkins == null || index < 0 || index >= allPhaoSkins.Length) return;
 
+        // Hiệu ứng co giãn nút bấm khi click (SỬA LỖI: Dùng đúng mảng phaoButtonImages của pháo thay vì skinButtonImages)
+        if (index < phaoButtonImages.Length && phaoButtonImages[index] != null)
+        {
+            RectTransform rt = phaoButtonImages[index].GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                if (activePhaoScaleCoroutine != null) StopCoroutine(activePhaoScaleCoroutine);
+                activePhaoScaleCoroutine = StartCoroutine(ScaleButtonRoutine(rt));
+            }
+        }
+
         pendingPhaoIndex = index;
         lastSelectedType = 2; // Ưu tiên chọn Pháo
 
-        Sprite previewSprite = allPhaoSkins[index].phaoSprite;
-        if (shopPhaoRenderer != null) shopPhaoRenderer.sprite = previewSprite;
-        if (phaoRenderer != null) phaoRenderer.sprite = previewSprite;
-
-        // KIỂM TRA TRẠNG THÁI SỞ HỮU
-        bool isUnlocked = (index == 0 || PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.PhaoUnlockedKey(index), 0) == 1);
-
-        if (isUnlocked)
+        // SỬA LỖI CHÍNH: Bật/Tắt đồng thời cả phaoSkins để hình ảnh pháo ở giữa màn hình thay đổi ngay lập tức
+        if (phaoSkins != null)
         {
-            // Nếu đã có rồi thì tự động lưu và báo "Đã trang bị"
+            for (int i = 0; i < phaoSkins.Length; i++)
+            {
+                if (phaoSkins[i] != null) phaoSkins[i].SetActive(i == index);
+            }
+        }
+
+        // Bật Object Preview tương ứng trong Shop để xem trước
+        if (shopPhaoSkins != null)
+        {
+            for (int i = 0; i < shopPhaoSkins.Length; i++)
+            {
+                if (shopPhaoSkins[i] != null) shopPhaoSkins[i].SetActive(i == index);
+            }
+        }
+
+        if (IsPhaoUnlocked(index))
+        {
+            // Nếu đã sở hữu (như Pháo gỗ) -> Tự động lưu trang bị luôn
             PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedPhaoID, index);
             PlayerPrefs.Save();
             ShowShopNotification("Đã trang bị pháo!");
+
+            // Cập nhật lại trạng thái thực tế của Gameplay
+            LoadCurrentPhao();
         }
         else
         {
-            // Nếu chưa có thì báo "Chưa sở hữu"
-            ShowShopNotification("Chưa sở hữu khẩu pháo này!");
+            ShowShopNotification("Giá: " + allPhaoSkins[index].price + "$");
+        }
+
+        // Luôn làm mới lại UI chữ của các ô trong shop
+        UpdatePhaoShopUI();
+    }
+
+    public void UpdatePhaoShopUI()
+    {
+        // LẤY ĐÚNG ID CỦA PHÁO ĐANG MẶC
+        int currentEquippedPhaoID = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedPhaoID, 0);
+
+        for (int i = 0; i < allPhaoSkins.Length; i++)
+        {
+            bool unlocked = IsPhaoUnlocked(i);
+
+            // Cập nhật màu sắc icon pháo (Mờ đi nếu chưa mua)
+            if (i < phaoButtonImages.Length && phaoButtonImages[i] != null)
+            {
+                phaoButtonImages[i].color = unlocked ? Color.white : new Color(0.3f, 0.3f, 0.3f, 1f);
+            }
+
+            // Cập nhật text trạng thái / giá tiền của Pháo
+            if (i < phaoPriceTexts.Length && phaoPriceTexts[i] != null)
+            {
+                if (unlocked)
+                {
+                    if (i == currentEquippedPhaoID)
+                    {
+                        phaoPriceTexts[i].text = "Đang dùng";
+                        phaoPriceTexts[i].color = Color.white;
+                    }
+                    else
+                    {
+                        phaoPriceTexts[i].text = "Sở hữu";
+                        phaoPriceTexts[i].color = Color.white;
+                    }
+                }
+                else
+                {
+                    phaoPriceTexts[i].text = allPhaoSkins[i].price + "$";
+                    phaoPriceTexts[i].color = new Color(0.45f, 0.41f, 0.13f); // Màu vàng tối đồng bộ
+                }
+            }
         }
     }
 
     public void Click_ConfirmPurchasePhao()
     {
-        if (pendingPhaoIndex == -1)
-        {
-            ShowShopNotification("Vui lòng chọn một khẩu pháo!");
-            return;
-        }
+        if (pendingPhaoIndex == -1) { ShowShopNotification("Chọn khẩu pháo!"); return; }
 
         PhaoSkin skin = allPhaoSkins[pendingPhaoIndex];
-        bool isUnlocked = pendingPhaoIndex == 0 || PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.PhaoUnlockedKey(pendingPhaoIndex), 0) == 1;
+        bool unlocked = IsPhaoUnlocked(pendingPhaoIndex);
 
-        if (isUnlocked || totalCoins >= skin.price)
+        if (!unlocked && totalCoins >= skin.price)
         {
-            if (!isUnlocked)
-            {
-                totalCoins -= skin.price;
-                PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
-                PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.PhaoUnlockedKey(pendingPhaoIndex), 1);
-                ShowShopNotification("Đã mua thành công: " + skin.phaoName + "!");
-            }
-            else
-            {
-                ShowShopNotification("Đã sở hữu: " + skin.phaoName);
-            }
-
+            totalCoins -= skin.price;
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.PhaoUnlockedKey(pendingPhaoIndex), 1);
             PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedPhaoID, pendingPhaoIndex);
             PlayerPrefs.Save();
 
+            ShowShopNotification("Mua thành công pháo!");
             UpdateCoinUI();
             UpdatePhaoShopUI();
             LoadCurrentPhao();
-
-            // Sync shop lên Firebase
             SyncKeoThadaPhaoShop();
+        }
+        else if (unlocked)
+        {
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedPhaoID, pendingPhaoIndex);
+            PlayerPrefs.Save();
+            LoadCurrentPhao();
+            UpdatePhaoShopUI();
         }
         else
         {
-            int thieu = skin.price - totalCoins;
-            ShowShopNotification("Bạn còn thiếu " + thieu + "$ để mua pháo này!");
+            ShowShopNotification("Thiếu " + (skin.price - totalCoins) + "$");
         }
     }
 
@@ -535,23 +610,36 @@ public class GameUIManager : MonoBehaviour
         {
             for (int i = 1; i < allPhaoSkins.Length; i++)
             {
-                if (PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.PhaoUnlockedKey(i), 0) == 1) unlocked.Add(i);
+                if (IsPhaoUnlocked(i)) unlocked.Add(i);
             }
         }
         DoAnGame.Auth.CloudSyncService.Instance?.OnShopPurchased("keothada_phao", selected, unlocked.ToArray());
     }
-    public void UpdatePhaoShopUI()
+
+    public void PlayPhaoAnimation(string triggerName)
     {
-        for (int i = 0; i < allPhaoSkins.Length; i++)
+        // Cách 1: Nếu bạn đã kéo Object PhaoGame vào ô "Shared Phao Animator" trong Inspector
+        if (sharedPhaoAnimator != null && sharedPhaoAnimator.gameObject.activeInHierarchy)
         {
-            bool unlocked = i == 0 || PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.PhaoUnlockedKey(i), 0) == 1;
-            if (i < phaoButtonImages.Length)
+            sharedPhaoAnimator.SetTrigger(triggerName);
+            return;
+        }
+
+        // Cách 2 (Dự phòng): Nếu không gán sharedPhaoAnimator, tự động tìm Animator ở Object cha của pháo đang kích hoạt
+        if (phaoSkins != null)
+        {
+            for (int i = 0; i < phaoSkins.Length; i++)
             {
-                phaoButtonImages[i].color = unlocked ? Color.white : new Color(0.3f, 0.3f, 0.3f, 1f);
-            }
-            if (i < phaoPriceTexts.Length)
-            {
-                phaoPriceTexts[i].text = unlocked ? "Đã sở hữu" : allPhaoSkins[i].price.ToString() + "$";
+                if (phaoSkins[i] != null && phaoSkins[i].activeInHierarchy)
+                {
+                    // Tìm component Animator ở chính nó hoặc component Animator ở các Object cha (như PhaoGame)
+                    Animator anim = phaoSkins[i].GetComponentInParent<Animator>();
+                    if (anim != null)
+                    {
+                        anim.SetTrigger(triggerName);
+                    }
+                    break;
+                }
             }
         }
     }

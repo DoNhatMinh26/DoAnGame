@@ -90,6 +90,11 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
                 {
                     GameUIManager.Instance.sharedAnimator.SetTrigger("TpAttack");
                 }
+                if (GameUIManager.Instance != null)
+                {
+                    // Truyền đúng tên Trigger bên bảng Animator của bạn là "TriggerTanCong"
+                    GameUIManager.Instance.PlayPhaoAnimation("TriggerTanCong");
+                }
                 if (CannonDefenseManager.Instance != null)
                 {
                     CannonDefenseManager.Instance.FireAtClosestEnemy();
