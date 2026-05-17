@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8645f008ebf0e4a4b9850ac4dff6a0f2
+guid: 8cfcfcaaf9a036046a28889c7828ad58
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -37,13 +37,13 @@ TextureImporter:
     filterMode: 1
     aniso: 1
     mipBias: 0
-    wrapU: 0
-    wrapV: 0
-    wrapW: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -108,18 +108,106 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: HoDenTrang_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 249
+        width: 597
+        height: 854
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fc0e35be8a66dd346896f8d87a274fd9
+      internalID: 1239850418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HoDenTrang_1
+      rect:
+        serializedVersion: 2
+        x: 614
+        y: 250
+        width: 580
+        height: 853
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4b301128becafe7478dab1489c4b52de
+      internalID: 1705782909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HoDenTrang_2
+      rect:
+        serializedVersion: 2
+        x: 1194
+        y: 249
+        width: 597
+        height: 854
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 14689c9e6e8f14249ad75885f005e524
+      internalID: -1068204479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: HoDenTrang_3
+      rect:
+        serializedVersion: 2
+        x: 1791
+        y: 249
+        width: 565
+        height: 854
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9ec0208361ada44baa8b014e1db93d5
+      internalID: -386157738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 0
+    internalID: 1537655665
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      HoDenTrang_0: 1239850418
+      HoDenTrang_1: 1705782909
+      HoDenTrang_2: -1068204479
+      HoDenTrang_3: -386157738
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
