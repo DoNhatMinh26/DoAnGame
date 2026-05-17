@@ -1,7 +1,7 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: Test_FireBase_multi
 Đường dẫn: Assets/Scenes/Test_FireBase_multi.unity
-Thời gian export: 5/14/2026 1:20:41 PM
+Thời gian export: 5/17/2026 2:40:49 PM
 ═══════════════════════════════════════════════════════════
 
 Tổng số Root GameObjects: 7
@@ -357,6 +357,7 @@ Canvas [Layer: UI]
 │   • CharacterContainerController (DoAnGame.Multiplayer)
 ││├─ Player1Character [INACTIVE] [Layer: UI]
 ││   • AvatarCharacterDisplay ()
+│││├─ HitPoint_Player1
 │││├─ MeoGoc34 Fix [INACTIVE]
 │││   • Animator
 ││││├─ Meo4 [INACTIVE]
@@ -732,7 +733,6 @@ Canvas [Layer: UI]
 │││││├─ Than
 ││││││├─ Dau
 │││││││├─ TaiTrai
-││││││││├─ HitPoint_Player1
 │││││││├─ TaiPhai
 │││││││├─ Mieng
 │││││││├─ LMPHai
@@ -744,6 +744,7 @@ Canvas [Layer: UI]
 ││││││├─ Duoi
 ││├─ Player2Character [INACTIVE] [Layer: UI]
 ││   • AvatarCharacterDisplay ()
+│││├─ HitPoint_Player2
 │││├─ Character Meo
 │││   • Animator
 ││││├─ mascost4 [INACTIVE]
@@ -874,7 +875,6 @@ Canvas [Layer: UI]
 │││││├─ Than
 ││││││├─ Dau
 │││││││├─ TaiTrai
-││││││││├─ HitPoint_Player2
 │││││││├─ TaiPhai
 │││││││├─ Mieng
 │││││││├─ LMPHai

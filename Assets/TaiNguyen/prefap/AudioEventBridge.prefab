@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &612822589518688446
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4805480564231379692}
+  - component: {fileID: 6303333922719115231}
+  m_Layer: 0
+  m_Name: AudioEventBridge
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4805480564231379692
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612822589518688446}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.552557, y: -0.061711833, z: 59.69668}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6303333922719115231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612822589518688446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb83a37a724b0f4c94ef866c34d5884, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoHookButtons: 1
+  autoHookBattleStatusText: 1
+  autoHookAnswerTimerWarning: 1
+  autoHookModePanels: 1
+  battleStatusTextObject: {fileID: 0}
+  answerTimerTextObject: {fileID: 0}
+  answerResultTextObject: {fileID: 0}
+  modePanelNames:
+  - UiClass
+  - UiTp
+  - UiSp
+  menuMusic: {fileID: 8300000, guid: 8a32843fbab3f9c41a6b773a508ce998, type: 3}
+  battleMusic: {fileID: 8300000, guid: 455ceef8d16caed4a9c338e12e0bfe3d, type: 3}
+  victoryMusic: {fileID: 8300000, guid: 46d2614ee43d3a24a88150d0f9de9b63, type: 3}
+  defeatMusic: {fileID: 8300000, guid: 715eb1f1941706e4396c3c48033037f8, type: 3}
+  pollInterval: 0.12

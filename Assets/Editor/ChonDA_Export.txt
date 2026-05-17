@@ -1,10 +1,10 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: ChonDA
 Đường dẫn: Assets/Scenes/ChonDA.unity
-Thời gian export: 5/7/2026 3:51:15 PM
+Thời gian export: 5/17/2026 2:40:14 PM
 ═══════════════════════════════════════════════════════════
 
-Tổng số Root GameObjects: 7
+Tổng số Root GameObjects: 5
 
 Main Camera (Tag: MainCamera)
    • Camera
@@ -15,155 +15,11 @@ EventSystem
    • StandaloneInputModule (UnityEngine.EventSystems)
 UIClassManager
    • UiClass ()
-Character Meo
-   • Animator
-│├─ mascost4
-││├─ M4_LongMay
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_Mat
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_MiengVui
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_Dau
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_Than
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_TaiPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_TaiTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_Duoi
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_TayPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_TayTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-│├─ mascost3
-││├─ M3_LongMay
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_Mat
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_MiengVui
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_Dau
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_Than
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_TaiPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_TaiTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_Duoi
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_TayPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_TayTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-│├─ mascost2
-│   • Animator
-││├─ M2_LongMay
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_Mat
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_MiengVui
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_Dau
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_Than
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_TaiPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_TaiTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_Duoi
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_TayPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_TayTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-│├─ mascost1
-││├─ M1_LongMay
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_Mat
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_MiengVui
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_Dau
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_Than
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_TaiPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_TaiTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_Duoi
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_TayPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_TayTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-│├─ root
-││├─ Than
-│││├─ Dau
-││││├─ TaiTrai
-││││├─ TaiPhai
-││││├─ Mieng
-││││├─ LMPHai
-││││├─ LMTRai
-││││├─ MatTrai
-││││├─ MatPhai
-│││├─ TayPhai
-│││├─ TayTrai
-│││├─ Duoi
-GamePlay
+GamePlay [INACTIVE]
 │├─ DoHoa
 ││├─ Background
 ││   • SpriteRenderer
 ││├─ Bang
-││   • SpriteRenderer
-││├─ mm1
-││   • SpriteRenderer
-││├─ mascost1 1 [INACTIVE]
 ││   • SpriteRenderer
 ││├─ tim1
 ││   • SpriteRenderer
@@ -172,6 +28,172 @@ GamePlay
 ││├─ tim3
 ││   • SpriteRenderer
 ││├─ coinSpaw
+││├─ MeoClas
+││   • Animator
+│││├─ MeoDauBep
+││││├─ M4_LongMay
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M4_MatKhoc
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M4_MiengBuon
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M4_Mat
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M4_MiengVui
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M4_Dau
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M4_Than
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M4_TaiPhai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M4_TaiTrai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M4_Duoi
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M4_TayPhai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M4_TayTrai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ MeoSiQuan
+││││├─ M3_LongMay
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M3_MatKhoc
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M3_MiengBuon
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M3_Mat
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M3_MiengVui
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M3_Dau
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M3_Than
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M3_TaiPhai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M3_TaiTrai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M3_Duoi
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M3_TayPhai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M3_TayTrai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ MeoHocBa
+││││├─ M2_LongMay
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M2_MatKhoc
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M2_MiengBuon
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M2_Mat
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M2_MiengVui
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M2_Dau
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M2_Than
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M2_TaiPhai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M2_TaiTrai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M2_Duoi
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M2_TayPhai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M2_TayTrai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ MeoThoXay
+││││├─ M1_LongMay
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M1_MatKhoc
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M1_MiengBuon
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M1_Mat
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M1_MiengVui
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M1_Dau
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M1_Than
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M1_TaiPhai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M1_TaiTrai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M1_Duoi
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M1_TayPhai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ M1_TayTrai
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ root
+││││├─ Than
+│││││├─ Dau
+││││││├─ TaiTrai
+││││││├─ TaiPhai
+││││││├─ Mieng
+││││││├─ LMPHai
+││││││├─ LMTRai
+││││││├─ MatTrai
+││││││├─ MatPhai
+││││││├─ MatKhocTrai
+││││││├─ MatKhocPhai
+││││││├─ MiengBuon
+│││││├─ TayPhai
+│││││├─ TayTrai
+│││││├─ Duoi
 │├─ QuesUi [Layer: UI]
 │   • Canvas (RenderMode: ScreenSpaceCamera)
 │   • CanvasScaler (UnityEngine.UI)
@@ -184,10 +206,6 @@ GamePlay
 ││├─ quesTionTxt [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [LiberationSans SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
 ││├─ oTrongRect [Layer: UI]
 │││├─ dapAnImage [Layer: UI]
 │││   • CanvasRenderer
@@ -221,99 +239,136 @@ GamePlay
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
 ││   • UIButtonScreenNavigator (DoAnGame.UI)
-│││├─ Text (TMP) [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
 ││├─ CoidImage
 ││   • SpriteRenderer
 ││├─ CoinTxt
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
+││├─ DiemTxt (2)
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
 ││├─ SoCauWinTxt [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [LiberationSans SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
-Ui [INACTIVE] [Layer: UI]
+Ui [Layer: UI]
    • Canvas (RenderMode: ScreenSpaceCamera)
    • CanvasScaler (UnityEngine.UI)
    • GraphicRaycaster (UnityEngine.UI)
 │├─ ShopPanel [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
-││├─ ShopTxt [Layer: UI]
+││├─ ShopTxt [INACTIVE] [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
+││├─ LVSao [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ Image (4) [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ Image (3) [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
 ││├─ Play [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-│││├─ Text (TMP) [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
 ││├─ Back [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
 ││   • UIButtonScreenNavigator (DoAnGame.UI)
-│││├─ Text (TMP) [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
 ││├─ MuaBtn [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-│││├─ Text (TMP) [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
 ││├─ CoinTxt [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
+││├─ LevelTxt (1) [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+│││   • LayoutElement (UnityEngine.UI)
+│││   • CanvasRenderer
+│││   • TMP_SubMeshUI (TMPro)
+││├─ DiemTxt (2) [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+│││   • LayoutElement (UnityEngine.UI)
+│││   • CanvasRenderer
+│││   • TMP_SubMeshUI (TMPro)
 ││├─ CoinImage [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││├─ ThongBaoCv [Layer: UI]
-││   • Canvas (RenderMode: ScreenSpaceOverlay)
+││   • Canvas (RenderMode: ScreenSpaceCamera)
 ││   • CanvasScaler (UnityEngine.UI)
 ││   • GraphicRaycaster (UnityEngine.UI)
 ││   • CanvasGroup
 │││├─ ThongBaoTxt [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││├─ mm1
-││   • SpriteRenderer
-││├─ meoT1Bnt [Layer: UI]
+││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││   • LayoutElement (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • TMP_SubMeshUI (TMPro)
+││├─ MeoHocBa [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-│││├─ name [Layer: UI]
+│││├─ ImageGia [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││├─ name [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
 │││├─ Gia [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││├─ meoV2Bnt [Layer: UI]
+││├─ MeoThoXay [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-│││├─ name [Layer: UI]
+│││├─ ImageGia (1) [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││├─ name [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
 │││├─ Gia [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││├─ meoC3Bnt [Layer: UI]
+││├─ MeoDauBep [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-│││├─ name [Layer: UI]
+│││├─ ImageGia (2) [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││├─ name [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
 │││├─ Gia [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
+││├─ MeoSiQuan [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ ImageGia (3) [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││├─ name [INACTIVE] [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│││├─ Gia [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ Image [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
 │├─ ChonManPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -326,6 +381,48 @@ Ui [INACTIVE] [Layer: UI]
 │││   • Image (UnityEngine.UI)
 │││   • Mask (UnityEngine.UI)
 ││││├─ Content [Layer: UI]
+│││││├─ Image [Layer: UI]
+││││││├─ Image0 [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • Image (UnityEngine.UI)
+││││││├─ Image0 (1) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • Image (UnityEngine.UI)
+││││││├─ Image0 (2) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • Image (UnityEngine.UI)
+││││││├─ Image0 (3) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • Image (UnityEngine.UI)
+││││││├─ Image0 (4) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • Image (UnityEngine.UI)
+││││││├─ Image0 (5) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • Image (UnityEngine.UI)
+││││││├─ Image0 (6) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • Image (UnityEngine.UI)
+││││││├─ Image0 (7) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • Image (UnityEngine.UI)
+││││││├─ Image0 (8) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • Image (UnityEngine.UI)
+││││││├─ Image0 (9) [Layer: UI]
+││││││   • CanvasRenderer
+││││││   • Image (UnityEngine.UI)
+│││││├─ ViTriMan [Layer: UI]
+││││││├─ p (1) [Layer: UI]
+││││││├─ p (2) [Layer: UI]
+││││││├─ p (3) [Layer: UI]
+││││││├─ p (4) [Layer: UI]
+││││││├─ p (5) [Layer: UI]
+││││││├─ p (6) [Layer: UI]
+││││││├─ p (7) [Layer: UI]
+││││││├─ p (8) [Layer: UI]
+││││││├─ p (9) [Layer: UI]
+││││││├─ p (10) [Layer: UI]
 │││├─ Scrollbar Horizontal [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
@@ -346,210 +443,173 @@ Ui [INACTIVE] [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-│││├─ Text (TMP) [Layer: UI]
+│││├─ Text (TMP) [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-│├─ SettingPanel [INACTIVE] [Layer: UI]
+│├─ SettingPanel [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
-││├─ STtxt [Layer: UI]
+│   • SettingsPopupController (DoAnGame.UI)
+││├─ BangSetting [Layer: UI]
 ││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-││├─ ShopBtn [Layer: UI]
+││   • Image (UnityEngine.UI)
+││├─ Fill [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+│││├─ SoundBackGround [Layer: UI]
+│││   • Slider (UnityEngine.UI)
+││││├─ Background [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+││││├─ Fill Area [Layer: UI]
+│││││├─ Fill [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+││││├─ Handle Slide Area [Layer: UI]
+│││││├─ Handle [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+│││├─ SFX [Layer: UI]
+│││   • Slider (UnityEngine.UI)
+││││├─ Background [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+││││├─ Fill Area [Layer: UI]
+│││││├─ Fill [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+││││├─ Handle Slide Area [Layer: UI]
+│││││├─ Handle [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+││││├─ AmLuongBG [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ AmLuongsfx [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+│││├─ BG [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││├─ Sfx [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+││├─ Reload [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-│││├─ Text (TMP) [Layer: UI]
+││├─ ThoatBtn [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
 ││├─ TiepTucBtn [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-│││├─ Text (TMP) [Layer: UI]
+│││├─ Text (TMP) [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-│├─ WinPanel [INACTIVE] [Layer: UI]
+│├─ WinPanel [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 ││├─ WinTxt [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
+│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+│││   • LayoutElement (UnityEngine.UI)
+│││   • CanvasRenderer
+│││   • TMP_SubMeshUI (TMPro)
+││├─ Image [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ HoanThanhTxt [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+│││   • LayoutElement (UnityEngine.UI)
+│││   • CanvasRenderer
+│││   • TMP_SubMeshUI (TMPro)
+││├─ PhanThuongTxt (2) [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+│││   • LayoutElement (UnityEngine.UI)
+│││   • CanvasRenderer
+│││   • TMP_SubMeshUI (TMPro)
+││├─ Image [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ CoinTxt (3) [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+│││   • LayoutElement (UnityEngine.UI)
+│││   • CanvasRenderer
+│││   • TMP_SubMeshUI (TMPro)
+││├─ DiemTxt (4) [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+│││   • LayoutElement (UnityEngine.UI)
+│││   • CanvasRenderer
+│││   • TMP_SubMeshUI (TMPro)
 ││├─ ShopBtn [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-│││├─ Text (TMP) [Layer: UI]
+│││├─ Text (TMP) [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
 ││├─ NextBnt [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-│││├─ Text (TMP) [Layer: UI]
+│││├─ Text (TMP) [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
 │├─ LosePanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
+││├─ Image [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
 ││├─ LoseTxt [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+││├─ HoanThanhTxt [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+││├─ PhanThuongTxt (2) [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+││├─ Image [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││├─ CoinTxt  [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
+││├─ DiemTxt  [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
 ││├─ ShopBtn [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-│││├─ Text (TMP) [Layer: UI]
+│││├─ Text (TMP) [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
 ││├─ RetryBnt [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-│││├─ Text (TMP) [Layer: UI]
+│││├─ Text (TMP) [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-Character Meo_Sad
-   • Animator
-│├─ mascost4
-││├─ M4_LongMay
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_Mat
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_MiengBuon
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_Dau
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_Than
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_TaiPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_TaiTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_Duoi
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_TayPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M4_TayTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-│├─ mascost3
-││├─ M3_LongMay
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_Mat
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_MiengBuon
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_Dau
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_Than
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_TaiPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_TaiTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_Duoi
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_TayPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M3_TayTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-│├─ mascost2
-││├─ M2_LongMay
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_Mat_1
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_MiengBuon_1
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_Dau
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_Than
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_TaiPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_TaiTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_Duoi
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_TayPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M2_TayTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-│├─ mascost1
-││├─ M1_LongMay
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_Mat
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_MiengBuon
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_Dau
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_Than
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_TaiPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_TaiTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_Duoi
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_TayPhai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-││├─ M1_TayTrai
-││   • SpriteRenderer
-││   • SpriteSkin (UnityEngine.U2D.Animation)
-│├─ Root
-││├─ Than
-│││├─ Dau
-││││├─ TaiTrai
-││││├─ TaiPhai
-││││├─ MatTrai
-││││├─ MatPhai
-││││├─ LMTrai
-││││├─ LMPhai
-││││├─ Mieng
-│││├─ TayTrai
-│││├─ TaiPhai_1
-│││├─ Duoi
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 202
+Tổng số GameObjects: 220
 ═══════════════════════════════════════════════════════════

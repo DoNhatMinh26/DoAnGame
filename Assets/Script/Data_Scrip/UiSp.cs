@@ -419,6 +419,9 @@ public class UiSp : MonoBehaviour
 
         if (panelLose != null)
         {
+            var am = AudioManager.Instance;
+            if (am != null) am.PlaySFX(am.soundLose);
+
             panelLose.SetActive(true);
             Time.timeScale = 0f; // Dừng chuyển động của gameplay phía sau
         }
@@ -445,6 +448,9 @@ public class UiSp : MonoBehaviour
         // 3. HIỆN PANEL THUA đè lên Gameplay
         if (panelLose != null)
         {
+            var am = AudioManager.Instance;
+            if (am != null) am.PlaySFX(am.soundLose);
+
             panelLose.SetActive(true);
         }
 
@@ -494,6 +500,9 @@ public class UiSp : MonoBehaviour
         HideAllPanels();
         if (panelWin != null)
         {
+            var am = AudioManager.Instance;
+            if (am != null) am.PlaySFX(am.soundWin);
+
             panelWin.SetActive(true);
             Time.timeScale = 0f;
         }

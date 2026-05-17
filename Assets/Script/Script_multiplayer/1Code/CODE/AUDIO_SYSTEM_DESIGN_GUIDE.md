@@ -353,9 +353,7 @@ namespace DoAnGame.Audio
 | Tên File | Khi Nào Phát | Độ Dài |
 |---|---|---|
 | `button_click.wav` | Click button | ~0.1s |/////////////
-| `button_hover.wav` | Hover button | ~0.05s |
-| `panel_open.wav` | Mở panel | ~0.3s |
-| `panel_close.wav` | Đóng panel | ~0.2s |
+ 
 
 ### 3. **Countdown Voice (Quan Trọng!)**
 | Tên File | Khi Nào Phát | Độ Dài |
@@ -373,8 +371,7 @@ namespace DoAnGame.Audio
 |---|---|---|
 | `correct_answer.wav` | Trả lời đúng | Vui tươi, tích cực |/////////////
 | `wrong_answer.wav` | Trả lời sai | Tiêu cực nhưng không quá nặng |///////////////
-| `timer_tick.wav` | Mỗi giây đếm ngược | Nhẹ, không gây khó chịu |
-| `timer_warning.wav` | Còn 5s | Căng thẳng, cảnh báo |
+ 
 | `health_lost.wav` | Mất máu | Đau đớn nhưng ngắn |/////////////
 | `match_end.wav` | Kết thúc trận | Trang trọng |////////////////
 
@@ -593,9 +590,7 @@ Assets/
 │   ├── SFX/
 │   │   ├── UI/
 │   │   │   ├── button_click.wav
-│   │   │   ├── button_hover.wav
-│   │   │   ├── panel_open.wav
-│   │   │   └── panel_close.wav
+│   │   │   └── (UI SFX files - only `button_click.wav` required)
 │   │   ├── Countdown/
 │   │   │   ├── countdown_3.wav
 │   │   │   ├── countdown_2.wav
@@ -605,8 +600,7 @@ Assets/
 │   │   └── Battle/
 │   │       ├── correct_answer.wav
 │   │       ├── wrong_answer.wav
-│   │       ├── timer_tick.wav
-│   │       ├── timer_warning.wav
+│   │       └── (Battle SFX files - `timer_tick`/`timer_warning` not required in this project)
 │   │       ├── health_lost.wav
 │   │       └── match_end.wav
 ```

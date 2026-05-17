@@ -149,6 +149,9 @@ namespace DoAnGame.UI
                 Log($"WinnerId={r.WinnerId}, LocalPlayerId={r.LocalPlayerId}, IsAbandoned={r.IsAbandoned}");
 
                 bool isLocalWinner = (r.WinnerId == r.LocalPlayerId);
+                var am = AudioManager.Instance;
+                if (am != null) am.PlaySFX(isLocalWinner ? am.soundWin : am.soundLose);
+
                 int localPlayerId = r.LocalPlayerId;
                 int opponentPlayerId = (localPlayerId == 0) ? 1 : 0;
 

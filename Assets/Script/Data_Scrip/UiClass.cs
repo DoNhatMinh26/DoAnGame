@@ -711,7 +711,13 @@ public class UiClass : MonoBehaviour
             // LevelManager.CurrentLevel là biến lưu số màn bạn đang chơi
             winLevelInfoTxt.text = "Hoàn thành Màn " + LevelManager.CurrentLevel;
         }
-        if (panelWin != null) panelWin.SetActive(true);
+        if (panelWin != null)
+        {
+            var am = AudioManager.Instance;
+            if (am != null) am.PlaySFX(am.soundWin);
+
+            panelWin.SetActive(true);
+        }
     }
     public void ResetHealth()
     {
@@ -769,7 +775,13 @@ public class UiClass : MonoBehaviour
             loseProgressTxt.text = $"Số câu đúng: {currentCorrectCount}/{targetCorrectAnswers}";
         }
 
-        if (panelLose != null) panelLose.SetActive(true);
+        if (panelLose != null)
+        {
+            var am = AudioManager.Instance;
+            if (am != null) am.PlaySFX(am.soundLose);
+
+            panelLose.SetActive(true);
+        }
     }
     private void DeactivateAll()
     {

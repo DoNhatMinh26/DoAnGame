@@ -15,6 +15,15 @@ public class AudioManager : MonoBehaviour
     public AudioClip soundClick;
     public AudioClip soundWin;
     public AudioClip soundLose;
+    public AudioClip soundCoin;
+    // (removed: UI hover/panel and timer warning/tick clips)
+
+    [Header("Countdown Voice Clips")]
+    public AudioClip countdown3Clip;
+    public AudioClip countdown2Clip;
+    public AudioClip countdown1Clip;
+    public AudioClip countdownReadyClip;
+    public AudioClip countdownGoClip;
 
     [Header("Audio Menu chính")]
     public AudioClip musicMenu;       // Nhạc ở Menu chính
@@ -120,6 +129,34 @@ public class AudioManager : MonoBehaviour
         if (clip == null || sfxSource == null) return;
         sfxSource.volume = masterVolume * sfxVolume;
         sfxSource.PlayOneShot(clip);
+    }
+
+    // (removed public helpers for hover/panel/timer clips)
+
+    // Countdown public API
+    public void PlayCountdown3()
+    {
+        PlaySFX(countdown3Clip);
+    }
+
+    public void PlayCountdown2()
+    {
+        PlaySFX(countdown2Clip);
+    }
+
+    public void PlayCountdown1()
+    {
+        PlaySFX(countdown1Clip);
+    }
+
+    public void PlayCountdownReady()
+    {
+        PlaySFX(countdownReadyClip);
+    }
+
+    public void PlayCountdownGo()
+    {
+        PlaySFX(countdownGoClip);
     }
 
     // Dừng nhạc nền

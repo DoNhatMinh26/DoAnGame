@@ -1,10 +1,10 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: GameUIPlay 1
 Đường dẫn: Assets/Scenes/GameUIPlay 1.unity
-Thời gian export: 5/15/2026 2:02:48 PM
+Thời gian export: 5/17/2026 2:40:22 PM
 ═══════════════════════════════════════════════════════════
 
-Tổng số Root GameObjects: 6
+Tổng số Root GameObjects: 7
 
 Main Camera (Tag: MainCamera)
    • Camera
@@ -33,6 +33,12 @@ GameUICanvas [Layer: UI]
 ││├─ Backgroud [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
+││├─ BackgroundVFX_Loop [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
+││├─ BackgroundVFX_Loop (1) [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
 ││├─ PlayBtn [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -54,6 +60,12 @@ GameUICanvas [Layer: UI]
 ││├─ Backgroud [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
+││├─ BackgroundVFX_Loop [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
+││├─ BackgroundVFX_Loop (1) [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
 ││├─ ChoiNhanh_ChoiMoi [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -179,6 +191,12 @@ GameUICanvas [Layer: UI]
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
 ││   • UIButtonScreenNavigator (DoAnGame.UI)
+││├─ BackgroundVFX_Loop [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
+││├─ BackgroundVFX_Loop (1) [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
 │├─ LoginRequiredPopup [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -262,6 +280,12 @@ GameUICanvas [Layer: UI]
 ││││├─ Text [Layer: UI]
 ││││   • CanvasRenderer
 ││││   • TextMeshProUGUI (TMPro)
+││├─ BackgroundVFX_Loop [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
+││├─ BackgroundVFX_Loop (1) [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
 │├─ ForgotPasswordPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -483,7 +507,7 @@ GameUICanvas [Layer: UI]
 ││├─ Backgroud [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││├─ Backgroud (1) [Layer: UI]
+││├─ BangTen [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││├─ Label Lv Diem [Layer: UI]
@@ -616,7 +640,7 @@ GameUICanvas [Layer: UI]
 ││├─ ten (2) [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││├─ StatusText [Layer: UI]
+││├─ StatusText [INACTIVE] [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
 │├─ SettingsPopup [INACTIVE] [Layer: UI]
@@ -684,7 +708,7 @@ GameUICanvas [Layer: UI]
 ││   • Image (UnityEngine.UI)
 ││   • Canvas (RenderMode: WorldSpace)
 ││   • GraphicRaycaster (UnityEngine.UI)
-│││├─ Overlay [Layer: UI]
+│││├─ Overlay [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
 │││├─ ContentPanel [Layer: UI]
@@ -702,14 +726,14 @@ GameUICanvas [Layer: UI]
 │││││   • CanvasRenderer
 │││││   • Image (UnityEngine.UI)
 │││││   • Button (UnityEngine.UI)
-││││││├─ Text (TMP) [Layer: UI]
+││││││├─ Text (TMP) [INACTIVE] [Layer: UI]
 ││││││   • CanvasRenderer
 ││││││   • TextMeshProUGUI (TMPro)
 │││││├─ CancelButton [Layer: UI]
 │││││   • CanvasRenderer
 │││││   • Image (UnityEngine.UI)
 │││││   • Button (UnityEngine.UI)
-││││││├─ Text (TMP) [Layer: UI]
+││││││├─ Text (TMP) [INACTIVE] [Layer: UI]
 ││││││   • CanvasRenderer
 ││││││   • TextMeshProUGUI (TMPro)
 ││├─ DeleteAccountPopup [INACTIVE] [Layer: UI]
@@ -941,8 +965,15 @@ EventSystem
    • StandaloneInputModule (UnityEngine.EventSystems)
 DataManager [Layer: UI]
    • DataManager ()
+AudioManager
+   • AudioManager ()
+   • AudioEventBridge (DoAnGame.Audio)
+│├─ Music
+│   • AudioSource
+│├─ SFX
+│   • AudioSource
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 285
+Tổng số GameObjects: 296
 ═══════════════════════════════════════════════════════════

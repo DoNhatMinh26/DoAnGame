@@ -3716,6 +3716,7 @@ GameObject:
   - component: {fileID: 503741198}
   - component: {fileID: 503741197}
   - component: {fileID: 503741195}
+  - component: {fileID: 503741201}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -3833,6 +3834,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &503741201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 503741194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb22616d0f8296c488881631bda86d06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  autoSetupOnStart: 1
+  hookChildrenOnly: 1
 --- !u!1001 &534581422
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6422,6 +6437,73 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &823713485
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 823713487}
+  - component: {fileID: 823713486}
+  m_Layer: 0
+  m_Name: AudioBridge
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &823713486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 823713485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb83a37a724b0f4c94ef866c34d5884, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneMusicType: 5
+  backgroundMusicOverride: {fileID: 0}
+  sfxCorrect: {fileID: 8300000, guid: bf64fe2664f496c4dab5832711dcf7b6, type: 3}
+  sfxWrong: {fileID: 8300000, guid: 04ba4dc3b7faf074cb5f89e73825d5f1, type: 3}
+  sfxWin: {fileID: 8300000, guid: 46d2614ee43d3a24a88150d0f9de9b63, type: 3}
+  sfxLose: {fileID: 8300000, guid: 715eb1f1941706e4396c3c48033037f8, type: 3}
+  timerWarningClip: {fileID: 0}
+  autoHookButtons: 0
+  autoHookBattleStatusText: 1
+  autoHookAnswerTimerWarning: 1
+  autoHookModePanels: 1
+  battleStatusTextObject: {fileID: 1875919413}
+  answerTimerTextObject: {fileID: 18283988}
+  answerResultTextObject: {fileID: 0}
+  modePanelNames:
+  - UiClass
+  - UiTp
+  - UiSp
+  menuMusic: {fileID: 0}
+  battleMusic: {fileID: 8300000, guid: 455ceef8d16caed4a9c338e12e0bfe3d, type: 3}
+  victoryMusic: {fileID: 8300000, guid: 46d2614ee43d3a24a88150d0f9de9b63, type: 3}
+  defeatMusic: {fileID: 8300000, guid: 715eb1f1941706e4396c3c48033037f8, type: 3}
+  pollInterval: 0.12
+--- !u!4 &823713487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 823713485}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &839187195
 GameObject:
   m_ObjectHideFlags: 0
@@ -16812,3 +16894,4 @@ SceneRoots:
   - {fileID: 503741200}
   - {fileID: 691375501}
   - {fileID: 84842097}
+  - {fileID: 823713487}

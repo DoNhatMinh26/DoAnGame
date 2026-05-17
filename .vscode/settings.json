@@ -57,6 +57,7 @@
         "Temp/": true
     },
     "dotnet.defaultSolution": "DoAnGame.sln",
+    "workbench.colorTheme": "Dark Modern",
     "CodeGPT.apiKey": "Anthropic",
     "kiroAgent.configureMCP": "Enabled"
 }

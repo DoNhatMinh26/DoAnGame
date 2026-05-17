@@ -735,6 +735,9 @@ public class GameUIManager : MonoBehaviour
 
             if (winRewardTxt != null)
                 winRewardTxt.text = "+" + levelCoins.ToString() ;
+            var am = AudioManager.Instance;
+            if (am != null) am.PlaySFX(am.soundWin);
+
             panelWin.SetActive(true);
             Time.timeScale = 0f;
             DragAndDrop.SetGlobalLock(true);
@@ -805,6 +808,9 @@ public class GameUIManager : MonoBehaviour
                 loseProgressTxt.text = $"Tiến trình: {killedEnemies}/{totalEnemiesInLevel}";
             }
 
+            var am = AudioManager.Instance;
+            if (am != null) am.PlaySFX(am.soundLose);
+
             panelLose.SetActive(true);
             Time.timeScale = 0f; // Dừng game
             DragAndDrop.SetGlobalLock(true);
@@ -870,6 +876,9 @@ public class GameUIManager : MonoBehaviour
             {
                 loseProgressTxt.text = $"Tiến trình: {killedEnemies}/{totalEnemiesInLevel}";
             }
+
+            var am = AudioManager.Instance;
+            if (am != null) am.PlaySFX(am.soundLose);
 
             panelLose.SetActive(true);
             Time.timeScale = 0f; // Dừng game

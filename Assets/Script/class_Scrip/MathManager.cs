@@ -267,6 +267,9 @@ public class MathManager : MonoBehaviour
 
         if (val == dapAnDung)
         {
+            var am = AudioManager.Instance;
+            if (am != null) am.PlaySFX(am.soundCorrect);
+
             if (oTrongImage != null) oTrongImage.color = Color.green;
             // Gọi Trigger đúng tên trong ảnh của bạn
             if (UiClass.Instance != null)
@@ -286,6 +289,9 @@ public class MathManager : MonoBehaviour
 
         else
         {
+            var am = AudioManager.Instance;
+            if (am != null) am.PlaySFX(am.soundWrong);
+
             if (oTrongImage != null) oTrongImage.color = Color.red;
             if (UiClass.Instance != null)
             {

@@ -1,7 +1,7 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: KeoThaDA
 Đường dẫn: Assets/Scenes/KeoThaDA.unity
-Thời gian export: 5/16/2026 10:48:47 PM
+Thời gian export: 5/17/2026 2:40:30 PM
 ═══════════════════════════════════════════════════════════
 
 Tổng số Root GameObjects: 7
@@ -18,17 +18,52 @@ EventSystem
 UiManager
    • GameUIManager ()
    • AppQuitting ()
-GamePlay [INACTIVE]
+GamePlay
 │├─ DoHoa
 ││├─ EnemySpawner
 ││   • EnemySpawner ()
 │││├─ D1
 │││├─ D1 (1)
 │││├─ D1 (2)
-││├─ phaoGamePlay
-││   • SpriteRenderer
+││├─ PhaoGame
+││   • Animator
+│││├─ PhaoVang
+││││├─ TruocVang
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ NongVang
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ SauVang
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ PhaoSao
+││││├─ TruocSat
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ NongSat
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ SauSat
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ PhaoGo
+││││├─ TruocGo
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ NongGo
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ SauGo
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ Root
+││││├─ Tru
+│││││├─ Phao
 │││├─ FirePoint
 │││   • CannonDefenseManager ()
+││├─ phaoGamePlay [INACTIVE]
+││   • SpriteRenderer
 ││├─ MeoGamePlay
 ││   • Animator
 │││├─ MeoDauBep
@@ -273,7 +308,7 @@ Ui [Layer: UI]
    • Canvas (RenderMode: ScreenSpaceCamera)
    • CanvasScaler (UnityEngine.UI)
    • GraphicRaycaster (UnityEngine.UI)
-│├─ ShopPanel [Layer: UI]
+│├─ ShopPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 ││├─ Image [Layer: UI]
@@ -454,8 +489,6 @@ Ui [Layer: UI]
 │││││├─ TayTrai
 │││││├─ TayPhai
 │││││├─ Duoi
-││├─ meo [INACTIVE]
-││   • SpriteRenderer
 ││├─ Skin_0_HB [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -466,17 +499,9 @@ Ui [Layer: UI]
 │││├─ NameSkin [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
 │││├─ GiaTxt [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
 ││├─ Skin_1_TX [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -487,10 +512,6 @@ Ui [Layer: UI]
 │││├─ NameSkin [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
 │││├─ GiaTxt [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
@@ -504,10 +525,6 @@ Ui [Layer: UI]
 │││├─ NameSkin [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
 │││├─ GiaTxt [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
@@ -521,13 +538,44 @@ Ui [Layer: UI]
 │││├─ NameSkin [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
 │││├─ GiaTxt [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
+││├─ PhaoLayer
+││   • Animator
+│││├─ PhaoVang
+││││├─ TruocVang
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ NongVang
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ SauVang
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ PhaoSao
+││││├─ TruocSat
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ NongSat
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ SauSat
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ PhaoGo
+││││├─ TruocGo
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ NongGo
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+││││├─ SauGo
+││││   • SpriteRenderer
+││││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ Root
+││││├─ Tru
+│││││├─ Phao
 ││├─ phaoGo_0 [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -535,17 +583,9 @@ Ui [Layer: UI]
 │││├─ NameSkin [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
 │││├─ GiaTxt [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
 ││├─ phaoSat_1 [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -553,10 +593,6 @@ Ui [Layer: UI]
 │││├─ NameSkin [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
 │││├─ GiaTxt [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
@@ -567,37 +603,23 @@ Ui [Layer: UI]
 │││├─ NameSkin [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
 │││├─ GiaTxt [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││├─ phao
-││   • SpriteRenderer
 ││├─ ThongBaoCv [Layer: UI]
-││   • Canvas (RenderMode: ScreenSpaceCamera)
+││   • Canvas (RenderMode: ScreenSpaceOverlay)
 ││   • CanvasScaler (UnityEngine.UI)
 ││   • GraphicRaycaster (UnityEngine.UI)
 ││   • CanvasGroup
 │││├─ ThongBaoTxt [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
 ││├─ LevelTxt (1) [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
 ││├─ DiemTxt (2) [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
 │├─ ChonManPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -678,6 +700,7 @@ Ui [Layer: UI]
 │├─ SettingPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
+│   • SettingsPopupController (DoAnGame.UI)
 ││├─ Bangsetiting [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -719,9 +742,9 @@ Ui [Layer: UI]
 │││││││├─ Handle [Layer: UI]
 │││││││   • CanvasRenderer
 │││││││   • Image (UnityEngine.UI)
-││││││├─ AmLuong (1) [Layer: UI]
-││││││   • CanvasRenderer
-││││││   • TextMeshProUGUI (TMPro)
+│││││├─ AmLuong (1) [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • TextMeshProUGUI (TMPro)
 │││├─ ThoatBtn [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
@@ -813,5 +836,5 @@ Ui [Layer: UI]
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 301
+Tổng số GameObjects: 320
 ═══════════════════════════════════════════════════════════

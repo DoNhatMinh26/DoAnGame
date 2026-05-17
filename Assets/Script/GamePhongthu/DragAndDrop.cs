@@ -86,6 +86,9 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             {
                 // ĐÚNG
                 image.color = colorCorrect;
+                var am = AudioManager.Instance;
+                if (am != null) am.PlaySFX(am.soundCorrect);
+
                 if (GameUIManager.Instance != null && GameUIManager.Instance.sharedAnimator != null)
                 {
                     GameUIManager.Instance.sharedAnimator.SetTrigger("TpAttack");
@@ -118,6 +121,9 @@ public class DragAndDrop : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     private void ApplyGlobalWrongEffect()
     {
+        var am = AudioManager.Instance;
+        if (am != null) am.PlaySFX(am.soundWrong);
+
         if (GameUIManager.Instance != null && GameUIManager.Instance.sharedAnimator != null)
         {
             GameUIManager.Instance.sharedAnimator.SetTrigger("TpSad");

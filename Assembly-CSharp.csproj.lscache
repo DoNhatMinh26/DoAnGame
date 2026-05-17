@@ -54,13 +54,14 @@ TemporaryDependencyNodeTargetIdentifier=netstandard2.1
 Assets/Firebase/FirebaseApp/Internal/
  FirebaseInterops.cs
  HttpHelpers.cs
-Assets/Script/Avatar/
- AvatarCharacterDisplay.cs
- AvatarData.cs
- AvatarItemUI.cs
- AvatarManager.cs
 Assets/Script/
- BackgroundFollow.cs
+ Audio/AudioEventBridge.cs
+ AudioManager.cs
+ Avatar/
+  AvatarCharacterDisplay.cs
+  AvatarData.cs
+  AvatarItemUI.cs
+  AvatarManager.cs
  class_Scrip/
   ClassDifficultyConfig.cs
   MathManager.cs

@@ -157,6 +157,9 @@ public class SpaceShipPhysics : MonoBehaviour
 
                 if (isCorrect)
                 {
+                    var am = AudioManager.Instance;
+                    if (am != null) am.PlaySFX(am.soundCorrect);
+
                     if (UiSp.Instance != null)
                     {
                         UiSp.Instance.AddScore(10);
@@ -166,6 +169,9 @@ public class SpaceShipPhysics : MonoBehaviour
                 }
                 else
                 {
+                    var am = AudioManager.Instance;
+                    if (am != null) am.PlaySFX(am.soundWrong);
+
                     gateText.color = Color.red;
                     if (Enemy.Instance != null) Enemy.Instance.MoveCloser();
                 }

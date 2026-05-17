@@ -789,6 +789,10 @@ namespace DoAnGame.UI
             bool player1Correct = (player1Answer == correctAnswer);
             bool player2Correct = (player2Answer == correctAnswer);
             bool bothCorrect = player1Correct && player2Correct;
+            bool localCorrect = net == null || net.IsHost ? player1Correct : player2Correct;
+
+            var am = AudioManager.Instance;
+            if (am != null) am.PlaySFX(localCorrect ? am.soundCorrect : am.soundWrong);
             
             Debug.Log($"[BattleController] [{role}] P1Correct={player1Correct}, P2Correct={player2Correct}, BothCorrect={bothCorrect}");
 

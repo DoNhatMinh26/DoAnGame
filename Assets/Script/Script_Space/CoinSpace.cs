@@ -14,6 +14,12 @@ public class CoinSpace : MonoBehaviour
             isCollected = true;
             GetComponent<Collider2D>().enabled = false; // Tắt va chạm để tránh nhặt 2 lần
 
+            var am = AudioManager.Instance;
+            if (am != null && am.soundCoin != null)
+            {
+                am.PlaySFX(am.soundCoin);
+            }
+
             // Tách khỏi cha (Portal) để không bị xóa khi Portal trôi quá xa
             transform.SetParent(null);
 
