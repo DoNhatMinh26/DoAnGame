@@ -27,11 +27,8 @@ public class SpaceShipPhysics : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         // Lưu lại kích thước chỉnh ở Inspector (ví dụ: 0.3) để dùng xuyên suốt game
         originalScale = transform.localScale;
-    }
-
-    void Start()
-    {
-        // Lưu lại vị trí lúc vừa khởi chạy game
+        // Lưu vị trí gốc ngay từ Awake để tránh case ResetPosition được gọi
+        // trước Start khi GameObject ban đầu đang inactive.
         startPosition = transform.position;
     }
 
@@ -40,7 +37,7 @@ public class SpaceShipPhysics : MonoBehaviour
         // SỬA: Trả về kích thước gốc đã lưu thay vì ép về 1
         transform.localScale = originalScale;
 
-        // Đưa phi thuyền về vị trí cũ
+        // Luôn về đúng vị trí gốc đã đặt cho Player_Holder trong scene.
         transform.position = startPosition;
 
         // Đưa vận tốc về 0 để không bị trôi tiếp

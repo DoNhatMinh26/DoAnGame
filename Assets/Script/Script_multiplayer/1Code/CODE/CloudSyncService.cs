@@ -457,28 +457,26 @@ namespace DoAnGame.Auth
                 var playerRef  = firestore.Collection(COL_PLAYER_DATA).Document(uid);
                 var playerSnap = await playerRef.GetSnapshotAsync();
 
-                int prevScore = 0;
-                int prevXp    = 0;
                 int prevCoins = 0;
                 if (playerSnap.Exists)
                 {
                     var d = playerSnap.ToDictionary();
-                    prevScore = GetInt(d, "totalScore", 0);
-                    prevXp    = GetInt(d, "totalXp", 0);
                     prevCoins = GetInt(d, "coins", 0);
                 }
 
-                int newScore = prevScore + score;
-                int newXp    = prevXp + (score / SCORE_TO_XP_DIVISOR);
-                int newLevel = 1 + (newXp / XP_PER_LEVEL);
-                int newCoins = prevCoins + coinsEarned;
+                // Score/Level đã được cập nhật bởi DataManager.AddScore -> OnScoreChanged.
+                // Ở đây chỉ đồng bộ snapshot hiện tại để tránh cộng dồn 2 lần khi thắng màn.
+                int syncedScore = PlayerPrefs.GetInt(KEY_SCORE, 0);
+                int syncedLevel = PlayerPrefs.GetInt(KEY_LEVEL, 1);
+                int syncedCoins = PlayerPrefs.GetInt(KEY_COINS, prevCoins + coinsEarned);
+                int syncedXp    = syncedScore / SCORE_TO_XP_DIVISOR;
 
                 var playerUpdate = new Dictionary<string, object>
                 {
-                    { "totalScore",  newScore },
-                    { "totalXp",     newXp },
-                    { "level",       newLevel },
-                    { "coins",       newCoins },
+                    { "totalScore",  syncedScore },
+                    { "totalXp",     syncedXp },
+                    { "level",       syncedLevel },
+                    { "coins",       syncedCoins },
                     { "lastUpdated", now }
                 };
                 await playerRef.SetAsync(playerUpdate, SetOptions.MergeAll);

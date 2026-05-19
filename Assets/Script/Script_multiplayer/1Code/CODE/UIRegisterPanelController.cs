@@ -12,6 +12,9 @@ namespace DoAnGame.UI
     /// </summary>
     public class UIRegisterPanelController : FlowPanelController
     {
+        private const int MaxUsernameLength = 30;
+        private const int MaxPasswordLength = 30;
+
         [Header("Input Fields")]
         [SerializeField] private TMP_InputField emailInput;
         [SerializeField] private TMP_InputField characterNameInput;    // ← Character Name (tên nhân vật)
@@ -64,6 +67,19 @@ namespace DoAnGame.UI
             {
                 flowManager = FindObjectOfType<UIFlowManager>(true);
             }
+
+            if (characterNameInput != null)
+            {
+                characterNameInput.characterLimit = MaxUsernameLength;
+            }
+            if (passwordInput != null)
+            {
+                passwordInput.characterLimit = MaxPasswordLength;
+            }
+            if (confirmPasswordInput != null)
+            {
+                confirmPasswordInput.characterLimit = MaxPasswordLength;
+            }
         }
 
         protected override void OnDestroy()
@@ -87,15 +103,11 @@ namespace DoAnGame.UI
 
         private void OnEnable()
         {
-            if (termsToggle != null)
-            {
-                // Every time panel is opened, require explicit acceptance again.
-                termsToggle.SetIsOnWithoutNotify(false);
-            }
-
             // Khởi tạo dropdown lớp học mỗi khi panel mở
             InitializeGradeDropdown();
-            ClearMessages();
+            ApplyInputLimits();
+            DisableUI(false);
+            ResetRegisterForm();
         }
 
         /// <summary>
@@ -249,6 +261,7 @@ namespace DoAnGame.UI
                     
                     // Auto-navigate to Login sau 1 giây
                     await Task.Delay(1000);
+                    ResetRegisterForm();
 
                     bool routed = false;
                     if (registerSuccessNavigator != null)
@@ -386,6 +399,41 @@ namespace DoAnGame.UI
         private bool IsTermsAccepted()
         {
             return termsToggle != null && termsToggle.isOn;
+        }
+
+        private void ApplyInputLimits()
+        {
+            if (characterNameInput != null)
+            {
+                characterNameInput.characterLimit = MaxUsernameLength;
+            }
+            if (passwordInput != null)
+            {
+                passwordInput.characterLimit = MaxPasswordLength;
+            }
+            if (confirmPasswordInput != null)
+            {
+                confirmPasswordInput.characterLimit = MaxPasswordLength;
+            }
+        }
+
+        private void ResetRegisterForm()
+        {
+            DisableUI(false);
+            emailInput?.SetTextWithoutNotify(string.Empty);
+            characterNameInput?.SetTextWithoutNotify(string.Empty);
+            passwordInput?.SetTextWithoutNotify(string.Empty);
+            confirmPasswordInput?.SetTextWithoutNotify(string.Empty);
+            if (gradeDropdown != null)
+            {
+                gradeDropdown.SetValueWithoutNotify(0);
+                gradeDropdown.RefreshShownValue();
+            }
+            if (termsToggle != null)
+            {
+                termsToggle.SetIsOnWithoutNotify(false);
+            }
+            ClearMessages();
         }
     }
 }

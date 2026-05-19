@@ -421,6 +421,13 @@ namespace DoAnGame.Audio
             {
                 am.PlayMusicWithFade(menuMusic);
             }
+            else if (sceneMusicType == SceneMusicType.Multiplayer)
+            {
+                // Multiplayer menu/lobby: fallback to AudioManager menu music if available.
+                var m = am.GetType().GetMethod("PlayMainMenuMusic", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (m != null) m.Invoke(am, null);
+                else am.PlayMusicWithFade(menuMusicFallback());
+            }
             else
             {
                 PlaySceneTypeDefaultMusic(am);
@@ -551,6 +558,9 @@ namespace DoAnGame.Audio
                     else am.PlayMusicWithFade(battleMusic ?? battleMusicFallback());
                     break;
                 case SceneMusicType.Multiplayer:
+                    // Let panel-state logic decide (Lobby/Gameplay/Wins) to avoid
+                    // playing battle music before GameplayPanel is active.
+                    if (autoHookModePanels) break;
                     var mMulti = am.GetType().GetMethod("PlayMultiplayerModeMusic", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     if (mMulti != null) mMulti.Invoke(am, null);
                     else am.PlayMusicWithFade(battleMusic ?? battleMusicFallback());

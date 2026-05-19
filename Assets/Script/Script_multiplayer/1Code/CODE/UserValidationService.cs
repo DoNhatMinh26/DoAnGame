@@ -11,6 +11,8 @@ namespace DoAnGame.Auth
     /// </summary>
     public class UserValidationService : MonoBehaviour
     {
+        private const int MaxCharacterNameLength = 30;
+
         public static UserValidationService Instance { get; private set; }
 
         private FirebaseFirestore firestore;
@@ -18,7 +20,6 @@ namespace DoAnGame.Auth
 
         // Validation regex patterns
         private const string EMAIL_PATTERN = @"^[^\s@]+@[^\s@]+\.[^\s@]+$";
-        private const string VALID_ALPHANUM_PATTERN = @"^[a-zA-Z0-9_]+$";
 
         private void Awake()
         {
@@ -92,7 +93,7 @@ namespace DoAnGame.Auth
         }
 
         /// <summary>
-        /// Xác thực tên nhân vật (3-20 ký tự, chỉ alphanumeric + underscore, check unique trong DB)
+        /// Xác thực tên nhân vật (chỉ giới hạn độ dài, check unique trong DB)
         /// </summary>
         public async Task<ValidationResult> ValidateCharacterName(string characterName)
         {
@@ -101,20 +102,9 @@ namespace DoAnGame.Auth
                 return new ValidationResult(false, "character_name_empty", "Tên nhân vật không được để trống");
             }
 
-            if (characterName.Length < 3)
+            if (characterName.Length > MaxCharacterNameLength)
             {
-                return new ValidationResult(false, "character_name_too_short", "Tên nhân vật phải có ít nhất 3 ký tự");
-            }
-
-            if (characterName.Length > 20)
-            {
-                return new ValidationResult(false, "character_name_too_long", "Tên nhân vật không được vượt quá 20 ký tự");
-            }
-
-            if (!Regex.IsMatch(characterName, VALID_ALPHANUM_PATTERN))
-            {
-                return new ValidationResult(false, "character_name_invalid_chars",
-                    "Tên nhân vật chỉ chứa chữ, số và dấu gạch dưới (_)");
+                return new ValidationResult(false, "character_name_too_long", $"Tên nhân vật không được vượt quá {MaxCharacterNameLength} ký tự");
             }
 
             // Check xem tên nhân vật đã tồn tại trong DB chưa?
