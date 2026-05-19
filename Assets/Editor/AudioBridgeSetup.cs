@@ -93,6 +93,7 @@ public static class AudioBridgeSetup
     {
         bridge.menuPanelNames = null;
         bridge.battlePanelNames = null;
+        bridge.resultPanelNames = null;
 
         string s = scene.name.ToLowerInvariant();
         if (s.Contains("gameuiplay") || s.Contains("menu"))
@@ -104,28 +105,32 @@ public static class AudioBridgeSetup
         if (s.Contains("chonda") || s.Contains("class"))
         {
             bridge.menuPanelNames = new[] { "ShopPanel", "ChonManPanel" };
-            bridge.battlePanelNames = new[] { "GamePlay", "QuesUi", "WinPanel", "LosePanel" };
+            bridge.battlePanelNames = new[] { "GamePlay", "QuesUi" };
+            bridge.resultPanelNames = new[] { "WinPanel", "LosePanel" };
             return;
         }
 
         if (s.Contains("keotha") || s.Contains("defense") || s.Contains("tp"))
         {
             bridge.menuPanelNames = new[] { "ShopPanel", "ChonManPanel" };
-            bridge.battlePanelNames = new[] { "GamePlay", "QuesUI", "WinPanel", "LosePanel" };
+            bridge.battlePanelNames = new[] { "GamePlay", "QuesUI" };
+            bridge.resultPanelNames = new[] { "WinPanel", "LosePanel" };
             return;
         }
 
         if (s.Contains("phi") || s.Contains("phithuyen") || s.Contains("space"))
         {
             bridge.menuPanelNames = new[] { "ShopPanel", "ChonManPanel" };
-            bridge.battlePanelNames = new[] { "GamePlay", "QuesUI", "WinPanel", "LosePanel" };
+            bridge.battlePanelNames = new[] { "GamePlay", "QuesUI" };
+            bridge.resultPanelNames = new[] { "WinPanel", "LosePanel" };
             return;
         }
 
         if (s.Contains("test_firebase_multi") || s.Contains("multiplayer") || s.Contains("battle"))
         {
             bridge.menuPanelNames = new[] { "LobbyPanel", "LobbyBrowserPanel" };
-            bridge.battlePanelNames = new[] { "GameplayPanel", "Wins" };
+            bridge.battlePanelNames = new[] { "GameplayPanel" };
+            bridge.resultPanelNames = new[] { "Wins" };
         }
     }
 

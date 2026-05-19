@@ -48,6 +48,8 @@ namespace DoAnGame.Audio
         public string[] menuPanelNames;
         [Tooltip("If any of these panels is active, bridge uses battle music.")]
         public string[] battlePanelNames;
+        [Tooltip("If any of these panels is active (Win/Lose), bridge keeps music stopped.")]
+        public string[] resultPanelNames;
 
         [Header("Inspector Music Overrides (assign if AudioManager doesn't expose clips)")]
         public AudioClip menuMusic;
@@ -75,7 +77,8 @@ namespace DoAnGame.Audio
         {
             None,
             Menu,
-            Battle
+            Battle,
+            Result
         }
 
         void Start()
@@ -295,6 +298,13 @@ namespace DoAnGame.Audio
 
         PanelMusicState ResolvePanelMusicState()
         {
+            if (IsAnyPanelActive(resultPanelNames))
+                return PanelMusicState.Result;
+
+            var autoResult = GetAutoResultPanelNamesForScene();
+            if (IsAnyPanelActive(autoResult))
+                return PanelMusicState.Result;
+
             if (IsAnyPanelActive(battlePanelNames))
                 return PanelMusicState.Battle;
             if (IsAnyPanelActive(menuPanelNames))
@@ -360,9 +370,24 @@ namespace DoAnGame.Audio
                 case SceneMusicType.Class:
                 case SceneMusicType.Defense:
                 case SceneMusicType.Space:
-                    return new[] { "GamePlay", "QuesUi", "QuesUI", "panelGameplay", "WinPanel", "LosePanel" };
+                    return new[] { "GamePlay", "QuesUi", "QuesUI", "panelGameplay" };
                 case SceneMusicType.Multiplayer:
-                    return new[] { "GameplayPanel", "Wins" };
+                    return new[] { "GameplayPanel" };
+                default:
+                    return null;
+            }
+        }
+
+        string[] GetAutoResultPanelNamesForScene()
+        {
+            switch (sceneMusicType)
+            {
+                case SceneMusicType.Class:
+                case SceneMusicType.Defense:
+                case SceneMusicType.Space:
+                    return new[] { "WinPanel", "LosePanel" };
+                case SceneMusicType.Multiplayer:
+                    return new[] { "Wins" };
                 default:
                     return null;
             }
@@ -372,6 +397,12 @@ namespace DoAnGame.Audio
         {
             var am = AudioManager.Instance;
             if (am == null) return;
+
+            if (panelState == PanelMusicState.Result)
+            {
+                am.StopMusic();
+                return;
+            }
 
             if (panelState == PanelMusicState.Battle)
             {

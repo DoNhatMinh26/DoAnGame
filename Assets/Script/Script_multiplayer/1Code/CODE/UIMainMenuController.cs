@@ -360,11 +360,13 @@ namespace DoAnGame.UI
             }
 
             // Hiển thị level, score và grade từ Firebase
-            levelText?.SetText($"Lv: {data.level}");
-            scoreText?.SetText($"Score: {data.totalScore}");
+            int syncedScore = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.UserScore, data.totalScore);
+            int syncedLevel = PlayerPrefs.GetInt(DoAnGame.Auth.LocalStorageKeyResolver.UserLevel, data.level > 0 ? data.level : 1);
+            levelText?.SetText($"Lv: {syncedLevel}");
+            scoreText?.SetText($"Score: {syncedScore}");
             gradeText?.SetText($"Lớp: {UIManager.SelectedGrade}");
             
-            Debug.Log($"[MainMenu] Logged-in user: {finalCharacterName}, Level: {data.level}, Score: {data.totalScore}, Grade: {UIManager.SelectedGrade}");
+            Debug.Log($"[MainMenu] Logged-in user: {finalCharacterName}, Level: {syncedLevel}, Score: {syncedScore}, Grade: {UIManager.SelectedGrade}");
 
             // Cập nhật avatar
             RefreshAvatarImage();

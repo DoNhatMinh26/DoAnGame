@@ -1585,7 +1585,7 @@ namespace DoAnGame.Multiplayer
                 }
 
                 int newScore   = prevScore + score;
-                int newXp      = prevXp + (score / 10);
+                int newXp      = prevXp + (score / 2); // Đồng bộ local: 200 điểm = +1 level
                 int newLevel   = 1 + (newXp / 100);
                 int newPlayed  = prevPlayed + 1;
                 int newWon     = prevWon + (isWin ? 1 : 0);

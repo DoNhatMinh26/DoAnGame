@@ -1,10 +1,10 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: ChonDA
 Đường dẫn: Assets/Scenes/ChonDA.unity
-Thời gian export: 5/17/2026 2:40:14 PM
+Thời gian export: 5/19/2026 11:20:51 PM
 ═══════════════════════════════════════════════════════════
 
-Tổng số Root GameObjects: 5
+Tổng số Root GameObjects: 6
 
 Main Camera (Tag: MainCamera)
    • Camera
@@ -198,6 +198,7 @@ GamePlay [INACTIVE]
 │   • Canvas (RenderMode: ScreenSpaceCamera)
 │   • CanvasScaler (UnityEngine.UI)
 │   • GraphicRaycaster (UnityEngine.UI)
+│   • UIButtonAudioHelper (DoAnGame.UI)
 ││├─ questionManager [Layer: UI]
 ││   • MathManager ()
 ││├─ soManTxt [Layer: UI]
@@ -254,7 +255,8 @@ Ui [Layer: UI]
    • Canvas (RenderMode: ScreenSpaceCamera)
    • CanvasScaler (UnityEngine.UI)
    • GraphicRaycaster (UnityEngine.UI)
-│├─ ShopPanel [Layer: UI]
+   • UIButtonAudioHelper (DoAnGame.UI)
+│├─ ShopPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 ││├─ ShopTxt [INACTIVE] [Layer: UI]
@@ -263,12 +265,24 @@ Ui [Layer: UI]
 ││├─ LVSao [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││├─ Image (4) [Layer: UI]
+│││├─ Image (3) [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││├─ DiemTxt (2) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│││├─ LevelTxt (1) [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││├─ Coin Label [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││├─ Image (3) [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
+│││├─ CoinTxt [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│││├─ CoinImage [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
 ││├─ Play [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -282,38 +296,15 @@ Ui [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-││├─ CoinTxt [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-││├─ LevelTxt (1) [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
-││├─ DiemTxt (2) [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
-││├─ CoinImage [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
 ││├─ ThongBaoCv [Layer: UI]
-││   • Canvas (RenderMode: ScreenSpaceCamera)
+││   • Canvas (RenderMode: ScreenSpaceOverlay)
 ││   • CanvasScaler (UnityEngine.UI)
 ││   • GraphicRaycaster (UnityEngine.UI)
 ││   • CanvasGroup
+││   • UIButtonAudioHelper (DoAnGame.UI)
 │││├─ ThongBaoTxt [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
 ││├─ MeoHocBa [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -321,12 +312,12 @@ Ui [Layer: UI]
 │││├─ ImageGia [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
-│││├─ name [INACTIVE] [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
-│││├─ Gia [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
+││││├─ name [INACTIVE] [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ Gia [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
 ││├─ MeoThoXay [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -334,12 +325,12 @@ Ui [Layer: UI]
 │││├─ ImageGia (1) [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
-│││├─ name [INACTIVE] [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
-│││├─ Gia [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
+││││├─ Gia [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ name [INACTIVE] [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
 ││├─ MeoDauBep [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -347,12 +338,12 @@ Ui [Layer: UI]
 │││├─ ImageGia (2) [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
-│││├─ name [INACTIVE] [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
-│││├─ Gia [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
+││││├─ name [INACTIVE] [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ Gia [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
 ││├─ MeoSiQuan [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -360,16 +351,16 @@ Ui [Layer: UI]
 │││├─ ImageGia (3) [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
+││││├─ Gia [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
 │││├─ name [INACTIVE] [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
-│││├─ Gia [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
 ││├─ Image [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-│├─ ChonManPanel [INACTIVE] [Layer: UI]
+│├─ ChonManPanel [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 ││├─ Scroll View [Layer: UI]
@@ -446,7 +437,7 @@ Ui [Layer: UI]
 │││├─ Text (TMP) [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-│├─ SettingPanel [Layer: UI]
+│├─ SettingPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 │   • SettingsPopupController (DoAnGame.UI)
@@ -512,50 +503,30 @@ Ui [Layer: UI]
 │││├─ Text (TMP) [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-│├─ WinPanel [Layer: UI]
+│├─ WinPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 ││├─ WinTxt [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
 ││├─ Image [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││├─ HoanThanhTxt [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
 ││├─ PhanThuongTxt (2) [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
 ││├─ Image [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││├─ CoinTxt (3) [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
 ││├─ DiemTxt (4) [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
 ││├─ ShopBtn [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -608,8 +579,11 @@ Ui [Layer: UI]
 │││├─ Text (TMP) [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
+AudioBridge
+   • AudioEventBridge (DoAnGame.Audio)
+   • GlobalClickAudioListener (DoAnGame.Audio)
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 220
+Tổng số GameObjects: 213
 ═══════════════════════════════════════════════════════════

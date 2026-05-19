@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Firebase.Firestore;
 using UnityEngine;
@@ -33,6 +33,9 @@ namespace DoAnGame.Auth
         private const string COL_PLAYER_DATA      = "playerData";
         private const string COL_GAME_PROGRESS    = "gameModeProgress";
         private const string COL_LEVEL_PROGRESS   = "levelProgress";
+        private const int SCORE_PER_LEVEL         = 200;
+        private const int SCORE_TO_XP_DIVISOR     = 2;
+        private const int XP_PER_LEVEL            = 100;
 
         // PlayerPrefs keys — dùng LocalStorageKeyResolver để main/clone tách biệt
         private static string KEY_CHONDA    => LocalStorageKeyResolver.ClassHighest;
@@ -340,8 +343,8 @@ namespace DoAnGame.Auth
                 }
 
                 int newScore   = prevScore + scoreEarned;
-                int newXp      = prevXp + (scoreEarned / 10);
-                int newLevel   = 1 + (newXp / 100);
+                int newXp      = prevXp + (scoreEarned / SCORE_TO_XP_DIVISOR);
+                int newLevel   = 1 + (newXp / XP_PER_LEVEL);
                 int newPlayed  = prevPlayed + 1;
                 int newWon     = prevWon + (isWin ? 1 : 0);
                 float winRate  = newPlayed > 0 ? (float)newWon / newPlayed : 0f;
@@ -466,8 +469,8 @@ namespace DoAnGame.Auth
                 }
 
                 int newScore = prevScore + score;
-                int newXp    = prevXp + (score / 10);
-                int newLevel = 1 + (newXp / 100);
+                int newXp    = prevXp + (score / SCORE_TO_XP_DIVISOR);
+                int newLevel = 1 + (newXp / XP_PER_LEVEL);
                 int newCoins = prevCoins + coinsEarned;
 
                 var playerUpdate = new Dictionary<string, object>
@@ -509,8 +512,8 @@ namespace DoAnGame.Auth
             if (firestore == null) return;
             try
             {
-                // Tính XP từ score (1 điểm = 0.1 XP, làm tròn)
-                int newXp = newScore / 10;
+                // Đồng bộ theo local: 200 điểm = +1 level
+                int newXp = newScore / SCORE_TO_XP_DIVISOR;
 
                 var update = new Dictionary<string, object>
                 {
@@ -661,13 +664,15 @@ namespace DoAnGame.Auth
                 int cloudXp    = GetInt(d, "totalXp", 0);
                 int cloudLevel = GetInt(d, "level", 1);
 
-                // Nếu XP = 0 nhưng score > 0 (sửa thủ công hoặc dữ liệu cũ)
-                // → tính lại XP và level từ score
-                if (cloudXp == 0 && cloudScore > 0)
+                int expectedLevel = 1 + (cloudScore / SCORE_PER_LEVEL);
+                int expectedXp    = cloudScore / SCORE_TO_XP_DIVISOR;
+
+                // Nếu dữ liệu cloud cũ/lệch công thức thì sửa về đúng chuẩn local.
+                if (cloudXp != expectedXp || cloudLevel != expectedLevel)
                 {
-                    cloudXp    = cloudScore / 10;
-                    cloudLevel = 1 + (cloudXp / 100);
-                    Debug.Log($"[CloudSync] Tính lại XP/Level từ score: score={cloudScore} → xp={cloudXp}, level={cloudLevel}");
+                    cloudXp    = expectedXp;
+                    cloudLevel = expectedLevel;
+                    Debug.Log($"[CloudSync] Tính lại XP/Level từ score: score={cloudScore} -> xp={cloudXp}, level={cloudLevel}");
 
                     // Cập nhật lại Firebase cho đúng
                     var fix = new Dictionary<string, object>

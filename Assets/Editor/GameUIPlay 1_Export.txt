@@ -1,7 +1,7 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: GameUIPlay 1
 Đường dẫn: Assets/Scenes/GameUIPlay 1.unity
-Thời gian export: 5/17/2026 2:40:22 PM
+Thời gian export: 5/19/2026 11:20:58 PM
 ═══════════════════════════════════════════════════════════
 
 Tổng số Root GameObjects: 7
@@ -25,6 +25,7 @@ GameUICanvas [Layer: UI]
    • CanvasScaler (UnityEngine.UI)
    • GraphicRaycaster (UnityEngine.UI)
    • UIStartupController (DoAnGame.UI)
+   • UIButtonAudioHelper (DoAnGame.UI)
 │├─ WELCOMESCREEN [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -32,26 +33,49 @@ GameUICanvas [Layer: UI]
 │   • UIManager ()
 ││├─ Backgroud [Layer: UI]
 ││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││├─ BackgroundVFX_Loop [Layer: UI]
-││   • ParticleSystem
-││   • ParticleSystemRenderer
-││├─ BackgroundVFX_Loop (1) [Layer: UI]
-││   • ParticleSystem
-││   • ParticleSystemRenderer
+││   • Script_Speed_backGround ()
+││   • RawImage (UnityEngine.UI)
+│││├─ BackgroundVFX_Loop [Layer: UI]
+│││   • ParticleSystem
+│││   • ParticleSystemRenderer
+│││├─ BackgroundVFX_Loop (4) [Layer: UI]
+│││   • ParticleSystem
+│││   • ParticleSystemRenderer
+│││├─ BackgroundVFX_Loop (3) [Layer: UI]
+│││   • ParticleSystem
+│││   • ParticleSystemRenderer
+│││├─ BackgroundVFX_Loop (1) [Layer: UI]
+│││   • ParticleSystem
+│││   • ParticleSystemRenderer
+│││├─ BackgroundVFX_Loop (2) [Layer: UI]
+│││   • ParticleSystem
+│││   • ParticleSystemRenderer
+│││├─ RawImage [Layer: UI]
+│││   • CanvasRenderer
+│││   • RawImage (UnityEngine.UI)
+│││   • Script_Speed_backGround ()
+│││├─ RawImage (1) [Layer: UI]
+│││   • CanvasRenderer
+│││   • RawImage (UnityEngine.UI)
+│││   • Script_Speed_backGround ()
+│││├─ RawImage (2) [Layer: UI]
+│││   • CanvasRenderer
+│││   • RawImage (UnityEngine.UI)
 ││├─ PlayBtn [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
 ││   • UIButtonScreenNavigator (DoAnGame.UI)
+││   • Animator
 ││├─ Setting [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
 ││   • UISettingsOpenButton (DoAnGame.UI)
-││├─ Image [Layer: UI]
+││├─ Name [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
+││   • Animator
 │├─ WellcomePanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -71,6 +95,7 @@ GameUICanvas [Layer: UI]
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
 ││   • UIButtonScreenNavigator (DoAnGame.UI)
+││   • Animator
 ││├─ DangKy [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -471,14 +496,14 @@ GameUICanvas [Layer: UI]
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
 ││   • UIButtonScreenNavigator (DoAnGame.UI)
+││├─ Text (TMP) [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
 ││├─ ChonDA [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
 ││   • UIButtonScreenNavigator (DoAnGame.UI)
-│││├─ Text (TMP) [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
 ││├─ MeoPhongThuBnt [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -510,6 +535,12 @@ GameUICanvas [Layer: UI]
 ││├─ BangTen [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
+│││├─ Grade_Lop [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│││├─ TenNhanVat [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
 ││├─ Label Lv Diem [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -522,18 +553,12 @@ GameUICanvas [Layer: UI]
 │││├─ Image (2) [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
-││├─ lv [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-││├─ Grade_Lop [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-││├─ Score [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-││├─ TenNhanVat [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
+│││├─ lv [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│││├─ Score [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
 ││├─ Avatar [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -542,6 +567,7 @@ GameUICanvas [Layer: UI]
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
 ││   • UIButtonScreenNavigator (DoAnGame.UI)
+││   • Animator
 ││├─ DangXuat [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -708,6 +734,7 @@ GameUICanvas [Layer: UI]
 ││   • Image (UnityEngine.UI)
 ││   • Canvas (RenderMode: WorldSpace)
 ││   • GraphicRaycaster (UnityEngine.UI)
+││   • UIButtonAudioHelper (DoAnGame.UI)
 │││├─ Overlay [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
@@ -741,6 +768,7 @@ GameUICanvas [Layer: UI]
 ││   • Image (UnityEngine.UI)
 ││   • Canvas (RenderMode: WorldSpace)
 ││   • GraphicRaycaster (UnityEngine.UI)
+││   • UIButtonAudioHelper (DoAnGame.UI)
 │││├─ Overlay [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
@@ -918,7 +946,8 @@ GameUICanvas [Layer: UI]
 │││   • Button (UnityEngine.UI)
 ││├─ AvatarSelectionPopup [INACTIVE] [Layer: UI]
 ││   • Canvas (RenderMode: WorldSpace)
-│││├─ Overlay [Layer: UI]
+││   • UIButtonAudioHelper (DoAnGame.UI)
+│││├─ Overlay [INACTIVE] [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
 │││├─ ContentPanel [Layer: UI]
@@ -957,7 +986,7 @@ GameUICanvas [Layer: UI]
 ││││   • CanvasRenderer
 ││││   • Image (UnityEngine.UI)
 ││││   • Button (UnityEngine.UI)
-│││││├─ Text (TMP) [Layer: UI]
+│││││├─ Text (TMP) [INACTIVE] [Layer: UI]
 │││││   • CanvasRenderer
 │││││   • TextMeshProUGUI (TMPro)
 EventSystem
@@ -968,6 +997,7 @@ DataManager [Layer: UI]
 AudioManager
    • AudioManager ()
    • AudioEventBridge (DoAnGame.Audio)
+   • GlobalClickAudioListener (DoAnGame.Audio)
 │├─ Music
 │   • AudioSource
 │├─ SFX
@@ -975,5 +1005,5 @@ AudioManager
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 296
+Tổng số GameObjects: 302
 ═══════════════════════════════════════════════════════════

@@ -131,6 +131,32 @@ public class AudioManager : MonoBehaviour
         sfxSource.PlayOneShot(clip);
     }
 
+    public void PlayWinSFX()
+    {
+        StopMusicImmediatelyForResult();
+        PlaySFX(soundWin);
+    }
+
+    public void PlayLoseSFX()
+    {
+        StopMusicImmediatelyForResult();
+        PlaySFX(soundLose);
+    }
+
+    private void StopMusicImmediatelyForResult()
+    {
+        if (fadeMusicCoroutine != null)
+        {
+            StopCoroutine(fadeMusicCoroutine);
+            fadeMusicCoroutine = null;
+        }
+
+        if (musicSource != null)
+        {
+            musicSource.Stop();
+        }
+    }
+
     // (removed public helpers for hover/panel/timer clips)
 
     // Countdown public API

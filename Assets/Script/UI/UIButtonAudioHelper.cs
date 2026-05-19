@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using DoAnGame.Audio;
 
 namespace DoAnGame.UI
 {
@@ -28,29 +30,38 @@ namespace DoAnGame.UI
             foreach (var b in buttons)
             {
                 if (b == null) continue;
-                b.onClick.RemoveListener(PlayButtonClickSound);
-                b.onClick.AddListener(PlayButtonClickSound);
+                var relay = b.GetComponent<UIButtonClickSfxRelay>();
+                if (relay == null) relay = b.gameObject.AddComponent<UIButtonClickSfxRelay>();
+                relay.enabled = true;
             }
 
-            Debug.Log($"[UIButtonAudioHelper] Hooked {buttons.Length} buttons for click sound");
+            Debug.Log($"[UIButtonAudioHelper] Ensured relay on {buttons.Length} buttons");
+        }
+    }
+
+    [DisallowMultipleComponent]
+    [RequireComponent(typeof(Button))]
+    public class UIButtonClickSfxRelay : MonoBehaviour, IPointerClickHandler, ISubmitHandler
+    {
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData != null && eventData.button != PointerEventData.InputButton.Left) return;
+            PlaySharedClick();
         }
 
-        private void PlayButtonClickSound()
+        public void OnSubmit(BaseEventData eventData)
         {
-            var am = AudioManager.Instance;
-            if (am == null) return;
+            // Keyboard/controller submit should behave like button click.
+            PlaySharedClick();
+        }
 
-            // prefer manager field if present
-            try
-            {
-                var clip = am.soundClick;
-                if (clip != null) am.PlaySFX(clip);
-            }
-            catch
-            {
-                // fallback: try PlaySFX(null) (no-op)
-                try { am.PlaySFX(null); } catch { }
-            }
+        private static void PlaySharedClick()
+        {
+            GlobalClickAudioListener.NotifyUIClick();
+
+            var am = AudioManager.Instance;
+            if (am == null || am.soundClick == null) return;
+            am.PlaySFX(am.soundClick);
         }
     }
 }

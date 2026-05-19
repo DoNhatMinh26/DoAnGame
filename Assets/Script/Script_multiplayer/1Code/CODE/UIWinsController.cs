@@ -150,7 +150,11 @@ namespace DoAnGame.UI
 
                 bool isLocalWinner = (r.WinnerId == r.LocalPlayerId);
                 var am = AudioManager.Instance;
-                if (am != null) am.PlaySFX(isLocalWinner ? am.soundWin : am.soundLose);
+                if (am != null)
+                {
+                    if (isLocalWinner) am.PlayWinSFX();
+                    else am.PlayLoseSFX();
+                }
 
                 int localPlayerId = r.LocalPlayerId;
                 int opponentPlayerId = (localPlayerId == 0) ? 1 : 0;

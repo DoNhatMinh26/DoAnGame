@@ -29,6 +29,7 @@ Luu y quan trong:
 - `sfxCoin` trong `AudioEventBridge` se override truc tiep vao `AudioManager.soundCoin` khi scene load.
 - Neu scene khong co text dung/sai rieng thi de trong `Answer Result Text Object`; luc do muon dung/sai chuan thi nen goi truc tiep `AudioManager.Instance.PlaySFX(AudioManager.Instance.soundCorrect)` / `AudioManager.Instance.PlaySFX(AudioManager.Instance.soundWrong)` trong script gameplay.
 - De doi nhac menu <-> battle trong cung 1 scene: co the gan them `menuPanelNames` va `battlePanelNames` trong `AudioEventBridge`. Neu de trong, bridge se tu auto-do theo ten panel pho bien cua tung scene.
+- De xu ly Win/Lose: co the gan them `resultPanelNames` (WinPanel/LosePanel/Wins). Khi panel nay active, bridge se tam dung nhac nen; khi panel dong va flow quay lai menu hoac battle, nhac se tu phat lai theo panel dang active.
 
 ---
 
@@ -92,6 +93,9 @@ Menu `Audio -> Setup Bridge For Current Scene` hien se tu lam cac viec sau:
 - Tu gan panel doi nhac:
   - `ChonDA/KeoThaDA/PhiThuyen`: menu = `ShopPanel, ChonManPanel`; battle = `GamePlay, QuesUi/QuesUI, WinPanel, LosePanel`.
   - `Test_FireBase_multi`: menu = `LobbyPanel, LobbyBrowserPanel`; battle = `GameplayPanel, Wins`.
+- Tu gan panel ket qua:
+  - `ChonDA/KeoThaDA/PhiThuyen`: result = `WinPanel, LosePanel`.
+  - `Test_FireBase_multi`: result = `Wins`.
 - Rieng multiplayer: tu gan `Battle Status Text Object = Text (TMP) TrangThai`, `Answer Timer Text Object = Timertext`, va de trong `Answer Result Text Object`.
 
 Sau khi chay menu setup, van can gan clip vao `AudioManager` neu clip chua co.

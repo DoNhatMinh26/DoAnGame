@@ -759,7 +759,7 @@ public class GameUIManager : MonoBehaviour
                 gameMode: "keothada",
                 grade: UIManager.SelectedGrade,
                 levelNumber: wonLevel,
-                score: 100,  // điểm cố định mỗi màn thắng KeoThaDA
+                score: levelScore,
                 coinsEarned: levelCoins
             );
         }

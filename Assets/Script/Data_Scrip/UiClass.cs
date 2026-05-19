@@ -714,7 +714,7 @@ public class UiClass : MonoBehaviour
         if (panelWin != null)
         {
             var am = AudioManager.Instance;
-            if (am != null) am.PlaySFX(am.soundWin);
+            if (am != null) am.PlayWinSFX();
 
             panelWin.SetActive(true);
         }
@@ -778,7 +778,7 @@ public class UiClass : MonoBehaviour
         if (panelLose != null)
         {
             var am = AudioManager.Instance;
-            if (am != null) am.PlaySFX(am.soundLose);
+            if (am != null) am.PlayLoseSFX();
 
             panelLose.SetActive(true);
         }

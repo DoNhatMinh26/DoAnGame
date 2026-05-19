@@ -1,10 +1,10 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: Test_FireBase_multi
 Đường dẫn: Assets/Scenes/Test_FireBase_multi.unity
-Thời gian export: 5/17/2026 2:40:49 PM
+Thời gian export: 5/19/2026 11:21:18 PM
 ═══════════════════════════════════════════════════════════
 
-Tổng số Root GameObjects: 7
+Tổng số Root GameObjects: 8
 
 Main Camera (Tag: MainCamera)
    • Camera
@@ -23,6 +23,7 @@ Canvas [Layer: UI]
    • CanvasScaler (UnityEngine.UI)
    • GraphicRaycaster (UnityEngine.UI)
    • NetworkObject (Unity.Netcode)
+   • UIButtonAudioHelper (DoAnGame.UI)
 │├─ LobbyPanel [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -30,95 +31,140 @@ Canvas [Layer: UI]
 ││├─ Backgroud [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││├─ Image [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││├─ Image (1) [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││├─ Image [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││├─ Image (2) [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││├─ TextChonLop [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
+│││├─ Image [Layer: UI]
 │││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
-││├─ HostButton [Layer: UI]
+│││   • Image (UnityEngine.UI)
+││├─ ThongTinPhong [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││   • Button (UnityEngine.UI)
-││├─ JoinInputField [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • TMP_InputField (TMPro)
-│││├─ Text Area [Layer: UI]
-│││   • RectMask2D (UnityEngine.UI)
-││││├─ Placeholder [Layer: UI]
+│││├─ Image MP [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+││││├─ JoinCodeText [Layer: UI]
 ││││   • CanvasRenderer
 ││││   • TextMeshProUGUI (TMPro)
-││││   • LayoutElement (UnityEngine.UI)
 │││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
 │││││   • LayoutElement (UnityEngine.UI)
 │││││   • CanvasRenderer
 │││││   • TMP_SubMeshUI (TMPro)
-││││├─ Text [Layer: UI]
+│││├─ JoinInputField [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • TMP_InputField (TMPro)
+││││├─ Text Area [Layer: UI]
+││││   • RectMask2D (UnityEngine.UI)
+│││││├─ Placeholder [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • TextMeshProUGUI (TMPro)
+│││││   • LayoutElement (UnityEngine.UI)
+││││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││││   • LayoutElement (UnityEngine.UI)
+││││││   • CanvasRenderer
+││││││   • TMP_SubMeshUI (TMPro)
+│││││├─ Text [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • TextMeshProUGUI (TMPro)
+│││├─ HostButton [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Button (UnityEngine.UI)
+│││├─ DK [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││├─ TextChonLop [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││   • LayoutElement (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • TMP_SubMeshUI (TMPro)
+│││├─ Dropdown [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • TMP_Dropdown (TMPro)
+││││├─ Label [Layer: UI]
 ││││   • CanvasRenderer
 ││││   • TextMeshProUGUI (TMPro)
-││├─ JoinButton [Layer: UI]
+│││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+│││││   • LayoutElement (UnityEngine.UI)
+│││││   • CanvasRenderer
+│││││   • TMP_SubMeshUI (TMPro)
+││││├─ Arrow [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+││││├─ Template [INACTIVE] [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+││││   • ScrollRect (UnityEngine.UI)
+│││││├─ Viewport [Layer: UI]
+│││││   • Mask (UnityEngine.UI)
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+││││││├─ Content [Layer: UI]
+│││││││├─ Item [Layer: UI]
+│││││││   • Toggle (UnityEngine.UI)
+││││││││├─ Item Background [Layer: UI]
+││││││││   • CanvasRenderer
+││││││││   • Image (UnityEngine.UI)
+││││││││├─ Item Checkmark [Layer: UI]
+││││││││   • CanvasRenderer
+││││││││   • Image (UnityEngine.UI)
+││││││││├─ Item Label [Layer: UI]
+││││││││   • CanvasRenderer
+││││││││   • TextMeshProUGUI (TMPro)
+│││││├─ Scrollbar [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • Image (UnityEngine.UI)
+│││││   • Scrollbar (UnityEngine.UI)
+││││││├─ Sliding Area [Layer: UI]
+│││││││├─ Handle [Layer: UI]
+│││││││   • CanvasRenderer
+│││││││   • Image (UnityEngine.UI)
+││├─ DanhSachNguoiChoi [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││   • Button (UnityEngine.UI)
-││├─ Back [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • Button (UnityEngine.UI)
+│││├─ JoinButton [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Button (UnityEngine.UI)
+│││├─ QuickButton [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Button (UnityEngine.UI)
+│││├─ QuitButton [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Button (UnityEngine.UI)
+│││├─ Danhsachplayer [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││   • LayoutElement (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • TMP_SubMeshUI (TMPro)
+│││├─ DanhSachTenHienthi [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││   • LayoutElement (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • TMP_SubMeshUI (TMPro)
+│││├─ StatusText [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
+││││   • LayoutElement (UnityEngine.UI)
+││││   • CanvasRenderer
+││││   • TMP_SubMeshUI (TMPro)
 ││├─ DS Room [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
 ││   • UIButtonScreenNavigator (DoAnGame.UI)
-││├─ QuickButton [Layer: UI]
+││├─ Back [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-││├─ QuitButton [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • Button (UnityEngine.UI)
-││├─ JoinCodeText [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
-││├─ Danhsachplayer [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
-││├─ DanhSachTenHienthi [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
-││├─ StatusText [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
 ││├─ SanSangButton [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -127,48 +173,6 @@ Canvas [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
-││├─ Dropdown [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • TMP_Dropdown (TMPro)
-│││├─ Label [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
-│││├─ Arrow [Layer: UI]
-│││   • CanvasRenderer
-│││   • Image (UnityEngine.UI)
-│││├─ Template [INACTIVE] [Layer: UI]
-│││   • CanvasRenderer
-│││   • Image (UnityEngine.UI)
-│││   • ScrollRect (UnityEngine.UI)
-││││├─ Viewport [Layer: UI]
-││││   • Mask (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • Image (UnityEngine.UI)
-│││││├─ Content [Layer: UI]
-││││││├─ Item [Layer: UI]
-││││││   • Toggle (UnityEngine.UI)
-│││││││├─ Item Background [Layer: UI]
-│││││││   • CanvasRenderer
-│││││││   • Image (UnityEngine.UI)
-│││││││├─ Item Checkmark [Layer: UI]
-│││││││   • CanvasRenderer
-│││││││   • Image (UnityEngine.UI)
-│││││││├─ Item Label [Layer: UI]
-│││││││   • CanvasRenderer
-│││││││   • TextMeshProUGUI (TMPro)
-││││├─ Scrollbar [Layer: UI]
-││││   • CanvasRenderer
-││││   • Image (UnityEngine.UI)
-││││   • Scrollbar (UnityEngine.UI)
-│││││├─ Sliding Area [Layer: UI]
-││││││├─ Handle [Layer: UI]
-││││││   • CanvasRenderer
-││││││   • Image (UnityEngine.UI)
 ││├─ RefreshButton [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -186,22 +190,54 @@ Canvas [Layer: UI]
 ││├─ Backgroud [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││├─ Image [Layer: UI]
+││├─ CauHoi [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││├─ Image (1) [Layer: UI]
+│││├─ Slot (Tag: Slot) [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • CanvasGroup
+│││├─ cauhoiText [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
+│││├─ ANSWER_0 [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • CanvasGroup
+│││   • MultiplayerDragAndDrop (DoAnGame.Multiplayer)
+││││├─ AnswerText [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+│││├─ ANSWER_0 (1) [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • CanvasGroup
+│││   • MultiplayerDragAndDrop (DoAnGame.Multiplayer)
+││││├─ AnswerText [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+│││├─ ANSWER_0 (2) [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • CanvasGroup
+│││   • MultiplayerDragAndDrop (DoAnGame.Multiplayer)
+││││├─ AnswerText [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+│││├─ ANSWER_0 (3) [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • CanvasGroup
+│││   • MultiplayerDragAndDrop (DoAnGame.Multiplayer)
+││││├─ AnswerText [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││├─ KeoDapAnVaoO [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││├─ Image (2) [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││├─ Image (3) [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││├─ Slot (Tag: Slot) [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • CanvasGroup
+│││├─ Text (TMP) TrangThai [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
 ││├─ Quit [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -210,44 +246,6 @@ Canvas [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
 │││   • Button (UnityEngine.UI)
-││├─ Text (TMP) TrangThai [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-││├─ cauhoiText [Layer: UI]
-││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
-││├─ ANSWER_0 [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • CanvasGroup
-││   • MultiplayerDragAndDrop (DoAnGame.Multiplayer)
-│││├─ AnswerText [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
-││├─ ANSWER_0 (1) [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • CanvasGroup
-││   • MultiplayerDragAndDrop (DoAnGame.Multiplayer)
-│││├─ AnswerText [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
-││├─ ANSWER_0 (2) [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • CanvasGroup
-││   • MultiplayerDragAndDrop (DoAnGame.Multiplayer)
-│││├─ AnswerText [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
-││├─ ANSWER_0 (3) [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • CanvasGroup
-││   • MultiplayerDragAndDrop (DoAnGame.Multiplayer)
-│││├─ AnswerText [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
 ││├─ HealthBarContainer [Layer: UI]
 ││   • MultiplayerHealthUI (DoAnGame.UI)
 │││├─ Player1HealthBar [Layer: UI]
@@ -289,15 +287,21 @@ Canvas [Layer: UI]
 ││││   • CanvasRenderer
 ││││   • TextMeshProUGUI (TMPro)
 │││├─ TimerPanel [Layer: UI]
-││││├─ TimerState  [Layer: UI]
+││││├─ ThoiGianTl [Layer: UI]
 ││││   • CanvasRenderer
-││││   • TextMeshProUGUI (TMPro)
-││││├─ Timertext [Layer: UI]
-││││   • CanvasRenderer
-││││   • TextMeshProUGUI (TMPro)
-││├─ TrangThaiWin [Layer: UI]
+││││   • Image (UnityEngine.UI)
+│││││├─ Timertext [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • TextMeshProUGUI (TMPro)
+│││││├─ TimerState  [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • TextMeshProUGUI (TMPro)
+││├─ CaHaiDeUSai [Layer: UI]
 ││   • CanvasRenderer
-││   • TextMeshProUGUI (TMPro)
+││   • Image (UnityEngine.UI)
+│││├─ TrangThaiWin [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
 │├─ Wins [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -311,43 +315,43 @@ Canvas [Layer: UI]
 ││├─ BackGround (2) [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││├─ BangThongKe [Layer: UI]
+││├─ BangThongKeT [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││├─ BangThongKe (1) [Layer: UI]
+│││├─ Win [Layer: UI]
+││││├─ name_Nguoi_Win [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ ThongKeWin [Layer: UI]
+│││││├─ Thong_ke_thong_soWinText [INACTIVE] [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • TextMeshProUGUI (TMPro)
+│││││├─ Diem_so_nhanDuocWin [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • TextMeshProUGUI (TMPro)
+│││││├─ So_Mau_Con_LaiWin [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • TextMeshProUGUI (TMPro)
+││├─ BangThongKe P [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
+│││├─ Lost [Layer: UI]
+││││├─ name_Nguoi_Lost [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ ThongKeLost [Layer: UI]
+│││││├─ Thong_ke_thong_soLostText [INACTIVE] [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • TextMeshProUGUI (TMPro)
+│││││├─ Diem_so_nhanDuocLost [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • TextMeshProUGUI (TMPro)
+│││││├─ So_Mau_Con_LaiLost [Layer: UI]
+│││││   • CanvasRenderer
+│││││   • TextMeshProUGUI (TMPro)
 ││├─ trangThai_Thang_Thua [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
-││├─ Win [Layer: UI]
-│││├─ name_Nguoi_Win [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
-│││├─ ThongKeWin [Layer: UI]
-││││├─ Thong_ke_thong_soWinText [INACTIVE] [Layer: UI]
-││││   • CanvasRenderer
-││││   • TextMeshProUGUI (TMPro)
-││││├─ Diem_so_nhanDuocWin [Layer: UI]
-││││   • CanvasRenderer
-││││   • TextMeshProUGUI (TMPro)
-││││├─ So_Mau_Con_LaiWin [Layer: UI]
-││││   • CanvasRenderer
-││││   • TextMeshProUGUI (TMPro)
-││├─ Lost [Layer: UI]
-│││├─ name_Nguoi_Lost [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
-│││├─ ThongKeLost [Layer: UI]
-││││├─ Thong_ke_thong_soLostText [INACTIVE] [Layer: UI]
-││││   • CanvasRenderer
-││││   • TextMeshProUGUI (TMPro)
-││││├─ Diem_so_nhanDuocLost [Layer: UI]
-││││   • CanvasRenderer
-││││   • TextMeshProUGUI (TMPro)
-││││├─ So_Mau_Con_LaiLost [Layer: UI]
-││││   • CanvasRenderer
-││││   • TextMeshProUGUI (TMPro)
 ││├─ TiepTucBtn [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -1967,6 +1971,9 @@ Canvas [Layer: UI]
 ││├─ BGR [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
+││├─ Image [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
 ││├─ Container [Layer: UI]
 │││├─ ProgressBarContainer [Layer: UI]
 │││   • CanvasRenderer
@@ -1980,9 +1987,6 @@ Canvas [Layer: UI]
 │││├─ StatusText [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-│││├─ Image [Layer: UI]
-│││   • CanvasRenderer
-│││   • Image (UnityEngine.UI)
 │├─ BattleQuitConfirmPopup [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -2015,8 +2019,10 @@ EventSystem
 MatchEndNavigator
    • Button (UnityEngine.UI)
    • UIButtonScreenNavigator (DoAnGame.UI)
+AudioBridge
+   • AudioEventBridge (DoAnGame.Audio)
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 810
+Tổng số GameObjects: 812
 ═══════════════════════════════════════════════════════════

@@ -522,7 +522,7 @@ public class UiSp : MonoBehaviour
             gameMode: "phithuyen",
             grade: UIManager.SelectedGrade,
             levelNumber: wonLevel,
-            score: 100,
+            score: levelScore,
             coinsEarned: levelCoins
         );
     }

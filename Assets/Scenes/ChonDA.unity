@@ -7586,7 +7586,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableGlobalClick: 1
-  onlyNonUIClicks: 0
+  onlyNonUIClicks: 1
 --- !u!1 &1001676520
 GameObject:
   m_ObjectHideFlags: 0

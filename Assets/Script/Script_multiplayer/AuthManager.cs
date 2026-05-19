@@ -207,6 +207,8 @@ public class AuthManager : MonoBehaviour
         if (cloudSyncAuto != null)
         {
             await cloudSyncAuto.RestoreProgressFromFirebase();
+            RefreshCurrentPlayerDataFromLocal();
+            OnLoginDataLoaded?.Invoke(currentPlayerData);
             Debug.Log("[Auth] ✅ Auto-login: restore tiến độ từ Firebase hoàn tất.");
         }
 
@@ -242,6 +244,8 @@ public class AuthManager : MonoBehaviour
         
         if (success)
         {
+            DoAnGame.UI.UIQuickPlayNameController.ClearGuestData();
+
             var user = await GetCurrentUserWithRetry();
             string uid = user != null ? user.UserId : null;
 
@@ -312,6 +316,8 @@ public class AuthManager : MonoBehaviour
         
         if (success)
         {
+            DoAnGame.UI.UIQuickPlayNameController.ClearGuestData();
+
             var user = await GetCurrentUserWithRetry();
             if (user == null || string.IsNullOrEmpty(user.UserId))
             {
@@ -367,6 +373,8 @@ public class AuthManager : MonoBehaviour
             if (cloudSync != null)
             {
                 await cloudSync.RestoreProgressFromFirebase();
+                RefreshCurrentPlayerDataFromLocal();
+                OnLoginDataLoaded?.Invoke(currentPlayerData);
                 Debug.Log("[Auth] ✅ Restore tiến độ từ Firebase hoàn tất.");
             }
 
@@ -646,6 +654,25 @@ public class AuthManager : MonoBehaviour
     // ─────────────────────────────────────────────────────────────
     // SESSION GUARD — chỉ cho phép 1 thiết bị đăng nhập cùng lúc
     // ─────────────────────────────────────────────────────────────
+
+    private void RefreshCurrentPlayerDataFromLocal()
+    {
+        if (currentPlayerData == null)
+        {
+            var user = GetCurrentUser();
+            if (user == null || string.IsNullOrEmpty(user.UserId))
+                return;
+
+            currentPlayerData = CreateDefaultPlayerData(
+                user.UserId,
+                string.IsNullOrWhiteSpace(user.DisplayName) ? "Player" : user.DisplayName);
+        }
+
+        currentPlayerData.totalScore = PlayerPrefs.GetInt(LocalStorageKeyResolver.UserScore, currentPlayerData.totalScore);
+        currentPlayerData.level = PlayerPrefs.GetInt(LocalStorageKeyResolver.UserLevel, currentPlayerData.level > 0 ? currentPlayerData.level : 1);
+        currentPlayerData.coins = PlayerPrefs.GetInt(LocalStorageKeyResolver.TotalCoins, currentPlayerData.coins);
+        CacheCurrentPlayerDataLocal();
+    }
 
     private async Task StartSessionGuard(string uid)
     {

@@ -140,11 +140,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 36a9cf70c45402a4a95d0a550e72a1e3, type: 2}
     - target: {fileID: 7920259335033426475, guid: a54f6a504f4b27f4cbe1b3b4af670e2c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1802
+      value: -2984
       objectReference: {fileID: 0}
     - target: {fileID: 7920259335033426475, guid: a54f6a504f4b27f4cbe1b3b4af670e2c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3841
+      value: 1271
       objectReference: {fileID: 0}
     - target: {fileID: 7920259335033426475, guid: a54f6a504f4b27f4cbe1b3b4af670e2c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -13458,7 +13458,7 @@ MonoBehaviour:
   countdown3Clip: {fileID: 8300000, guid: ce8de1337d307fe4c96d0e24f6d38dd4, type: 3}
   countdown2Clip: {fileID: 8300000, guid: ce8de1337d307fe4c96d0e24f6d38dd4, type: 3}
   countdown1Clip: {fileID: 8300000, guid: ce8de1337d307fe4c96d0e24f6d38dd4, type: 3}
-  countdownReadyClip: {fileID: 0}
+  countdownReadyClip: {fileID: 8300000, guid: ce8de1337d307fe4c96d0e24f6d38dd4, type: 3}
   countdownGoClip: {fileID: 8300000, guid: 19b889912cee7bb4d9d290760a68969b, type: 3}
   musicMenu: {fileID: 8300000, guid: 5e061cf3fd78d8548bfcc77055ff2c4e, type: 3}
   musicClassMode: {fileID: 8300000, guid: 5653de73c5271e9408147e236a5fd9bd, type: 3}
@@ -13499,7 +13499,11 @@ MonoBehaviour:
   - UiClass
   - UiTp
   - UiSp
-  menuPanelNames: []
+  menuPanelNames:
+  - WELCOMESCREEN
+  - WellcomePanel
+  - ModSelectionPanel
+  - MainMenuPanel
   battlePanelNames: []
   menuMusic: {fileID: 0}
   battleMusic: {fileID: 0}
@@ -13519,7 +13523,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableGlobalClick: 1
-  onlyNonUIClicks: 0
+  onlyNonUIClicks: 1
+  uiClickSuppressWindow: 0.06
 --- !u!1 &948952288
 GameObject:
   m_ObjectHideFlags: 0
@@ -27905,7 +27910,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 79dc1b89e9a004e48927ddd462bf33fd, type: 2}
     - target: {fileID: 7920259335033426475, guid: a54f6a504f4b27f4cbe1b3b4af670e2c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 4389
+      value: 2687
       objectReference: {fileID: 0}
     - target: {fileID: 7920259335033426475, guid: a54f6a504f4b27f4cbe1b3b4af670e2c, type: 3}
       propertyPath: m_LocalPosition.y
@@ -33067,7 +33072,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 36a9cf70c45402a4a95d0a550e72a1e3, type: 2}
     - target: {fileID: 7920259335033426475, guid: a54f6a504f4b27f4cbe1b3b4af670e2c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4702
+      value: -3105
       objectReference: {fileID: 0}
     - target: {fileID: 7920259335033426475, guid: a54f6a504f4b27f4cbe1b3b4af670e2c, type: 3}
       propertyPath: m_LocalPosition.y
@@ -34254,11 +34259,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 79dc1b89e9a004e48927ddd462bf33fd, type: 2}
     - target: {fileID: 7920259335033426475, guid: a54f6a504f4b27f4cbe1b3b4af670e2c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8406
+      value: 2093
       objectReference: {fileID: 0}
     - target: {fileID: 7920259335033426475, guid: a54f6a504f4b27f4cbe1b3b4af670e2c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3841
+      value: 798
       objectReference: {fileID: 0}
     - target: {fileID: 7920259335033426475, guid: a54f6a504f4b27f4cbe1b3b4af670e2c, type: 3}
       propertyPath: m_LocalPosition.z

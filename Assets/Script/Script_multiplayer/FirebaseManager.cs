@@ -728,7 +728,7 @@ public class FirebaseManager : MonoBehaviour
             }
 
             // 3. Cập nhật playerData (tổng điểm)
-            await UpdatePlayerStatsAsync(uid, score, score / 10); // XP = score / 10
+            await UpdatePlayerStatsAsync(uid, score, score / 2); // Đồng bộ local: 200 điểm = +1 level
 
             Debug.Log($"[Firebase] ✅ Hoàn thành cập nhật tiến độ level {levelNumber}");
         }
