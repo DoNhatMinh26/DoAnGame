@@ -86,6 +86,7 @@ public class GameUIManager : MonoBehaviour
     public TextMeshProUGUI enemyCounterTxt; // Kéo Text (TMP) hiển thị "0/0" vào đây
     private int killedEnemies = 0;
     private int totalEnemiesInLevel = 0;
+    private int maTranDau = 0;
     private void Awake()
     {
         if (Instance == null)
@@ -245,13 +246,13 @@ public class GameUIManager : MonoBehaviour
         UpdateEnemyCounterUI();
     }
     public void PlayMascotAnimation(string triggerName)
-{
-    // Chạy cho Animator chính được kéo vào Inspector
-    if (sharedAnimator != null && sharedAnimator.gameObject.activeInHierarchy) 
     {
-        sharedAnimator.SetTrigger(triggerName);
+        // Chạy cho Animator chính được kéo vào Inspector
+        if (sharedAnimator != null && sharedAnimator.gameObject.activeInHierarchy)
+        {
+            sharedAnimator.SetTrigger(triggerName);
+        }
     }
-}
     #region LOGIC SKIN MÈO 
 
     public void LoadCurrentSkin()
@@ -734,7 +735,7 @@ public class GameUIManager : MonoBehaviour
                 winScoreTxt.text = "Điểm: +" + levelScore.ToString();
 
             if (winRewardTxt != null)
-                winRewardTxt.text = "+" + levelCoins.ToString() ;
+                winRewardTxt.text = "+" + levelCoins.ToString();
             var am = AudioManager.Instance;
             if (am != null) am.PlaySFX(am.soundWin);
 
@@ -755,10 +756,10 @@ public class GameUIManager : MonoBehaviour
 
             // Sync lên Firebase (nếu đã đăng nhập)
             DoAnGame.Auth.CloudSyncService.Instance?.OnLevelCompleted(
-                gameMode:    "keothada",
-                grade:       UIManager.SelectedGrade,
+                gameMode: "keothada",
+                grade: UIManager.SelectedGrade,
                 levelNumber: wonLevel,
-                score:       100,  // điểm cố định mỗi màn thắng KeoThaDA
+                score: 100,  // điểm cố định mỗi màn thắng KeoThaDA
                 coinsEarned: levelCoins
             );
         }
@@ -776,45 +777,31 @@ public class GameUIManager : MonoBehaviour
     }
     public void ShowLose()
     {
-        
-        // Không hiện panel ngay, mà gọi Coroutine để đợi
-        StartCoroutine(WaitAndShowLose());
+        if (isGameOver) return;
+        isGameOver = true; // Khóa ngay lập tức để chặn hàm Update() quét song song
+
+        // Kích hoạt luồng và truyền mã trận đấu hiện tại vào trong
+        StartCoroutine(WaitAndShowLose(maTranDau));
     }
 
-    // Hàm Coroutine tạo độ trễ
-    private System.Collections.IEnumerator WaitAndShowLose()
+    private System.Collections.IEnumerator WaitAndShowLose(int idTrậnĐấuLúcKíchHoạt)
     {
         DragAndDrop.SetGlobalLock(true);
-
-        // 2. Khóa nút Setting ngay lập tức
         SetSettingButtonInteractable(false);
-        if (sharedAnimator != null)
+        if (sharedAnimator != null) sharedAnimator.SetTrigger("TpSad");
+
+        // Đợi 2 giây thời gian thực
+        yield return new WaitForSecondsRealtime(2f);
+
+        // KIỂM TRA CHÍ MẠNG: Nếu mã trận đấu hiện tại đã thay đổi (do người chơi bấm chơi lại liền)
+        // thì lập tức thoát hàm, hủy lệnh hiện bảng thua cũ!
+        if (idTrậnĐấuLúcKíchHoạt != maTranDau)
         {
-            sharedAnimator.SetTrigger("TpSad");
+            yield break; // Thoát hẳn Coroutine ngầm
         }
 
-        // Đợi 1.5 giây thực tế (giống bảng Win)
-        yield return new WaitForSecondsRealtime(3f);
-        isGameOver = true;
-        // Sau khi đợi xong mới thực hiện logic hiện bảng thua
-        if (panelLose != null)
-        {
-            // Gán dữ liệu trước khi hiện
-            if (loseScoreTxt != null) loseScoreTxt.text = "Điểm: +" + levelScore;
-            if (loseRewardTxt != null) loseRewardTxt.text = "Tiền: +" + levelCoins;
-
-            if (loseProgressTxt != null)
-            {
-                loseProgressTxt.text = $"Tiến trình: {killedEnemies}/{totalEnemiesInLevel}";
-            }
-
-            var am = AudioManager.Instance;
-            if (am != null) am.PlaySFX(am.soundLose);
-
-            panelLose.SetActive(true);
-            Time.timeScale = 0f; // Dừng game
-            DragAndDrop.SetGlobalLock(true);
-        }
+        // Nếu vẫn trùng khớp mã trận đấu -> Hiện bảng thua chuẩn xác
+        ExecuteShowLosePanel();
     }
 
 
@@ -939,6 +926,9 @@ public class GameUIManager : MonoBehaviour
         // Đảm bảo bạn đã đặt Tag cho Prefab viên đạn là "Dan" trong Inspector
         GameObject[] bullets = GameObject.FindGameObjectsWithTag("Dan");
         foreach (GameObject b in bullets) Destroy(b);
+
+        GameObject[] coins = GameObject.FindGameObjectsWithTag("Coin");
+        foreach (GameObject c in coins) Destroy(c);
     }
     public void ResetAllGameData()
     {
@@ -1076,11 +1066,12 @@ public class GameUIManager : MonoBehaviour
         }
 
         // 6. Cập nhật vùng kéo khớp với chiều dài 5 tấm ảnh nền
-        contentParent.sizeDelta = new Vector2((backgroundWidth * 10)+180, contentParent.sizeDelta.y);
+        contentParent.sizeDelta = new Vector2((backgroundWidth * 10) + 180, contentParent.sizeDelta.y);
     }
 
     public void BatDauChoiMan(int levelIndex)
     {
+        maTranDau++;
         levelScore = 0;
         UpdateGameplayScoreUI();// Reset điểm về 0
         SetSettingButtonInteractable(true);
@@ -1088,7 +1079,7 @@ public class GameUIManager : MonoBehaviour
         LoadCurrentPhao();
         LoadCurrentSkin();
         levelCoins = 0;
-        killedEnemies = 0;  
+        killedEnemies = 0;
         UpdateCoinUI();
 
         // Luôn ưu tiên mở khóa và chạy lại thời gian đầu tiên
@@ -1126,6 +1117,6 @@ public class GameUIManager : MonoBehaviour
         if (qm != null) qm.UpdateDifficulty();
         UpdateEnemyCounterUI();
     }
-    
+
     #endregion
 }

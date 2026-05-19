@@ -51,7 +51,7 @@ public class EnemyDifficultyConfig : ScriptableObject
                 enemyCountCurve = AnimationCurve.Linear(0, 5, 1, 20),
 
                 // Tốc độ di chuyển: Từ 1 đến 3
-                enemySpeedCurve = AnimationCurve.Linear(0, 0.5f, 1, 2),
+                enemySpeedCurve = AnimationCurve.Linear(0, 1f, 1, 2),
 
                 // Tốc độ tạo (giây): Từ 3 giây xuống còn 2 giây (càng thấp càng nhanh)
                 spawnRateCurve = AnimationCurve.Linear(0, 3, 1, 1.5f),

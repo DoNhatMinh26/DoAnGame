@@ -63,23 +63,37 @@ public class DanVaCham : MonoBehaviour
         }
 
         transform.position = currentPos;
+        float distanceToTarget = Vector2.Distance(transform.position, target.position);
 
-        if (timer >= 1.0f)
+        // Nếu bay hết thời gian HOẶC đã bay sát sạt vào tâm quái thì kích hoạt nổ ngay
+        if (timer >= 1.0f || distanceToTarget < 0.3f)
         {
             HandleCollision();
         }
     }
 
     // Hàm tự động tìm mục tiêu gần nhất khi đang ở trạng thái chờ
+    // Hàm tự động tìm mục tiêu gần nhất khi đang ở trạng thái chờ
     void FindNewTarget()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        if (enemies.Length > 0)
+
+        foreach (GameObject enemyObj in enemies)
         {
-            // Tìm kẻ địch gần nhất hoặc lấy kẻ địch đầu tiên trong danh sách
-            target = enemies[0].transform;
-            isLaunching = true;
-            isWaitingForTarget = false;
+            if (enemyObj != null)
+            {
+                // Kiểm tra xem quái có script EnemyMovement ở Object cha hay không
+                EnemyMovement move = enemyObj.GetComponentInParent<EnemyMovement>();
+
+                // CHỈ nhắm bắn nếu quái còn tồn tại VÀ chưa bị đánh dấu bắn chết
+                if (move != null && !move.biTieuDietBoiNguoiChoi)
+                {
+                    target = move.transform; // Khóa mục tiêu vào Object cha cao nhất
+                    isLaunching = true;
+                    isWaitingForTarget = false;
+                    return; // Tìm thấy mục tiêu hợp lệ thì thoát hàm ngay
+                }
+            }
         }
     }
 
@@ -87,13 +101,23 @@ public class DanVaCham : MonoBehaviour
     {
         if (target != null)
         {
-            // Xác nhận quái bị tiêu diệt bởi người chơi trước khi Destroy
-            if (target.TryGetComponent(out EnemyMovement enemy))
+            // Tìm script EnemyMovement ở chính mục tiêu hoặc tìm ngược lên cha của nó
+            EnemyMovement enemy = target.GetComponentInParent<EnemyMovement>();
+
+            if (enemy != null)
             {
-                enemy.biTieuDietBoiNguoiChoi = true;
+               
+
+                // Đảm bảo hủy toàn bộ Object tổng của con chuột (chứa script EnemyMovement)
+                enemy.ThucHienHieuUngChet();
             }
-            Destroy(target.gameObject);
+            else
+            {
+                // Dự phòng nếu không thấy script thì hủy chính mục tiêu được nhắm
+                Destroy(target.gameObject);
+            }
         }
+        // Hủy viên đạn
         Destroy(gameObject);
     }
 }

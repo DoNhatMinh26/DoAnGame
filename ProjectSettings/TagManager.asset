@@ -9,6 +9,7 @@ TagManager:
   - Dan
   - Enemy
   - Tuong
+  - Coin
   layers:
   - Default
   - TransparentFX

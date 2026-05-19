@@ -50,10 +50,10 @@ public class SpaceDifficultyConfig : ScriptableObject
                 gateCountCurve = AnimationCurve.Linear(0, 5, 1, 20),
 
                 // Tốc độ: Chạy từ 3 (màn 1) đến 6 (màn 100)
-                worldSpeedCurve = AnimationCurve.Linear(0, 2.5f, 1, 5f),
+                worldSpeedCurve = AnimationCurve.Linear(0, 3f, 1, 5f),
 
                 // Khoảng cách: Chạy từ 45 (màn 1) giảm dần về 35 (màn 100)
-                distanceCurve = AnimationCurve.Linear(0, 35f, 1, 35f)
+                distanceCurve = AnimationCurve.Linear(0, 30f, 1, 30f)
             };
         }
 
