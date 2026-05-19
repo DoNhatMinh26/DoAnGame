@@ -5834,7 +5834,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -240.3, y: -78.797}
+  m_AnchoredPosition: {x: -240.30005, y: -78.797}
   m_SizeDelta: {x: 301.95, y: 89.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &806992027
@@ -7693,6 +7693,7 @@ MonoBehaviour:
   - UiSp
   menuPanelNames: []
   battlePanelNames: []
+  resultPanelNames: []
   menuMusic: {fileID: 0}
   battleMusic: {fileID: 8300000, guid: b08e805d54d7568409b273f1a1736191, type: 3}
   victoryMusic: {fileID: 0}
@@ -7727,6 +7728,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableGlobalClick: 1
   onlyNonUIClicks: 1
+  uiClickSuppressWindow: 0.06
 --- !u!1 &1001676520
 GameObject:
   m_ObjectHideFlags: 0
