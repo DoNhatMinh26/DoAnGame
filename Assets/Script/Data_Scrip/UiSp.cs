@@ -95,8 +95,8 @@ public class UiSp : MonoBehaviour
         int score = PlayerPrefs.GetInt(scoreKey, 0);
         int level = PlayerPrefs.GetInt(levelKey, 1);
 
-        if (shopScoreTxt != null) shopScoreTxt.text = "Điểm: +" + score.ToString();
-        if (shopLevelTxt != null) shopLevelTxt.text = "Level" + level.ToString();
+        if (shopScoreTxt != null) shopScoreTxt.text = "Điểm: " + score.ToString();
+        if (shopLevelTxt != null) shopLevelTxt.text = "Level: " + level.ToString();
     }
 
     // Cộng điểm trong khi chơi

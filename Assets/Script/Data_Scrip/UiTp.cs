@@ -102,7 +102,7 @@ public class GameUIManager : MonoBehaviour
     void UpdateGameplayScoreUI()
     {
         if (gameplayScoreRewardTxt != null)
-            gameplayScoreRewardTxt.text = "Score: " + levelScore.ToString();
+            gameplayScoreRewardTxt.text = "Điểm: " + levelScore.ToString();
     }
     private void Start()
     {
@@ -153,8 +153,8 @@ public class GameUIManager : MonoBehaviour
         int score = PlayerPrefs.GetInt(scoreKey, 0);
         int level = PlayerPrefs.GetInt(levelKey, 1);
 
-        if (shopScoreTxt != null) shopScoreTxt.text = score.ToString();
-        if (shopLevelTxt != null) shopLevelTxt.text = "LV." + level.ToString();
+        if (shopScoreTxt != null) shopScoreTxt.text = "Điểm: " + score.ToString();
+        if (shopLevelTxt != null) shopLevelTxt.text = "Level: " + level.ToString();
     }
     public void AddScore(int amount)
     {
@@ -162,7 +162,7 @@ public class GameUIManager : MonoBehaviour
 
         // Hiển thị điểm nhảy số trong lúc chơi
         if (gameplayScoreRewardTxt != null)
-            gameplayScoreRewardTxt.text = "Điểm: +" + levelScore.ToString();
+            gameplayScoreRewardTxt.text = "Điểm: " + levelScore.ToString();
 
         // Gửi điểm sang DataManager để lưu vào máy (PlayerPrefs) và đồng bộ Firebase
         if (DataManager.Instance != null)
