@@ -1071,7 +1071,7 @@ public class GameUIManager : MonoBehaviour
             Button btn = btnObj.GetComponent<Button>();
             int levelIndex = i;
 
-            if (i <= highestLevel || i == 30 || i == 50 || i == 70 || i == 100)
+            if (i <= highestLevel)
             {
                 btn.interactable = true;
                 btn.image.color = Color.white;

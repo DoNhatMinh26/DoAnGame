@@ -181,6 +181,8 @@ public class AuthManager : MonoBehaviour
             ? user.DisplayName
             : (!string.IsNullOrWhiteSpace(user.Email) ? user.Email : "Player");
 
+        await ApplyAuthenticatedUserGradeAsync(uid);
+
         if (playerDataService != null)
         {
             currentPlayerData = await playerDataService.LoadPlayerDataAsync(uid);
@@ -245,6 +247,8 @@ public class AuthManager : MonoBehaviour
         if (success)
         {
             DoAnGame.UI.UIQuickPlayNameController.ClearGuestData();
+            UIManager.SelectedGrade = Mathf.Clamp(grade, 1, 5);
+            DoAnGame.UI.UIQuickPlayNameController.SaveSelectedGrade(UIManager.SelectedGrade);
 
             var user = await GetCurrentUserWithRetry();
             string uid = user != null ? user.UserId : null;
@@ -325,6 +329,8 @@ public class AuthManager : MonoBehaviour
                 return false;
             }
 
+            await ApplyAuthenticatedUserGradeAsync(user.UserId);
+
             if (!firebaseManager.IsPlayerDataSyncEnabled())
             {
                 currentPlayerData = CreateDefaultPlayerData(
@@ -385,6 +391,27 @@ public class AuthManager : MonoBehaviour
         }
 
         return success;
+    }
+
+    private async Task ApplyAuthenticatedUserGradeAsync(string uid)
+    {
+        if (string.IsNullOrEmpty(uid) || firebaseManager == null)
+            return;
+
+        try
+        {
+            int resolvedGrade = await firebaseManager.MigrateAgeToGradeIfNeeded(uid);
+            if (resolvedGrade < 1 || resolvedGrade > 5)
+                resolvedGrade = 1;
+
+            UIManager.SelectedGrade = resolvedGrade;
+            DoAnGame.UI.UIQuickPlayNameController.SaveSelectedGrade(resolvedGrade);
+            Debug.Log($"[Auth] ✅ Applied authenticated grade: Lớp {resolvedGrade}");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogWarning($"[Auth] ⚠️ Cannot apply grade for uid={uid}: {ex.Message}");
+        }
     }
 
     /// <summary>
