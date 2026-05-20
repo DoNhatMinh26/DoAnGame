@@ -1,7 +1,7 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: GameUIPlay 1
 Đường dẫn: Assets/Scenes/GameUIPlay 1.unity
-Thời gian export: 5/20/2026 3:59:54 PM
+Thời gian export: 5/21/2026 1:04:38 AM
 ═══════════════════════════════════════════════════════════
 
 Tổng số Root GameObjects: 7
@@ -38,16 +38,13 @@ GameUICanvas [Layer: UI]
 │││├─ BackgroundVFX_Loop [Layer: UI]
 │││   • ParticleSystem
 │││   • ParticleSystemRenderer
-│││├─ BackgroundVFX_Loop (4) [Layer: UI]
-│││   • ParticleSystem
-│││   • ParticleSystemRenderer
 │││├─ BackgroundVFX_Loop (3) [Layer: UI]
 │││   • ParticleSystem
 │││   • ParticleSystemRenderer
-│││├─ BackgroundVFX_Loop (1) [Layer: UI]
+│││├─ BackgroundVFX_Loop (1) [INACTIVE] [Layer: UI]
 │││   • ParticleSystem
 │││   • ParticleSystemRenderer
-│││├─ BackgroundVFX_Loop (2) [Layer: UI]
+│││├─ BackgroundVFX_Loop (2) [INACTIVE] [Layer: UI]
 │││   • ParticleSystem
 │││   • ParticleSystemRenderer
 │││├─ RawImage [Layer: UI]
@@ -58,38 +55,74 @@ GameUICanvas [Layer: UI]
 │││   • CanvasRenderer
 │││   • RawImage (UnityEngine.UI)
 │││   • Script_Speed_backGround ()
-│││├─ RawImage (2) [Layer: UI]
+││├─ Ground
+││   • SpriteRenderer
+││   • SpriteSkin (UnityEngine.U2D.Animation)
+││   • Animator
+│││├─ Root
+││││├─ Root_1
+│││├─ Root_1
+││├─ Canvas
+││   • Canvas (RenderMode: ScreenSpaceCamera)
+││   • CanvasScaler (UnityEngine.UI)
+││   • GraphicRaycaster (UnityEngine.UI)
+│││├─ PlayBtn [Layer: UI]
 │││   • CanvasRenderer
-│││   • RawImage (UnityEngine.UI)
-││├─ PlayBtn [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • Button (UnityEngine.UI)
-││   • UIButtonScreenNavigator (DoAnGame.UI)
-││   • Animator
-││├─ Setting [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • Button (UnityEngine.UI)
-││   • UISettingsOpenButton (DoAnGame.UI)
-││├─ Name [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • Animator
+│││   • Image (UnityEngine.UI)
+│││   • Button (UnityEngine.UI)
+│││   • UIButtonScreenNavigator (DoAnGame.UI)
+│││   • Animator
+│││├─ Setting [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Button (UnityEngine.UI)
+│││   • UISettingsOpenButton (DoAnGame.UI)
+│││├─ Name [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Animator
 │├─ WellcomePanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 │   • Button (UnityEngine.UI)
 │   • UIWelcomeIntroController (DoAnGame.UI)
-││├─ Backgroud [Layer: UI]
+││├─ meoHello
+││   • Animator
+│││├─ MatT
+│││   • SpriteRenderer
+│││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ MatP
+│││   • SpriteRenderer
+│││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ Than
+│││   • SpriteRenderer
+│││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ TaiP
+│││   • SpriteRenderer
+│││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ Dau
+│││   • SpriteRenderer
+│││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ Duoi
+│││   • SpriteRenderer
+│││   • SpriteSkin (UnityEngine.U2D.Animation)
+│││├─ Root
+││││├─ Than_1
+│││││├─ Dau_1
+││││││├─ MatT_1
+││││││├─ MatP_1
+││││││├─ TaiT
+││││││├─ TaiP_1
+│││││├─ TayP
+│││││├─ TayT
+│││││├─ Duoi_1
+││├─ RawImage [Layer: UI]
+││   • CanvasRenderer
+││   • RawImage (UnityEngine.UI)
+││   • Script_Speed_backGround ()
+││├─ Image [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││├─ BackgroundVFX_Loop [Layer: UI]
-││   • ParticleSystem
-││   • ParticleSystemRenderer
-││├─ BackgroundVFX_Loop (1) [Layer: UI]
-││   • ParticleSystem
-││   • ParticleSystemRenderer
 ││├─ ChoiNhanh_ChoiMoi [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -114,10 +147,20 @@ GameUICanvas [Layer: UI]
 ││├─ Eror [INACTIVE] [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
+││├─ BackgroundVFX_Loop [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
+││├─ Image [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Animator
 │├─ NhapTen_choiNhanh [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 │   • UIQuickPlayNameController (DoAnGame.UI)
+││├─ BackgroundVFX_Loop [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
 ││├─ NhapTen [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -219,9 +262,6 @@ GameUICanvas [Layer: UI]
 ││├─ BackgroundVFX_Loop [Layer: UI]
 ││   • ParticleSystem
 ││   • ParticleSystemRenderer
-││├─ BackgroundVFX_Loop (1) [Layer: UI]
-││   • ParticleSystem
-││   • ParticleSystemRenderer
 │├─ LoginRequiredPopup [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -239,10 +279,25 @@ GameUICanvas [Layer: UI]
 ││││   • CanvasRenderer
 ││││   • Image (UnityEngine.UI)
 ││││   • Button (UnityEngine.UI)
+││├─ BackgroundVFX_Loop [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
 │├─ LoginPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 │   • UILoginPanelController (DoAnGame.UI)
+││├─ BackgroundVFX_Loop (6) [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
+││├─ BackgroundVFX_Loop (5) [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
+││├─ BackgroundVFX_Loop (4) [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
+││├─ BackgroundVFX_Loop (3) [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
 ││├─ Backgroud (1) [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -305,12 +360,6 @@ GameUICanvas [Layer: UI]
 ││││├─ Text [Layer: UI]
 ││││   • CanvasRenderer
 ││││   • TextMeshProUGUI (TMPro)
-││├─ BackgroundVFX_Loop [Layer: UI]
-││   • ParticleSystem
-││   • ParticleSystemRenderer
-││├─ BackgroundVFX_Loop (1) [Layer: UI]
-││   • ParticleSystem
-││   • ParticleSystemRenderer
 │├─ ForgotPasswordPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -345,6 +394,9 @@ GameUICanvas [Layer: UI]
 │││├─ ErrorText [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
+││├─ BackgroundVFX_Loop [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
 │├─ RegisterPanel [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -488,9 +540,24 @@ GameUICanvas [Layer: UI]
 ││├─ Text (TMP) (1) [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
+││├─ BackgroundVFX_Loop (3) [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
+││├─ BackgroundVFX_Loop (4) [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
+││├─ BackgroundVFX_Loop (1) [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
+││├─ BackgroundVFX_Loop (2) [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
 │├─ ChonMan_ [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
+││├─ BackgroundVFX_Loop [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
 ││├─ Backgroud [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -532,6 +599,9 @@ GameUICanvas [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 │   • UIMainMenuController (DoAnGame.UI)
+││├─ BackgroundVFX_Loop [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
 ││├─ RawImage [Layer: UI]
 ││   • CanvasRenderer
 ││   • RawImage (UnityEngine.UI)
@@ -615,6 +685,8 @@ GameUICanvas [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • UIConfirmPopupController (DoAnGame.UI)
+││   • Canvas (RenderMode: WorldSpace)
+││   • GraphicRaycaster (UnityEngine.UI)
 │││├─ ContentPanel [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
@@ -692,10 +764,15 @@ GameUICanvas [Layer: UI]
 ││├─ StatusText [INACTIVE] [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
+││├─ BackgroundVFX_Loop [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
 │├─ SettingsPopup [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 │   • SettingsPopupController (DoAnGame.UI)
+│   • Canvas (RenderMode: WorldSpace)
+│   • GraphicRaycaster (UnityEngine.UI)
 ││├─ ContentPanel [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -748,6 +825,10 @@ GameUICanvas [Layer: UI]
 │││   • CanvasRenderer
 │││   • Image (UnityEngine.UI)
 │││   • Button (UnityEngine.UI)
+││├─ Canvas [Layer: UI]
+││   • Canvas (RenderMode: ScreenSpaceOverlay)
+││   • CanvasScaler (UnityEngine.UI)
+││   • GraphicRaycaster (UnityEngine.UI)
 │├─ Profile [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -1012,6 +1093,12 @@ GameUICanvas [Layer: UI]
 │││││├─ Text (TMP) [INACTIVE] [Layer: UI]
 │││││   • CanvasRenderer
 │││││   • TextMeshProUGUI (TMPro)
+││├─ BackgroundVFX_Loop [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
+││├─ BackgroundVFX_Loop (1) [Layer: UI]
+││   • ParticleSystem
+││   • ParticleSystemRenderer
 EventSystem
    • EventSystem (UnityEngine.EventSystems)
    • StandaloneInputModule (UnityEngine.EventSystems)
@@ -1028,5 +1115,5 @@ AudioManager
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 310
+Tổng số GameObjects: 345
 ═══════════════════════════════════════════════════════════

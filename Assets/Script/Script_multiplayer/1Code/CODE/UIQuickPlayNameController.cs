@@ -71,11 +71,11 @@ namespace DoAnGame.UI
             gradeDropdown.ClearOptions();
             gradeDropdown.AddOptions(new System.Collections.Generic.List<string>
             {
-                "Lớp 1",
-                "Lớp 2",
-                "Lớp 3",
-                "Lớp 4",
-                "Lớp 5"
+                "L\u1EDBp 1",
+                "L\u1EDBp 2",
+                "L\u1EDBp 3",
+                "L\u1EDBp 4",
+                "L\u1EDBp 5"
             });
 
             // Restore lớp đã chọn lần trước (nếu có)
