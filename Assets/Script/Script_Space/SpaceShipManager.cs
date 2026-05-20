@@ -48,7 +48,7 @@ public class SpaceShipManager : MonoBehaviour
     public int CorrectAnswersCount => correctAnswersCount;
     public int TotalGatesToWin => totalGatesToWin;
 
-    private float nextSpawnX = 30f;
+    private float nextSpawnX = 20f;
     private Coroutine typingCoroutine;
 
     [HideInInspector] public string currentCorrectAnswer;
@@ -79,7 +79,7 @@ public class SpaceShipManager : MonoBehaviour
         }
 
         ClearExistingZones();
-        nextSpawnX = 30f;
+        nextSpawnX = 20f;
 
         for (int i = 0; i < activeCount; i++)
         {

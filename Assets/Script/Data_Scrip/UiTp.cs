@@ -770,7 +770,7 @@ public class GameUIManager : MonoBehaviour
     {
         DragAndDrop.SetGlobalLock(true);
         // Đợi 3 giây thực tế (không bị ảnh hưởng bởi Time.timeScale nếu bạn muốn)
-        yield return new WaitForSecondsRealtime(3f);
+        yield return new WaitForSecondsRealtime(1.5f);
 
         // Gọi hàm hiện bảng thắng gốc của bạn
         ShowWin();

@@ -49,7 +49,11 @@ public class QuestionZone : MonoBehaviour
             if (i < gateTexts.Length && i < choices.Count)
             {
                 gateTexts[i].text = choices[i];
-                gateTexts[i].color = Color.white;
+                Color customColor;
+                if (ColorUtility.TryParseHtmlString("#00A9FF", out customColor)) // Thay #0044FF bằng mã màu bạn muốn
+                {
+                    gateTexts[i].color = customColor;
+                }
             }
         }
     }

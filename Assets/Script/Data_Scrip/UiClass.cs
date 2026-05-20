@@ -72,6 +72,7 @@ public class UiClass : MonoBehaviour
     [Header("Dữ liệu & UI Shop")]
     public MathSkin[] allSkins;
     public Image[] skinButtonImages;
+    public GameObject[] catButtonObjects;
     public TextMeshProUGUI[] skinPriceTexts;
     public Image[] skinPriceBackgrounds;
 
@@ -140,7 +141,7 @@ public class UiClass : MonoBehaviour
             levelScoreGameplayTxt.text = "Điểm: +" + levelScore.ToString();
         }
     }
-    #region QUẢN LÝ SHOP
+    #region QUẢN LÝ Coin
     public void SpawnAndFlyCoin(int amount)
     {
         if (coinPrefab == null || coinSpawnPoint == null || coinTarget == null)
@@ -206,7 +207,17 @@ public class UiClass : MonoBehaviour
             // Nếu đã sở hữu, có thể tự động trang bị luôn
             PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.SelectedClassSkinID, index);
             PlayerPrefs.Save();
-            
+            if (index < catButtonObjects.Length && catButtonObjects[index] != null)
+            {
+                // Tìm Animator của con mèo nằm trong nút vừa bấm
+                Animator catButtonAnimator = catButtonObjects[index].GetComponentInChildren<Animator>();
+                if (catButtonAnimator != null)
+                {
+                    // Thay "Victory" bằng tên Trigger Animation vui vẻ chính xác của bạn (Ví dụ: "Happy", "Jump", "Win"...)
+                    catButtonAnimator.SetTrigger("TriggerHappy");
+                }
+            }
+
         }
         else
         {
@@ -319,22 +330,47 @@ public class UiClass : MonoBehaviour
         {
             bool unlocked = IsSkinUnlocked(i);
 
-            // 1. Làm mờ ảnh nếu chưa mua
-            if (i < skinButtonImages.Length)
-                skinButtonImages[i].color = unlocked ? Color.white : new Color(0.3f, 0.3f, 0.3f, 1f);
+            // Xác định màu mục tiêu: Đã mua thì sáng (Trắng), chưa mua thì tối (Xám)
+            Color targetColor = unlocked ? Color.white : new Color(0.3f, 0.3f, 0.3f, 1f);
 
-            // 2. Cập nhật văn bản hiển thị 36A628
+            // 1. Làm mờ ảnh nền nút (ImageGia) như cũ
+            if (i < skinButtonImages.Length && skinButtonImages[i] != null)
+                skinButtonImages[i].color = targetColor;
+
+            // 2. Làm mờ con mèo Animation (Hỗ trợ cả SpriteRenderer lẫn các dạng UI khác)
+            if (i < catButtonObjects.Length && catButtonObjects[i] != null)
+            {
+                // Kiểm tra xem con mèo dùng SpriteRenderer (như trong hình thấy có các điểm xương kéo thả)
+                var spriteRenderers = catButtonObjects[i].GetComponentsInChildren<SpriteRenderer>();
+                if (spriteRenderers.Length > 0)
+                {
+                    foreach (var sr in spriteRenderers)
+                    {
+                        sr.color = targetColor;
+                    }
+                }
+
+                // Phòng hờ nếu con mèo đó có chứa thành phần UI Image nào khác bên trong
+                var uiImages = catButtonObjects[i].GetComponentsInChildren<Image>();
+                foreach (var img in uiImages)
+                {
+                    // Tránh đổi màu nhầm chính cái nút nền nếu bạn kéo cả cụm Object lớn
+                    if (img != skinButtonImages[i])
+                    {
+                        img.color = targetColor;
+                    }
+                }
+            }
+
+            // 3. Cập nhật văn bản hiển thị (Giữ nguyên logic cũ của bạn)
             if (i < skinPriceTexts.Length)
             {
                 if (unlocked)
                 {
-                    // Nếu ID này trùng với ID đang mặc thì hiện "Đã trang bị"
                     if (i == currentEquippedID)
                     {
                         skinPriceTexts[i].text = "Đang dùng";
-                        
                         Color customColor;
-                        
                         if (ColorUtility.TryParseHtmlString("#ADDCFF", out customColor))
                         {
                             skinPriceBackgrounds[i].color = customColor;
@@ -342,21 +378,17 @@ public class UiClass : MonoBehaviour
                     }
                     else
                     {
-                        skinPriceTexts[i].text = "Sở hữu"; // Hoặc "Đã sở hữu"
+                        skinPriceTexts[i].text = "Sở hữu";
                         Color customColor;
-                        
                         if (ColorUtility.TryParseHtmlString("#BBFFAF", out customColor))
                         {
                             skinPriceBackgrounds[i].color = customColor;
                         }
-                            
                     }
                 }
                 else
                 {
-                    // Nếu chưa mua thì hiện giá tiền
                     skinPriceTexts[i].text = allSkins[i].price + "$";
-                    
                     skinPriceBackgrounds[i].color = Color.white;
                 }
             }
