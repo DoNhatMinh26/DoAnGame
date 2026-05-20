@@ -1685,7 +1685,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &194955177
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6274,6 +6274,7 @@ GameObject:
   - component: {fileID: 784985529}
   - component: {fileID: 784985528}
   - component: {fileID: 784985527}
+  - component: {fileID: 784985530}
   m_Layer: 5
   m_Name: MenuBnt
   m_TagString: Untagged
@@ -6383,6 +6384,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 784985525}
   m_CullTransparentMesh: 1
+--- !u!114 &784985530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 784985525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65b458e56f260954b92da1b750f1bf2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneAsset: {fileID: 102900000, guid: c39fd0c920a947a4bbe2cabd2cddc915, type: 3}
+  targetSceneName: GameUIPlay 1
+  destinationTargetPanelName: MainMenuPanel
+  screensRoot: {fileID: 0}
+  targetScreen: {fileID: 0}
+  rootsToHide: []
+  rootsToShow: []
+  initializeStartStateOnAwake: 0
+  startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &788238411
 GameObject:
   m_ObjectHideFlags: 0
@@ -13736,6 +13759,7 @@ GameObject:
   - component: {fileID: 1707027298}
   - component: {fileID: 1707027297}
   - component: {fileID: 1707027296}
+  - component: {fileID: 1707027299}
   m_Layer: 5
   m_Name: MenuBnt
   m_TagString: Untagged
@@ -13845,6 +13869,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1707027294}
   m_CullTransparentMesh: 1
+--- !u!114 &1707027299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1707027294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65b458e56f260954b92da1b750f1bf2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneAsset: {fileID: 102900000, guid: c39fd0c920a947a4bbe2cabd2cddc915, type: 3}
+  targetSceneName: GameUIPlay 1
+  destinationTargetPanelName: MainMenuPanel
+  screensRoot: {fileID: 0}
+  targetScreen: {fileID: 0}
+  rootsToHide: []
+  rootsToShow: []
+  initializeStartStateOnAwake: 0
+  startScreen: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &1708432012
 GameObject:
   m_ObjectHideFlags: 0
@@ -14298,7 +14344,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1715628467
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -164,14 +164,7 @@ public class GameUIManager : MonoBehaviour
         if (gameplayScoreRewardTxt != null)
             gameplayScoreRewardTxt.text = "Điểm: " + levelScore.ToString();
 
-        // Gửi điểm sang DataManager để lưu vào máy (PlayerPrefs) và đồng bộ Firebase
-        if (DataManager.Instance != null)
-        {
-            DataManager.Instance.AddScore(amount);
-
-            // Cập nhật luôn Text ở Shop để đồng bộ số liệu ngay lập tức
-            UpdateShopProfileUI();
-        }
+        // Chỉ tích lũy tạm trong màn. Khi thắng mới commit vào dữ liệu thật.
     }
     void UpdateCoinUI()
     {
@@ -185,15 +178,39 @@ public class GameUIManager : MonoBehaviour
     }
     public void AddCoins(int amount)
     {
-        levelCoins += amount;
+        // Coin dương trong gameplay chỉ giữ tạm. Thua thì không cộng.
+        if (amount > 0)
+        {
+            levelCoins += amount;
+            UpdateCoinUI();
+            return;
+        }
+
+        // Coin âm (mua đồ) trừ ngay và sync ngay.
         totalCoins += amount;
         PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
         PlayerPrefs.Save();
         UpdateCoinUI();
+        DoAnGame.Auth.CloudSyncService.Instance?.OnCoinsChanged(totalCoins);
+    }
 
-        // Sync coins lên Firebase nếu đã đăng nhập
-        if (amount != 0)
+    private void CommitLevelRewardsOnWin()
+    {
+        if (levelScore > 0 && DataManager.Instance != null)
+        {
+            DataManager.Instance.AddScore(levelScore);
+        }
+
+        if (levelCoins > 0)
+        {
+            totalCoins += levelCoins;
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
+            PlayerPrefs.Save();
             DoAnGame.Auth.CloudSyncService.Instance?.OnCoinsChanged(totalCoins);
+        }
+
+        UpdateShopProfileUI();
+        UpdateCoinUI();
     }
     public void ShowShopNotification(string message)
     {
@@ -725,6 +742,9 @@ public class GameUIManager : MonoBehaviour
 
         if (panelWin != null)
         {
+            // Chỉ khi thắng mới chốt điểm/tiền vào dữ liệu thật.
+            CommitLevelRewardsOnWin();
+
             SetSettingButtonInteractable(false);
             if (winLevelInfoTxt != null)
             {

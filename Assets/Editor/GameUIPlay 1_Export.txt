@@ -1,7 +1,7 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: GameUIPlay 1
 Đường dẫn: Assets/Scenes/GameUIPlay 1.unity
-Thời gian export: 5/19/2026 11:20:58 PM
+Thời gian export: 5/20/2026 3:59:54 PM
 ═══════════════════════════════════════════════════════════
 
 Tổng số Root GameObjects: 7
@@ -485,6 +485,9 @@ GameUICanvas [Layer: UI]
 ││├─ Text (TMP) [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
+││├─ Text (TMP) (1) [Layer: UI]
+││   • CanvasRenderer
+││   • TextMeshProUGUI (TMPro)
 │├─ ChonMan_ [INACTIVE] [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -529,9 +532,18 @@ GameUICanvas [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
 │   • UIMainMenuController (DoAnGame.UI)
-││├─ Backgroud [Layer: UI]
+││├─ RawImage [Layer: UI]
 ││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
+││   • RawImage (UnityEngine.UI)
+││   • Script_Speed_backGround ()
+││├─ RawImage (1) [Layer: UI]
+││   • CanvasRenderer
+││   • RawImage (UnityEngine.UI)
+││   • Script_Speed_backGround ()
+││├─ RawImage (2) [Layer: UI]
+││   • CanvasRenderer
+││   • RawImage (UnityEngine.UI)
+││   • Script_Speed_backGround ()
 ││├─ BangTen [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -541,48 +553,59 @@ GameUICanvas [Layer: UI]
 │││├─ TenNhanVat [Layer: UI]
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││├─ Label Lv Diem [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-│││├─ Image [Layer: UI]
-│││   • CanvasRenderer
-│││   • Image (UnityEngine.UI)
-│││├─ Image (1) [Layer: UI]
-│││   • CanvasRenderer
-│││   • Image (UnityEngine.UI)
-│││├─ Image (2) [Layer: UI]
-│││   • CanvasRenderer
-│││   • Image (UnityEngine.UI)
-│││├─ lv [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
-│││├─ Score [Layer: UI]
-│││   • CanvasRenderer
-│││   • TextMeshProUGUI (TMPro)
 ││├─ Avatar [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
-││├─ PlayBtn [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • Button (UnityEngine.UI)
-││   • UIButtonScreenNavigator (DoAnGame.UI)
+││├─ Ground
+││   • SpriteRenderer
+││   • SpriteSkin (UnityEngine.U2D.Animation)
 ││   • Animator
-││├─ DangXuat [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • Button (UnityEngine.UI)
-││   • UIButtonScreenNavigator (DoAnGame.UI)
-││├─ BXHBtn [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • Button (UnityEngine.UI)
-││   • UIButtonScreenNavigator (DoAnGame.UI)
-││├─ HoSoBtn [Layer: UI]
-││   • CanvasRenderer
-││   • Image (UnityEngine.UI)
-││   • Button (UnityEngine.UI)
-││   • UIButtonScreenNavigator (DoAnGame.UI)
+│││├─ Root
+││││├─ Root_1
+│││├─ Root_1
+││├─ Canvas [Layer: UI]
+││   • Canvas (RenderMode: ScreenSpaceOverlay)
+││   • CanvasScaler (UnityEngine.UI)
+││   • GraphicRaycaster (UnityEngine.UI)
+│││├─ Label Lv Diem [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+││││├─ Image [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+││││├─ Image (1) [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+││││├─ Image (2) [Layer: UI]
+││││   • CanvasRenderer
+││││   • Image (UnityEngine.UI)
+││││├─ lv [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+││││├─ Score [Layer: UI]
+││││   • CanvasRenderer
+││││   • TextMeshProUGUI (TMPro)
+│││├─ PlayBtn [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Button (UnityEngine.UI)
+│││   • UIButtonScreenNavigator (DoAnGame.UI)
+│││   • Animator
+│││├─ DangXuat [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Button (UnityEngine.UI)
+│││   • UIButtonScreenNavigator (DoAnGame.UI)
+│││├─ BXHBtn [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Button (UnityEngine.UI)
+│││   • UIButtonScreenNavigator (DoAnGame.UI)
+│││├─ HoSoBtn [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││   • Button (UnityEngine.UI)
+│││   • UIButtonScreenNavigator (DoAnGame.UI)
 ││├─ SettingBtn [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -1005,5 +1028,5 @@ AudioManager
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 302
+Tổng số GameObjects: 310
 ═══════════════════════════════════════════════════════════

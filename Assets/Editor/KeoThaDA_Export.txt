@@ -1,7 +1,7 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: KeoThaDA
 Đường dẫn: Assets/Scenes/KeoThaDA.unity
-Thời gian export: 5/19/2026 11:21:04 PM
+Thời gian export: 5/20/2026 4:00:00 PM
 ═══════════════════════════════════════════════════════════
 
 Tổng số Root GameObjects: 8
@@ -18,8 +18,26 @@ EventSystem
 UiManager
    • GameUIManager ()
    • AppQuitting ()
-GamePlay
+GamePlay [INACTIVE]
 │├─ DoHoa
+│   • Canvas (RenderMode: ScreenSpaceCamera)
+│   • CanvasScaler (UnityEngine.UI)
+││├─ Canvas [Layer: UI]
+││   • Canvas (RenderMode: ScreenSpaceOverlay)
+││   • CanvasScaler (UnityEngine.UI)
+││   • GraphicRaycaster (UnityEngine.UI)
+│││├─ GameObject [Layer: UI]
+│││├─ RawImage [Layer: UI]
+│││   • CanvasRenderer
+│││   • RawImage (UnityEngine.UI)
+│││├─ BangCauHoi [Layer: UI]
+│││   • CanvasRenderer
+│││   • Image (UnityEngine.UI)
+│││├─ GameObject (1) [Layer: UI]
+││││├─ tuong1 (Tag: Tuong)
+││││   • SpriteRenderer
+││││   • BoxCollider2D
+││││   • WallHealth ()
 ││├─ EnemySpawner
 ││   • EnemySpawner ()
 │││├─ D1
@@ -62,8 +80,6 @@ GamePlay
 │││││├─ Phao
 │││├─ FirePoint
 │││   • CannonDefenseManager ()
-││├─ phaoGamePlay [INACTIVE]
-││   • SpriteRenderer
 ││├─ MeoGamePlay
 ││   • Animator
 │││├─ MeoDauBep
@@ -193,17 +209,7 @@ GamePlay
 │││││├─ TayTrai
 │││││├─ TayPhai
 │││││├─ Duoi
-││├─ tuong1 (Tag: Tuong)
-││   • SpriteRenderer
-││   • BoxCollider2D
-││   • WallHealth ()
-││├─ BangCauHoi
-││   • SpriteRenderer
-││├─ vanGo
-││   • SpriteRenderer
-││├─ Troi
-││   • SpriteRenderer
-││├─ cco (1)bg
+││├─ phaoGamePlay [INACTIVE]
 ││   • SpriteRenderer
 │├─ QuesUI
 │   • Canvas (RenderMode: ScreenSpaceCamera)
@@ -221,24 +227,12 @@ GamePlay
 │││├─ DiemTxt (2)
 │││   • CanvasRenderer
 │││   • TextMeshProUGUI (TMPro)
-││││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas]
-││││   • LayoutElement (UnityEngine.UI)
-││││   • CanvasRenderer
-││││   • TMP_SubMeshUI (TMPro)
 ││├─ soManTxt [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
 ││├─ cauhoiText [Layer: UI]
 ││   • CanvasRenderer
 ││   • TextMeshProUGUI (TMPro)
-│││├─ TMP SubMeshUI [Baloo-Regular SDF Material + LiberationSans SDF Atlas] [Layer: UI]
-│││   • LayoutElement (UnityEngine.UI)
-│││   • CanvasRenderer
-│││   • TMP_SubMeshUI (TMPro)
 ││├─ setting [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
@@ -789,6 +783,13 @@ Ui [Layer: UI]
 ││   • CanvasRenderer
 ││   • Image (UnityEngine.UI)
 ││   • Button (UnityEngine.UI)
+││├─ MenuBnt [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [INACTIVE] [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
 │├─ LosePanel [Layer: UI]
 │   • CanvasRenderer
 │   • Image (UnityEngine.UI)
@@ -850,10 +851,17 @@ Ui [Layer: UI]
 ││││├─ Text (TMP) [INACTIVE] [Layer: UI]
 ││││   • CanvasRenderer
 ││││   • TextMeshProUGUI (TMPro)
+││├─ MenuBnt [Layer: UI]
+││   • CanvasRenderer
+││   • Image (UnityEngine.UI)
+││   • Button (UnityEngine.UI)
+│││├─ Text (TMP) [INACTIVE] [Layer: UI]
+│││   • CanvasRenderer
+│││   • TextMeshProUGUI (TMPro)
 AudioBridge
    • AudioEventBridge (DoAnGame.Audio)
 
 ═══════════════════════════════════════════════════════════
 TỔNG KẾT
-Tổng số GameObjects: 323
+Tổng số GameObjects: 325
 ═══════════════════════════════════════════════════════════

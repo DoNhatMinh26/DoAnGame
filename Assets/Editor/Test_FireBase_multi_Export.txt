@@ -1,7 +1,7 @@
 ﻿═══════════════════════════════════════════════════════════
 SCENE: Test_FireBase_multi
 Đường dẫn: Assets/Scenes/Test_FireBase_multi.unity
-Thời gian export: 5/19/2026 11:21:18 PM
+Thời gian export: 5/20/2026 4:00:25 PM
 ═══════════════════════════════════════════════════════════
 
 Tổng số Root GameObjects: 8

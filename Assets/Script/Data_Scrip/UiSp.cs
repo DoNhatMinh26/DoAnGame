@@ -111,12 +111,7 @@ public class UiSp : MonoBehaviour
         if (gameplayScoreRewardTxt != null)
             gameplayScoreRewardTxt.text = "Điểm: +" + levelScore.ToString();
 
-        // 3. Gọi DataManager để lưu tổng điểm và đồng bộ Firebase
-        if (DataManager.Instance != null)
-        {
-            DataManager.Instance.AddScore(amount);
-            
-        }
+        // Chỉ tích lũy tạm trong màn. Khi thắng mới commit vào dữ liệu thật.
     }
     public void InitShipShop()
     {
@@ -260,16 +255,39 @@ public class UiSp : MonoBehaviour
 
     public void AddCoins(int amount)
     {
-        if (amount > 0) levelCoins += amount;
-        totalCoins += amount;
+        // Coin dương trong gameplay chỉ giữ tạm. Thua thì không cộng.
+        if (amount > 0)
+        {
+            levelCoins += amount;
+            UpdateCoinUI();
+            return;
+        }
 
+        // Coin âm (mua đồ) trừ ngay và sync ngay.
+        totalCoins += amount;
         PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
         PlayerPrefs.Save();
         UpdateCoinUI();
+        DoAnGame.Auth.CloudSyncService.Instance?.OnCoinsChanged(totalCoins);
+    }
 
-        // Sync coins lên Firebase nếu đã đăng nhập
-        if (amount != 0)
+    private void CommitLevelRewardsOnWin()
+    {
+        if (levelScore > 0 && DataManager.Instance != null)
+        {
+            DataManager.Instance.AddScore(levelScore);
+        }
+
+        if (levelCoins > 0)
+        {
+            totalCoins += levelCoins;
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
+            PlayerPrefs.Save();
             DoAnGame.Auth.CloudSyncService.Instance?.OnCoinsChanged(totalCoins);
+        }
+
+        UpdateShopProfileUI();
+        UpdateCoinUI();
     }
 
     private void UpdateCoinUI()
@@ -471,6 +489,9 @@ public class UiSp : MonoBehaviour
 
     private IEnumerator ShowWinRoutine(float delayBeforeVideo)
     {
+        // Chỉ khi thắng mới chốt điểm/tiền vào dữ liệu thật.
+        CommitLevelRewardsOnWin();
+
         
         SpaceShipPhysics ship = FindObjectOfType<SpaceShipPhysics>();
         if (ship != null)

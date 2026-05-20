@@ -438,16 +438,39 @@ public class UiClass : MonoBehaviour
 
     public void AddCoins(int amount)
     {
-        if (amount > 0) levelCoins += amount;
-        totalCoins += amount;
+        // Coin dương trong gameplay chỉ giữ tạm. Thua thì không cộng.
+        if (amount > 0)
+        {
+            levelCoins += amount;
+            UpdateCoinUI();
+            return;
+        }
 
+        // Coin âm (mua đồ) trừ ngay và sync ngay.
+        totalCoins += amount;
         PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
         PlayerPrefs.Save();
         UpdateCoinUI();
+        DoAnGame.Auth.CloudSyncService.Instance?.OnCoinsChanged(totalCoins);
+    }
 
-        // Sync coins lên Firebase nếu đã đăng nhập
-        if (amount != 0)
+    private void CommitLevelRewardsOnWin()
+    {
+        if (levelScore > 0 && DataManager.Instance != null)
+        {
+            DataManager.Instance.AddScore(levelScore);
+        }
+
+        if (levelCoins > 0)
+        {
+            totalCoins += levelCoins;
+            PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.TotalCoins, totalCoins);
+            PlayerPrefs.Save();
             DoAnGame.Auth.CloudSyncService.Instance?.OnCoinsChanged(totalCoins);
+        }
+
+        UpdateShopProfileUI();
+        UpdateCoinUI();
     }
 
     private void UpdateCoinUI()
@@ -685,15 +708,8 @@ public class UiClass : MonoBehaviour
         currentCorrectCount++;
         UpdateProgressUI();
 
-        // Gọi trực tiếp thông qua Property Instance thông minh đã sửa ở trên
-        if (DataManager.Instance != null)
-        {
-            DataManager.Instance.AddScore(10);
-        }
-        else
-        {
-            Debug.LogError("Vẫn không tìm thấy DataManager! Hãy kiểm tra xem đối tượng DataManager đã được tạo trong Scene Menu chưa.");
-        }
+        // Chỉ cộng tạm trong màn. Khi thắng mới commit vào dữ liệu thật.
+        AddLevelScore(10);
 
         if (currentCorrectCount >= targetCorrectAnswers)
         {
@@ -712,6 +728,9 @@ public class UiClass : MonoBehaviour
             PlayerPrefs.SetInt(DoAnGame.Auth.LocalStorageKeyResolver.ClassHighest, LevelManager.CurrentLevel + 1);
             PlayerPrefs.Save();
         }
+
+        // Chỉ khi thắng mới chốt điểm/tiền vào dữ liệu thật.
+        CommitLevelRewardsOnWin();
 
         // Sync lên Firebase (nếu đã đăng nhập)
         DoAnGame.Auth.CloudSyncService.Instance?.OnLevelCompleted(

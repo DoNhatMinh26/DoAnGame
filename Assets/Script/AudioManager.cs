@@ -67,6 +67,25 @@ public class AudioManager : MonoBehaviour
         PlayMusic(musicMenu);
     }
 
+    private void OnEnable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += HandleSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= HandleSceneLoaded;
+    }
+
+    private void HandleSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        // Khi quay về Main Menu scene từ Win/Lose, nhạc có thể đã bị Stop trước đó.
+        if (scene.name == "GameUIPlay 1" && (musicSource == null || !musicSource.isPlaying))
+        {
+            PlayMainMenuMusic();
+        }
+    }
+
     // Hàm phát nhạc nền (lặp lại)
     public void PlayMusic(AudioClip clip)
     {
@@ -93,13 +112,22 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator FadeMusicCoroutine(AudioClip clip, float fadeDuration)
     {
+        if (fadeDuration <= 0f)
+        {
+            musicSource.clip = clip;
+            musicSource.loop = true;
+            musicSource.volume = masterVolume * musicVolume;
+            musicSource.Play();
+            yield break;
+        }
+
         // Fade out nhạc cũ
         float elapsedTime = 0f;
         float startVolume = musicSource.volume;
 
         while (elapsedTime < fadeDuration)
         {
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
             musicSource.volume = Mathf.Lerp(startVolume, 0f, elapsedTime / fadeDuration);
             yield return null;
         }
@@ -114,7 +142,7 @@ public class AudioManager : MonoBehaviour
 
         while (elapsedTime < fadeDuration)
         {
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
             musicSource.volume = Mathf.Lerp(0f, targetVolume, elapsedTime / fadeDuration);
             yield return null;
         }
